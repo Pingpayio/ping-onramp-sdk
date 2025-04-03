@@ -44,11 +44,6 @@ const OnrampMethodSelection = ({
       
       {/* Credit Card Form */}
       <PaymentForm />
-      
-      {/* Terms text */}
-      <p className="text-sm text-muted-foreground mt-4">
-        By tapping Continue, I agree to the <a href="#" className="text-ping-600 hover:underline">Terms of Service</a> and <a href="#" className="text-ping-600 hover:underline">Privacy Policy</a>.
-      </p>
     </div>
   );
 };
