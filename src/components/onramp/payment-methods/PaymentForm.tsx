@@ -28,7 +28,7 @@ const PaymentForm = () => {
         <div>
           <Label htmlFor="country" className="text-sm">Country</Label>
           <div className="relative mt-1">
-            <div className="flex items-center justify-between border rounded-md px-3 py-1.5 cursor-pointer hover:border-ping-600">
+            <div className="flex items-center justify-between border rounded-md px-3 py-2 cursor-pointer hover:border-ping-600">
               <span className="flex items-center gap-2">
                 <span className="text-sm">🇺🇸</span> 
                 US (+1)
@@ -39,18 +39,17 @@ const PaymentForm = () => {
         </div>
         
         <div>
-          <div className="flex items-center gap-1">
-            <Label htmlFor="mobileNumber" className="text-sm">Mobile number</Label>
-            <Info className="h-3 w-3 text-muted-foreground" />
+          <Label htmlFor="mobileNumber" className="text-sm">Mobile number</Label>
+          <div className="mt-1">
+            <Input
+              id="mobileNumber"
+              name="mobileNumber"
+              placeholder="502-123-4567"
+              value={formData.mobileNumber}
+              onChange={handleInputChange}
+              className="py-2 h-auto"
+            />
           </div>
-          <Input
-            id="mobileNumber"
-            name="mobileNumber"
-            placeholder="502-123-4567"
-            value={formData.mobileNumber}
-            onChange={handleInputChange}
-            className="py-1.5 h-auto mt-1"
-          />
         </div>
       </div>
       
@@ -63,7 +62,7 @@ const PaymentForm = () => {
           placeholder="John Doe"
           value={formData.nameOnCard}
           onChange={handleInputChange}
-          className="py-1.5 h-auto mt-1"
+          className="py-2 h-auto mt-1"
         />
       </div>
       
@@ -76,7 +75,7 @@ const PaymentForm = () => {
           placeholder="1234 5678 9012 3456"
           value={formData.cardNumber}
           onChange={handleInputChange}
-          className="py-1.5 h-auto mt-1"
+          className="py-2 h-auto mt-1"
         />
       </div>
       
@@ -90,7 +89,7 @@ const PaymentForm = () => {
             placeholder="MM/YY"
             value={formData.expiryDate}
             onChange={handleInputChange}
-            className="py-1.5 h-auto mt-1"
+            className="py-2 h-auto mt-1"
           />
         </div>
         
@@ -102,7 +101,7 @@ const PaymentForm = () => {
             placeholder="123"
             value={formData.cvv}
             onChange={handleInputChange}
-            className="py-1.5 h-auto mt-1"
+            className="py-2 h-auto mt-1"
           />
         </div>
       </div>
@@ -117,7 +116,7 @@ const PaymentForm = () => {
             placeholder="12345 Street"
             value={formData.billingAddress}
             onChange={handleInputChange}
-            className="pl-9 py-1.5 h-auto"
+            className="pl-9 py-2 h-auto"
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
