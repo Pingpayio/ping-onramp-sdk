@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import StepProgress from '@/components/StepProgress';
@@ -19,7 +19,7 @@ const OnrampPage = () => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>('100');
 
-  const steps = ["Select Asset", "Connect Wallet", "Choose Onramp", "Complete Payment"];
+  const steps = ["Select Asset", "Connect Wallet", "Payment Details", "Complete Payment"];
 
   const handleAssetSelect = (symbol: string) => {
     setSelectedAsset(symbol);
@@ -49,6 +49,13 @@ const OnrampPage = () => {
       setCurrentStep(currentStep - 1);
     }
   };
+
+  // For step 2 (Payment Details), automatically set the provider to "coinbase"
+  useEffect(() => {
+    if (currentStep === 2 && !selectedOnramp) {
+      setSelectedOnramp("coinbase");
+    }
+  }, [currentStep, selectedOnramp]);
 
   const canContinue = () => {
     switch (currentStep) {

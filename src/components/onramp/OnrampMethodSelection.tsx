@@ -1,6 +1,6 @@
 
 import React from 'react';
-import OnrampCard from '@/components/OnrampCard';
+import { CreditCard } from 'lucide-react';
 
 interface OnrampMethodSelectionProps {
   selectedOnramp: string | null;
@@ -26,11 +26,10 @@ const mockPrices: Record<string, number> = {
 };
 
 const OnrampMethodSelection = ({
-  selectedOnramp,
-  onOnrampSelect,
   amount,
   selectedAsset,
-  walletAddress
+  walletAddress,
+  onOnrampSelect
 }: OnrampMethodSelectionProps) => {
   // Calculate estimated token amount
   const getEstimatedAmount = () => {
@@ -50,35 +49,41 @@ const OnrampMethodSelection = ({
     return "0";
   };
 
+  // Auto-select the payment method (coinbase in this case)
+  React.useEffect(() => {
+    onOnrampSelect("coinbase");
+  }, [onOnrampSelect]);
+
   return (
     <div>
-      <h2 className="text-2xl font-semibold mb-4">Choose Onramp Method</h2>
-      <p className="text-muted-foreground mb-6">Select your preferred payment method</p>
+      <h2 className="text-xl md:text-2xl font-semibold mb-4 text-center">
+        Payment Details
+      </h2>
+      <p className="text-muted-foreground mb-6 text-center">
+        Review your transaction details
+      </p>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        <OnrampCard
-          title="Credit/Debit Card"
-          description="Quick and easy, usually processed within minutes. 2-3% transaction fee may apply."
-          icon="card"
-          provider="Coinbase"
-          isSelected={selectedOnramp === "coinbase"}
-          onClick={() => onOnrampSelect("coinbase")}
-        />
-        <OnrampCard
-          title="Bank Transfer"
-          description="Lower fees but slower processing time (1-3 business days)."
-          icon="wallet"
-          provider="MoonPay"
-          isSelected={selectedOnramp === "moonpay"}
-          onClick={() => onOnrampSelect("moonpay")}
-        />
+      {/* Static payment method card */}
+      <div className="border rounded-lg p-4 mb-6">
+        <div className="flex items-center gap-3 mb-3">
+          <div className="bg-secondary p-2 rounded-full">
+            <CreditCard className="h-5 w-5 text-ping-600" />
+          </div>
+          <div>
+            <p className="font-medium">Credit/Debit Card</p>
+            <p className="text-sm text-muted-foreground">Processed by Coinbase</p>
+          </div>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Quick and easy payment method. Transaction usually processed within minutes. A 2-3% transaction fee may apply.
+        </p>
       </div>
       
       <div className="bg-secondary p-4 rounded-md mb-6">
         <p className="font-medium mb-2">Transaction Details:</p>
         <div className="flex justify-between mb-2">
           <span className="text-muted-foreground">Amount:</span>
-          <span>${amount}.00 USD</span>
+          <span>${amount} USD</span>
         </div>
         <div className="flex justify-between mb-2">
           <span className="text-muted-foreground">Asset:</span>
@@ -90,7 +95,7 @@ const OnrampMethodSelection = ({
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Recipient:</span>
-          <span className="text-sm">{walletAddress}</span>
+          <span className="text-sm truncate max-w-[200px] md:max-w-[300px]">{walletAddress}</span>
         </div>
       </div>
     </div>
