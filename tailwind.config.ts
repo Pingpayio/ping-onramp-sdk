@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,32 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				ping: {
+					50: '#f2f6ff',
+					100: '#e6edff',
+					200: '#d1ddff',
+					300: '#adc2ff',
+					400: '#839dff',
+					500: '#6b7fff',
+					600: '#4c58f5',
+					700: '#3e44df',
+					800: '#343ab5',
+					900: '#2f3791',
+					950: '#1e2158',
+				},
+				near: {
+					50: '#f0f7ff',
+					100: '#dfeeff',
+					200: '#b9ddff',
+					300: '#7cc2ff',
+					400: '#37a3ff',
+					500: '#0885fd',
+					600: '#0065f5',
+					700: '#004fde',
+					800: '#0043b5',
+					900: '#003c91',
+					950: '#00275d',
 				}
 			},
 			borderRadius: {
@@ -84,11 +111,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-slow': {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' },
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-slow': 'pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+			},
+			backgroundImage: {
+				'gradient-ping': 'linear-gradient(135deg, #4c58f5 0%, #6b7fff 100%)',
+				'gradient-near': 'linear-gradient(135deg, #0065f5 0%, #37a3ff 100%)',
 			}
 		}
 	},
