@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -41,8 +40,11 @@ const TransactionPage = () => {
       <div className="container max-w-3xl mx-auto px-4 py-12">
         <header className="flex justify-between items-center mb-8">
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-            <div className="bg-ping-600 text-white font-bold text-xl h-10 w-10 rounded-md flex items-center justify-center mr-2">P</div>
-            <span className="text-xl font-bold tracking-tight">Pingpay</span>
+            <img 
+              src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
+              alt="Ping Logo" 
+              className="h-10" 
+            />
           </Link>
         </header>
 

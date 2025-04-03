@@ -128,8 +128,11 @@ const OnrampPage = () => {
       <div className={`container mx-auto px-4 py-8 md:py-12 ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
         <header className="flex justify-between items-center mb-6 md:mb-8">
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-            <div className="bg-ping-600 text-white font-bold text-lg md:text-xl h-8 w-8 md:h-10 md:w-10 rounded-md flex items-center justify-center mr-2">P</div>
-            <span className="text-lg md:text-xl font-bold tracking-tight">Pingpay</span>
+            <img 
+              src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
+              alt="Ping Logo" 
+              className="h-8 md:h-10" 
+            />
           </Link>
         </header>
 

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -10,7 +9,11 @@ const Index = () => {
       <div className="container max-w-6xl mx-auto px-4 py-12">
         <header className="flex justify-between items-center mb-16">
           <div className="flex items-center">
-            <div className="bg-ping-600 text-white font-bold text-xl h-10 w-10 rounded-md flex items-center justify-center mr-2">P</div>
+            <img 
+              src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
+              alt="Ping Logo" 
+              className="h-10 mr-2" 
+            />
             <span className="text-xl font-bold tracking-tight">Pingpay</span>
           </div>
           <div className="flex items-center space-x-4">
@@ -145,7 +148,11 @@ const App = () => {
         <footer className="mt-20 py-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <div className="bg-ping-600 text-white font-bold text-xl h-8 w-8 rounded-md flex items-center justify-center mr-2">P</div>
+              <img 
+                src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
+                alt="Ping Logo" 
+                className="h-8 mr-2" 
+              />
               <span className="text-lg font-bold tracking-tight">Pingpay</span>
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
