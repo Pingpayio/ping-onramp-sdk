@@ -10,11 +10,11 @@ const TransactionPage = () => {
   const [step, setStep] = useState<'fiat' | 'swap' | 'complete'>('fiat');
   const [loading, setLoading] = useState(true);
   
-  // Mock transaction details
+  // Mock transaction details with a NEAR format wallet address
   const txDetails = {
     amount: 100,
     asset: 'NEAR',
-    wallet: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F', // Using the wallet address from the form
+    wallet: 'pingpay.near', // Updated to use a NEAR format address
     fiatTxHash: '0x3a1b3d543d446d8ce36e27c79165c74ef5543a8251a73c0662b5a3cc6e79',
     swapTxHash: '0x8c3a1a7546d985c4e44b9ae414c01f240c5d7f1679be993559fb43bd78a45'
   };
