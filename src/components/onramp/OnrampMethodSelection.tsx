@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -89,10 +88,9 @@ const OnrampMethodSelection = ({
           className="w-full h-12 rounded-md shadow-sm"
           style={{ 
             WebkitAppearance: "-apple-pay-button", 
-            // Use a string indexer to bypass TypeScript property checking
-            ["--apple-pay-button-style" as any]: "black",
-            cursor: "pointer" 
-          }}
+            ApplePayButtonType: "plain",
+            ApplePayButtonStyle: "black"
+          } as React.CSSProperties}
         >
         </button>
       </div>
