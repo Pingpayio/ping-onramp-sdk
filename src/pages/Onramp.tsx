@@ -9,6 +9,7 @@ import WalletConnectionStep from '@/components/onramp/WalletConnectionStep';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
 import PaymentCompletion from '@/components/onramp/PaymentCompletion';
 import { useIsMobile } from '@/hooks/use-mobile';
+import WalletAddressInput from '@/components/onramp/asset-selection/WalletAddressInput';
 
 const OnrampPage = () => {
   const isMobile = useIsMobile();
@@ -16,7 +17,7 @@ const OnrampPage = () => {
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const [selectedOnramp, setSelectedOnramp] = useState<string | null>(null);
-  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [walletAddress, setWalletAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('100');
 
   const steps = ["Select Asset", "Connect Wallet", "Payment Details", "Complete Payment"];
@@ -32,6 +33,10 @@ const OnrampPage = () => {
 
   const handleWalletConnect = (address: string) => {
     setWalletAddress(address);
+  };
+
+  const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setWalletAddress(e.target.value);
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +64,7 @@ const OnrampPage = () => {
 
   const canContinue = () => {
     switch (currentStep) {
-      case 0: return !!selectedAsset;
+      case 0: return !!selectedAsset && walletAddress.trim().length > 0;
       case 1: return !!walletAddress;
       case 2: return !!selectedOnramp;
       default: return true;
@@ -70,14 +75,23 @@ const OnrampPage = () => {
     switch (currentStep) {
       case 0:
         return (
-          <AssetSelection
-            selectedAsset={selectedAsset}
-            amount={amount}
-            onAssetSelect={handleAssetSelect}
-            onAmountChange={handleAmountChange}
-            open={open}
-            setOpen={setOpen}
-          />
+          <>
+            <AssetSelection
+              selectedAsset={selectedAsset}
+              amount={amount}
+              onAssetSelect={handleAssetSelect}
+              onAmountChange={handleAmountChange}
+              open={open}
+              setOpen={setOpen}
+            />
+            
+            <div className="mt-6">
+              <WalletAddressInput 
+                walletAddress={walletAddress}
+                onWalletAddressChange={handleWalletAddressChange}
+              />
+            </div>
+          </>
         );
       case 1:
         return (
