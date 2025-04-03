@@ -37,7 +37,7 @@ const WalletAddressInput = ({
           value={walletAddress}
           onChange={onWalletAddressChange}
           placeholder="Enter destination wallet address"
-          className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base md:text-sm"
         />
         {isValid && (
           <div className="ml-2">
