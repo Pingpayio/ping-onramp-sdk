@@ -27,7 +27,7 @@ const PaymentForm = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
           <Label htmlFor="country" className="text-sm">Country</Label>
-          <div className="relative">
+          <div className="relative mt-1">
             <div className="flex items-center justify-between border rounded-md px-3 py-1.5 cursor-pointer hover:border-ping-600">
               <span className="flex items-center gap-2">
                 <span className="text-sm">🇺🇸</span> 
@@ -49,7 +49,7 @@ const PaymentForm = () => {
             placeholder="502-123-4567"
             value={formData.mobileNumber}
             onChange={handleInputChange}
-            className="py-1.5 h-auto"
+            className="py-1.5 h-auto mt-1"
           />
         </div>
       </div>
@@ -63,7 +63,7 @@ const PaymentForm = () => {
           placeholder="John Doe"
           value={formData.nameOnCard}
           onChange={handleInputChange}
-          className="py-1.5 h-auto"
+          className="py-1.5 h-auto mt-1"
         />
       </div>
       
@@ -76,7 +76,7 @@ const PaymentForm = () => {
           placeholder="1234 5678 9012 3456"
           value={formData.cardNumber}
           onChange={handleInputChange}
-          className="py-1.5 h-auto"
+          className="py-1.5 h-auto mt-1"
         />
       </div>
       
@@ -90,7 +90,7 @@ const PaymentForm = () => {
             placeholder="MM/YY"
             value={formData.expiryDate}
             onChange={handleInputChange}
-            className="py-1.5 h-auto"
+            className="py-1.5 h-auto mt-1"
           />
         </div>
         
@@ -102,7 +102,7 @@ const PaymentForm = () => {
             placeholder="123"
             value={formData.cvv}
             onChange={handleInputChange}
-            className="py-1.5 h-auto"
+            className="py-1.5 h-auto mt-1"
           />
         </div>
       </div>
@@ -110,7 +110,7 @@ const PaymentForm = () => {
       {/* Billing address */}
       <div>
         <Label htmlFor="billingAddress" className="text-sm">Billing address</Label>
-        <div className="relative">
+        <div className="relative mt-1">
           <Input
             id="billingAddress"
             name="billingAddress"
