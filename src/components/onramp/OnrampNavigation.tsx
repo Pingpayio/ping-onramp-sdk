@@ -22,6 +22,14 @@ const OnrampNavigation = ({
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
   
+  // Function to determine button text based on current step
+  const getButtonText = () => {
+    if (currentStep === 1) {
+      return "Continue";
+    }
+    return "Continue to Payment";
+  };
+  
   return (
     <div className="flex justify-between pt-3">
       {currentStep > 0 ? (
@@ -48,7 +56,7 @@ const OnrampNavigation = ({
           withArrow
           className={isMobile ? "w-1/2" : ""}
         >
-          Continue to Payment
+          {getButtonText()}
         </Button>
       )}
     </div>
