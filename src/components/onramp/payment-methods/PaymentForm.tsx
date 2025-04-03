@@ -22,13 +22,13 @@ const PaymentForm = () => {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-1.5">
       {/* Country and Mobile Number row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
         <div>
-          <Label htmlFor="country" className="text-sm">Country</Label>
-          <div className="relative mt-1">
-            <div className="flex items-center justify-between border rounded-md px-3 py-2 h-9 cursor-pointer hover:border-ping-600">
+          <Label htmlFor="country" className="text-xs">Country</Label>
+          <div className="relative mt-0.5">
+            <div className="flex items-center justify-between border rounded-md px-3 py-1.5 h-8 cursor-pointer hover:border-ping-600">
               <span className="flex items-center gap-2">
                 <span className="text-sm">🇺🇸</span> 
                 US (+1)
@@ -39,85 +39,85 @@ const PaymentForm = () => {
         </div>
         
         <div>
-          <Label htmlFor="mobileNumber" className="text-sm">Mobile number</Label>
-          <div className="mt-1">
+          <Label htmlFor="mobileNumber" className="text-xs">Mobile number</Label>
+          <div className="mt-0.5">
             <Input
               id="mobileNumber"
               name="mobileNumber"
               placeholder="502-123-4567"
               value={formData.mobileNumber}
               onChange={handleInputChange}
-              className="py-2 h-9"
+              className="py-1.5 h-8"
             />
           </div>
         </div>
       </div>
       
       {/* Name on card and Card number row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
         <div>
-          <Label htmlFor="nameOnCard" className="text-sm">Name on card</Label>
+          <Label htmlFor="nameOnCard" className="text-xs">Name on card</Label>
           <Input
             id="nameOnCard"
             name="nameOnCard"
             placeholder="John Doe"
             value={formData.nameOnCard}
             onChange={handleInputChange}
-            className="py-2 h-9 mt-1"
+            className="py-1.5 h-8 mt-0.5"
           />
         </div>
         
         <div>
-          <Label htmlFor="cardNumber" className="text-sm">Card number</Label>
+          <Label htmlFor="cardNumber" className="text-xs">Card number</Label>
           <Input
             id="cardNumber"
             name="cardNumber"
             placeholder="1234 5678 9012 3456"
             value={formData.cardNumber}
             onChange={handleInputChange}
-            className="py-2 h-9 mt-1"
+            className="py-1.5 h-8 mt-0.5"
           />
         </div>
       </div>
       
       {/* Expiry date and CVV row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
         <div>
-          <Label htmlFor="expiryDate" className="text-sm">Expiry date</Label>
+          <Label htmlFor="expiryDate" className="text-xs">Expiry date</Label>
           <Input
             id="expiryDate"
             name="expiryDate"
             placeholder="MM/YY"
             value={formData.expiryDate}
             onChange={handleInputChange}
-            className="py-2 h-9 mt-1"
+            className="py-1.5 h-8 mt-0.5"
           />
         </div>
         
         <div>
-          <Label htmlFor="cvv" className="text-sm">CVV</Label>
+          <Label htmlFor="cvv" className="text-xs">CVV</Label>
           <Input
             id="cvv"
             name="cvv"
             placeholder="123"
             value={formData.cvv}
             onChange={handleInputChange}
-            className="py-2 h-9 mt-1"
+            className="py-1.5 h-8 mt-0.5"
           />
         </div>
       </div>
       
       {/* Billing address */}
       <div>
-        <Label htmlFor="billingAddress" className="text-sm">Billing address</Label>
-        <div className="relative mt-1">
+        <Label htmlFor="billingAddress" className="text-xs">Billing address</Label>
+        <div className="relative mt-0.5">
           <Input
             id="billingAddress"
             name="billingAddress"
             placeholder="12345 Street"
             value={formData.billingAddress}
             onChange={handleInputChange}
-            className="pl-9 py-2 h-9"
+            className="pl-9 py-1.5 h-8"
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -125,7 +125,7 @@ const PaymentForm = () => {
             </svg>
           </div>
         </div>
-        <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
+        <p className="text-[11px] text-muted-foreground mt-1 flex items-start gap-1">
           <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
           By tapping continue, you agree to our Terms and acknowledge that you have read our Privacy Policy.
         </p>
