@@ -6,7 +6,7 @@ const mockPrices: Record<string, number> = {
   DAI: 1,
   BTC: 65000,
   ETH: 3500,
-  NEAR: 8.12,
+  NEAR: 2.51,  // Updated NEAR price from 8.12 to 2.51
   SOL: 145,
   AVAX: 35,
   DOT: 8.5,

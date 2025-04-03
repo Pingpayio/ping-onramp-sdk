@@ -97,7 +97,7 @@ const TransactionPage = () => {
                 <span className="text-sm break-all">{txDetails.wallet}</span>
                 
                 <span className="text-muted-foreground">Est. {txDetails.asset}:</span>
-                <span>{(txDetails.amount / 8.12).toFixed(2)} {txDetails.asset}</span>
+                <span>{(txDetails.amount / 2.51).toFixed(2)} {txDetails.asset}</span>
               </div>
             </div>
             
