@@ -1,4 +1,3 @@
-
 import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronDown, Search, ArrowDown, ChevronRight } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -128,9 +127,24 @@ const AssetSelection = ({
         )}
       </div>
       
-      {/* Selection cards for asset, network and payment method */}
+      {/* Selection cards for asset, network and payment method - REDESIGNED */}
       <div className="w-full space-y-3 mt-6">
-        {/* Asset Selection Card */}
+        {/* Network Button - Small button above asset selection */}
+        <div className="flex justify-start">
+          <button className="rounded-full border bg-secondary/50 px-4 py-2 text-sm flex items-center gap-2 hover:bg-secondary transition-colors">
+            <div className="bg-primary/10 rounded-full p-1 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="text-ping-600">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+            <span>Network: {selectedAsset && selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}</span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </button>
+        </div>
+        
+        {/* Asset Selection Card - Now a single combined button */}
         <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
@@ -205,29 +219,7 @@ const AssetSelection = ({
           </Popover>
         </div>
         
-        {/* Network Card - for display only */}
-        <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <div className="bg-secondary rounded-full p-2 mr-3">
-                <div className="h-6 w-6 flex items-center justify-center">
-                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="text-ping-600">
-                    <circle cx="12" cy="12" r="10"></circle>
-                    <line x1="2" y1="12" x2="22" y2="12"></line>
-                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                  </svg>
-                </div>
-              </div>
-              <div>
-                <p className="font-medium">Network</p>
-                <p className="text-muted-foreground">{selectedAsset && selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}</p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-muted-foreground" />
-          </div>
-        </div>
-        
-        {/* Payment Method Card - for display only */}
+        {/* Payment Method Card */}
         <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
