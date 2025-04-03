@@ -38,12 +38,12 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center">
-      {/* 1. Title section - "Buy Crypto" - further reduced margin */}
-      <h2 className="text-lg md:text-xl font-semibold mb-1 md:mb-2 text-center">
+      {/* 1. Title section - reduced margin */}
+      <h2 className="text-lg md:text-xl font-semibold mb-1 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
-      {/* 2 & 3. Amount input with estimated value */}
+      {/* 2. Amount input with estimated value */}
       <AmountInput 
         amount={amount}
         onAmountChange={onAmountChange}
@@ -51,14 +51,12 @@ const AssetSelection = ({
         estimatedAmount={estimatedAmount}
       />
       
-      {/* Selection cards with reduced spacing between items */}
-      <div className="w-full space-y-1.5 mt-0">
-        {/* Network Badge moved here - directly after amount input with zero margin */}
-        {selectedAsset && (
-          <NetworkBadge selectedAsset={selectedAsset} />
-        )}
-        
-        {/* 4. Asset Selection Card with reduced padding */}
+      {/* Moved NetworkBadge above the selection cards and reduced spacing */}
+      {selectedAsset && <NetworkBadge selectedAsset={selectedAsset} />}
+      
+      {/* Selection cards with tighter spacing */}
+      <div className="w-full space-y-1.5 mt-1">
+        {/* 4. Asset Selection Card */}
         <div className="rounded-lg border p-2.5 md:p-3.5 hover:shadow-sm transition-shadow">
           <AssetSelector
             selectedAsset={selectedAsset}
@@ -79,7 +77,7 @@ const AssetSelection = ({
       </div>
       
       {/* 7. Minimum amount text */}
-      <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-auto pt-2">
+      <p className="text-xs md:text-sm text-muted-foreground mt-2 md:mt-auto pt-1">
         Minimum amount: $10.00
       </p>
     </div>
