@@ -50,4 +50,79 @@ export const assets = [
     symbol: "LINK",
     logoUrl: "https://cryptologos.cc/logos/chainlink-link-logo.svg?v=029",
   },
+  {
+    name: "Cardano",
+    symbol: "ADA",
+    logoUrl: "https://cryptologos.cc/logos/cardano-ada-logo.svg?v=029",
+  },
+  {
+    name: "Polkadot",
+    symbol: "DOT",
+    logoUrl: "https://cryptologos.cc/logos/polkadot-new-dot-logo.svg?v=029",
+  },
+  {
+    name: "Avalanche",
+    symbol: "AVAX",
+    logoUrl: "https://cryptologos.cc/logos/avalanche-avax-logo.svg?v=029",
+  },
+  {
+    name: "Shiba Inu",
+    symbol: "SHIB",
+    logoUrl: "https://cryptologos.cc/logos/shiba-inu-shib-logo.svg?v=029",
+  },
+  {
+    name: "Uniswap",
+    symbol: "UNI",
+    logoUrl: "https://cryptologos.cc/logos/uniswap-uni-logo.svg?v=029",
+  },
+  {
+    name: "Polygon",
+    symbol: "MATIC",
+    logoUrl: "https://cryptologos.cc/logos/polygon-matic-logo.svg?v=029",
+  },
+  {
+    name: "Litecoin",
+    symbol: "LTC",
+    logoUrl: "https://cryptologos.cc/logos/litecoin-ltc-logo.svg?v=029",
+  },
+  {
+    name: "Cosmos",
+    symbol: "ATOM",
+    logoUrl: "https://cryptologos.cc/logos/cosmos-atom-logo.svg?v=029",
+  },
+  {
+    name: "Tron",
+    symbol: "TRX",
+    logoUrl: "https://cryptologos.cc/logos/tron-trx-logo.svg?v=029",
+  },
+  {
+    name: "Stellar",
+    symbol: "XLM",
+    logoUrl: "https://cryptologos.cc/logos/stellar-xlm-logo.svg?v=029",
+  },
+  {
+    name: "Binance Coin",
+    symbol: "BNB",
+    logoUrl: "https://cryptologos.cc/logos/bnb-bnb-logo.svg?v=029",
+  },
+  {
+    name: "Algorand",
+    symbol: "ALGO",
+    logoUrl: "https://cryptologos.cc/logos/algorand-algo-logo.svg?v=029",
+  },
+  {
+    name: "Filecoin",
+    symbol: "FIL",
+    logoUrl: "https://cryptologos.cc/logos/filecoin-fil-logo.svg?v=029",
+  },
+  {
+    name: "VeChain",
+    symbol: "VET",
+    logoUrl: "https://cryptologos.cc/logos/vechain-vet-logo.svg?v=029",
+  },
+  {
+    name: "Aave",
+    symbol: "AAVE",
+    logoUrl: "https://cryptologos.cc/logos/aave-aave-logo.svg?v=029",
+  }
 ];
