@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -36,38 +37,38 @@ const TransactionPage = () => {
   }, [step]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-ping-50">
-      <div className="container max-w-3xl mx-auto px-4 py-12">
-        <header className="flex justify-between items-center mb-8">
+    <div className="h-screen bg-gradient-to-b from-white to-ping-50 flex flex-col overflow-hidden">
+      <div className="container max-w-3xl mx-auto px-3 py-3 flex flex-col h-full">
+        <header className="flex justify-between items-center mb-2">
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
               alt="Ping Logo" 
-              className="h-10" 
+              className="h-7" 
             />
           </Link>
         </header>
 
-        <main>
-          <div className="bg-white rounded-xl border shadow-sm p-6 mb-8 text-center">
-            <h1 className="text-2xl font-bold mb-2">
+        <main className="flex-1 overflow-auto">
+          <div className="bg-white rounded-xl border shadow-sm p-4 text-center">
+            <h1 className="text-xl font-bold mb-1">
               {step === 'complete' ? 'Transaction Complete!' : 'Processing Your Transaction'}
             </h1>
-            <p className="text-muted-foreground mb-6">
+            <p className="text-muted-foreground mb-3 text-sm">
               {step === 'complete' 
                 ? `You've successfully purchased ${txDetails.asset}`
-                : 'Please wait while we process your transaction. This might take a few minutes.'}
+                : 'Please wait while we process your transaction.'}
             </p>
             
             {step === 'complete' && (
-              <div className="mb-8 flex justify-center">
-                <div className="h-20 w-20 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle2 className="h-12 w-12 text-green-500" />
+              <div className="mb-3 flex justify-center">
+                <div className="h-14 w-14 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle2 className="h-8 w-8 text-green-500" />
                 </div>
               </div>
             )}
             
-            <div className="space-y-4 text-left mb-8">
+            <div className="space-y-2 text-left mb-3">
               <TransactionStatus
                 status={step === 'fiat' ? 'pending' : 'completed'}
                 title="Fiat to USDC on Base"
@@ -83,25 +84,25 @@ const TransactionPage = () => {
               />
             </div>
             
-            <div className="bg-secondary p-4 rounded-md mb-8 text-left">
-              <p className="font-medium mb-2">Transaction Details:</p>
-              <div className="grid grid-cols-2 gap-2">
+            <div className="bg-secondary p-3 rounded-md mb-3 text-left text-sm">
+              <p className="font-medium mb-1">Transaction Details:</p>
+              <div className="grid grid-cols-2 gap-1">
                 <span className="text-muted-foreground">Amount:</span>
                 <span>${txDetails.amount}.00 USD</span>
                 
                 <span className="text-muted-foreground">Asset:</span>
                 <span>{txDetails.asset}</span>
                 
-                <span className="text-muted-foreground">Recipient Wallet:</span>
+                <span className="text-muted-foreground">Recipient:</span>
                 <span className="text-sm break-all">{txDetails.wallet}</span>
                 
-                <span className="text-muted-foreground">Estimated {txDetails.asset}:</span>
+                <span className="text-muted-foreground">Est. {txDetails.asset}:</span>
                 <span>{(txDetails.amount / 8.12).toFixed(2)} {txDetails.asset}</span>
               </div>
             </div>
             
             {step === 'complete' ? (
-              <div className="flex flex-col sm:flex-row justify-center gap-4">
+              <div className="flex flex-col sm:flex-row justify-center gap-3">
                 <Link to="/">
                   <Button variant="outline" icon={<Home className="h-4 w-4" />}>
                     Back to Home
@@ -114,7 +115,7 @@ const TransactionPage = () => {
                 </Link>
               </div>
             ) : (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs text-muted-foreground">
                 Please don't close this window while your transaction is being processed.
               </p>
             )}

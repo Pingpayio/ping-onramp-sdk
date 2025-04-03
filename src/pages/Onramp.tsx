@@ -124,20 +124,20 @@ const OnrampPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-ping-50">
-      <div className={`container mx-auto px-4 py-8 md:py-12 ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
-        <header className="flex justify-between items-center mb-6 md:mb-8">
+    <div className="h-screen bg-gradient-to-b from-white to-ping-50 flex flex-col overflow-hidden">
+      <div className={`container mx-auto px-3 py-3 flex flex-col h-full ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
+        <header className="flex justify-between items-center mb-2">
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
               alt="Ping Logo" 
-              className="h-8 md:h-10" 
+              className="h-7 md:h-8" 
             />
           </Link>
         </header>
 
-        <main>
-          <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 mb-6 md:mb-8">
+        <main className="flex-1 flex flex-col overflow-hidden">
+          <div className="bg-white rounded-xl border shadow-sm p-3 mb-2">
             <StepProgress 
               steps={steps} 
               currentStep={currentStep} 
@@ -146,11 +146,11 @@ const OnrampPage = () => {
             />
           </div>
 
-          <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 mb-6 md:mb-8">
+          <div className="bg-white rounded-xl border shadow-sm p-3 mb-2 flex-1 overflow-auto">
             {renderStepContent()}
           </div>
 
-          <div className="flex justify-between">
+          <div className="flex justify-between mt-auto pt-2">
             {currentStep > 0 ? (
               <Button
                 variant="outline"
