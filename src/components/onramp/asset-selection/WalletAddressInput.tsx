@@ -14,11 +14,16 @@ const WalletAddressInput = ({
 }: WalletAddressInputProps) => {
   const [isValid, setIsValid] = useState(false);
   
-  // Simple validation for wallet address - should be at least 42 chars
-  // This is a basic implementation - real validation would be more complex
+  // Validation for wallet addresses
   useEffect(() => {
-    // Most blockchain addresses are at least 42 characters long
-    setIsValid(walletAddress.length >= 42);
+    // Check if it's a NEAR address (ends with .near)
+    const isNearAddress = walletAddress.trim().endsWith('.near');
+    
+    // Check if it's a standard blockchain address (at least 42 characters)
+    const isStandardAddress = walletAddress.length >= 42;
+    
+    // Address is valid if it's either a NEAR address or a standard blockchain address
+    setIsValid(isNearAddress || isStandardAddress);
   }, [walletAddress]);
 
   return (
