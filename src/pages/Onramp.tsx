@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -16,6 +17,7 @@ const OnrampPage = () => {
   const [selectedOnramp, setSelectedOnramp] = useState<string | null>(null);
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('100');
+  const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
 
   // Updated steps array - removed "Connect Wallet"
   const steps = ["Select Asset", "Payment Details", "Complete Payment"];
@@ -30,7 +32,13 @@ const OnrampPage = () => {
   };
 
   const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setWalletAddress(e.target.value);
+    const address = e.target.value;
+    setWalletAddress(address);
+    
+    // Validate wallet address
+    const isNearAddress = address.trim().endsWith('.near');
+    const isStandardAddress = address.length >= 42;
+    setIsWalletAddressValid(isNearAddress || isStandardAddress);
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -59,7 +67,11 @@ const OnrampPage = () => {
 
   const canContinue = () => {
     switch (currentStep) {
-      case 0: return !!selectedAsset && walletAddress.trim().length > 0;
+      case 0: 
+        // Make sure all fields in step 1 are filled and wallet address is valid
+        return !!selectedAsset && 
+               isWalletAddressValid && 
+               parseFloat(amount) >= 10; // Ensure minimum amount is met
       case 1: return !!selectedOnramp;
       default: return true;
     }
