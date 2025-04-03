@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { ChevronDown } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { ChevronDown, Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import CryptoAsset from '@/components/CryptoAsset';
@@ -23,6 +23,36 @@ const AssetSelection = ({
   open,
   setOpen
 }: AssetSelectionProps) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Sort assets: stablecoins first, then by name
+  const sortedAssets = useMemo(() => {
+    const stablecoins = ['USDT', 'USDC', 'DAI', 'BUSD', 'TUSD', 'USDP', 'FRAX', 'USDD'];
+    
+    return [...assets].sort((a, b) => {
+      // Put stablecoins at the top
+      const aIsStable = stablecoins.includes(a.symbol);
+      const bIsStable = stablecoins.includes(b.symbol);
+      
+      if (aIsStable && !bIsStable) return -1;
+      if (!aIsStable && bIsStable) return 1;
+      
+      // Then sort alphabetically by name
+      return a.name.localeCompare(b.name);
+    });
+  }, []);
+
+  // Filter assets based on search query
+  const filteredAssets = useMemo(() => {
+    if (!searchQuery) return sortedAssets;
+    
+    const query = searchQuery.toLowerCase();
+    return sortedAssets.filter(asset => 
+      asset.name.toLowerCase().includes(query) || 
+      asset.symbol.toLowerCase().includes(query)
+    );
+  }, [searchQuery, sortedAssets]);
+
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4">Select Asset</h2>
@@ -55,21 +85,33 @@ const AssetSelection = ({
           </PopoverTrigger>
           <PopoverContent className="w-full p-0" align="start">
             <Command>
-              <CommandInput placeholder="Search for an asset..." />
-              <CommandList>
+              <div className="flex items-center border-b px-3">
+                <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                <CommandInput 
+                  placeholder="Search for an asset..." 
+                  className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-muted-foreground"
+                  value={searchQuery}
+                  onValueChange={setSearchQuery}
+                />
+              </div>
+              <CommandList className="max-h-[300px] overflow-auto">
                 <CommandEmpty>No asset found.</CommandEmpty>
                 <CommandGroup>
-                  {assets.map((asset) => (
+                  {filteredAssets.map((asset) => (
                     <CommandItem
                       key={asset.symbol}
                       value={asset.name}
-                      onSelect={() => onAssetSelect(asset.symbol)}
+                      onSelect={() => {
+                        onAssetSelect(asset.symbol);
+                        setSearchQuery('');
+                      }}
                       className="cursor-pointer"
                     >
                       <CryptoAsset
                         name={asset.name}
                         symbol={asset.symbol}
                         logoUrl={asset.logoUrl}
+                        isSelected={selectedAsset === asset.symbol}
                       />
                     </CommandItem>
                   ))}
