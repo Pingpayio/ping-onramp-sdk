@@ -125,6 +125,10 @@ const PaymentForm = () => {
             </svg>
           </div>
         </div>
+        <p className="text-xs text-muted-foreground mt-2 flex items-start gap-1">
+          <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
+          By tapping continue, you agree to our Terms and acknowledge that you have read our Privacy Policy.
+        </p>
       </div>
     </div>
   );
