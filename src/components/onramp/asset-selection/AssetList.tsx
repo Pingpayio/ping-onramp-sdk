@@ -21,22 +21,22 @@ const AssetList = ({
 }: AssetListProps) => {
   const isMobile = useIsMobile();
 
-  // Sort assets: stablecoins first, then NEAR, then by name
+  // Sort assets: NEAR first, then stablecoins, then by name
   const sortedAssets = useMemo(() => {
     return [...assets].sort((a, b) => {
-      // Put stablecoins at the top
-      const aIsStable = stablecoinSymbols.includes(a.symbol);
-      const bIsStable = stablecoinSymbols.includes(b.symbol);
-      
-      if (aIsStable && !bIsStable) return -1;
-      if (!aIsStable && bIsStable) return 1;
-      
-      // Put NEAR tokens next
+      // Put NEAR tokens at the very top
       const aIsNear = a.symbol === 'NEAR';
       const bIsNear = b.symbol === 'NEAR';
       
       if (aIsNear && !bIsNear) return -1;
       if (!aIsNear && bIsNear) return 1;
+      
+      // Put stablecoins next
+      const aIsStable = stablecoinSymbols.includes(a.symbol);
+      const bIsStable = stablecoinSymbols.includes(b.symbol);
+      
+      if (aIsStable && !bIsStable) return -1;
+      if (!aIsStable && bIsStable) return 1;
       
       // Then sort alphabetically by name
       return a.name.localeCompare(b.name);
