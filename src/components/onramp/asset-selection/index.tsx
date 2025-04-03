@@ -33,18 +33,29 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col">
-      {/* Title section */}
+      {/* 1. Title section - Buy Crypto */}
       <h2 className="text-lg md:text-xl font-semibold mb-4 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
-      {/* 1. Asset Selection Card First */}
-      <div className="w-full space-y-3 mb-4">
+      {/* 2. USD Input Field */}
+      {/* 3. Corresponding Asset Number (when asset is selected) */}
+      <div className="mb-4">
+        <AmountInput 
+          amount={amount}
+          onAmountChange={onAmountChange}
+          selectedAsset={selectedAsset}
+          estimatedAmount={estimatedAmount}
+        />
+      </div>
+      
+      {/* 4. Select an Asset */}
+      <div className="w-full mb-4">
         {/* Network Badge */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
         {/* Asset Selection Card */}
-        <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
+        <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow mt-2">
           <AssetSelector
             selectedAsset={selectedAsset}
             onAssetSelect={onAssetSelect}
@@ -54,23 +65,13 @@ const AssetSelection = ({
         </div>
       </div>
       
-      {/* 2. Amount input with estimated value will move to after PaymentMethod */}
-      <div className="mt-4">
-        <AmountInput 
-          amount={amount}
-          onAmountChange={onAmountChange}
-          selectedAsset={selectedAsset}
-          estimatedAmount={estimatedAmount}
-        />
-      </div>
-      
-      {/* 3. Payment Method Card */}
-      <div className="w-full mt-4">
+      {/* 5. Payment Method Card (Pay with) - moved down and will be rendered in Onramp.tsx */}
+      <div className="w-full mb-4">
         <PaymentMethod />
       </div>
       
-      {/* 4. Minimum amount text */}
-      <p className="text-xs md:text-sm text-muted-foreground mt-4 text-center">
+      {/* 6. Minimum amount text */}
+      <p className="text-xs md:text-sm text-muted-foreground text-center">
         Minimum amount: $10.00
       </p>
     </div>

@@ -76,7 +76,7 @@ const OnrampPage = () => {
       case 0:
         return (
           <div className="space-y-6">
-            {/* Asset Selection First */}
+            {/* Asset Selection (includes USD amount, asset value, and asset selection) */}
             <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
               <AssetSelection
                 selectedAsset={selectedAsset}
@@ -88,7 +88,7 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Wallet Address Second */}
+            {/* Wallet Address after asset selection */}
             <WalletAddressInput 
               walletAddress={walletAddress}
               onWalletAddressChange={handleWalletAddressChange}
