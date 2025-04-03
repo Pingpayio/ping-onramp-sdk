@@ -17,7 +17,7 @@ const AmountInput = ({
   estimatedAmount
 }: AmountInputProps) => {
   return (
-    <div className="w-full mb-8 md:mb-10">
+    <div className="w-full mb-4 md:mb-6">
       {/* Completely remove any visual styling for input box */}
       <div className="flex flex-row items-baseline justify-start mb-2">
         <Input
