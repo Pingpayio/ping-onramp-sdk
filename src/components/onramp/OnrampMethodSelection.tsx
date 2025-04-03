@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -85,15 +86,16 @@ const OnrampMethodSelection = ({
       <div className="w-full mb-6">
         <button 
           onClick={() => onOnrampSelect("apple")}
-          className="w-full h-12"
-          style={{ 
-            WebkitAppearance: "apple-pay-button",
-            appearance: "apple-pay-button",
-            WebkitPayButtonType: "plain",
-            applePayButtonType: "plain",
-            WebkitPayButtonStyle: "black",
-            applePayButtonStyle: "black"
-          } as React.CSSProperties}
+          className="w-full h-12 bg-black rounded-md"
+          style={{
+            // Using standard CSS properties with fallbacks for Apple Pay styling
+            // Casting to unknown first and then to React.CSSProperties to fix TypeScript error
+            ...(({
+              "-webkit-appearance": "apple-pay-button",
+              "-apple-pay-button-type": "plain",
+              "-apple-pay-button-style": "black"
+            }) as unknown as React.CSSProperties)
+          }}
           aria-label="Pay with Apple Pay"
         >
         </button>
