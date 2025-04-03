@@ -4,6 +4,7 @@ import AssetSelector from './AssetSelector';
 import AmountInput from './AmountInput';
 import NetworkBadge from './NetworkBadge';
 import PaymentMethod from './PaymentMethod';
+import WalletAddressInput from './WalletAddressInput';
 import { calculateEstimatedAmount } from './PriceCalculator';
 
 interface AssetSelectionProps {
@@ -13,6 +14,8 @@ interface AssetSelectionProps {
   onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
+  walletAddress: string;
+  onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const AssetSelection = ({
@@ -21,7 +24,9 @@ const AssetSelection = ({
   onAssetSelect,
   onAmountChange,
   open,
-  setOpen
+  setOpen,
+  walletAddress,
+  onWalletAddressChange
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
   
@@ -33,12 +38,12 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center">
-      {/* Title section - Updated to "Buy Crypto" and made slightly smaller */}
+      {/* 1. Title section - "Buy Crypto" */}
       <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
-      {/* Amount input with estimated value */}
+      {/* 2 & 3. Amount input with estimated value */}
       <AmountInput 
         amount={amount}
         onAmountChange={onAmountChange}
@@ -46,12 +51,9 @@ const AssetSelection = ({
         estimatedAmount={estimatedAmount}
       />
       
-      {/* Selection cards for asset, network and payment method */}
+      {/* Selection cards in the specified order */}
       <div className="w-full space-y-3 mt-4 md:mt-6">
-        {/* Network Badge */}
-        <NetworkBadge selectedAsset={selectedAsset} />
-        
-        {/* Asset Selection Card */}
+        {/* 4. Asset Selection Card */}
         <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
           <AssetSelector
             selectedAsset={selectedAsset}
@@ -61,10 +63,20 @@ const AssetSelection = ({
           />
         </div>
         
-        {/* Payment Method Card */}
+        {/* 5. Wallet Address Input */}
+        <WalletAddressInput 
+          walletAddress={walletAddress}
+          onWalletAddressChange={onWalletAddressChange}
+        />
+        
+        {/* 6. Payment Method Card */}
         <PaymentMethod />
+        
+        {/* Network Badge moved below asset selection */}
+        <NetworkBadge selectedAsset={selectedAsset} />
       </div>
       
+      {/* 7. Minimum amount text */}
       <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-6">
         Minimum amount: $10.00
       </p>

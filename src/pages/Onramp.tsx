@@ -9,7 +9,6 @@ import WalletConnectionStep from '@/components/onramp/WalletConnectionStep';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
 import PaymentCompletion from '@/components/onramp/PaymentCompletion';
 import { useIsMobile } from '@/hooks/use-mobile';
-import WalletAddressInput from '@/components/onramp/asset-selection/WalletAddressInput';
 
 const OnrampPage = () => {
   const isMobile = useIsMobile();
@@ -75,23 +74,16 @@ const OnrampPage = () => {
     switch (currentStep) {
       case 0:
         return (
-          <>
-            <AssetSelection
-              selectedAsset={selectedAsset}
-              amount={amount}
-              onAssetSelect={handleAssetSelect}
-              onAmountChange={handleAmountChange}
-              open={open}
-              setOpen={setOpen}
-            />
-            
-            <div className="mt-6">
-              <WalletAddressInput 
-                walletAddress={walletAddress}
-                onWalletAddressChange={handleWalletAddressChange}
-              />
-            </div>
-          </>
+          <AssetSelection
+            selectedAsset={selectedAsset}
+            amount={amount}
+            onAssetSelect={handleAssetSelect}
+            onAmountChange={handleAmountChange}
+            open={open}
+            setOpen={setOpen}
+            walletAddress={walletAddress}
+            onWalletAddressChange={handleWalletAddressChange}
+          />
         );
       case 1:
         return (
