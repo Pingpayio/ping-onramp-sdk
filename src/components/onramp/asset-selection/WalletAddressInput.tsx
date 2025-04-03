@@ -13,7 +13,7 @@ const WalletAddressInput = ({
   onWalletAddressChange
 }: WalletAddressInputProps) => {
   return (
-    <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
+    <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow mt-3">
       <div className="flex items-center">
         <div className="bg-secondary rounded-full p-2 mr-3">
           <User className="h-5 w-5 text-muted-foreground" />
