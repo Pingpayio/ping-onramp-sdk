@@ -8,8 +8,10 @@ import AssetSelection from '@/components/onramp/AssetSelection';
 import WalletConnectionStep from '@/components/onramp/WalletConnectionStep';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
 import PaymentCompletion from '@/components/onramp/PaymentCompletion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const OnrampPage = () => {
+  const isMobile = useIsMobile();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
@@ -102,20 +104,20 @@ const OnrampPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-ping-50">
-      <div className="container max-w-3xl mx-auto px-4 py-12">
-        <header className="flex justify-between items-center mb-8">
+      <div className={`container mx-auto px-4 py-8 md:py-12 ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
+        <header className="flex justify-between items-center mb-6 md:mb-8">
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
-            <div className="bg-ping-600 text-white font-bold text-xl h-10 w-10 rounded-md flex items-center justify-center mr-2">P</div>
-            <span className="text-xl font-bold tracking-tight">Pingpay</span>
+            <div className="bg-ping-600 text-white font-bold text-lg md:text-xl h-8 w-8 md:h-10 md:w-10 rounded-md flex items-center justify-center mr-2">P</div>
+            <span className="text-lg md:text-xl font-bold tracking-tight">Pingpay</span>
           </Link>
         </header>
 
         <main>
-          <div className="bg-white rounded-xl border shadow-sm p-6 mb-8">
+          <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 mb-6 md:mb-8">
             <StepProgress steps={steps} currentStep={currentStep} />
           </div>
 
-          <div className="bg-white rounded-xl border shadow-sm p-6 mb-8">
+          <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 mb-6 md:mb-8">
             {renderStepContent()}
           </div>
 
@@ -142,6 +144,7 @@ const OnrampPage = () => {
                 onClick={handleContinue}
                 disabled={!canContinue()}
                 withArrow
+                className={isMobile ? "w-1/2" : ""}
               >
                 Continue
               </Button>
