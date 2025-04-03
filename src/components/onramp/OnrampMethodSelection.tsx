@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import ApplePayButton from './payment-methods/ApplePayButton';
 import PaymentForm from './payment-methods/PaymentForm';
-import TransactionSummary from './payment-methods/TransactionSummary';
 import { Separator } from '@/components/ui/separator';
 
 interface OnrampMethodSelectionProps {
@@ -29,7 +28,7 @@ const OnrampMethodSelection = ({
 
   return (
     <div>
-      <h2 className="text-xl md:text-2xl font-semibold mb-4">
+      <h2 className="text-xl md:text-2xl font-semibold mb-3">
         Payment method
       </h2>
       
@@ -37,7 +36,7 @@ const OnrampMethodSelection = ({
       <ApplePayButton onSelect={() => onOnrampSelect("apple")} />
       
       {/* Divider with text */}
-      <div className="flex items-center mb-6">
+      <div className="flex items-center mb-4">
         <div className="flex-grow h-px bg-gray-200"></div>
         <span className="px-4 text-gray-400 text-sm">Or pay with debit card</span>
         <div className="flex-grow h-px bg-gray-200"></div>
@@ -47,16 +46,9 @@ const OnrampMethodSelection = ({
       <PaymentForm />
       
       {/* Terms text */}
-      <p className="text-sm text-muted-foreground mt-6 mb-4">
+      <p className="text-sm text-muted-foreground mt-4">
         By tapping Continue, I agree to the <a href="#" className="text-ping-600 hover:underline">Terms of Service</a> and <a href="#" className="text-ping-600 hover:underline">Privacy Policy</a>.
       </p>
-      
-      {/* Transaction Summary */}
-      <TransactionSummary 
-        amount={amount}
-        selectedAsset={selectedAsset}
-        walletAddress={walletAddress}
-      />
     </div>
   );
 };

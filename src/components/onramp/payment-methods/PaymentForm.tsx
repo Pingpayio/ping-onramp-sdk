@@ -22,13 +22,13 @@ const PaymentForm = () => {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3">
       {/* Country and Mobile Number row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <Label htmlFor="country">Country</Label>
+          <Label htmlFor="country" className="text-sm">Country</Label>
           <div className="relative">
-            <div className="flex items-center justify-between border rounded-md px-3 py-2 cursor-pointer hover:border-ping-600">
+            <div className="flex items-center justify-between border rounded-md px-3 py-1.5 cursor-pointer hover:border-ping-600">
               <span className="flex items-center gap-2">
                 <span className="text-sm">🇺🇸</span> 
                 US (+1)
@@ -40,8 +40,8 @@ const PaymentForm = () => {
         
         <div>
           <div className="flex items-center gap-1">
-            <Label htmlFor="mobileNumber">Mobile number</Label>
-            <Info className="h-4 w-4 text-muted-foreground" />
+            <Label htmlFor="mobileNumber" className="text-sm">Mobile number</Label>
+            <Info className="h-3 w-3 text-muted-foreground" />
           </div>
           <Input
             id="mobileNumber"
@@ -49,62 +49,67 @@ const PaymentForm = () => {
             placeholder="502-123-4567"
             value={formData.mobileNumber}
             onChange={handleInputChange}
+            className="py-1.5 h-auto"
           />
         </div>
       </div>
       
       {/* Name on card */}
       <div>
-        <Label htmlFor="nameOnCard">Name on card</Label>
+        <Label htmlFor="nameOnCard" className="text-sm">Name on card</Label>
         <Input
           id="nameOnCard"
           name="nameOnCard"
           placeholder="John Doe"
           value={formData.nameOnCard}
           onChange={handleInputChange}
+          className="py-1.5 h-auto"
         />
       </div>
       
       {/* Card number */}
       <div>
-        <Label htmlFor="cardNumber">Card number</Label>
+        <Label htmlFor="cardNumber" className="text-sm">Card number</Label>
         <Input
           id="cardNumber"
           name="cardNumber"
           placeholder="1234 5678 9012 3456"
           value={formData.cardNumber}
           onChange={handleInputChange}
+          className="py-1.5 h-auto"
         />
       </div>
       
       {/* Expiry date and CVV row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <div>
-          <Label htmlFor="expiryDate">Expiry date</Label>
+          <Label htmlFor="expiryDate" className="text-sm">Expiry date</Label>
           <Input
             id="expiryDate"
             name="expiryDate"
             placeholder="MM/YY"
             value={formData.expiryDate}
             onChange={handleInputChange}
+            className="py-1.5 h-auto"
           />
         </div>
         
         <div>
-          <Label htmlFor="cvv">CVV</Label>
+          <Label htmlFor="cvv" className="text-sm">CVV</Label>
           <Input
             id="cvv"
             name="cvv"
             placeholder="123"
             value={formData.cvv}
             onChange={handleInputChange}
+            className="py-1.5 h-auto"
           />
         </div>
       </div>
       
       {/* Billing address */}
       <div>
-        <Label htmlFor="billingAddress">Billing address</Label>
+        <Label htmlFor="billingAddress" className="text-sm">Billing address</Label>
         <div className="relative">
           <Input
             id="billingAddress"
@@ -112,7 +117,7 @@ const PaymentForm = () => {
             placeholder="12345 Street"
             value={formData.billingAddress}
             onChange={handleInputChange}
-            className="pl-9"
+            className="pl-9 py-1.5 h-auto"
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg className="h-4 w-4 text-muted-foreground" fill="none" viewBox="0 0 24 24" stroke="currentColor">
