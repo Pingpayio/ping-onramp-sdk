@@ -24,7 +24,7 @@ const StepProgress = ({
 
   return (
     <div className="w-full">
-      <div className="flex justify-between items-center mb-2">
+      <div className="flex justify-between items-center">
         {steps.map((step, index) => (
           <React.Fragment key={index}>
             <div 
@@ -36,7 +36,7 @@ const StepProgress = ({
             >
               <div 
                 className={cn(
-                  "h-10 w-10 rounded-full flex items-center justify-center font-medium text-sm mb-2 transition-all",
+                  "h-8 w-8 rounded-full flex items-center justify-center font-medium text-sm mb-1 transition-all",
                   index < currentStep 
                     ? "bg-ping-600 text-white" 
                     : index === currentStep 
@@ -45,14 +45,14 @@ const StepProgress = ({
                 )}
               >
                 {index < currentStep ? (
-                  <Check className="h-5 w-5" />
+                  <Check className="h-4 w-4" />
                 ) : (
                   index + 1
                 )}
               </div>
               <span 
                 className={cn(
-                  "text-sm font-medium text-center",
+                  "text-xs font-medium text-center",
                   index <= currentStep ? "text-foreground" : "text-muted-foreground"
                 )}
               >
@@ -75,4 +75,3 @@ const StepProgress = ({
 };
 
 export default StepProgress;
-

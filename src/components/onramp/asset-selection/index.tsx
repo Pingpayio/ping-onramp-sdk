@@ -37,13 +37,13 @@ const AssetSelection = ({
   }, [selectedAsset, amount]);
 
   return (
-    <div className="flex flex-col items-center">
-      {/* 1. Title section - reduced margin */}
-      <h2 className="text-lg md:text-xl font-semibold mb-1 text-center">
+    <div className="flex flex-col items-center space-y-1">
+      {/* 1. Title section - "Buy Crypto" - reduced margin */}
+      <h2 className="text-lg font-semibold mb-1 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
-      {/* 2. Amount input with estimated value */}
+      {/* 2 & 3. Amount input with estimated value */}
       <AmountInput 
         amount={amount}
         onAmountChange={onAmountChange}
@@ -51,13 +51,13 @@ const AssetSelection = ({
         estimatedAmount={estimatedAmount}
       />
       
-      {/* Moved NetworkBadge above the selection cards and reduced spacing */}
-      {selectedAsset && <NetworkBadge selectedAsset={selectedAsset} />}
-      
-      {/* Selection cards with tighter spacing */}
-      <div className="w-full space-y-1.5 mt-1">
-        {/* 4. Asset Selection Card */}
-        <div className="rounded-lg border p-2.5 md:p-3.5 hover:shadow-sm transition-shadow">
+      {/* Selection cards with reduced spacing between items */}
+      <div className="w-full space-y-1 mt-0.5">
+        {/* Network Badge moved above asset selection with reduced spacing */}
+        <NetworkBadge selectedAsset={selectedAsset} />
+        
+        {/* 4. Asset Selection Card with reduced padding */}
+        <div className="rounded-lg border p-2 hover:shadow-sm transition-shadow">
           <AssetSelector
             selectedAsset={selectedAsset}
             onAssetSelect={onAssetSelect}
@@ -76,8 +76,8 @@ const AssetSelection = ({
         <PaymentMethod />
       </div>
       
-      {/* 7. Minimum amount text */}
-      <p className="text-xs md:text-sm text-muted-foreground mt-2 md:mt-auto pt-1">
+      {/* 7. Minimum amount text - increased top margin to push it closer to the bottom buttons */}
+      <p className="text-xs text-muted-foreground mt-2 pt-1">
         Minimum amount: $10.00
       </p>
     </div>
