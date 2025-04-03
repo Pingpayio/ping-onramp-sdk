@@ -33,9 +33,9 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center">
-      {/* Title section */}
-      <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center">
-        {selectedAsset ? `Buy ${selectedAsset}` : 'Select Asset'}
+      {/* Title section - Updated to "Buy Crypto" and made slightly smaller */}
+      <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-center">
+        {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
       {/* Amount input with estimated value */}
