@@ -1,0 +1,58 @@
+
+import React from 'react';
+import { Link } from 'react-router-dom';
+import Button from '@/components/Button';
+import { ArrowLeft } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
+
+interface OnrampNavigationProps {
+  currentStep: number;
+  steps: string[];
+  handleBack: () => void;
+  handleContinue: () => void;
+  canContinue: boolean;
+}
+
+const OnrampNavigation = ({
+  currentStep,
+  steps,
+  handleBack,
+  handleContinue,
+  canContinue
+}: OnrampNavigationProps) => {
+  const isMobile = useIsMobile();
+  
+  return (
+    <div className="flex justify-between pt-3">
+      {currentStep > 0 ? (
+        <Button
+          variant="outline"
+          onClick={handleBack}
+          icon={<ArrowLeft className="h-4 w-4" />}
+        >
+          Back
+        </Button>
+      ) : (
+        <Link to="/">
+          <Button variant="outline" icon={<ArrowLeft className="h-4 w-4" />}>
+            Back
+          </Button>
+        </Link>
+      )}
+      
+      {currentStep < steps.length - 1 && (
+        <Button
+          variant="gradient"
+          onClick={handleContinue}
+          disabled={!canContinue}
+          withArrow
+          className={isMobile ? "w-1/2" : ""}
+        >
+          Continue to Payment
+        </Button>
+      )}
+    </div>
+  );
+};
+
+export default OnrampNavigation;
