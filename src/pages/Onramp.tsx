@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -75,6 +76,14 @@ const OnrampPage = () => {
     }
   };
 
+  // Handle navigation through step clicking
+  const handleStepClick = (stepIndex: number) => {
+    // Only allow navigation to steps that have been completed or the current step
+    if (stepIndex <= currentStep || (stepIndex === 1 && !!selectedAsset && isWalletAddressValid && parseFloat(amount) >= 10)) {
+      setCurrentStep(stepIndex);
+    }
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
@@ -126,7 +135,12 @@ const OnrampPage = () => {
 
         <main>
           <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 mb-6 md:mb-8">
-            <StepProgress steps={steps} currentStep={currentStep} />
+            <StepProgress 
+              steps={steps} 
+              currentStep={currentStep} 
+              onStepClick={handleStepClick}
+              allowNavigation={true}
+            />
           </div>
 
           <div className="bg-white rounded-xl border shadow-sm p-4 md:p-6 mb-6 md:mb-8">

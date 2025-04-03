@@ -6,15 +6,34 @@ import { Check } from 'lucide-react';
 interface StepProgressProps {
   steps: string[];
   currentStep: number;
+  onStepClick?: (stepIndex: number) => void;
+  allowNavigation?: boolean;
 }
 
-const StepProgress = ({ steps, currentStep }: StepProgressProps) => {
+const StepProgress = ({ 
+  steps, 
+  currentStep, 
+  onStepClick, 
+  allowNavigation = false 
+}: StepProgressProps) => {
+  const handleStepClick = (index: number) => {
+    if (allowNavigation && onStepClick) {
+      onStepClick(index);
+    }
+  };
+
   return (
     <div className="w-full">
       <div className="flex justify-between items-center mb-2">
         {steps.map((step, index) => (
           <React.Fragment key={index}>
-            <div className="flex flex-col items-center">
+            <div 
+              className={cn(
+                "flex flex-col items-center",
+                allowNavigation && "cursor-pointer"
+              )}
+              onClick={() => handleStepClick(index)}
+            >
               <div 
                 className={cn(
                   "h-10 w-10 rounded-full flex items-center justify-center font-medium text-sm mb-2 transition-all",
@@ -56,3 +75,4 @@ const StepProgress = ({ steps, currentStep }: StepProgressProps) => {
 };
 
 export default StepProgress;
+
