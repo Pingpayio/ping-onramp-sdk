@@ -162,7 +162,7 @@ const OnrampPage = () => {
             ) : (
               <Link to="/">
                 <Button variant="outline" icon={<ArrowLeft className="h-4 w-4" />}>
-                  Home
+                  Back
                 </Button>
               </Link>
             )}
