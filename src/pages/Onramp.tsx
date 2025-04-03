@@ -58,7 +58,7 @@ const OnrampPage = () => {
               onOnrampSelect={handleOnrampSelect}
               handleBack={handleBack}
               handleContinue={handleContinue}
-              canContinue={canContinue()}
+              canContinue={canContinue}
             />
           </div>
         </main>
