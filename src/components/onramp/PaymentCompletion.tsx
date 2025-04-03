@@ -56,17 +56,8 @@ const PaymentCompletion = ({
 
   return (
     <div className="flex flex-col items-center px-2">
-      {/* Icon and Title */}
+      {/* Title */}
       <div className="text-center mb-4">
-        {selectedAsset && (
-          <div className="inline-flex bg-blue-100 rounded-full p-4 mb-3">
-            <img 
-              src={`/lovable-uploads/76516243-4aa9-4d64-9bd5-a3dda85e6656.png`} 
-              alt={selectedAsset} 
-              className="h-10 w-10" 
-            />
-          </div>
-        )}
         <h2 className="text-2xl font-bold mb-1">
           Buy ${amount} of {selectedAsset}
         </h2>
