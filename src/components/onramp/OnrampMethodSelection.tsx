@@ -89,7 +89,8 @@ const OnrampMethodSelection = ({
           className="w-full h-12 rounded-md shadow-sm"
           style={{ 
             WebkitAppearance: "-apple-pay-button", 
-            WebkitApplePayButtonStyle: "black",
+            // Use a string indexer to bypass TypeScript property checking
+            ["--apple-pay-button-style" as any]: "black",
             cursor: "pointer" 
           }}
         >
