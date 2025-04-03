@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -85,11 +84,10 @@ const OnrampMethodSelection = ({
       {/* Apple Pay Button */}
       <button 
         onClick={() => onOnrampSelect("apple")}
-        className="w-full bg-black text-white font-medium rounded-md py-2.5 px-4 mb-6 flex items-center justify-center shadow-sm hover:opacity-90 transition-opacity"
-        style={{ maxWidth: '320px', margin: '0 auto 1.5rem auto' }}
+        className="w-full bg-black text-white rounded-md py-2.5 px-4 mb-6 flex items-center justify-center shadow-sm hover:opacity-90 transition-opacity"
       >
-        <div className="flex items-center gap-2">
-          <span className="text-white font-semibold">Buy with</span>
+        <div className="flex items-center justify-center">
+          <span className="font-medium mr-2">Buy with</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="45" height="18" viewBox="0 0 45 18" fill="none">
             <path d="M7.55924 3.71954C7.01712 4.38472 6.20872 4.91454 5.40032 4.82502C5.29795 4.0224 5.74111 3.17646 6.23533 2.61222C6.77746 1.94704 7.64492 1.46167 8.37066 1.4C8.44362 2.2474 8.10138 3.05459 7.55924 3.71954Z" fill="white"/>
             <path d="M8.37066 4.95861C7.22066 4.8871 6.19986 5.5366 5.62332 5.5366C5.04678 5.5366 4.16053 4.99123 3.24574 5.01923C2.0776 5.04724 0.9822 5.70289 0.414657 6.73271C-0.755768 8.79233 0.132571 11.8641 1.27257 13.5809C1.83787 14.4268 2.52299 15.3549 3.41924 15.328C4.27624 15.3 4.57954 14.776 5.6233 14.776C6.6683 14.776 6.94306 15.328 7.83932 15.3C8.75454 15.2721 9.33108 14.4549 9.89638 13.6089C10.5533 12.6344 10.8293 11.6878 10.8566 11.632C10.8293 11.6032 9.12057 10.9756 9.09323 9.01596C9.06634 7.35721 10.4437 6.58896 10.4983 6.53384C9.6956 5.35987 8.46638 5.20145 8.37066 4.95861Z" fill="white"/>
