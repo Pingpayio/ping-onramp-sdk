@@ -32,13 +32,15 @@ const WalletAddressInput = ({
         <div className="bg-secondary rounded-full p-2 mr-3">
           <User className="h-5 w-5 text-muted-foreground" />
         </div>
-        <Input
-          type="text"
-          value={walletAddress}
-          onChange={onWalletAddressChange}
-          placeholder="Enter destination wallet address"
-          className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-sm md:text-sm text-muted-foreground"
-        />
+        <div className="flex-1">
+          <Input
+            type="text"
+            value={walletAddress}
+            onChange={onWalletAddressChange}
+            placeholder="Enter destination wallet address"
+            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 text-base md:text-sm text-foreground"
+          />
+        </div>
         {isValid && (
           <div className="ml-2">
             <CheckCircle2 className="h-5 w-5 text-green-500" />
