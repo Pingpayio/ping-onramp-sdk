@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Input } from '@/components/ui/input';
-import { ChevronUp } from 'lucide-react';
+import { ArrowUpDown } from 'lucide-react';
 
 interface AmountInputProps {
   amount: string;
@@ -35,7 +35,7 @@ const AmountInput = ({
       {selectedAsset && parseFloat(amount) > 0 && (
         <div className="flex items-start justify-start">
           <div className="flex items-center">
-            <ChevronUp className="h-4 w-4 text-blue-500 mr-1" />
+            <ArrowUpDown className="h-4 w-4 text-blue-500 mr-1" />
             <span className="text-blue-600 text-base md:text-lg font-medium">
               {estimatedAmount} {selectedAsset}
             </span>
