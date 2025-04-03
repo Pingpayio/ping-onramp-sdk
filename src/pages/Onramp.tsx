@@ -111,7 +111,7 @@ const OnrampPage = () => {
             withArrow
             className={isMobile ? "w-1/2" : ""}
           >
-            Continue
+            Continue to Payment
           </Button>
         )}
       </div>
