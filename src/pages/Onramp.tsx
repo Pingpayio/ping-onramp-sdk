@@ -86,7 +86,7 @@ const OnrampPage = () => {
 
   const renderNavigationButtons = () => {
     return (
-      <div className="flex justify-between pt-4 mt-auto">
+      <div className="flex justify-between pt-4 mt-auto border-t">
         {currentStep > 0 ? (
           <Button
             variant="outline"
