@@ -10,7 +10,7 @@ const ApplePayButton = ({ onSelect }: ApplePayButtonProps) => {
     <div className="w-full mb-6">
       <button 
         onClick={onSelect}
-        className="w-full h-12 bg-black rounded-md"
+        className="w-full h-12 bg-black rounded-md text-white flex items-center justify-center"
         style={{
           // Using standard CSS properties with fallbacks for Apple Pay styling
           // Casting to unknown first and then to React.CSSProperties to fix TypeScript error
@@ -22,6 +22,7 @@ const ApplePayButton = ({ onSelect }: ApplePayButtonProps) => {
         }}
         aria-label="Pay with Apple Pay"
       >
+        Pay with Apple Pay
       </button>
     </div>
   );
