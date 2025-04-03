@@ -86,7 +86,7 @@ const OnrampPage = () => {
 
   const renderNavigationButtons = () => {
     return (
-      <div className="flex justify-between pt-4 mt-auto border-t">
+      <div className="flex justify-between pt-3">
         {currentStep > 0 ? (
           <Button
             variant="outline"
@@ -122,44 +122,50 @@ const OnrampPage = () => {
     switch (currentStep) {
       case 0:
         return (
-          <>
-            <AssetSelection
-              selectedAsset={selectedAsset}
-              amount={amount}
-              onAssetSelect={handleAssetSelect}
-              onAmountChange={handleAmountChange}
-              open={open}
-              setOpen={setOpen}
-              walletAddress={walletAddress}
-              onWalletAddressChange={handleWalletAddressChange}
-            />
+          <div className="flex flex-col h-full">
+            <div className="flex-grow overflow-auto">
+              <AssetSelection
+                selectedAsset={selectedAsset}
+                amount={amount}
+                onAssetSelect={handleAssetSelect}
+                onAmountChange={handleAmountChange}
+                open={open}
+                setOpen={setOpen}
+                walletAddress={walletAddress}
+                onWalletAddressChange={handleWalletAddressChange}
+              />
+            </div>
             {renderNavigationButtons()}
-          </>
+          </div>
         );
       case 1:
         return (
-          <>
-            <OnrampMethodSelection
-              selectedOnramp={selectedOnramp}
-              onOnrampSelect={handleOnrampSelect}
-              amount={amount}
-              selectedAsset={selectedAsset}
-              walletAddress={walletAddress}
-            />
+          <div className="flex flex-col h-full">
+            <div className="flex-grow overflow-auto">
+              <OnrampMethodSelection
+                selectedOnramp={selectedOnramp}
+                onOnrampSelect={handleOnrampSelect}
+                amount={amount}
+                selectedAsset={selectedAsset}
+                walletAddress={walletAddress}
+              />
+            </div>
             {renderNavigationButtons()}
-          </>
+          </div>
         );
       case 2:
         return (
-          <>
-            <PaymentCompletion
-              amount={amount}
-              selectedAsset={selectedAsset}
-              walletAddress={walletAddress}
-              selectedOnramp={selectedOnramp}
-            />
+          <div className="flex flex-col h-full">
+            <div className="flex-grow overflow-auto">
+              <PaymentCompletion
+                amount={amount}
+                selectedAsset={selectedAsset}
+                walletAddress={walletAddress}
+                selectedOnramp={selectedOnramp}
+              />
+            </div>
             {renderNavigationButtons()}
-          </>
+          </div>
         );
       default:
         return null;
@@ -189,7 +195,7 @@ const OnrampPage = () => {
             />
           </div>
 
-          <div className="bg-white rounded-xl border shadow-sm p-3 mb-2 flex-1 overflow-auto">
+          <div className="bg-white rounded-xl border shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
             {renderStepContent()}
           </div>
         </main>
