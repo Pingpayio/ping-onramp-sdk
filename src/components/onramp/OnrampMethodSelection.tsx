@@ -27,8 +27,8 @@ const OnrampMethodSelection = ({
   }, [onOnrampSelect, selectedOnramp]);
 
   return (
-    <div className="space-y-1.5">
-      <h2 className="text-lg font-semibold mb-1.5">
+    <div>
+      <h2 className="text-xl md:text-2xl font-semibold mb-3">
         Payment method
       </h2>
       
@@ -36,9 +36,9 @@ const OnrampMethodSelection = ({
       <ApplePayButton onSelect={() => onOnrampSelect("apple")} />
       
       {/* Divider with text */}
-      <div className="flex items-center my-1.5">
+      <div className="flex items-center mb-4">
         <div className="flex-grow h-px bg-gray-200"></div>
-        <span className="px-3 text-gray-400 text-xs">Or pay with debit card</span>
+        <span className="px-4 text-gray-400 text-sm">Or pay with debit card</span>
         <div className="flex-grow h-px bg-gray-200"></div>
       </div>
       

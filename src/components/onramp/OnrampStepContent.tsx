@@ -20,7 +20,7 @@ interface OnrampStepContentProps {
   onOnrampSelect: (provider: string) => void;
   handleBack: () => void;
   handleContinue: () => void;
-  canContinue: boolean;
+  canContinue: () => boolean;
 }
 
 const OnrampStepContent = ({
@@ -82,7 +82,7 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-auto py-1">
+      <div className="flex-grow overflow-auto">
         {renderCurrentStep()}
       </div>
       <OnrampNavigation
@@ -90,7 +90,7 @@ const OnrampStepContent = ({
         steps={steps}
         handleBack={handleBack}
         handleContinue={handleContinue}
-        canContinue={canContinue}
+        canContinue={canContinue()}
       />
     </div>
   );

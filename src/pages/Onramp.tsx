@@ -29,11 +29,11 @@ const OnrampPage = () => {
 
   return (
     <div className="h-screen bg-gradient-to-b from-white to-ping-50 flex flex-col overflow-hidden">
-      <div className={`container mx-auto px-2 py-2 flex flex-col h-full ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
+      <div className={`container mx-auto px-3 py-3 flex flex-col h-full ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
         <OnrampHeader />
 
         <main className="flex-1 flex flex-col overflow-hidden">
-          <div className="bg-white rounded-xl border shadow-sm p-2 mb-1.5">
+          <div className="bg-white rounded-xl border shadow-sm p-3 mb-2">
             <StepProgress 
               steps={steps} 
               currentStep={currentStep} 
@@ -42,7 +42,7 @@ const OnrampPage = () => {
             />
           </div>
 
-          <div className="bg-white rounded-xl border shadow-sm p-2 flex-1 overflow-hidden flex flex-col">
+          <div className="bg-white rounded-xl border shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
             <OnrampStepContent
               currentStep={currentStep}
               steps={steps}
@@ -58,7 +58,7 @@ const OnrampPage = () => {
               onOnrampSelect={handleOnrampSelect}
               handleBack={handleBack}
               handleContinue={handleContinue}
-              canContinue={canContinue()}
+              canContinue={canContinue}
             />
           </div>
         </main>
