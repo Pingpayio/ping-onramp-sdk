@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
-import { ChevronRight, Shield, ArrowRight } from 'lucide-react';
+import { ChevronRight, Shield } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { mockPrices } from './asset-selection/PriceCalculator';
 
@@ -62,7 +62,7 @@ const PaymentCompletion = ({
           Buy ${amount} of {selectedAsset}
         </h2>
         <p className="text-sm text-muted-foreground">
-          {selectedAsset} price {getAssetPrice()} <ArrowRight className="inline h-3 w-3" />
+          {selectedAsset} price {getAssetPrice()}
         </p>
       </div>
       
