@@ -1,10 +1,11 @@
 
-import React, { useState, useMemo } from 'react';
-import { ChevronDown, Search } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { ChevronDown, Search, ArrowDown } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import CryptoAsset from '@/components/CryptoAsset';
 import { assets, stablecoinSymbols } from '@/data/assets';
+import { Input } from '@/components/ui/input';
 
 interface AssetSelectionProps {
   selectedAsset: string | null;
@@ -15,6 +16,21 @@ interface AssetSelectionProps {
   setOpen: (open: boolean) => void;
 }
 
+// Mock prices for demonstration purposes - in a real app, these would come from an API
+const mockPrices: Record<string, number> = {
+  USDT: 1,
+  USDC: 1,
+  DAI: 1,
+  BTC: 65000,
+  ETH: 3500,
+  NEAR: 8.12,
+  SOL: 145,
+  AVAX: 35,
+  DOT: 8.5,
+  MATIC: 0.75,
+  // Add more tokens as needed
+};
+
 const AssetSelection = ({
   selectedAsset,
   amount,
@@ -24,6 +40,7 @@ const AssetSelection = ({
   setOpen
 }: AssetSelectionProps) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
   
   // Sort assets: stablecoins first, then NEAR, then by name
   const sortedAssets = useMemo(() => {
@@ -57,6 +74,28 @@ const AssetSelection = ({
       asset.symbol.toLowerCase().includes(query)
     );
   }, [searchQuery, sortedAssets]);
+
+  // Calculate estimated token amount based on USD amount and selected asset
+  useEffect(() => {
+    if (selectedAsset && amount && !isNaN(parseFloat(amount))) {
+      const assetPrice = mockPrices[selectedAsset] || 1;
+      const estimatedTokens = parseFloat(amount) / assetPrice;
+      
+      // Format based on value - show more decimal places for higher value tokens
+      let formattedAmount;
+      if (assetPrice >= 1000) {
+        formattedAmount = estimatedTokens.toFixed(5);
+      } else if (assetPrice >= 100) {
+        formattedAmount = estimatedTokens.toFixed(4);
+      } else {
+        formattedAmount = estimatedTokens.toFixed(2);
+      }
+      
+      setEstimatedAmount(formattedAmount);
+    } else {
+      setEstimatedAmount('0');
+    }
+  }, [selectedAsset, amount]);
 
   return (
     <div>
@@ -129,17 +168,27 @@ const AssetSelection = ({
       
       <div className="mb-6">
         <label className="block text-sm font-medium mb-2">Amount (USD)</label>
-        <input
-          type="number"
-          value={amount}
-          onChange={onAmountChange}
-          min="10"
-          className="w-full border border-input rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-ping-500"
-          placeholder="Enter amount"
-        />
-        <p className="text-sm text-muted-foreground mt-2">
-          Minimum amount: $10.00
-        </p>
+        <div className="space-y-2">
+          <Input
+            type="number"
+            value={amount}
+            onChange={onAmountChange}
+            min="10"
+            className="w-full border border-input rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-ping-500"
+            placeholder="Enter amount"
+          />
+          
+          {selectedAsset && parseFloat(amount) > 0 && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-3">
+              <ArrowDown className="h-4 w-4 text-ping-500" />
+              <span className="font-medium text-foreground">{estimatedAmount} {selectedAsset}</span>
+            </div>
+          )}
+          
+          <p className="text-sm text-muted-foreground">
+            Minimum amount: $10.00
+          </p>
+        </div>
       </div>
     </div>
   );
