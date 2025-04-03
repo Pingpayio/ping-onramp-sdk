@@ -16,24 +16,19 @@ export const stablecoins = [
     logoUrl: "https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.svg?v=029",
   },
   {
-    name: "USDD",
-    symbol: "USDD",
-    logoUrl: "https://cryptologos.cc/logos/usdd-usdd-logo.svg?v=029",
-  },
-  {
     name: "Frax",
     symbol: "FRAX",
     logoUrl: "https://cryptologos.cc/logos/frax-frax-logo.svg?v=029",
   },
   {
-    name: "TrueUSD",
-    symbol: "TUSD",
-    logoUrl: "https://cryptologos.cc/logos/trueusd-tusd-logo.svg?v=029",
+    name: "Wrapped USDC",
+    symbol: "USDC.e",
+    logoUrl: "https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=029",
   },
   {
-    name: "Pax Dollar",
-    symbol: "USDP",
-    logoUrl: "https://cryptologos.cc/logos/pax-dollar-usdp-logo.svg?v=029",
+    name: "USDR",
+    symbol: "USDR",
+    logoUrl: "https://www.tangible.store/assets/images/USDR-d90b34ec.svg",
   },
 ];
 

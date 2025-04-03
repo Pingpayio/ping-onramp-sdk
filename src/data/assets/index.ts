@@ -10,10 +10,10 @@ import { nearEcosystem } from './nearEcosystem';
 export const assets = [
   ...stablecoins,
   ...majorCoins,
+  ...nearEcosystem,
   ...layer1Tokens,
   ...defiTokens,
   ...memesAndNftTokens,
-  ...nearEcosystem,
 ];
 
 // Export each category separately for use elsewhere if needed

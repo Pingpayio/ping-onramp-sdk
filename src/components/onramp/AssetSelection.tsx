@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -24,7 +25,7 @@ const AssetSelection = ({
 }: AssetSelectionProps) => {
   const [searchQuery, setSearchQuery] = useState('');
   
-  // Sort assets: stablecoins first, then by name
+  // Sort assets: stablecoins first, then NEAR, then by name
   const sortedAssets = useMemo(() => {
     return [...assets].sort((a, b) => {
       // Put stablecoins at the top
@@ -33,6 +34,13 @@ const AssetSelection = ({
       
       if (aIsStable && !bIsStable) return -1;
       if (!aIsStable && bIsStable) return 1;
+      
+      // Put NEAR tokens next
+      const aIsNear = a.symbol === 'NEAR';
+      const bIsNear = b.symbol === 'NEAR';
+      
+      if (aIsNear && !bIsNear) return -1;
+      if (!aIsNear && bIsNear) return 1;
       
       // Then sort alphabetically by name
       return a.name.localeCompare(b.name);

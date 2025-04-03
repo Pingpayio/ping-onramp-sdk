@@ -1,14 +1,14 @@
 
 export const nearEcosystem = [
   {
-    name: "Black Dragon",
-    symbol: "BLACKDRAGON",
-    logoUrl: "public/lovable-uploads/7f88aeb4-86f7-4fbf-a3d6-25d9625fdb5d.png",
+    name: "NEAR Protocol",
+    symbol: "NEAR",
+    logoUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029",
   },
   {
-    name: "Burrow",
-    symbol: "BRRR",
-    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+    name: "Black Dragon",
+    symbol: "BLACKDRAGON",
+    logoUrl: "public/lovable-uploads/2a3c01e1-3a77-414b-959d-e162d59ba6b5.png",
   },
   {
     name: "Shitzu",
@@ -38,6 +38,26 @@ export const nearEcosystem = [
   {
     name: "gnear",
     symbol: "GNEAR",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Paras",
+    symbol: "PARAS",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Proximity Labs",
+    symbol: "PROX",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Trisolaris",
+    symbol: "TRI",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Spin",
+    symbol: "SPIN",
     logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
   },
 ];

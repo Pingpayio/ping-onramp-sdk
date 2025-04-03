@@ -30,4 +30,39 @@ export const defiTokens = [
     symbol: "SUSHI",
     logoUrl: "https://cryptologos.cc/logos/sushiswap-sushi-logo.svg?v=029",
   },
+  {
+    name: "PembRock Finance",
+    symbol: "PEM",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Aurora",
+    symbol: "AURORA",
+    logoUrl: "https://cryptologos.cc/logos/aurora-aoa-logo.svg?v=029",
+  },
+  {
+    name: "Ref Finance",
+    symbol: "REF",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Octopus Network",
+    symbol: "OCT",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Sweatcoin",
+    symbol: "SWEAT",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Aurigami",
+    symbol: "PLY",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
+  {
+    name: "Burrow",
+    symbol: "BRRR",
+    logoUrl: "https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029",
+  },
 ];
