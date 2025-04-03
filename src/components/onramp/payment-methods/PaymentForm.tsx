@@ -53,30 +53,31 @@ const PaymentForm = () => {
         </div>
       </div>
       
-      {/* Name on card */}
-      <div>
-        <Label htmlFor="nameOnCard" className="text-sm">Name on card</Label>
-        <Input
-          id="nameOnCard"
-          name="nameOnCard"
-          placeholder="John Doe"
-          value={formData.nameOnCard}
-          onChange={handleInputChange}
-          className="py-2 h-10 mt-1"
-        />
-      </div>
-      
-      {/* Card number */}
-      <div>
-        <Label htmlFor="cardNumber" className="text-sm">Card number</Label>
-        <Input
-          id="cardNumber"
-          name="cardNumber"
-          placeholder="1234 5678 9012 3456"
-          value={formData.cardNumber}
-          onChange={handleInputChange}
-          className="py-2 h-10 mt-1"
-        />
+      {/* Name on card and Card number row */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div>
+          <Label htmlFor="nameOnCard" className="text-sm">Name on card</Label>
+          <Input
+            id="nameOnCard"
+            name="nameOnCard"
+            placeholder="John Doe"
+            value={formData.nameOnCard}
+            onChange={handleInputChange}
+            className="py-2 h-10 mt-1"
+          />
+        </div>
+        
+        <div>
+          <Label htmlFor="cardNumber" className="text-sm">Card number</Label>
+          <Input
+            id="cardNumber"
+            name="cardNumber"
+            placeholder="1234 5678 9012 3456"
+            value={formData.cardNumber}
+            onChange={handleInputChange}
+            className="py-2 h-10 mt-1"
+          />
+        </div>
       </div>
       
       {/* Expiry date and CVV row */}
