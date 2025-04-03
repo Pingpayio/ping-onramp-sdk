@@ -53,6 +53,9 @@ const AssetSelection = ({
       
       {/* Selection cards in the specified order */}
       <div className="w-full space-y-3 mt-4 md:mt-6">
+        {/* Network Badge moved above asset selection */}
+        <NetworkBadge selectedAsset={selectedAsset} />
+        
         {/* 4. Asset Selection Card */}
         <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
           <AssetSelector
@@ -71,9 +74,6 @@ const AssetSelection = ({
         
         {/* 6. Payment Method Card */}
         <PaymentMethod />
-        
-        {/* Network Badge moved below asset selection */}
-        <NetworkBadge selectedAsset={selectedAsset} />
       </div>
       
       {/* 7. Minimum amount text */}
