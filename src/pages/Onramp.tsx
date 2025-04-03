@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import StepProgress from '@/components/StepProgress';
 import { ArrowLeft } from 'lucide-react';
-import AssetSelection from '@/components/onramp/AssetSelection';
+import AssetSelection from '@/components/onramp/asset-selection';
 import WalletConnectionStep from '@/components/onramp/WalletConnectionStep';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
 import PaymentCompletion from '@/components/onramp/PaymentCompletion';
