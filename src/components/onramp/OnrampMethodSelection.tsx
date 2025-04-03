@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -88,7 +89,7 @@ const OnrampMethodSelection = ({
           className="w-full h-12 rounded-md shadow-sm"
           style={{ 
             WebkitAppearance: "-apple-pay-button", 
-            ApplePayButtonStyle: "black",
+            WebkitApplePayButtonStyle: "black",
             cursor: "pointer" 
           }}
         >
