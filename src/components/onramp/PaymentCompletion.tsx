@@ -2,8 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
-import { ChevronRight, Shield } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { Shield } from 'lucide-react';
 import { mockPrices } from './asset-selection/PriceCalculator';
 
 interface PaymentCompletionProps {
@@ -98,7 +97,7 @@ const PaymentCompletion = ({
             <div className="text-right">
               <span className="font-medium">{afterFeeAmount} {selectedAsset}</span>
               <div className="text-xs text-muted-foreground">
-                Fee: {feeAmount} {selectedAsset} (1%)
+                Fee: {feeAmount} {selectedAsset}
               </div>
             </div>
           </div>
@@ -127,9 +126,9 @@ const PaymentCompletion = ({
           {/* To/Destination */}
           <div className="flex justify-between p-3.5">
             <span className="text-muted-foreground">To</span>
-            <div className="break-all text-right">
+            <span className="font-medium break-all text-right">
               {walletAddress || '0x...'}
-            </div>
+            </span>
           </div>
         </div>
       </div>
