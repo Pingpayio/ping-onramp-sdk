@@ -39,7 +39,7 @@ const AssetSelection = ({
   return (
     <div className="flex flex-col items-center">
       {/* 1. Title section - "Buy Crypto" */}
-      <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-center">
+      <h2 className="text-lg md:text-xl font-semibold mb-3 md:mb-4 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
@@ -52,7 +52,7 @@ const AssetSelection = ({
       />
       
       {/* Selection cards in the specified order */}
-      <div className="w-full space-y-3 mt-4 md:mt-6">
+      <div className="w-full space-y-2 mt-2 md:mt-3">
         {/* Network Badge moved above asset selection */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
@@ -77,7 +77,7 @@ const AssetSelection = ({
       </div>
       
       {/* 7. Minimum amount text */}
-      <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-6">
+      <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-5">
         Minimum amount: $10.00
       </p>
     </div>
