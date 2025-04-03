@@ -84,39 +84,82 @@ const OnrampPage = () => {
     }
   };
 
+  const renderNavigationButtons = () => {
+    return (
+      <div className="flex justify-between pt-4 mt-auto border-t">
+        {currentStep > 0 ? (
+          <Button
+            variant="outline"
+            onClick={handleBack}
+            icon={<ArrowLeft className="h-4 w-4" />}
+          >
+            Back
+          </Button>
+        ) : (
+          <Link to="/">
+            <Button variant="outline" icon={<ArrowLeft className="h-4 w-4" />}>
+              Back
+            </Button>
+          </Link>
+        )}
+        
+        {currentStep < steps.length - 1 && (
+          <Button
+            variant="gradient"
+            onClick={handleContinue}
+            disabled={!canContinue()}
+            withArrow
+            className={isMobile ? "w-1/2" : ""}
+          >
+            Continue
+          </Button>
+        )}
+      </div>
+    );
+  };
+
   const renderStepContent = () => {
     switch (currentStep) {
       case 0:
         return (
-          <AssetSelection
-            selectedAsset={selectedAsset}
-            amount={amount}
-            onAssetSelect={handleAssetSelect}
-            onAmountChange={handleAmountChange}
-            open={open}
-            setOpen={setOpen}
-            walletAddress={walletAddress}
-            onWalletAddressChange={handleWalletAddressChange}
-          />
+          <>
+            <AssetSelection
+              selectedAsset={selectedAsset}
+              amount={amount}
+              onAssetSelect={handleAssetSelect}
+              onAmountChange={handleAmountChange}
+              open={open}
+              setOpen={setOpen}
+              walletAddress={walletAddress}
+              onWalletAddressChange={handleWalletAddressChange}
+            />
+            {renderNavigationButtons()}
+          </>
         );
       case 1:
         return (
-          <OnrampMethodSelection
-            selectedOnramp={selectedOnramp}
-            onOnrampSelect={handleOnrampSelect}
-            amount={amount}
-            selectedAsset={selectedAsset}
-            walletAddress={walletAddress}
-          />
+          <>
+            <OnrampMethodSelection
+              selectedOnramp={selectedOnramp}
+              onOnrampSelect={handleOnrampSelect}
+              amount={amount}
+              selectedAsset={selectedAsset}
+              walletAddress={walletAddress}
+            />
+            {renderNavigationButtons()}
+          </>
         );
       case 2:
         return (
-          <PaymentCompletion
-            amount={amount}
-            selectedAsset={selectedAsset}
-            walletAddress={walletAddress}
-            selectedOnramp={selectedOnramp}
-          />
+          <>
+            <PaymentCompletion
+              amount={amount}
+              selectedAsset={selectedAsset}
+              walletAddress={walletAddress}
+              selectedOnramp={selectedOnramp}
+            />
+            {renderNavigationButtons()}
+          </>
         );
       default:
         return null;
@@ -148,36 +191,6 @@ const OnrampPage = () => {
 
           <div className="bg-white rounded-xl border shadow-sm p-3 mb-2 flex-1 overflow-auto">
             {renderStepContent()}
-          </div>
-
-          <div className="flex justify-between mt-auto pt-2">
-            {currentStep > 0 ? (
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                icon={<ArrowLeft className="h-4 w-4" />}
-              >
-                Back
-              </Button>
-            ) : (
-              <Link to="/">
-                <Button variant="outline" icon={<ArrowLeft className="h-4 w-4" />}>
-                  Back
-                </Button>
-              </Link>
-            )}
-            
-            {currentStep < steps.length - 1 && (
-              <Button
-                variant="gradient"
-                onClick={handleContinue}
-                disabled={!canContinue()}
-                withArrow
-                className={isMobile ? "w-1/2" : ""}
-              >
-                Continue
-              </Button>
-            )}
           </div>
         </main>
       </div>
