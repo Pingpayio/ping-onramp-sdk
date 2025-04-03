@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { ChevronRight } from 'lucide-react';
 
 const PaymentMethod = () => {
   return (
@@ -20,7 +19,7 @@ const PaymentMethod = () => {
             <p className="text-muted-foreground text-xs md:text-sm">Credit or debit card</p>
           </div>
         </div>
-        <ChevronRight className="h-4 w-4 md:h-5 md:w-5 text-muted-foreground" />
+        {/* ChevronRight icon removed */}
       </div>
     </div>
   );
