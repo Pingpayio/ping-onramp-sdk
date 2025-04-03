@@ -1,11 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import StepProgress from '@/components/StepProgress';
 import { ArrowLeft } from 'lucide-react';
 import AssetSelection from '@/components/onramp/asset-selection';
-import WalletConnectionStep from '@/components/onramp/WalletConnectionStep';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
 import PaymentCompletion from '@/components/onramp/PaymentCompletion';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -19,7 +17,8 @@ const OnrampPage = () => {
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('100');
 
-  const steps = ["Select Asset", "Connect Wallet", "Payment Details", "Complete Payment"];
+  // Updated steps array - removed "Connect Wallet"
+  const steps = ["Select Asset", "Payment Details", "Complete Payment"];
 
   const handleAssetSelect = (symbol: string) => {
     setSelectedAsset(symbol);
@@ -28,10 +27,6 @@ const OnrampPage = () => {
 
   const handleOnrampSelect = (provider: string) => {
     setSelectedOnramp(provider);
-  };
-
-  const handleWalletConnect = (address: string) => {
-    setWalletAddress(address);
   };
 
   const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -54,9 +49,10 @@ const OnrampPage = () => {
     }
   };
 
-  // For step 2 (Payment Details), automatically set the provider to "coinbase"
+  // For step 1 (Payment Details), automatically set the provider to "coinbase"
+  // Updated step index since we removed the wallet connection step
   useEffect(() => {
-    if (currentStep === 2 && !selectedOnramp) {
+    if (currentStep === 1 && !selectedOnramp) {
       setSelectedOnramp("coinbase");
     }
   }, [currentStep, selectedOnramp]);
@@ -64,8 +60,7 @@ const OnrampPage = () => {
   const canContinue = () => {
     switch (currentStep) {
       case 0: return !!selectedAsset && walletAddress.trim().length > 0;
-      case 1: return !!walletAddress;
-      case 2: return !!selectedOnramp;
+      case 1: return !!selectedOnramp;
       default: return true;
     }
   };
@@ -87,12 +82,6 @@ const OnrampPage = () => {
         );
       case 1:
         return (
-          <WalletConnectionStep
-            onConnect={handleWalletConnect}
-          />
-        );
-      case 2:
-        return (
           <OnrampMethodSelection
             selectedOnramp={selectedOnramp}
             onOnrampSelect={handleOnrampSelect}
@@ -101,7 +90,7 @@ const OnrampPage = () => {
             walletAddress={walletAddress}
           />
         );
-      case 3:
+      case 2:
         return (
           <PaymentCompletion
             amount={amount}
