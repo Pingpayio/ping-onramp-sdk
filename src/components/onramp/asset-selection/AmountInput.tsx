@@ -18,20 +18,20 @@ const AmountInput = ({
 }: AmountInputProps) => {
   return (
     <div className="w-full mb-8 md:mb-10">
-      {/* Updated to align the amount to the left with USD on the right */}
+      {/* Updated input width and positioning */}
       <div className="flex flex-row items-baseline justify-start mb-2">
         <Input
           type="number"
           value={amount}
           onChange={onAmountChange}
           min="10"
-          className="text-3xl md:text-5xl font-bold border-none focus:outline-none focus:ring-0 p-0 max-w-[200px] text-left"
+          className="text-3xl md:text-5xl font-bold border-none focus:outline-none focus:ring-0 p-0 max-w-[120px] text-left [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="0"
         />
-        <span className="text-3xl md:text-5xl text-gray-400 font-normal ml-2">USD</span>
+        <span className="text-3xl md:text-5xl text-gray-400 font-normal ml-1">USD</span>
       </div>
       
-      {/* Estimated token amount - styled more like the reference image */}
+      {/* Estimated token amount */}
       {selectedAsset && parseFloat(amount) > 0 && (
         <div className="flex items-start justify-start">
           <div className="flex items-center">
