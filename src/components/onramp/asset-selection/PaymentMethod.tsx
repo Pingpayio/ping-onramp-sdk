@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { AppleIcon } from 'lucide-react';
 
 const PaymentMethod = () => {
   return (
@@ -7,14 +8,11 @@ const PaymentMethod = () => {
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="bg-secondary rounded-full p-2 mr-3">
-            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="text-muted-foreground">
-              <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-              <line x1="1" y1="10" x2="23" y2="10"></line>
-            </svg>
+            <AppleIcon className="h-4 w-4 text-muted-foreground" />
           </div>
           <div>
             <p className="font-medium text-sm md:text-base">Pay with</p>
-            <p className="text-muted-foreground text-xs md:text-sm">Credit or debit card</p>
+            <p className="text-muted-foreground text-xs md:text-sm">Apple Pay or card</p>
           </div>
         </div>
       </div>

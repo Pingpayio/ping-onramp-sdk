@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -57,11 +56,10 @@ const OnrampPage = () => {
     }
   };
 
-  // For step 1 (Payment Details), automatically set the provider to "coinbase"
-  // Updated step index since we removed the wallet connection step
+  // For step 1 (Payment Details), set the default provider to "apple" instead of "coinbase"
   useEffect(() => {
     if (currentStep === 1 && !selectedOnramp) {
-      setSelectedOnramp("coinbase");
+      setSelectedOnramp("apple");
     }
   }, [currentStep, selectedOnramp]);
 
