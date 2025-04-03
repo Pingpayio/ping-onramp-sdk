@@ -15,7 +15,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
         </div>
         <div>
           <span className="font-medium">
-            Network: {selectedAsset ? (selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base') : 'Select an asset'}
+            Network: {selectedAsset ? (selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base') : ''}
           </span>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground" />
