@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -86,12 +85,16 @@ const OnrampMethodSelection = ({
       <div className="w-full mb-6">
         <button 
           onClick={() => onOnrampSelect("apple")}
-          className="w-full h-12 rounded-md shadow-sm"
+          className="w-full h-12"
           style={{ 
-            WebkitAppearance: "-apple-pay-button", 
-            ApplePayButtonType: "plain",
-            ApplePayButtonStyle: "black"
+            WebkitAppearance: "apple-pay-button",
+            appearance: "apple-pay-button",
+            WebkitPayButtonType: "plain",
+            applePayButtonType: "plain",
+            WebkitPayButtonStyle: "black",
+            applePayButtonStyle: "black"
           } as React.CSSProperties}
+          aria-label="Pay with Apple Pay"
         >
         </button>
       </div>
