@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { ChevronDown, Search, ArrowDown } from 'lucide-react';
+import { ChevronDown, Search, ArrowDown, ChevronRight } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import CryptoAsset from '@/components/CryptoAsset';
@@ -97,99 +97,161 @@ const AssetSelection = ({
     }
   }, [selectedAsset, amount]);
 
+  const selectedAssetData = selectedAsset ? assets.find(a => a.symbol === selectedAsset) : null;
+
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4">Select Asset</h2>
-      <p className="text-muted-foreground mb-6">Choose the asset you want to purchase</p>
+    <div className="flex flex-col items-center">
+      {/* Title section similar to coinbase "Buy ETH" */}
+      <h2 className="text-2xl font-semibold mb-6 text-center">
+        {selectedAsset ? `Buy ${selectedAsset}` : 'Select Asset'}
+      </h2>
       
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Asset</label>
-        <Popover open={open} onOpenChange={setOpen}>
-          <PopoverTrigger asChild>
-            <button
-              className="flex items-center justify-between w-full border border-input rounded-md p-3 bg-background text-left text-sm font-normal"
-              role="combobox"
-              aria-expanded={open}
-            >
-              {selectedAsset ? (
-                <div className="flex items-center">
-                  <img 
-                    src={assets.find(a => a.symbol === selectedAsset)?.logoUrl} 
-                    alt={selectedAsset} 
-                    className="h-6 w-6 mr-2" 
-                  />
-                  <span>{assets.find(a => a.symbol === selectedAsset)?.name}</span>
-                  <span className="ml-2 text-muted-foreground">{selectedAsset}</span>
-                </div>
-              ) : (
-                "Select an asset"
-              )}
-              <ChevronDown className="h-4 w-4 opacity-50" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-            <Command>
-              <div className="flex items-center border-b px-3">
-                <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-                <CommandInput 
-                  placeholder="Search for an asset..." 
-                  className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-muted-foreground"
-                  value={searchQuery}
-                  onValueChange={setSearchQuery}
-                />
-              </div>
-              <CommandList className="max-h-[300px] overflow-auto">
-                <CommandEmpty>No asset found.</CommandEmpty>
-                <CommandGroup>
-                  {filteredAssets.map((asset) => (
-                    <CommandItem
-                      key={asset.symbol}
-                      value={asset.name}
-                      onSelect={() => {
-                        onAssetSelect(asset.symbol);
-                        setSearchQuery('');
-                      }}
-                      className="cursor-pointer"
-                    >
-                      <CryptoAsset
-                        name={asset.name}
-                        symbol={asset.symbol}
-                        logoUrl={asset.logoUrl}
-                        isSelected={selectedAsset === asset.symbol}
-                      />
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
-              </CommandList>
-            </Command>
-          </PopoverContent>
-        </Popover>
-      </div>
-      
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-2">Amount (USD)</label>
-        <div className="space-y-2">
+      {/* Large USD amount display */}
+      <div className="w-full mb-6">
+        <div className="flex items-baseline justify-center">
           <Input
             type="number"
             value={amount}
             onChange={onAmountChange}
             min="10"
-            className="w-full border border-input rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-ping-500"
-            placeholder="Enter amount"
+            className="text-4xl font-bold w-auto text-center border-none focus:outline-none focus:ring-0 p-0 max-w-[150px]"
+            placeholder="0"
           />
-          
-          {selectedAsset && parseFloat(amount) > 0 && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-3">
-              <ArrowDown className="h-4 w-4 text-ping-500" />
-              <span className="font-medium text-foreground">{estimatedAmount} {selectedAsset}</span>
+          <span className="text-4xl text-muted-foreground ml-2">USD</span>
+        </div>
+        
+        {/* Estimated token amount */}
+        {selectedAsset && parseFloat(amount) > 0 && (
+          <div className="flex items-center justify-center gap-2 text-sm text-ping-600 mt-2">
+            <span className="font-medium">{estimatedAmount} {selectedAsset}</span>
+          </div>
+        )}
+      </div>
+      
+      {/* Selection cards for asset, network and payment method */}
+      <div className="w-full space-y-3 mt-6">
+        {/* Asset Selection Card */}
+        <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <button
+                className="flex items-center justify-between w-full text-left"
+                role="combobox"
+                aria-expanded={open}
+              >
+                <div className="flex items-center">
+                  {selectedAssetData ? (
+                    <>
+                      <div className="bg-secondary rounded-full p-2 mr-3">
+                        <img 
+                          src={selectedAssetData.logoUrl} 
+                          alt={selectedAssetData.symbol} 
+                          className="h-6 w-6" 
+                        />
+                      </div>
+                      <div>
+                        <p className="font-medium">Buy</p>
+                        <p className="text-muted-foreground">{selectedAssetData.name}</p>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div className="bg-secondary rounded-full p-2 mr-3">
+                        <div className="h-6 w-6 bg-gray-200 rounded-full"></div>
+                      </div>
+                      <p>Select an asset</p>
+                    </>
+                  )}
+                </div>
+                <ChevronRight className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+              <Command>
+                <div className="flex items-center border-b px-3">
+                  <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                  <CommandInput 
+                    placeholder="Search for an asset..." 
+                    className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-muted-foreground"
+                    value={searchQuery}
+                    onValueChange={setSearchQuery}
+                  />
+                </div>
+                <CommandList className="max-h-[300px] overflow-auto">
+                  <CommandEmpty>No asset found.</CommandEmpty>
+                  <CommandGroup>
+                    {filteredAssets.map((asset) => (
+                      <CommandItem
+                        key={asset.symbol}
+                        value={asset.name}
+                        onSelect={() => {
+                          onAssetSelect(asset.symbol);
+                          setSearchQuery('');
+                        }}
+                        className="cursor-pointer"
+                      >
+                        <CryptoAsset
+                          name={asset.name}
+                          symbol={asset.symbol}
+                          logoUrl={asset.logoUrl}
+                          isSelected={selectedAsset === asset.symbol}
+                        />
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
+        </div>
+        
+        {/* Network Card - for display only */}
+        <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-secondary rounded-full p-2 mr-3">
+                <div className="h-6 w-6 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="text-ping-600">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <p className="font-medium">Network</p>
+                <p className="text-muted-foreground">{selectedAsset && selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}</p>
+              </div>
             </div>
-          )}
-          
-          <p className="text-sm text-muted-foreground">
-            Minimum amount: $10.00
-          </p>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </div>
+        </div>
+        
+        {/* Payment Method Card - for display only */}
+        <div className="rounded-lg border p-4 hover:shadow-sm transition-shadow">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div className="bg-secondary rounded-full p-2 mr-3">
+                <div className="h-6 w-6 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="text-ping-600">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                    <line x1="1" y1="10" x2="23" y2="10"></line>
+                  </svg>
+                </div>
+              </div>
+              <div>
+                <p className="font-medium">Pay with</p>
+                <p className="text-muted-foreground">Credit or debit card</p>
+              </div>
+            </div>
+            <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          </div>
         </div>
       </div>
+      
+      <p className="text-sm text-muted-foreground mt-6">
+        Minimum amount: $10.00
+      </p>
     </div>
   );
 };
