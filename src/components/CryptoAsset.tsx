@@ -10,6 +10,7 @@ interface CryptoAssetProps {
   onClick?: () => void;
 }
 
+// This is now a helper component for rendering assets in the dropdown
 const CryptoAsset = ({
   name,
   symbol,
@@ -20,17 +21,17 @@ const CryptoAsset = ({
   return (
     <div 
       className={cn(
-        "flex items-center p-4 rounded-lg border cursor-pointer transition-all duration-200 hover:shadow-md",
-        isSelected ? "border-2 border-ping-600 shadow-lg ping-shadow" : "border-border"
+        "flex items-center p-2 cursor-pointer transition-all duration-200",
+        isSelected ? "bg-accent" : "hover:bg-accent/50"
       )}
       onClick={onClick}
     >
-      <div className="h-12 w-12 mr-3 flex-shrink-0">
+      <div className="h-8 w-8 mr-3 flex-shrink-0">
         <img src={logoUrl} alt={name} className="h-full w-full object-contain" />
       </div>
       <div className="flex flex-col">
-        <span className="font-medium text-lg">{name}</span>
-        <span className="text-sm text-muted-foreground">{symbol}</span>
+        <span className="font-medium">{name}</span>
+        <span className="text-xs text-muted-foreground">{symbol}</span>
       </div>
     </div>
   );
