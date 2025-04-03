@@ -20,7 +20,7 @@ interface OnrampStepContentProps {
   onOnrampSelect: (provider: string) => void;
   handleBack: () => void;
   handleContinue: () => void;
-  canContinue: () => boolean;
+  canContinue: boolean;
 }
 
 const OnrampStepContent = ({
@@ -90,7 +90,7 @@ const OnrampStepContent = ({
         steps={steps}
         handleBack={handleBack}
         handleContinue={handleContinue}
-        canContinue={canContinue()}
+        canContinue={canContinue}
       />
     </div>
   );
