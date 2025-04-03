@@ -1,10 +1,9 @@
-
 import React, { useState, useMemo } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import CryptoAsset from '@/components/CryptoAsset';
-import { assets } from '@/data/cryptoAssets';
+import { assets, stablecoinSymbols } from '@/data/assets';
 
 interface AssetSelectionProps {
   selectedAsset: string | null;
@@ -27,12 +26,10 @@ const AssetSelection = ({
   
   // Sort assets: stablecoins first, then by name
   const sortedAssets = useMemo(() => {
-    const stablecoins = ['USDT', 'USDC', 'DAI', 'BUSD', 'TUSD', 'USDP', 'FRAX', 'USDD'];
-    
     return [...assets].sort((a, b) => {
       // Put stablecoins at the top
-      const aIsStable = stablecoins.includes(a.symbol);
-      const bIsStable = stablecoins.includes(b.symbol);
+      const aIsStable = stablecoinSymbols.includes(a.symbol);
+      const bIsStable = stablecoinSymbols.includes(b.symbol);
       
       if (aIsStable && !bIsStable) return -1;
       if (!aIsStable && bIsStable) return 1;
