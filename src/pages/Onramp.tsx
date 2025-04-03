@@ -75,23 +75,25 @@ const OnrampPage = () => {
     switch (currentStep) {
       case 0:
         return (
-          <>
-            <AssetSelection
-              selectedAsset={selectedAsset}
-              amount={amount}
-              onAssetSelect={handleAssetSelect}
-              onAmountChange={handleAmountChange}
-              open={open}
-              setOpen={setOpen}
-            />
-            
-            <div className="mt-6">
-              <WalletAddressInput 
-                walletAddress={walletAddress}
-                onWalletAddressChange={handleWalletAddressChange}
+          <div className="space-y-6">
+            {/* Asset Selection First */}
+            <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
+              <AssetSelection
+                selectedAsset={selectedAsset}
+                amount={amount}
+                onAssetSelect={handleAssetSelect}
+                onAmountChange={handleAmountChange}
+                open={open}
+                setOpen={setOpen}
               />
             </div>
-          </>
+            
+            {/* Wallet Address Second */}
+            <WalletAddressInput 
+              walletAddress={walletAddress}
+              onWalletAddressChange={handleWalletAddressChange}
+            />
+          </div>
         );
       case 1:
         return (

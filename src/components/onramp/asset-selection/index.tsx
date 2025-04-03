@@ -32,22 +32,14 @@ const AssetSelection = ({
   }, [selectedAsset, amount]);
 
   return (
-    <div className="flex flex-col items-center">
-      {/* Title section - Updated to "Buy Crypto" and made slightly smaller */}
-      <h2 className="text-lg md:text-xl font-semibold mb-4 md:mb-6 text-center">
+    <div className="flex flex-col">
+      {/* Title section */}
+      <h2 className="text-lg md:text-xl font-semibold mb-4 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
       </h2>
       
-      {/* Amount input with estimated value */}
-      <AmountInput 
-        amount={amount}
-        onAmountChange={onAmountChange}
-        selectedAsset={selectedAsset}
-        estimatedAmount={estimatedAmount}
-      />
-      
-      {/* Selection cards for asset, network and payment method */}
-      <div className="w-full space-y-3 mt-4 md:mt-6">
+      {/* 1. Asset Selection Card First */}
+      <div className="w-full space-y-3 mb-4">
         {/* Network Badge */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
@@ -60,12 +52,25 @@ const AssetSelection = ({
             setOpen={setOpen}
           />
         </div>
-        
-        {/* Payment Method Card */}
+      </div>
+      
+      {/* 2. Amount input with estimated value will move to after PaymentMethod */}
+      <div className="mt-4">
+        <AmountInput 
+          amount={amount}
+          onAmountChange={onAmountChange}
+          selectedAsset={selectedAsset}
+          estimatedAmount={estimatedAmount}
+        />
+      </div>
+      
+      {/* 3. Payment Method Card */}
+      <div className="w-full mt-4">
         <PaymentMethod />
       </div>
       
-      <p className="text-xs md:text-sm text-muted-foreground mt-4 md:mt-6">
+      {/* 4. Minimum amount text */}
+      <p className="text-xs md:text-sm text-muted-foreground mt-4 text-center">
         Minimum amount: $10.00
       </p>
     </div>
