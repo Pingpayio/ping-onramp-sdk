@@ -19,27 +19,48 @@ const PaymentCompletion = ({
   walletAddress,
   selectedOnramp
 }: PaymentCompletionProps) => {
-  // Calculate estimated token amount
+  // Calculate estimated token amount with 1% fee
   const getEstimatedAmount = () => {
     if (selectedAsset && amount && !isNaN(parseFloat(amount))) {
       const assetPrice = mockPrices[selectedAsset!] || 1;
       const estimatedTokens = parseFloat(amount) / assetPrice;
+      const afterFeeAmount = estimatedTokens * 0.99; // Apply 1% fee
+      const feeAmount = estimatedTokens * 0.01; // Calculate fee amount
       
       // Format based on value - show more decimal places for higher value tokens
+      let formattedAmount;
       if (assetPrice >= 1000) {
-        return estimatedTokens.toFixed(5);
+        formattedAmount = afterFeeAmount.toFixed(5);
       } else if (assetPrice >= 100) {
-        return estimatedTokens.toFixed(4);
+        formattedAmount = afterFeeAmount.toFixed(4);
       } else {
-        return estimatedTokens.toFixed(2);
+        formattedAmount = afterFeeAmount.toFixed(2);
       }
+      
+      // Format fee amount with the same precision
+      let formattedFee;
+      if (assetPrice >= 1000) {
+        formattedFee = feeAmount.toFixed(5);
+      } else if (assetPrice >= 100) {
+        formattedFee = feeAmount.toFixed(4);
+      } else {
+        formattedFee = feeAmount.toFixed(2);
+      }
+      
+      return { 
+        afterFeeAmount: formattedAmount,
+        feeAmount: formattedFee
+      };
     }
-    return "0";
+    return { 
+      afterFeeAmount: "0",
+      feeAmount: "0"
+    };
   };
 
   // Mock fee calculation - in a real app this would come from an API
   const fee = 1.50;
-  const totalAmount = parseFloat(amount) + fee;
+  const totalAmount = parseFloat(amount);
 
   // Get asset price (for display purposes)
   const getAssetPrice = () => {
@@ -53,6 +74,8 @@ const PaymentCompletion = ({
     }
     return "$0.00";
   };
+
+  const { afterFeeAmount, feeAmount } = getEstimatedAmount();
 
   return (
     <div className="flex flex-col items-center px-2">
@@ -72,53 +95,40 @@ const PaymentCompletion = ({
           {/* Receive */}
           <div className="flex justify-between p-3.5">
             <span className="text-muted-foreground">Receive</span>
-            <span className="font-medium">{getEstimatedAmount()} {selectedAsset}</span>
+            <div className="text-right">
+              <span className="font-medium">{afterFeeAmount} {selectedAsset}</span>
+              <div className="text-xs text-muted-foreground">
+                Fee: {feeAmount} {selectedAsset} (1%)
+              </div>
+            </div>
           </div>
           
           {/* Network */}
           <div className="flex justify-between p-3.5">
             <span className="text-muted-foreground">Network</span>
-            <div className="flex items-center">
-              <div className="bg-blue-100 rounded-full p-1 mr-2">
-                <div className="h-4 w-4 bg-blue-500 rounded-full"></div>
-              </div>
-              <span className="font-medium">
-                {selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}
-              </span>
-            </div>
+            <span className="font-medium">
+              {selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}
+            </span>
           </div>
           
           {/* Pay with */}
           <div className="flex justify-between p-3.5">
             <span className="text-muted-foreground">Pay with</span>
             <div className="flex items-center">
-              {selectedOnramp === "apple" ? (
-                <div className="flex items-center">
-                  <div className="bg-black rounded-full p-1 mr-2">
-                    <div className="h-4 w-4 bg-white rounded-full"></div>
-                  </div>
-                  <span className="font-medium">Apple Pay</span>
+              <div className="flex items-center">
+                <div className="bg-blue-100 rounded-full p-1 mr-2">
+                  <div className="text-blue-500 font-bold text-xs">VISA</div>
                 </div>
-              ) : (
-                <div className="flex items-center">
-                  <div className="bg-blue-100 rounded-full p-1 mr-2">
-                    <div className="text-blue-500 font-bold text-xs">VISA</div>
-                  </div>
-                  <span className="font-medium">Visa **2450</span>
-                </div>
-              )}
-              <ChevronRight className="h-4 w-4 ml-1 text-muted-foreground" />
+                <span className="font-medium">Visa **2450</span>
+              </div>
             </div>
           </div>
           
           {/* To/Destination */}
           <div className="flex justify-between p-3.5">
             <span className="text-muted-foreground">To</span>
-            <div className="text-right">
-              <span className="font-medium text-sm">Your Wallet</span>
-              <div className="text-xs text-muted-foreground break-all">
-                {walletAddress || '0x...'}
-              </div>
+            <div className="break-all text-right">
+              {walletAddress || '0x...'}
             </div>
           </div>
         </div>
@@ -140,13 +150,9 @@ const PaymentCompletion = ({
         <div className="flex justify-between items-center">
           <div>
             <span className="font-semibold">Total</span>
-            <div className="text-xs text-muted-foreground">
-              including spread + ${fee.toFixed(2)} fees
-            </div>
           </div>
           <div className="text-xl font-bold flex items-center">
             ${totalAmount.toFixed(2)}
-            <ChevronRight className="h-4 w-4 ml-1 text-muted-foreground" />
           </div>
         </div>
       </div>
