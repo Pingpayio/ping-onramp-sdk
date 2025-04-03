@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import TransactionStatus from '@/components/TransactionStatus';
 import { CheckCircle2, ArrowLeft, Home } from 'lucide-react';
+import { mockPrices } from '@/components/onramp/asset-selection/PriceCalculator';
 
 const TransactionPage = () => {
   const [step, setStep] = useState<'fiat' | 'swap' | 'complete'>('fiat');
@@ -13,10 +14,25 @@ const TransactionPage = () => {
   const txDetails = {
     amount: 100,
     asset: 'NEAR',
-    wallet: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F...',
+    wallet: '0x71C7656EC7ab88b098defB751B7401B5f6d8976F', // Using the wallet address from the form
     fiatTxHash: '0x3a1b3d543d446d8ce36e27c79165c74ef5543a8251a73c0662b5a3cc6e79',
     swapTxHash: '0x8c3a1a7546d985c4e44b9ae414c01f240c5d7f1679be993559fb43bd78a45'
   };
+
+  // Calculate the NEAR amounts
+  const calculateNearAmounts = () => {
+    const nearPrice = mockPrices['NEAR'] || 2.51;
+    const totalNear = txDetails.amount / nearPrice;
+    const receivedNear = totalNear * 0.99; // Apply 1% fee
+    const feeNear = totalNear * 0.01; // Calculate fee amount
+    
+    return {
+      received: receivedNear.toFixed(2),
+      fee: feeNear.toFixed(2)
+    };
+  };
+
+  const nearAmounts = calculateNearAmounts();
 
   // Simulate transaction steps
   useEffect(() => {
@@ -94,10 +110,13 @@ const TransactionPage = () => {
                 <span>{txDetails.asset}</span>
                 
                 <span className="text-muted-foreground">Recipient:</span>
-                <span className="text-sm break-all">{txDetails.wallet}</span>
+                <span className="break-all">{txDetails.wallet}</span>
                 
-                <span className="text-muted-foreground">Est. {txDetails.asset}:</span>
-                <span>{(txDetails.amount / 2.51).toFixed(2)} {txDetails.asset}</span>
+                <span className="text-muted-foreground">Received {txDetails.asset}:</span>
+                <span>{nearAmounts.received} {txDetails.asset}</span>
+                
+                <span className="text-muted-foreground">Fee:</span>
+                <span>{nearAmounts.fee} {txDetails.asset}</span>
               </div>
             </div>
             
