@@ -206,34 +206,38 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center">
-      {/* Title section similar to coinbase "Buy ETH" */}
+      {/* Title section */}
       <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6 text-center">
         {selectedAsset ? `Buy ${selectedAsset}` : 'Select Asset'}
       </h2>
       
-      {/* Large USD amount display */}
-      <div className="w-full mb-4 md:mb-6">
-        <div className="flex items-baseline justify-center">
+      {/* Updated USD amount display to match the UI in the attachment */}
+      <div className="w-full mb-8 md:mb-10">
+        <div className="flex flex-row items-baseline justify-center space-x-3">
           <Input
             type="number"
             value={amount}
             onChange={onAmountChange}
             min="10"
-            className="text-2xl md:text-4xl font-bold w-auto text-center border-none focus:outline-none focus:ring-0 p-0 max-w-[150px]"
+            className="text-3xl md:text-5xl font-bold w-auto text-center border-none focus:outline-none focus:ring-0 p-0 max-w-[200px]"
             placeholder="0"
           />
-          <span className="text-2xl md:text-4xl text-muted-foreground ml-2">USD</span>
+          <span className="text-3xl md:text-5xl text-muted-foreground font-normal">USD</span>
         </div>
         
-        {/* Estimated token amount */}
+        {/* Estimated token amount - updated styling */}
         {selectedAsset && parseFloat(amount) > 0 && (
-          <div className="flex items-center justify-center gap-2 text-xs md:text-sm text-ping-600 mt-2">
-            <span className="font-medium">{estimatedAmount} {selectedAsset}</span>
+          <div className="flex items-center justify-center gap-2 mt-4">
+            <div className="flex items-center">
+              <span className="text-ping-600 text-base md:text-lg font-medium">
+                ≈ {estimatedAmount} {selectedAsset}
+              </span>
+            </div>
           </div>
         )}
       </div>
       
-      {/* Selection cards for asset, network and payment method - REDESIGNED */}
+      {/* Selection cards for asset, network and payment method */}
       <div className="w-full space-y-3 mt-4 md:mt-6">
         {/* Network Button - Small button above asset selection */}
         <div className="flex justify-start">
