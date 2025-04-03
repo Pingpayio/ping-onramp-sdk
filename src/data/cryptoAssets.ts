@@ -124,5 +124,81 @@ export const assets = [
     name: "Aave",
     symbol: "AAVE",
     logoUrl: "https://cryptologos.cc/logos/aave-aave-logo.svg?v=029",
+  },
+  // Adding additional assets from NEAR Intents documentation
+  {
+    name: "Fantom",
+    symbol: "FTM",
+    logoUrl: "https://cryptologos.cc/logos/fantom-ftm-logo.svg?v=029",
+  },
+  {
+    name: "The Graph",
+    symbol: "GRT",
+    logoUrl: "https://cryptologos.cc/logos/the-graph-grt-logo.svg?v=029",
+  },
+  {
+    name: "Maker",
+    symbol: "MKR",
+    logoUrl: "https://cryptologos.cc/logos/maker-mkr-logo.svg?v=029",
+  },
+  {
+    name: "Decentraland",
+    symbol: "MANA",
+    logoUrl: "https://cryptologos.cc/logos/decentraland-mana-logo.svg?v=029",
+  },
+  {
+    name: "The Sandbox",
+    symbol: "SAND",
+    logoUrl: "https://cryptologos.cc/logos/the-sandbox-sand-logo.svg?v=029",
+  },
+  {
+    name: "Axie Infinity",
+    symbol: "AXS",
+    logoUrl: "https://cryptologos.cc/logos/axie-infinity-axs-logo.svg?v=029",
+  },
+  {
+    name: "SushiSwap",
+    symbol: "SUSHI",
+    logoUrl: "https://cryptologos.cc/logos/sushiswap-sushi-logo.svg?v=029",
+  },
+  {
+    name: "Compound",
+    symbol: "COMP",
+    logoUrl: "https://cryptologos.cc/logos/compound-comp-logo.svg?v=029",
+  },
+  {
+    name: "Enjin Coin",
+    symbol: "ENJ",
+    logoUrl: "https://cryptologos.cc/logos/enjin-coin-enj-logo.svg?v=029",
+  },
+  {
+    name: "Chiliz",
+    symbol: "CHZ",
+    logoUrl: "https://cryptologos.cc/logos/chiliz-chz-logo.svg?v=029",
+  },
+  {
+    name: "Basic Attention Token",
+    symbol: "BAT",
+    logoUrl: "https://cryptologos.cc/logos/basic-attention-token-bat-logo.svg?v=029",
+  },
+  {
+    name: "USDD",
+    symbol: "USDD",
+    logoUrl: "https://cryptologos.cc/logos/usdd-usdd-logo.svg?v=029",
+  },
+  {
+    name: "Frax",
+    symbol: "FRAX",
+    logoUrl: "https://cryptologos.cc/logos/frax-frax-logo.svg?v=029",
+  },
+  {
+    name: "TrueUSD",
+    symbol: "TUSD",
+    logoUrl: "https://cryptologos.cc/logos/trueusd-tusd-logo.svg?v=029",
+  },
+  {
+    name: "Pax Dollar",
+    symbol: "USDP",
+    logoUrl: "https://cryptologos.cc/logos/pax-dollar-usdp-logo.svg?v=029",
   }
 ];
