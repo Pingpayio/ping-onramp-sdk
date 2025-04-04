@@ -7,27 +7,24 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Onramp from "./pages/Onramp";
 import Transaction from "./pages/Transaction";
 import NotFound from "./pages/NotFound";
-import { ThemeProvider } from "./components/theme-provider";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="dark">
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Navigate to="/onramp" replace />} />
-            <Route path="/onramp" element={<Onramp />} />
-            <Route path="/transaction" element={<Transaction />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </ThemeProvider>
+    <TooltipProvider>
+      <Toaster />
+      <Sonner />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/onramp" replace />} />
+          <Route path="/onramp" element={<Onramp />} />
+          <Route path="/transaction" element={<Transaction />} />
+          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </TooltipProvider>
   </QueryClientProvider>
 );
 

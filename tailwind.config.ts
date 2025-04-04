@@ -64,17 +64,17 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				ping: {
-					50: '#f1ebff',
-					100: '#e4d8ff',
-					200: '#cbb2ff',
-					300: '#b38bff',
-					400: '#9b64ff',
-					500: '#9b87f5',
-					600: '#7a3dff',
-					700: '#6629e6',
-					800: '#5423bd',
-					900: '#451e96',
-					950: '#281158',
+					50: '#f2f6ff',
+					100: '#e6edff',
+					200: '#d1ddff',
+					300: '#adc2ff',
+					400: '#839dff',
+					500: '#6b7fff',
+					600: '#4c58f5',
+					700: '#3e44df',
+					800: '#343ab5',
+					900: '#2f3791',
+					950: '#1e2158',
 				},
 				near: {
 					50: '#f0f7ff',
@@ -123,12 +123,9 @@ export default {
 				'pulse-slow': 'pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 			},
 			backgroundImage: {
-				'gradient-ping': 'linear-gradient(135deg, #9b87f5 0%, #b38bff 100%)',
+				'gradient-ping': 'linear-gradient(135deg, #4c58f5 0%, #6b7fff 100%)',
 				'gradient-near': 'linear-gradient(135deg, #0065f5 0%, #37a3ff 100%)',
-			},
-			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
-			},
+			}
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
