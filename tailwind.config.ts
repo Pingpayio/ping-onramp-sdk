@@ -64,17 +64,17 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				ping: {
-					50: '#f2f6ff',
-					100: '#e6edff',
-					200: '#d1ddff',
-					300: '#adc2ff',
-					400: '#839dff',
-					500: '#6b7fff',
-					600: '#4c58f5',
-					700: '#3e44df',
-					800: '#343ab5',
-					900: '#2f3791',
-					950: '#1e2158',
+					50: '#f5f2ff',
+					100: '#ede5ff',
+					200: '#ddceff',
+					300: '#c4a7ff',
+					400: '#aa7eff',
+					500: '#9257ff',
+					600: '#7f3df6',
+					700: '#745DDC',
+					800: '#5e2bbc',
+					900: '#4e249a',
+					950: '#2e0e6d',
 				},
 				near: {
 					50: '#f0f7ff',
@@ -123,7 +123,7 @@ export default {
 				'pulse-slow': 'pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 			},
 			backgroundImage: {
-				'gradient-ping': 'linear-gradient(135deg, #4c58f5 0%, #6b7fff 100%)',
+				'gradient-ping': 'linear-gradient(135deg, #745DDC 0%, #9257ff 100%)',
 				'gradient-near': 'linear-gradient(135deg, #0065f5 0%, #37a3ff 100%)',
 			}
 		}
