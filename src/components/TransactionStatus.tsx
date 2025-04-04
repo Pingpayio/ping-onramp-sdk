@@ -21,18 +21,18 @@ const TransactionStatus = ({
   const statusConfig = {
     pending: {
       icon: <Clock className="h-6 w-6 text-yellow-500" />,
-      color: 'bg-yellow-50 border-yellow-200',
-      textColor: 'text-yellow-700'
+      color: 'bg-yellow-500/10 border-yellow-500/20',
+      textColor: 'text-yellow-500'
     },
     completed: {
-      icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-      color: 'bg-green-50 border-green-200',
-      textColor: 'text-green-700'
+      icon: <CheckCircle2 className="h-6 w-6 text-primary" />,
+      color: 'bg-primary/10 border-primary/20',
+      textColor: 'text-primary'
     },
     failed: {
       icon: <AlertCircle className="h-6 w-6 text-red-500" />,
-      color: 'bg-red-50 border-red-200',
-      textColor: 'text-red-700'
+      color: 'bg-red-500/10 border-red-500/20',
+      textColor: 'text-red-500'
     }
   };
 
@@ -49,7 +49,7 @@ const TransactionStatus = ({
           {txHash && (
             <div className="mt-3">
               <p className="text-xs text-muted-foreground mb-1">Transaction Hash:</p>
-              <div className="bg-white bg-opacity-50 p-2 rounded text-xs font-mono break-all">
+              <div className="bg-background/50 p-2 rounded text-xs font-mono break-all">
                 {txHash}
               </div>
             </div>
@@ -57,7 +57,7 @@ const TransactionStatus = ({
           
           {status === 'pending' && (
             <div className="mt-3">
-              <div className="h-2 w-full bg-yellow-200 rounded-full overflow-hidden">
+              <div className="h-2 w-full bg-yellow-500/20 rounded-full overflow-hidden">
                 <div className="h-full bg-yellow-500 rounded-full w-1/2 animate-pulse-slow"></div>
               </div>
             </div>
