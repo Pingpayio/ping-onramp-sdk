@@ -77,9 +77,9 @@ const PaymentCompletion = ({
   const { afterFeeAmount, feeAmount } = getEstimatedAmount();
 
   return (
-    <div className="flex flex-col items-center px-2">
+    <div className="flex flex-col h-full px-2">
       {/* Title */}
-      <div className="text-center mb-4">
+      <div className="text-center mb-3">
         <h2 className="text-2xl font-bold mb-1">
           Buy ${amount} of {selectedAsset}
         </h2>
@@ -89,7 +89,7 @@ const PaymentCompletion = ({
       </div>
       
       {/* Transaction Details List */}
-      <div className="w-full border rounded-lg overflow-hidden mb-6">
+      <div className="w-full border rounded-lg overflow-hidden mb-4">
         <div className="divide-y">
           {/* Receive */}
           <div className="flex justify-between p-3.5">
@@ -134,7 +134,7 @@ const PaymentCompletion = ({
       </div>
       
       {/* Security Note */}
-      <div className="w-full text-xs text-muted-foreground mb-6 bg-gray-50 p-3 rounded-md">
+      <div className="w-full text-xs text-muted-foreground mb-4 bg-gray-50 p-3 rounded-md">
         <div className="flex items-start gap-1.5">
           <Shield className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
           <span>
@@ -145,7 +145,7 @@ const PaymentCompletion = ({
       </div>
       
       {/* Total */}
-      <div className="w-full border-t pt-4 mb-6">
+      <div className="w-full border-t pt-4 mb-4">
         <div className="flex justify-between items-center">
           <div>
             <span className="font-semibold">Total</span>
