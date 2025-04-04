@@ -78,8 +78,8 @@ const PaymentCompletion = ({
 
   return (
     <div className="flex flex-col h-full px-2">
-      {/* Title */}
-      <div className="text-center mb-3">
+      {/* Title - reduced margin */}
+      <div className="text-center mb-2">
         <h2 className="text-2xl font-bold mb-1">
           Buy ${amount} of {selectedAsset}
         </h2>
@@ -88,11 +88,11 @@ const PaymentCompletion = ({
         </p>
       </div>
       
-      {/* Transaction Details List */}
-      <div className="w-full border rounded-lg overflow-hidden mb-4">
+      {/* Transaction Details List - reduced margin */}
+      <div className="w-full border rounded-lg overflow-hidden mb-3">
         <div className="divide-y">
           {/* Receive */}
-          <div className="flex justify-between p-3.5">
+          <div className="flex justify-between p-3">
             <span className="text-muted-foreground">Receive</span>
             <div className="text-right">
               <span className="font-medium">{afterFeeAmount} {selectedAsset}</span>
@@ -103,7 +103,7 @@ const PaymentCompletion = ({
           </div>
           
           {/* Network */}
-          <div className="flex justify-between p-3.5">
+          <div className="flex justify-between p-3">
             <span className="text-muted-foreground">Network</span>
             <span className="font-medium">
               {selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}
@@ -111,7 +111,7 @@ const PaymentCompletion = ({
           </div>
           
           {/* Pay with */}
-          <div className="flex justify-between p-3.5">
+          <div className="flex justify-between p-3">
             <span className="text-muted-foreground">Pay with</span>
             <div className="flex items-center">
               <div className="flex items-center">
@@ -124,7 +124,7 @@ const PaymentCompletion = ({
           </div>
           
           {/* To/Destination */}
-          <div className="flex justify-between p-3.5">
+          <div className="flex justify-between p-3">
             <span className="text-muted-foreground">To</span>
             <span className="font-medium break-all text-right">
               {walletAddress || '0x...'}
@@ -133,8 +133,8 @@ const PaymentCompletion = ({
         </div>
       </div>
       
-      {/* Security Note */}
-      <div className="w-full text-xs text-muted-foreground mb-4 bg-gray-50 p-3 rounded-md">
+      {/* Security Note - reduced padding and margin */}
+      <div className="w-full text-xs text-muted-foreground mb-3 bg-gray-50 p-2.5 rounded-md">
         <div className="flex items-start gap-1.5">
           <Shield className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
           <span>
@@ -144,8 +144,8 @@ const PaymentCompletion = ({
         </div>
       </div>
       
-      {/* Total */}
-      <div className="w-full border-t pt-4 mb-4">
+      {/* Total - reduced padding */}
+      <div className="w-full border-t pt-3 mb-3">
         <div className="flex justify-between items-center">
           <div>
             <span className="font-semibold">Total</span>
@@ -157,7 +157,7 @@ const PaymentCompletion = ({
       </div>
       
       {/* Buy Now Button */}
-      <div className="w-full">
+      <div className="w-full mt-auto">
         <Link to="/transaction" className="w-full block">
           <Button 
             variant="gradient" 
