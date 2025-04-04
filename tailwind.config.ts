@@ -19,6 +19,9 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
+			},
 			colors: {
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
@@ -70,11 +73,11 @@ export default {
 					300: '#adc2ff',
 					400: '#839dff',
 					500: '#6b7fff',
-					600: '#4c58f5',
-					700: '#3e44df',
-					800: '#343ab5',
-					900: '#2f3791',
-					950: '#1e2158',
+					600: '#9b87f5', // Updated to new primary purple color
+					700: '#7E69AB', // Secondary purple
+					800: '#6E59A5', // Tertiary purple
+					900: '#1A1F2C', // Dark purple
+					950: '#141822', // Darkest purple
 				},
 				near: {
 					50: '#f0f7ff',
@@ -123,7 +126,7 @@ export default {
 				'pulse-slow': 'pulse-slow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
 			},
 			backgroundImage: {
-				'gradient-ping': 'linear-gradient(135deg, #4c58f5 0%, #6b7fff 100%)',
+				'gradient-ping': 'linear-gradient(135deg, #9b87f5 0%, #adc2ff 100%)',
 				'gradient-near': 'linear-gradient(135deg, #0065f5 0%, #37a3ff 100%)',
 			}
 		}
