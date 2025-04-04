@@ -53,7 +53,7 @@ const TransactionPage = () => {
   }, [step]);
 
   return (
-    <div className="h-screen bg-gradient-to-b from-background to-muted/30 dark:from-background dark:to-background flex flex-col overflow-hidden">
+    <div className="h-screen bg-gradient-to-b from-white to-ping-50 flex flex-col overflow-hidden">
       <div className="container max-w-3xl mx-auto px-3 py-3 flex flex-col h-full">
         <header className="flex justify-between items-center mb-2">
           <Link to="/" className="flex items-center hover:opacity-80 transition-opacity">
@@ -66,7 +66,7 @@ const TransactionPage = () => {
         </header>
 
         <main className="flex-1 overflow-auto">
-          <div className="bg-card rounded-xl border shadow-sm p-4 text-center">
+          <div className="bg-white rounded-xl border shadow-sm p-4 text-center">
             <h1 className="text-xl font-bold mb-1">
               {step === 'complete' ? 'Transaction Complete!' : 'Processing Your Transaction'}
             </h1>
@@ -78,8 +78,8 @@ const TransactionPage = () => {
             
             {step === 'complete' && (
               <div className="mb-3 flex justify-center">
-                <div className="h-14 w-14 bg-primary/20 rounded-full flex items-center justify-center">
-                  <CheckCircle2 className="h-8 w-8 text-primary" />
+                <div className="h-14 w-14 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle2 className="h-8 w-8 text-green-500" />
                 </div>
               </div>
             )}

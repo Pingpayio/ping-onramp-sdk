@@ -21,18 +21,18 @@ const TransactionStatus = ({
   const statusConfig = {
     pending: {
       icon: <Clock className="h-6 w-6 text-yellow-500" />,
-      color: 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950/20 dark:border-yellow-900/30',
-      textColor: 'text-yellow-700 dark:text-yellow-400'
+      color: 'bg-yellow-50 border-yellow-200',
+      textColor: 'text-yellow-700'
     },
     completed: {
       icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-      color: 'bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-900/30',
-      textColor: 'text-green-700 dark:text-green-400'
+      color: 'bg-green-50 border-green-200',
+      textColor: 'text-green-700'
     },
     failed: {
       icon: <AlertCircle className="h-6 w-6 text-red-500" />,
-      color: 'bg-red-50 border-red-200 dark:bg-red-950/20 dark:border-red-900/30',
-      textColor: 'text-red-700 dark:text-red-400'
+      color: 'bg-red-50 border-red-200',
+      textColor: 'text-red-700'
     }
   };
 
@@ -49,7 +49,7 @@ const TransactionStatus = ({
           {txHash && (
             <div className="mt-3">
               <p className="text-xs text-muted-foreground mb-1">Transaction Hash:</p>
-              <div className="bg-background/50 dark:bg-background/20 p-2 rounded text-xs font-mono break-all">
+              <div className="bg-white bg-opacity-50 p-2 rounded text-xs font-mono break-all">
                 {txHash}
               </div>
             </div>
@@ -57,8 +57,8 @@ const TransactionStatus = ({
           
           {status === 'pending' && (
             <div className="mt-3">
-              <div className="h-2 w-full bg-yellow-200/50 dark:bg-yellow-900/20 rounded-full overflow-hidden">
-                <div className="h-full bg-yellow-500 dark:bg-yellow-600 rounded-full w-1/2 animate-pulse-slow"></div>
+              <div className="h-2 w-full bg-yellow-200 rounded-full overflow-hidden">
+                <div className="h-full bg-yellow-500 rounded-full w-1/2 animate-pulse-slow"></div>
               </div>
             </div>
           )}
