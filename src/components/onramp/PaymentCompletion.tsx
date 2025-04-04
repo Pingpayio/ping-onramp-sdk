@@ -62,8 +62,6 @@ const PaymentCompletion = ({
     };
   };
 
-  // Mock fee calculation - in a real app this would come from an API
-  const fee = 1.50;
   // Use the parsed amount directly
   const totalAmount = parsedAmount;
 
@@ -89,6 +87,20 @@ const PaymentCompletion = ({
   };
 
   const { afterFeeAmount, feeAmount } = getEstimatedAmount();
+
+  // Generate mock transaction hashes
+  const generateMockTxHash = () => {
+    return '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
+  };
+
+  // Create transaction details object to pass to the transaction page
+  const transactionDetails = {
+    amount: parsedAmount,
+    asset: selectedAsset,
+    wallet: walletAddress,
+    fiatTxHash: generateMockTxHash(),
+    swapTxHash: generateMockTxHash()
+  };
 
   return (
     <div className="flex flex-col h-full px-2">
@@ -172,7 +184,11 @@ const PaymentCompletion = ({
       
       {/* Buy Now Button */}
       <div className="w-full">
-        <Link to="/transaction" className="w-full block">
+        <Link 
+          to="/transaction" 
+          state={{ txDetails: transactionDetails }}
+          className="w-full block"
+        >
           <Button 
             variant="gradient" 
             size="lg"

@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import Button from '@/components/Button';
 import TransactionStatus from '@/components/TransactionStatus';
 import { CheckCircle2, ArrowLeft, Home } from 'lucide-react';
@@ -9,30 +9,42 @@ import { mockPrices } from '@/components/onramp/asset-selection/PriceCalculator'
 const TransactionPage = () => {
   const [step, setStep] = useState<'fiat' | 'swap' | 'complete'>('fiat');
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
   
-  // Mock transaction details with a NEAR format wallet address
-  const txDetails = {
+  // Get transaction details from location state or use defaults if not available
+  const txDetails = location.state?.txDetails || {
     amount: 100,
     asset: 'NEAR',
-    wallet: 'pingpay.near', // Updated to use a NEAR format address
+    wallet: 'pingpay.near',
     fiatTxHash: '0x3a1b3d543d446d8ce36e27c79165c74ef5543a8251a73c0662b5a3cc6e79',
     swapTxHash: '0x8c3a1a7546d985c4e44b9ae414c01f240c5d7f1679be993559fb43bd78a45'
   };
 
-  // Calculate the NEAR amounts
-  const calculateNearAmounts = () => {
-    const nearPrice = mockPrices['NEAR'] || 2.51;
-    const totalNear = txDetails.amount / nearPrice;
-    const receivedNear = totalNear * 0.99; // Apply 1% fee
-    const feeNear = totalNear * 0.01; // Calculate fee amount
+  // Parse amount to ensure it's a number
+  const parsedAmount = parseFloat(txDetails.amount);
+
+  // Calculate the NEAR amounts based on actual asset and amount
+  const calculateAssetAmounts = () => {
+    const assetPrice = mockPrices[txDetails.asset] || 2.51;
+    const totalAsset = parsedAmount / assetPrice;
+    const receivedAsset = totalAsset * 0.99; // Apply 1% fee
+    const feeAsset = totalAsset * 0.01; // Calculate fee amount
+    
+    // Format based on value - show more decimal places for higher value tokens
+    let precision = 2;
+    if (assetPrice >= 1000) {
+      precision = 5;
+    } else if (assetPrice >= 100) {
+      precision = 4;
+    }
     
     return {
-      received: receivedNear.toFixed(2),
-      fee: feeNear.toFixed(2)
+      received: receivedAsset.toFixed(precision),
+      fee: feeAsset.toFixed(precision)
     };
   };
 
-  const nearAmounts = calculateNearAmounts();
+  const assetAmounts = calculateAssetAmounts();
 
   // Simulate transaction steps
   useEffect(() => {
@@ -88,7 +100,7 @@ const TransactionPage = () => {
               <TransactionStatus
                 status={step === 'fiat' ? 'pending' : 'completed'}
                 title="Fiat to USDC on Base"
-                description={`Converting $${txDetails.amount} to USDC via Coinbase Onramp`}
+                description={`Converting $${parsedAmount.toFixed(2)} to USDC via Coinbase Onramp`}
                 txHash={step !== 'fiat' ? txDetails.fiatTxHash : undefined}
               />
               
@@ -104,7 +116,7 @@ const TransactionPage = () => {
               <p className="font-medium mb-1">Transaction Details:</p>
               <div className="grid grid-cols-2 gap-1">
                 <span className="text-muted-foreground">Amount:</span>
-                <span>${txDetails.amount}.00 USD</span>
+                <span>${parsedAmount.toFixed(2)} USD</span>
                 
                 <span className="text-muted-foreground">Asset:</span>
                 <span>{txDetails.asset}</span>
@@ -113,10 +125,10 @@ const TransactionPage = () => {
                 <span className="break-all">{txDetails.wallet}</span>
                 
                 <span className="text-muted-foreground">Received {txDetails.asset}:</span>
-                <span>{nearAmounts.received} {txDetails.asset}</span>
+                <span>{assetAmounts.received} {txDetails.asset}</span>
                 
                 <span className="text-muted-foreground">Fee:</span>
-                <span>{nearAmounts.fee} {txDetails.asset}</span>
+                <span>{assetAmounts.fee} {txDetails.asset}</span>
               </div>
             </div>
             
