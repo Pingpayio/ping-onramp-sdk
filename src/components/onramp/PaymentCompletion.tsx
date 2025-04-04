@@ -18,11 +18,14 @@ const PaymentCompletion = ({
   walletAddress,
   selectedOnramp
 }: PaymentCompletionProps) => {
+  // Get parsed amount and ensure it's a valid number
+  const parsedAmount = parseFloat(amount) || 0;
+
   // Calculate estimated token amount with 1% fee
   const getEstimatedAmount = () => {
-    if (selectedAsset && amount && !isNaN(parseFloat(amount))) {
+    if (selectedAsset && parsedAmount > 0) {
       const assetPrice = mockPrices[selectedAsset!] || 1;
-      const estimatedTokens = parseFloat(amount) / assetPrice;
+      const estimatedTokens = parsedAmount / assetPrice;
       const afterFeeAmount = estimatedTokens * 0.99; // Apply 1% fee
       const feeAmount = estimatedTokens * 0.01; // Calculate fee amount
       
@@ -59,7 +62,8 @@ const PaymentCompletion = ({
 
   // Mock fee calculation - in a real app this would come from an API
   const fee = 1.50;
-  const totalAmount = parseFloat(amount);
+  // Use the parsed amount directly
+  const totalAmount = parsedAmount;
 
   // Get asset price (for display purposes)
   const getAssetPrice = () => {
@@ -81,7 +85,7 @@ const PaymentCompletion = ({
       {/* Title */}
       <div className="text-center mb-3">
         <h2 className="text-2xl font-bold mb-1">
-          Buy ${amount} of {selectedAsset}
+          Buy ${parsedAmount.toFixed(2)} of {selectedAsset}
         </h2>
         <p className="text-sm text-muted-foreground">
           {selectedAsset} price {getAssetPrice()}
@@ -151,7 +155,7 @@ const PaymentCompletion = ({
             <span className="font-semibold">Total</span>
           </div>
           <div className="text-xl font-bold flex items-center">
-            ${totalAmount.toFixed(2)}
+            ${parsedAmount.toFixed(2)}
           </div>
         </div>
       </div>
