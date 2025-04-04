@@ -115,8 +115,8 @@ const PaymentCompletion = ({
             <span className="text-muted-foreground">Pay with</span>
             <div className="flex items-center">
               <div className="flex items-center">
-                <div className="bg-blue-100 rounded-full p-1 mr-2">
-                  <div className="text-blue-500 font-bold text-xs">VISA</div>
+                <div className="bg-gradient-ping rounded-full p-1 mr-2">
+                  <div className="text-white font-bold text-xs">VISA</div>
                 </div>
                 <span className="font-medium">Visa **2450</span>
               </div>
