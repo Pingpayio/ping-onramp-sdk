@@ -15,11 +15,13 @@ const OnrampPage = () => {
     selectedOnramp,
     walletAddress,
     amount,
+    cardNumber,
     steps,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
+    handleCardNumberChange,
     handleContinue,
     handleBack,
     canContinue,
@@ -59,6 +61,8 @@ const OnrampPage = () => {
               handleBack={handleBack}
               handleContinue={handleContinue}
               canContinue={canContinue}
+              cardNumber={cardNumber}
+              onCardNumberChange={handleCardNumberChange}
             />
           </div>
         </main>

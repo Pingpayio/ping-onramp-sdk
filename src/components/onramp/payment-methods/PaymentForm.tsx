@@ -1,10 +1,14 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { ChevronDown, CreditCard, Info } from 'lucide-react';
 
-const PaymentForm = () => {
+interface PaymentFormProps {
+  onCardNumberChange?: (cardNumber: string) => void;
+}
+
+const PaymentForm = ({ onCardNumberChange }: PaymentFormProps = {}) => {
   const [formData, setFormData] = useState({
     country: 'US (+1)',
     mobileNumber: '',
@@ -19,6 +23,11 @@ const PaymentForm = () => {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
+    
+    // Pass card number to parent if provided
+    if (name === 'cardNumber' && onCardNumberChange) {
+      onCardNumberChange(value);
+    }
   };
 
   return (

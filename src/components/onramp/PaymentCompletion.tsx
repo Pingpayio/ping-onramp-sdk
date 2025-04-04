@@ -10,13 +10,15 @@ interface PaymentCompletionProps {
   selectedAsset: string | null;
   walletAddress: string | null;
   selectedOnramp: string | null;
+  cardNumber?: string;
 }
 
 const PaymentCompletion = ({
   amount,
   selectedAsset,
   walletAddress,
-  selectedOnramp
+  selectedOnramp,
+  cardNumber = ''
 }: PaymentCompletionProps) => {
   // Get parsed amount and ensure it's a valid number
   const parsedAmount = parseFloat(amount) || 0;
@@ -78,6 +80,14 @@ const PaymentCompletion = ({
     return "$0.00";
   };
 
+  // Get last 4 digits of card number, or use a default
+  const getLastFourDigits = () => {
+    if (cardNumber && cardNumber.length >= 4) {
+      return cardNumber.slice(-4);
+    }
+    return "2450"; // Default if no card number is provided
+  };
+
   const { afterFeeAmount, feeAmount } = getEstimatedAmount();
 
   return (
@@ -122,7 +132,7 @@ const PaymentCompletion = ({
                 <div className="bg-gradient-ping rounded-full p-1 mr-2">
                   <div className="text-white font-bold text-xs">VISA</div>
                 </div>
-                <span className="font-medium">Visa **2450</span>
+                <span className="font-medium">Visa **{getLastFourDigits()}</span>
               </div>
             </div>
           </div>

@@ -10,6 +10,7 @@ interface OnrampMethodSelectionProps {
   amount: string;
   selectedAsset: string | null;
   walletAddress: string | null;
+  onCardNumberChange?: (cardNumber: string) => void;
 }
 
 const OnrampMethodSelection = ({
@@ -17,7 +18,8 @@ const OnrampMethodSelection = ({
   selectedAsset,
   walletAddress,
   onOnrampSelect,
-  selectedOnramp
+  selectedOnramp,
+  onCardNumberChange
 }: OnrampMethodSelectionProps) => {
   // Auto-select apple pay as the default payment method
   useEffect(() => {
@@ -43,7 +45,7 @@ const OnrampMethodSelection = ({
       </div>
       
       {/* Credit Card Form */}
-      <PaymentForm />
+      <PaymentForm onCardNumberChange={onCardNumberChange} />
     </div>
   );
 };

@@ -21,6 +21,8 @@ interface OnrampStepContentProps {
   handleBack: () => void;
   handleContinue: () => void;
   canContinue: () => boolean;
+  cardNumber?: string;
+  onCardNumberChange?: (cardNumber: string) => void;
 }
 
 const OnrampStepContent = ({
@@ -38,7 +40,9 @@ const OnrampStepContent = ({
   onOnrampSelect,
   handleBack,
   handleContinue,
-  canContinue
+  canContinue,
+  cardNumber = '',
+  onCardNumberChange
 }: OnrampStepContentProps) => {
   
   const renderCurrentStep = () => {
@@ -64,6 +68,7 @@ const OnrampStepContent = ({
             amount={amount}
             selectedAsset={selectedAsset}
             walletAddress={walletAddress}
+            onCardNumberChange={onCardNumberChange}
           />
         );
       case 2:
@@ -73,6 +78,7 @@ const OnrampStepContent = ({
             selectedAsset={selectedAsset}
             walletAddress={walletAddress}
             selectedOnramp={selectedOnramp}
+            cardNumber={cardNumber}
           />
         );
       default:

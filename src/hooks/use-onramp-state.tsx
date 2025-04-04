@@ -9,6 +9,7 @@ export const useOnrampState = () => {
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('100');
   const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
+  const [cardNumber, setCardNumber] = useState<string>('');
 
   // Updated steps array - removed "Connect Wallet"
   const steps = ["Select Asset", "Payment Details", "Complete Payment"];
@@ -34,6 +35,10 @@ export const useOnrampState = () => {
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAmount(e.target.value);
+  };
+
+  const handleCardNumberChange = (cardNum: string) => {
+    setCardNumber(cardNum);
   };
 
   const handleContinue = () => {
@@ -83,11 +88,13 @@ export const useOnrampState = () => {
     walletAddress,
     amount,
     isWalletAddressValid,
+    cardNumber,
     steps,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
+    handleCardNumberChange,
     handleContinue,
     handleBack,
     canContinue,
