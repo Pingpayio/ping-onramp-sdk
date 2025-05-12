@@ -38,9 +38,9 @@ const StepProgress = ({
                 className={cn(
                   "h-10 w-10 rounded-full flex items-center justify-center font-medium text-sm mb-2 transition-all",
                   index < currentStep 
-                    ? "bg-ping-600 text-white" 
+                    ? "bg-ping-700 text-white" 
                     : index === currentStep 
-                    ? "border-2 border-ping-600 text-ping-600" 
+                    ? "border-2 border-ping-700 text-ping-700" 
                     : "border-2 border-gray-200 text-gray-400"
                 )}
               >
@@ -63,7 +63,7 @@ const StepProgress = ({
               <div 
                 className={cn(
                   "h-[2px] flex-1 mx-1", 
-                  index < currentStep ? "bg-ping-600" : "bg-gray-200"
+                  index < currentStep ? "bg-ping-700" : "bg-gray-200"
                 )}
               />
             )}
