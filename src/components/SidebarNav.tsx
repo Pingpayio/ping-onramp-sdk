@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Building2, BarChart2, Users, Target, ArrowRight } from 'lucide-react';
+import { Building2, BarChart2, Users, Target, ArrowDownUp } from 'lucide-react';
 
 const SidebarNav = () => {
   const location = useLocation();
@@ -14,7 +14,7 @@ const SidebarNav = () => {
   
   const menuItems = [{
     title: "Onramp",
-    icon: <ArrowRight className="h-5 w-5" />,
+    icon: <ArrowDownUp className="h-5 w-5" />,
     path: "/dashboard"
   }, {
     title: "Markets",
