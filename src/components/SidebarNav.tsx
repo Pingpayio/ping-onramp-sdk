@@ -1,42 +1,31 @@
-
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Building2, BarChart2, Users, Target } from 'lucide-react';
-
 const SidebarNav = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
-
-  const menuItems = [
-    {
-      title: "Dashboard",
-      icon: <LayoutDashboard className="h-5 w-5" />,
-      path: "/dashboard",
-    },
-    {
-      title: "Markets",
-      icon: <Building2 className="h-5 w-5" />,
-      path: "/markets",
-    },
-    {
-      title: "Stats",
-      icon: <BarChart2 className="h-5 w-5" />,
-      path: "/stats",
-    },
-    {
-      title: "Referrals",
-      icon: <Users className="h-5 w-5" />,
-      path: "/referrals",
-    },
-    {
-      title: "Points",
-      icon: <Target className="h-5 w-5" />,
-      path: "/points",
-    },
-  ];
-
-  return (
-    <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
+  const menuItems = [{
+    title: "Dashboard",
+    icon: <LayoutDashboard className="h-5 w-5" />,
+    path: "/dashboard"
+  }, {
+    title: "Markets",
+    icon: <Building2 className="h-5 w-5" />,
+    path: "/markets"
+  }, {
+    title: "Stats",
+    icon: <BarChart2 className="h-5 w-5" />,
+    path: "/stats"
+  }, {
+    title: "Referrals",
+    icon: <Users className="h-5 w-5" />,
+    path: "/referrals"
+  }, {
+    title: "Points",
+    icon: <Target className="h-5 w-5" />,
+    path: "/points"
+  }];
+  return <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
       <div className="pl-[40px] pt-6 pb-6">
         <div className="text-white text-2xl font-semibold flex items-center gap-2">
@@ -46,41 +35,20 @@ const SidebarNav = () => {
       </div>
 
       {/* User Rank */}
-      <div className="pl-[40px] pb-6 flex items-center">
-        <div className="rounded-full border-2 border-gray-700 p-4 mr-3">
-          <Target className="h-5 w-5 text-gray-400" />
-        </div>
-        <div>
-          <div className="text-gray-400 text-lg">Unranked</div>
-          <div className="text-gray-500 text-sm">Rank: N/A</div>
-        </div>
-      </div>
+      
 
       {/* Navigation */}
       <nav className="mt-4 flex-1">
         <ul className="space-y-1">
-          {menuItems.map((item) => (
-            <li key={item.title}>
-              <Link
-                to={item.path}
-                className={`flex items-center py-3 text-lg relative ${
-                  (item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) ||
-                  (isActive(item.path))
-                    ? "text-black"
-                    : "text-white hover:bg-gray-800"
-                }`}
-              >
-                {((item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) ||
-                 (isActive(item.path))) && (
-                  <div className="absolute left-[40px] right-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>
-                )}
+          {menuItems.map(item => <li key={item.title}>
+              <Link to={item.path} className={`flex items-center py-3 text-lg relative ${item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") || isActive(item.path) ? "text-black" : "text-white hover:bg-gray-800"}`}>
+                {(item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") || isActive(item.path)) && <div className="absolute left-[40px] right-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>}
                 <div className="pl-[40px] flex items-center">
                   <span className="mr-4">{item.icon}</span>
                   {item.title}
                 </div>
               </Link>
-            </li>
-          ))}
+            </li>)}
         </ul>
       </nav>
 
@@ -117,8 +85,6 @@ const SidebarNav = () => {
           </svg>
         </a>
       </div>
-    </aside>
-  );
+    </aside>;
 };
-
 export default SidebarNav;
