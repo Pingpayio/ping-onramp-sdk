@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Building2, BarChart2, Users, Target } from 'lucide-react';
@@ -27,16 +28,18 @@ const SidebarNav = () => {
   }];
   return <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
-      <div className="pl-[40px] pt-6 pb-6">
-        <div className="text-white text-2xl font-semibold flex items-center gap-2">
-          <img src="/placeholder.svg" alt="HyperLend" className="h-8 w-8 invert" />
-          <span>PingPay</span>
+      <div className="pt-[56px] pl-[40px]">
+        <div className="text-white text-2xl font-semibold flex items-center">
+          <img 
+            src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
+            alt="PING" 
+            className="h-[28px]" 
+          />
         </div>
       </div>
 
       {/* User Rank */}
       
-
       {/* Navigation */}
       <nav className="mt-4 flex-1">
         <ul className="space-y-1">
