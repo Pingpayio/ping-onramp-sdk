@@ -48,7 +48,6 @@ const SidebarNav = () => {
       const activeElement = navRefs.current[activeItemIndex];
       if (activeElement) {
         // Get relative position within the sidebar
-        const rect = activeElement.getBoundingClientRect();
         const top = activeElement.offsetTop;
         setDimensions({
           top,
@@ -101,11 +100,11 @@ const SidebarNav = () => {
                   isActive(item.path) ? "text-black" : "text-white hover:text-[#AF9EF9]"
                 )}
               >
-                {/* Icon and text content - always positioned the same way */}
-                <div className="pl-[44px] flex items-center">
-                  {/* Icon in circular bubble */}
+                {/* Icon and text content - centered vertically */}
+                <div className="pl-[44px] flex items-center h-[44px]">
+                  {/* Icon in circular bubble with proper padding */}
                   <div className={cn(
-                    "flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300",
+                    "flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 my-auto",
                     isActive(item.path) ? 
                     "bg-[#120714]" : 
                     "bg-transparent hover:bg-[#1A1326]"
@@ -167,3 +166,4 @@ const SidebarNav = () => {
 };
 
 export default SidebarNav;
+
