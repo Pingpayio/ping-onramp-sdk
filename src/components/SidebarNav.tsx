@@ -5,7 +5,12 @@ import { LayoutDashboard, Building2, BarChart2, Users, Target } from 'lucide-rea
 
 const SidebarNav = () => {
   const location = useLocation();
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (path === "/dashboard" && location.pathname === "/onramp") {
+      return true;
+    }
+    return location.pathname === path;
+  };
   
   const menuItems = [{
     title: "Onramp",
@@ -52,15 +57,13 @@ const SidebarNav = () => {
               <Link 
                 to={item.path} 
                 className={`flex items-center py-3 text-base font-medium relative ${
-                  (item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) || 
                   isActive(item.path) ? 
                   "text-black" : 
                   "text-white hover:bg-gray-800"
                 }`}
               >
                 {/* Active state pill background */}
-                {((item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) || 
-                  isActive(item.path)) && (
+                {isActive(item.path) && (
                   <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>
                 )}
                 
@@ -68,7 +71,6 @@ const SidebarNav = () => {
                 <div className="pl-[40px] flex items-center">
                   {/* Icon in circular bubble */}
                   <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
-                    (item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) || 
                     isActive(item.path) ? 
                     "bg-[#0E1116]" : 
                     "bg-transparent"
