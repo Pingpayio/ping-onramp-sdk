@@ -56,29 +56,29 @@ const SidebarNav = () => {
             <li key={item.title}>
               <Link 
                 to={item.path} 
-                className={`flex items-center py-3 text-base font-medium relative ${
+                className={`flex items-center py-3 text-base font-medium relative transition-colors duration-300 ${
                   isActive(item.path) ? 
                   "text-black" : 
-                  "text-white hover:bg-gray-800"
+                  "text-white hover:text-[#AF9EF9]"
                 }`}
               >
-                {/* Active state pill background */}
+                {/* Active state pill background - with smooth animation */}
                 {isActive(item.path) && (
-                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10"></div>
+                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10 transition-all duration-300 ease-in-out"></div>
                 )}
                 
                 {/* Icon and text content - always positioned the same way */}
                 <div className="pl-[44px] flex items-center">
-                  {/* Icon in circular bubble - consistent 44px padding for all states */}
-                  <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
+                  {/* Icon in circular bubble with smooth transition */}
+                  <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 ${
                     isActive(item.path) ? 
                     "bg-[#120714]" : 
-                    "bg-transparent"
+                    "bg-transparent hover:bg-[#1A1326]"
                   }`}>
-                    <span className={`flex items-center justify-center ${
+                    <span className={`flex items-center justify-center transition-colors duration-300 ${
                       isActive(item.path) ? 
                       "text-[#AF9EF9]" : 
-                      "text-white"
+                      "text-white group-hover:text-[#AF9EF9]"
                     }`}>
                       {item.icon}
                     </span>
