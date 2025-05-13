@@ -63,14 +63,19 @@ const SidebarNav = () => {
             <li key={item.title}>
               <Link
                 to={item.path}
-                className={`flex items-center py-3 text-lg pl-[40px] ${
+                className={`flex items-center py-3 text-lg relative ${
                   item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") 
-                    ? "bg-[#DBEADF] text-black rounded-l-full ml-3"
+                    ? "text-black"
                     : "text-white hover:bg-gray-800"
                 }`}
               >
-                <span className="mr-4">{item.icon}</span>
-                {item.title}
+                {item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") && (
+                  <div className="absolute left-[40px] right-[40px] h-[44px] w-[176px] bg-[#DBEADF] rounded-full -z-10"></div>
+                )}
+                <div className="pl-[40px] flex items-center">
+                  <span className="mr-4">{item.icon}</span>
+                  {item.title}
+                </div>
               </Link>
             </li>
           ))}
