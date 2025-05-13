@@ -64,18 +64,24 @@ const SidebarNav = () => {
               >
                 {/* Active state pill background */}
                 {isActive(item.path) && (
-                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>
+                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10"></div>
                 )}
                 
                 {/* Icon and text content - always positioned the same way */}
                 <div className="pl-[44px] flex items-center">
-                  {/* Icon in circular bubble - moved 4px to the right by changing pl-[40px] to pl-[44px] */}
+                  {/* Icon in circular bubble - consistent 44px padding for all states */}
                   <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
                     isActive(item.path) ? 
                     "bg-[#0E1116]" : 
                     "bg-transparent"
                   }`}>
-                    <span className="flex items-center justify-center">{item.icon}</span>
+                    <span className={`flex items-center justify-center ${
+                      isActive(item.path) ? 
+                      "text-[#AF9EF9]" : 
+                      "text-white"
+                    }`}>
+                      {item.icon}
+                    </span>
                   </div>
                   
                   {/* Text label with proper spacing from icon */}
