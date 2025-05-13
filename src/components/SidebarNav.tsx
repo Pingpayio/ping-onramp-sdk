@@ -68,8 +68,8 @@ const SidebarNav = () => {
                 )}
                 
                 {/* Icon and text content - always positioned the same way */}
-                <div className="pl-[40px] flex items-center">
-                  {/* Icon in circular bubble */}
+                <div className="pl-[44px] flex items-center">
+                  {/* Icon in circular bubble - moved 4px to the right by changing pl-[40px] to pl-[44px] */}
                   <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
                     isActive(item.path) ? 
                     "bg-[#0E1116]" : 
