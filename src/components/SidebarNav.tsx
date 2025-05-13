@@ -58,27 +58,22 @@ const SidebarNav = () => {
                 to={item.path} 
                 className={`flex items-center py-3 text-base font-medium relative ${
                   isActive(item.path) ? 
-                  "text-black" : 
-                  "text-white hover:bg-gray-800"
+                  "text-[#AF9EF9]" : 
+                  "text-white hover:text-[#AF9EF9] transition-colors duration-200"
                 }`}
               >
-                {/* Active state pill background */}
-                {isActive(item.path) && (
-                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10"></div>
-                )}
-                
-                {/* Icon and text content - always positioned the same way */}
+                {/* Icon and text content */}
                 <div className="pl-[44px] flex items-center">
-                  {/* Icon in circular bubble - consistent 44px padding for all states */}
-                  <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
+                  {/* Icon in circular bubble */}
+                  <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-200 ${
                     isActive(item.path) ? 
-                    "bg-[#120714]" : 
+                    "bg-[#AF9EF9]/10" : 
                     "bg-transparent"
                   }`}>
                     <span className={`flex items-center justify-center ${
                       isActive(item.path) ? 
                       "text-[#AF9EF9]" : 
-                      "text-white"
+                      "text-white group-hover:text-[#AF9EF9]"
                     }`}>
                       {item.icon}
                     </span>
