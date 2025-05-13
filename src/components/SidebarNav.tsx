@@ -2,9 +2,11 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Building2, BarChart2, Users, Target } from 'lucide-react';
+
 const SidebarNav = () => {
   const location = useLocation();
   const isActive = (path: string) => location.pathname === path;
+  
   const menuItems = [{
     title: "Dashboard",
     icon: <LayoutDashboard className="h-5 w-5" />,
@@ -26,7 +28,9 @@ const SidebarNav = () => {
     icon: <Target className="h-5 w-5" />,
     path: "/points"
   }];
-  return <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
+  
+  return (
+    <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
       <div className="pt-[56px] pl-[40px]">
         <div className="text-white text-2xl font-semibold flex items-center">
@@ -41,17 +45,43 @@ const SidebarNav = () => {
       {/* User Rank */}
       
       {/* Navigation */}
-      <nav className="mt-4 flex-1">
+      <nav className="mt-8 flex-1">
         <ul className="space-y-1">
-          {menuItems.map(item => <li key={item.title}>
-              <Link to={item.path} className={`flex items-center py-3 text-lg relative ${item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") || isActive(item.path) ? "text-black" : "text-white hover:bg-gray-800"}`}>
-                {(item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") || isActive(item.path)) && <div className="absolute left-[40px] right-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>}
+          {menuItems.map(item => (
+            <li key={item.title}>
+              <Link 
+                to={item.path} 
+                className={`flex items-center py-3 text-base font-medium relative ${
+                  (item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) || 
+                  isActive(item.path) ? 
+                  "text-black" : 
+                  "text-white hover:bg-gray-800"
+                }`}
+              >
+                {/* Active state pill background */}
+                {((item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) || 
+                  isActive(item.path)) && (
+                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>
+                )}
+                
+                {/* Icon and text content - always positioned the same way */}
                 <div className="pl-[40px] flex items-center">
-                  <span className="mr-4">{item.icon}</span>
-                  {item.title}
+                  {/* Icon in circular bubble */}
+                  <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
+                    (item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) || 
+                    isActive(item.path) ? 
+                    "bg-[#0E1116]" : 
+                    "bg-transparent"
+                  }`}>
+                    <span className="flex items-center justify-center">{item.icon}</span>
+                  </div>
+                  
+                  {/* Text label with proper spacing from icon */}
+                  <span className="ml-3">{item.title}</span>
                 </div>
               </Link>
-            </li>)}
+            </li>
+          ))}
         </ul>
       </nav>
 
@@ -88,6 +118,8 @@ const SidebarNav = () => {
           </svg>
         </a>
       </div>
-    </aside>;
+    </aside>
+  );
 };
+
 export default SidebarNav;
