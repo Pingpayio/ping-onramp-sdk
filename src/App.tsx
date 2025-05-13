@@ -20,7 +20,11 @@ const App = () => (
           <Route path="/" element={<Navigate to="/onramp" replace />} />
           <Route path="/onramp" element={<Onramp />} />
           <Route path="/transaction" element={<Transaction />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+          <Route path="/dashboard" element={<Navigate to="/onramp" replace />} />
+          <Route path="/markets" element={<Navigate to="/onramp" replace />} />
+          <Route path="/stats" element={<Navigate to="/onramp" replace />} />
+          <Route path="/referrals" element={<Navigate to="/onramp" replace />} />
+          <Route path="/points" element={<Navigate to="/onramp" replace />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

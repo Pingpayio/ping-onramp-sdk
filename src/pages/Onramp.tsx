@@ -5,6 +5,7 @@ import StepProgress from '@/components/StepProgress';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
 import OnrampStepContent from '@/components/onramp/OnrampStepContent';
 import { useOnrampState } from '@/hooks/use-onramp-state';
+import SidebarNav from '@/components/SidebarNav';
 
 const OnrampPage = () => {
   const isMobile = useIsMobile();
@@ -30,42 +31,46 @@ const OnrampPage = () => {
   } = useOnrampState();
 
   return (
-    <div className="h-screen bg-gradient-to-b from-white to-ping-50 flex flex-col overflow-hidden">
-      <div className={`container mx-auto px-3 py-3 flex flex-col h-full ${isMobile ? 'max-w-full' : 'max-w-3xl'}`}>
-        <OnrampHeader />
+    <div className="flex h-screen bg-[#0E1116] overflow-hidden">
+      <SidebarNav />
+      
+      <div className="flex-1 ml-64">
+        <div className={`px-6 py-6 flex flex-col h-full ${isMobile ? 'max-w-full' : ''}`}>
+          <OnrampHeader />
 
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <div className="bg-white rounded-xl border shadow-sm p-3 mb-2">
-            <StepProgress 
-              steps={steps} 
-              currentStep={currentStep} 
-              onStepClick={handleStepClick}
-              allowNavigation={true}
-            />
-          </div>
+          <main className="flex-1 flex flex-col overflow-hidden mt-4">
+            <div className="bg-white rounded-xl border shadow-sm p-3 mb-2">
+              <StepProgress 
+                steps={steps} 
+                currentStep={currentStep} 
+                onStepClick={handleStepClick}
+                allowNavigation={true}
+              />
+            </div>
 
-          <div className="bg-white rounded-xl border shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
-            <OnrampStepContent
-              currentStep={currentStep}
-              steps={steps}
-              selectedAsset={selectedAsset}
-              amount={amount}
-              onAssetSelect={handleAssetSelect}
-              onAmountChange={handleAmountChange}
-              open={open}
-              setOpen={setOpen}
-              walletAddress={walletAddress}
-              onWalletAddressChange={handleWalletAddressChange}
-              selectedOnramp={selectedOnramp}
-              onOnrampSelect={handleOnrampSelect}
-              handleBack={handleBack}
-              handleContinue={handleContinue}
-              canContinue={canContinue}
-              cardNumber={cardNumber}
-              onCardNumberChange={handleCardNumberChange}
-            />
-          </div>
-        </main>
+            <div className="bg-white rounded-xl border shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
+              <OnrampStepContent
+                currentStep={currentStep}
+                steps={steps}
+                selectedAsset={selectedAsset}
+                amount={amount}
+                onAssetSelect={handleAssetSelect}
+                onAmountChange={handleAmountChange}
+                open={open}
+                setOpen={setOpen}
+                walletAddress={walletAddress}
+                onWalletAddressChange={handleWalletAddressChange}
+                selectedOnramp={selectedOnramp}
+                onOnrampSelect={handleOnrampSelect}
+                handleBack={handleBack}
+                handleContinue={handleContinue}
+                canContinue={canContinue}
+                cardNumber={cardNumber}
+                onCardNumberChange={handleCardNumberChange}
+              />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
