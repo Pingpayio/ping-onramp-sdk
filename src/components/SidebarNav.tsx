@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils';
 const SidebarNav = () => {
   const location = useLocation();
   const [activeIndex, setActiveIndex] = useState(0);
-  const [dimensions, setDimensions] = useState({ top: 0, height: 44 });
+  const [dimensions, setDimensions] = useState({ top: 0, height: 44 }); // Fixed height at 44px
   const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
   
   const isActive = (path: string) => {
@@ -52,7 +52,7 @@ const SidebarNav = () => {
         const top = activeElement.offsetTop;
         setDimensions({
           top,
-          height: rect.height
+          height: 44 // Ensure the height is always 44px
         });
       }
     }
@@ -81,7 +81,7 @@ const SidebarNav = () => {
           style={{ 
             top: `${dimensions.top}px`,
             left: '40px',
-            height: `${dimensions.height}px`,
+            height: '44px', // Fixed height at 44px
             width: '176px',
           }}
         >
