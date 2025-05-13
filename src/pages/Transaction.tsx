@@ -30,7 +30,7 @@ const Transaction = () => {
     <div className="flex h-screen bg-[#0E1116] overflow-hidden">
       <SidebarNav />
       
-      <div className="flex-1 ml-64">
+      <div className="flex-1 ml-[256px]">
         <div className="container mx-auto px-6 py-6 flex flex-col h-full">
           <div className="flex-1 flex items-center justify-center">
             <TransactionStatus 

@@ -36,9 +36,9 @@ const SidebarNav = () => {
   ];
 
   return (
-    <aside className="bg-[#0E1116] flex flex-col h-screen w-64 fixed left-0 top-0">
+    <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
-      <div className="p-6">
+      <div className="pl-[40px] pt-6 pb-6">
         <div className="text-white text-2xl font-semibold flex items-center gap-2">
           <img src="/placeholder.svg" alt="HyperLend" className="h-8 w-8 invert" />
           <span>PingPay</span>
@@ -46,7 +46,7 @@ const SidebarNav = () => {
       </div>
 
       {/* User Rank */}
-      <div className="px-6 pb-6 flex items-center">
+      <div className="pl-[40px] pb-6 flex items-center">
         <div className="rounded-full border-2 border-gray-700 p-4 mr-3">
           <Target className="h-5 w-5 text-gray-400" />
         </div>
@@ -63,7 +63,7 @@ const SidebarNav = () => {
             <li key={item.title}>
               <Link
                 to={item.path}
-                className={`flex items-center px-6 py-3 text-lg ${
+                className={`flex items-center py-3 text-lg pl-[40px] ${
                   item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") 
                     ? "bg-[#DBEADF] text-black rounded-l-full ml-3"
                     : "text-white hover:bg-gray-800"
@@ -78,12 +78,12 @@ const SidebarNav = () => {
       </nav>
 
       {/* Version */}
-      <div className="p-6 text-gray-500 text-sm">
+      <div className="pl-[40px] pb-6 text-gray-500 text-sm">
         v2.4b58a
       </div>
 
       {/* Social Links */}
-      <div className="flex p-6 pt-2 space-x-4">
+      <div className="flex pl-[40px] pt-2 pb-6 space-x-4">
         <a href="#" className="text-gray-400 hover:text-white">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

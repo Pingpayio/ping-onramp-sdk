@@ -34,7 +34,7 @@ const OnrampPage = () => {
     <div className="flex h-screen bg-[#0E1116] overflow-hidden">
       <SidebarNav />
       
-      <div className="flex-1 ml-64">
+      <div className="flex-1 ml-[256px]">
         <div className={`px-6 py-6 flex flex-col h-full ${isMobile ? 'max-w-full' : ''}`}>
           <OnrampHeader />
 
