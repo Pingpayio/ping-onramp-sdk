@@ -31,7 +31,7 @@ const OnrampPage = () => {
   } = useOnrampState();
 
   return (
-    <div className="flex h-screen bg-[#0E1116] overflow-hidden">
+    <div className="flex h-screen bg-[#120714] overflow-hidden">
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">

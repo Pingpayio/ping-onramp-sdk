@@ -35,7 +35,7 @@ const SidebarNav = () => {
   }];
   
   return (
-    <aside className="bg-[#0E1116] flex flex-col h-screen w-[256px] fixed left-0 top-0">
+    <aside className="bg-[#120714] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
       <div className="pt-[56px] pl-[40px]">
         <div className="text-white text-2xl font-semibold flex items-center">
@@ -72,7 +72,7 @@ const SidebarNav = () => {
                   {/* Icon in circular bubble - consistent 44px padding for all states */}
                   <div className={`flex items-center justify-center w-9 h-9 rounded-full ${
                     isActive(item.path) ? 
-                    "bg-[#0E1116]" : 
+                    "bg-[#120714]" : 
                     "bg-transparent"
                   }`}>
                     <span className={`flex items-center justify-center ${
