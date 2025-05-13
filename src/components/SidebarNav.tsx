@@ -8,7 +8,7 @@ const SidebarNav = () => {
   const isActive = (path: string) => location.pathname === path;
   
   const menuItems = [{
-    title: "Dashboard",
+    title: "Onramp",
     icon: <LayoutDashboard className="h-5 w-5" />,
     path: "/dashboard"
   }, {
