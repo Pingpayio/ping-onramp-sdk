@@ -64,13 +64,15 @@ const SidebarNav = () => {
               <Link
                 to={item.path}
                 className={`flex items-center py-3 text-lg relative ${
-                  item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") 
+                  (item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) ||
+                  (isActive(item.path))
                     ? "text-black"
                     : "text-white hover:bg-gray-800"
                 }`}
               >
-                {item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp") && (
-                  <div className="absolute left-[40px] right-[40px] h-[44px] w-[176px] bg-[#DBEADF] rounded-full -z-10"></div>
+                {((item.title === "Dashboard" && item.path === "/dashboard" && isActive("/onramp")) ||
+                 (isActive(item.path))) && (
+                  <div className="absolute left-[40px] right-[40px] h-[44px] w-[176px] bg-[#C8A2FF] rounded-full -z-10"></div>
                 )}
                 <div className="pl-[40px] flex items-center">
                   <span className="mr-4">{item.icon}</span>
