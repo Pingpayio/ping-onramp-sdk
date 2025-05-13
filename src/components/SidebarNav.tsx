@@ -56,21 +56,26 @@ const SidebarNav = () => {
             <li key={item.title}>
               <Link 
                 to={item.path} 
-                className={`flex items-center py-3 text-base font-medium relative ${
+                className={`flex items-center py-3 text-base font-medium relative transition-colors duration-300 ${
                   isActive(item.path) ? 
-                  "text-[#AF9EF9]" : 
-                  "text-white hover:text-[#AF9EF9] transition-colors duration-200"
+                  "text-black" : 
+                  "text-white hover:text-[#AF9EF9]"
                 }`}
               >
-                {/* Icon and text content */}
+                {/* Active state pill background - with smooth animation */}
+                {isActive(item.path) && (
+                  <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10 transition-all duration-300 ease-in-out"></div>
+                )}
+                
+                {/* Icon and text content - always positioned the same way */}
                 <div className="pl-[44px] flex items-center">
-                  {/* Icon in circular bubble */}
-                  <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-200 ${
+                  {/* Icon in circular bubble with smooth transition */}
+                  <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 ${
                     isActive(item.path) ? 
-                    "bg-[#AF9EF9]/10" : 
-                    "bg-transparent"
+                    "bg-[#120714]" : 
+                    "bg-transparent hover:bg-[#1A1326]"
                   }`}>
-                    <span className={`flex items-center justify-center ${
+                    <span className={`flex items-center justify-center transition-colors duration-300 ${
                       isActive(item.path) ? 
                       "text-[#AF9EF9]" : 
                       "text-white group-hover:text-[#AF9EF9]"
