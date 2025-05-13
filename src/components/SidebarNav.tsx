@@ -1,15 +1,10 @@
 
-import React, { useRef, useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Building2, BarChart2, Users, Target, ArrowDownUp } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
   const location = useLocation();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [dimensions, setDimensions] = useState({ top: 0, height: 44 }); // Fixed height at 44px
-  const navRefs = useRef<(HTMLAnchorElement | null)[]>([]);
-  
   const isActive = (path: string) => {
     if (path === "/dashboard" && location.pathname === "/onramp") {
       return true;
@@ -38,25 +33,7 @@ const SidebarNav = () => {
     icon: <Target className="h-5 w-5" />,
     path: "/points"
   }];
-
-  // Find the active menu item and update the indicator position
-  useEffect(() => {
-    const activeItemIndex = menuItems.findIndex(item => isActive(item.path));
-    if (activeItemIndex !== -1) {
-      setActiveIndex(activeItemIndex);
-      
-      const activeElement = navRefs.current[activeItemIndex];
-      if (activeElement) {
-        // Get relative position within the sidebar
-        const top = activeElement.offsetTop;
-        setDimensions({
-          top,
-          height: 44 // Ensure the height is always 44px
-        });
-      }
-    }
-  }, [location.pathname]);
-
+  
   return (
     <aside className="bg-[#120714] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
@@ -73,48 +50,31 @@ const SidebarNav = () => {
       {/* User Rank */}
       
       {/* Navigation */}
-      <nav className="mt-8 flex-1 relative">
-        {/* Animated active indicator - moves with spring animation */}
-        <div 
-          className="absolute z-0 transition-all duration-300 ease-[cubic-bezier(0.34,1.56,0.64,1)]" 
-          style={{ 
-            top: `${dimensions.top}px`,
-            left: '40px',
-            height: '44px', // Fixed height at 44px
-            width: '176px',
-          }}
-        >
-          {activeIndex > -1 && (
-            <div className="bg-[#AF9EF9] h-full w-full rounded-full" />
-          )}
-        </div>
-
+      <nav className="mt-8 flex-1">
         <ul className="space-y-1">
-          {menuItems.map((item, index) => (
+          {menuItems.map(item => (
             <li key={item.title}>
               <Link 
-                ref={el => navRefs.current[index] = el}
                 to={item.path} 
-                className={cn(
-                  "flex items-center py-3 text-base font-medium relative transition-colors duration-300",
-                  isActive(item.path) ? "text-black" : "text-white hover:text-[#AF9EF9]"
-                )}
+                className={`flex items-center py-3 text-base font-medium relative ${
+                  isActive(item.path) ? 
+                  "text-[#AF9EF9]" : 
+                  "text-white hover:text-[#AF9EF9] transition-colors duration-200"
+                }`}
               >
                 {/* Icon and text content */}
-                <div className="pl-[44px] flex items-center justify-center h-[44px]">
-                  {/* Icon in circular bubble with precise spacing - 4px top and bottom */}
-                  <div className={cn(
-                    "flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300",
+                <div className="pl-[44px] flex items-center">
+                  {/* Icon in circular bubble */}
+                  <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-200 ${
                     isActive(item.path) ? 
-                    "bg-[#120714]" : 
-                    "bg-transparent hover:bg-[#1A1326]"
-                  )}>
-                    <span className={cn(
-                      "flex items-center justify-center transition-colors duration-300",
+                    "bg-[#AF9EF9]/10" : 
+                    "bg-transparent"
+                  }`}>
+                    <span className={`flex items-center justify-center ${
                       isActive(item.path) ? 
                       "text-[#AF9EF9]" : 
                       "text-white group-hover:text-[#AF9EF9]"
-                    )}>
+                    }`}>
                       {item.icon}
                     </span>
                   </div>
