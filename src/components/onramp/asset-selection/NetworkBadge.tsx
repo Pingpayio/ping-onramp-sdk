@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Globe } from 'lucide-react';
+import { Globe, ChevronDown } from 'lucide-react';
 import { 
   Select,
   SelectContent,
@@ -34,6 +34,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             <Globe className="h-3.5 w-3.5 text-ping-700" />
           </div>
           <SelectValue placeholder="Select network" className="font-normal text-white/60" />
+          <ChevronDown className="h-4 w-4 text-white/60 ml-2" />
         </SelectTrigger>
         <SelectContent className="bg-[#1A1F2C] border-white/10 text-white/60 border-[#AF9EF9]">
           <SelectItem value="NEAR Protocol" className="text-white/60 text-sm font-normal">NEAR Protocol</SelectItem>
