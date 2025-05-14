@@ -116,20 +116,20 @@ const SidebarNav = () => {
         </ul>
       </nav>
 
-      {/* Social Links */}
-      <div className="flex pl-[40px] pt-2 pb-6 space-x-4">
-        <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white">
+      {/* Social Links - Updated for better horizontal alignment and white color */}
+      <div className="flex pl-[40px] pt-2 pb-6 space-x-6">
+        <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9]">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
           </svg>
         </a>
-        <a href="#" className="text-gray-400 hover:text-white">
+        <a href="#" className="text-white hover:text-[#AF9EF9]">
           <Github size={20} />
         </a>
-        <a href="#" className="text-gray-400 hover:text-white">
+        <a href="#" className="text-white hover:text-[#AF9EF9]">
           <ExternalLink size={20} />
         </a>
-        <a href="#" className="text-gray-400 hover:text-white">
+        <a href="#" className="text-white hover:text-[#AF9EF9]">
           <BookOpen size={20} />
         </a>
       </div>
