@@ -35,8 +35,8 @@ const AmountInput = ({
       {selectedAsset && parseFloat(amount) > 0 && (
         <div className="flex items-start justify-start mb-1">
           <div className="flex items-center">
-            <ArrowUpDown className="h-4 w-4 text-ping-700 mr-1" />
-            <span className="text-ping-700 text-sm md:text-base font-medium">
+            <ArrowUpDown className="h-4 w-4 text-[#AF9EF9] mr-1" />
+            <span className="text-[#AF9EF9] text-sm md:text-base font-medium">
               {estimatedAmount} {selectedAsset}
             </span>
           </div>
