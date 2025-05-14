@@ -54,7 +54,7 @@ const OnrampNavigation = ({
           onClick={handleContinue}
           disabled={!canContinue()} // Call the function to get the boolean value
           withArrow
-          className={isMobile ? "w-1/2" : ""}
+          className={`rounded-full ${isMobile ? "w-1/2" : ""}`}
         >
           {getButtonText()}
         </Button>
