@@ -22,6 +22,20 @@ const PaymentMethod = ({
     onMethodSelect(value);
   };
 
+  // Dynamic subtext based on the selected payment method
+  const getMethodSubtext = (method: string) => {
+    switch (method) {
+      case 'card':
+        return 'Debit or Credit Card (Available in most countries)';
+      case 'ach':
+        return 'Bank Transfer (ACH) - US only';
+      case 'apple':
+        return 'Apple Pay - Available on iOS devices';
+      default:
+        return '';
+    }
+  };
+
   return (
     <div className="flex flex-col">
       <label className="text-sm text-white mb-1">Payment Method</label>
@@ -41,6 +55,9 @@ const PaymentMethod = ({
           <SelectItem value="apple" className="text-white/60 text-sm font-normal">Apple Pay</SelectItem>
         </SelectContent>
       </Select>
+      <p className="text-xs text-white/40 mt-1">
+        {getMethodSubtext(selectedMethod)}
+      </p>
     </div>
   );
 };
