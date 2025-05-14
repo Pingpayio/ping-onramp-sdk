@@ -15,7 +15,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
   const getNetworkName = (asset: string) => {
     switch (asset) {
       case 'NEAR':
-        return 'NEAR Network';
+        return 'NEAR Protocol';
       case 'BTC':
         return 'Bitcoin Network';
       case 'ETH':
@@ -42,6 +42,24 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
     }`;
   };
 
+  // Get the number of networks an asset is available on
+  const getNetworkCount = (asset: string) => {
+    switch (asset) {
+      case 'NEAR':
+        return 1;
+      case 'BTC':
+        return 1;
+      case 'ETH':
+        return 2; // Example: ETH is available on Ethereum and L2s
+      case 'USDC':
+        return 4; // Example: USDC is available on multiple networks
+      default:
+        return 1;
+    }
+  };
+
+  const networkCount = getNetworkCount(selectedAsset);
+
   return (
     <div className="flex flex-col">
       <label className="text-sm text-white mb-1">Network</label>
@@ -59,6 +77,10 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
           <span className="text-white/60 ml-2">{getNetworkName(selectedAsset)}</span>
         </div>
       </div>
+      {/* Subtext showing network availability */}
+      <p className="text-xs text-white/50 mt-1">
+        {selectedAsset} is available on {networkCount} {networkCount === 1 ? 'network' : 'networks'}
+      </p>
     </div>
   );
 };
