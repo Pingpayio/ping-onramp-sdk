@@ -13,7 +13,7 @@ interface TransactionStatusProps {
 }
 
 const TransactionStatus = ({
-  status,
+  status = 'pending', // Provide a default value
   title,
   description,
   txHash
@@ -36,7 +36,9 @@ const TransactionStatus = ({
     }
   };
 
-  const config = statusConfig[status];
+  // Ensure status is a valid value, default to pending if not
+  const safeStatus = (status && statusConfig[status]) ? status : 'pending';
+  const config = statusConfig[safeStatus];
 
   return (
     <div className={cn("border rounded-lg p-5", config.color)}>
@@ -55,7 +57,7 @@ const TransactionStatus = ({
             </div>
           )}
           
-          {status === 'pending' && (
+          {safeStatus === 'pending' && (
             <div className="mt-3">
               <div className="h-2 w-full bg-yellow-200 rounded-full overflow-hidden">
                 <div className="h-full bg-yellow-500 rounded-full w-1/2 animate-pulse-slow"></div>
