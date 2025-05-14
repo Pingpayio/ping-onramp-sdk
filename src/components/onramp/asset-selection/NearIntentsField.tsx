@@ -1,3 +1,4 @@
+
 import React from 'react';
 interface NearIntentsFieldProps {
   depositAddress?: string;
@@ -20,8 +21,8 @@ const NearIntentsField = ({
         <label className="text-sm text-white">NEAR Intents Deposit Address</label>
       </div>
       
-      {/* Address display - removed nested div and aligned text directly below icon */}
-      <span className="text-xs text-[#AF9EF9] font-normal pl-1.5">
+      {/* Address display - removed padding-left completely */}
+      <span className="text-xs text-[#AF9EF9] font-normal">
         {depositAddress}
       </span>
     </div>;
