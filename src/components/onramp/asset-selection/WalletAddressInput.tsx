@@ -1,4 +1,5 @@
 import React from 'react';
+import { Input } from '@/components/ui/input';
 
 interface WalletAddressInputProps {
   walletAddress: string;
@@ -6,19 +7,21 @@ interface WalletAddressInputProps {
   placeholder?: string;
 }
 
-const WalletAddressInput = ({
-  walletAddress,
+const WalletAddressInput = ({ 
+  walletAddress, 
   onWalletAddressChange,
-  placeholder = "Enter wallet address"
+  placeholder = "Enter address"
 }: WalletAddressInputProps) => {
   return (
-    <input
+    <Input
       type="text"
-      id="wallet-address"
-      className="w-full h-[50px] px-3 rounded-lg bg-white/[0.08] border border-[rgba(255,255,255,0.18)] focus-within:border-[#AF9EF9] focus-within:border-[1.5px] hover:border-[#AF9EF9]/70 text-white/60 text-sm font-normal focus:outline-none focus:ring-0"
-      placeholder={placeholder}
       value={walletAddress}
       onChange={onWalletAddressChange}
+      placeholder={placeholder}
+      className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] 
+      text-white/60 flex items-center px-3
+      focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none
+      focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
     />
   );
 };
