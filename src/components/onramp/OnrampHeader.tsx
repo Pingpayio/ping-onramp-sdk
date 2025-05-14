@@ -7,7 +7,7 @@ const OnrampHeader = () => {
   return (
     <header className="flex justify-between items-center h-[60px]">
       <div className="flex items-center">
-        <h1 className="text-[30px] font-normal text-white">
+        <h1 className="text-[30px] font-normal text-white leading-none">
           Onramp
         </h1>
       </div>
