@@ -6,7 +6,7 @@ interface NearIntentsFieldProps {
 const NearIntentsField = ({
   depositAddress = "0x2bC777d98282bd50dCF9AeBAe2F864816f9d54d9"
 }: NearIntentsFieldProps) => {
-  return <div className="flex flex-col mt-3">
+  return <div className="flex flex-col mt-1">
       {/* Title with NEAR Intents logo */}
       <div className="flex items-center gap-2 mb-1">
         <div className="w-5 h-5 rounded-full bg-gradient-to-r from-green-500 to-white flex items-center justify-center overflow-hidden relative">
