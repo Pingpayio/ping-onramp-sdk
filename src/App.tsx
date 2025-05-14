@@ -4,11 +4,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Layout from "./components/Layout";
 import Onramp from "./pages/Onramp";
 import Transaction from "./pages/Transaction";
 import NotFound from "./pages/NotFound";
-import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -19,17 +17,9 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/onramp" element={
-            <Layout>
-              <Onramp />
-            </Layout>
-          } />
-          <Route path="/transaction" element={
-            <Layout>
-              <Transaction />
-            </Layout>
-          } />
+          <Route path="/" element={<Navigate to="/onramp" replace />} />
+          <Route path="/onramp" element={<Onramp />} />
+          <Route path="/transaction" element={<Transaction />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

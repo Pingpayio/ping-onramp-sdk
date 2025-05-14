@@ -25,30 +25,25 @@ const OnrampNavigation = ({
   // Function to determine button text based on current step
   const getButtonText = () => {
     if (currentStep === 1) {
-      return isMobile ? "Continue" : "Continue";
+      return "Continue";
     }
-    return isMobile ? "Continue" : "Continue to Payment";
+    return "Continue to Payment";
   };
   
   return (
-    <div className="flex justify-between pt-3 gap-2 md:gap-4">
+    <div className="flex justify-between pt-3">
       {currentStep > 0 ? (
         <Button
           variant="outline"
           onClick={handleBack}
-          icon={<ArrowLeft className="h-3 w-3 md:h-4 md:w-4" />}
-          size={isMobile ? "sm" : "md"}
+          icon={<ArrowLeft className="h-4 w-4" />}
         >
-          {isMobile ? "" : "Back"}
+          Back
         </Button>
       ) : (
         <Link to="/">
-          <Button 
-            variant="outline" 
-            icon={<ArrowLeft className="h-3 w-3 md:h-4 md:w-4" />}
-            size={isMobile ? "sm" : "md"}
-          >
-            {isMobile ? "" : "Back"}
+          <Button variant="outline" icon={<ArrowLeft className="h-4 w-4" />}>
+            Back
           </Button>
         </Link>
       )}
@@ -59,8 +54,7 @@ const OnrampNavigation = ({
           onClick={handleContinue}
           disabled={!canContinue()} // Call the function to get the boolean value
           withArrow
-          className={isMobile ? "flex-grow" : ""}
-          size={isMobile ? "sm" : "md"}
+          className={isMobile ? "w-1/2" : ""}
         >
           {getButtonText()}
         </Button>

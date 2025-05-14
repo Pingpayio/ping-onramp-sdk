@@ -33,10 +33,10 @@ const Button = ({
   };
   
   const sizeStyles = {
-    sm: "h-8 px-2 md:h-9 md:px-3 rounded-md text-xs md:text-sm",
-    md: "h-9 md:h-10 py-1 md:py-2 px-3 md:px-4 text-sm",
-    lg: "h-10 md:h-12 px-6 md:px-8 rounded-md text-base md:text-lg",
-    icon: "h-9 w-9 md:h-10 md:w-10",
+    sm: "h-9 px-3 rounded-md text-sm",
+    md: "h-10 py-2 px-4",
+    lg: "h-12 px-8 rounded-md text-lg",
+    icon: "h-10 w-10",
   };
 
   return (
@@ -52,7 +52,7 @@ const Button = ({
     >
       {isLoading ? (
         <div className="flex items-center">
-          <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
@@ -60,9 +60,9 @@ const Button = ({
         </div>
       ) : (
         <div className="flex items-center">
-          {icon && <span className="mr-1 md:mr-2">{icon}</span>}
+          {icon && <span className="mr-2">{icon}</span>}
           {children}
-          {withArrow && <ChevronRight className="ml-1 md:ml-2 h-3 w-3 md:h-4 md:w-4" />}
+          {withArrow && <ChevronRight className="ml-2 h-4 w-4" />}
         </div>
       )}
     </button>
