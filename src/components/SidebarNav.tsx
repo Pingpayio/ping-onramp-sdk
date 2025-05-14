@@ -1,12 +1,18 @@
-
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowDownUp, LayoutDashboard, Link as LinkIcon, User, Github, ExternalLink, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const isActive = (path: string) => location.pathname === path;
+  
+  const handleLogoClick = () => {
+    navigate('/onramp');
+    // Force a page refresh
+    window.location.reload();
+  };
   
   const menuItems = [{
     title: "Onramp",
@@ -48,7 +54,10 @@ const SidebarNav = () => {
     <aside className="bg-[#121212] hidden md:flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
       <div className="pt-[56px] pl-[40px]">
-        <div className="text-white text-2xl font-semibold flex items-center">
+        <div 
+          className="text-white text-2xl font-semibold flex items-center cursor-pointer" 
+          onClick={handleLogoClick}
+        >
           <img 
             src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
             alt="PING" 
