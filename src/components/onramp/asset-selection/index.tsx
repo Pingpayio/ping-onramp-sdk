@@ -38,10 +38,12 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center h-full">
-      {/* 1. Title section - "Buy Crypto" - reduced margin */}
-      <h2 className="text-lg md:text-xl font-semibold mb-1 md:mb-2 text-center">
-        {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
-      </h2>
+      {/* 1. Title section - "Buy Crypto" - styled to match Onramp History */}
+      <div className="flex items-center gap-2 mb-4 w-full">
+        <h2 className="text-xl font-medium text-white">
+          {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
+        </h2>
+      </div>
       
       {/* 2 & 3. Amount input with estimated value - REDUCED spacing */}
       <AmountInput 
