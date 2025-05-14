@@ -1,6 +1,7 @@
+
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Link as LinkIcon, Gitlab, User, Github, ExternalLink, BookOpen } from 'lucide-react';
+import { ArrowDownUp, LayoutDashboard, Link as LinkIcon, User, Github, ExternalLink, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
@@ -14,7 +15,7 @@ const SidebarNav = () => {
   
   const menuItems = [{
     title: "Onramp",
-    icon: <LayoutDashboard className="h-5 w-5" />,
+    icon: <ArrowDownUp className="h-5 w-5" />, // Reverted back to ArrowDownUp for Onramp
     path: "/dashboard",
     disabled: false
   }, {
@@ -29,7 +30,17 @@ const SidebarNav = () => {
     disabled: true
   }, {
     title: "Subscriptions",
-    icon: <Gitlab className="h-5 w-5" />,
+    // Using a combination of icons or styling to represent recurring arrows
+    icon: (
+      <div className="relative h-5 w-5 flex items-center justify-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-repeat">
+          <path d="m17 2 4 4-4 4" />
+          <path d="M3 11v-1a4 4 0 0 1 4-4h14" />
+          <path d="m7 22-4-4 4-4" />
+          <path d="M21 13v1a4 4 0 0 1-4 4H3" />
+        </svg>
+      </div>
+    ),
     path: "/referrals",
     disabled: true
   }, {
