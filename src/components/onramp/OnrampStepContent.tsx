@@ -96,7 +96,7 @@ const OnrampStepContent = ({
         steps={steps}
         handleBack={handleBack}
         handleContinue={handleContinue}
-        canContinue={canContinue()}
+        canContinue={canContinue}
       />
     </div>
   );

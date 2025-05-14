@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import StepProgress from '@/components/StepProgress';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
 import OnrampStepContent from '@/components/onramp/OnrampStepContent';
 import { useOnrampState } from '@/hooks/use-onramp-state';
@@ -39,15 +38,9 @@ const OnrampPage = () => {
           <OnrampHeader />
 
           <main className="flex-1 flex flex-col overflow-hidden mt-4">
-            <div className="bg-white/5 rounded-xl shadow-sm p-3 mb-2">
-              <StepProgress 
-                steps={steps} 
-                currentStep={currentStep} 
-                onStepClick={handleStepClick}
-                allowNavigation={true}
-              />
-            </div>
-
+            {/* Removed the StepProgress component */}
+            
+            {/* Adjusted this div to remove margin-bottom and align with button */}
             <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
               <OnrampStepContent
                 currentStep={currentStep}
