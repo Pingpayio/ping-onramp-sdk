@@ -51,7 +51,7 @@ const AssetSelector = ({
             <span className="font-medium text-white">{selectedAsset}</span>
           </>
         ) : (
-          <span className="text-muted-foreground">NEAR Protocol (NEAR)</span>
+          <span className="text-muted-foreground">Select an asset</span>
         )}
       </div>
       <ChevronDown className="h-4 w-4 opacity-50" />
