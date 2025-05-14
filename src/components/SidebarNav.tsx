@@ -93,10 +93,7 @@ const SidebarNav = () => {
         </ul>
       </nav>
 
-      {/* Version */}
-      <div className="pl-[40px] pb-6 text-gray-500 text-sm">
-        v2.4b58a
-      </div>
+      {/* Version removed */}
 
       {/* Social Links */}
       <div className="flex pl-[40px] pt-2 pb-6 space-x-4">
