@@ -18,11 +18,19 @@ const Transaction = () => {
   // Use state data if available, otherwise use default
   const transactionData = state || defaultData;
 
+  // Ensure status is valid by checking against allowed values
+  const validStatus = ['pending', 'completed', 'failed'].includes(transactionData.status) 
+    ? transactionData.status 
+    : 'pending';
+
   // Convert transaction data to the format expected by TransactionStatus
   const statusProps = {
-    status: transactionData.status,
-    title: transactionData.title || `${transactionData.asset} Transaction`,
-    description: transactionData.description || `Sending ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`,
+    status: validStatus as 'pending' | 'completed' | 'failed',
+    title: transactionData.title || `${transactionData.asset || 'Crypto'} Transaction`,
+    description: transactionData.description || 
+      (transactionData.amount && transactionData.asset && transactionData.walletAddress 
+        ? `Sending ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`
+        : "Transaction details"),
     txHash: transactionData.txHash
   };
 
@@ -34,7 +42,7 @@ const Transaction = () => {
         <div className="container mx-auto px-6 py-6 flex flex-col h-full">
           <div className="flex-1 flex items-center justify-center">
             <TransactionStatus 
-              status={statusProps.status as 'pending' | 'completed' | 'failed'}
+              status={statusProps.status}
               title={statusProps.title}
               description={statusProps.description}
               txHash={statusProps.txHash}
