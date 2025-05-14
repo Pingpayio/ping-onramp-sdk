@@ -46,3 +46,49 @@ html, body {
   height: 100%;
   overflow: hidden;
 }
+
+/* Responsive Typography */
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+  h2 {
+    font-size: 1.25rem;
+  }
+  p {
+    font-size: 0.875rem;
+  }
+}
+
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+  button, 
+  a, 
+  input[type="button"], 
+  input[type="submit"] {
+    min-height: 40px;
+    min-width: 40px;
+  }
+  
+  .input-group {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Fix horizontal scrolling on mobile */
+.container {
+  width: 100%;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+@media (min-width: 640px) {
+  .container {
+    padding-right: 2rem;
+    padding-left: 2rem;
+  }
+}
