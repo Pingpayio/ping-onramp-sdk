@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Building2, BarChart2, Users, Target, ArrowDownUp, Github, Telegram } from 'lucide-react';
+import { Building2, BarChart2, Users, Target, ArrowDownUp, Github, ExternalLink, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
@@ -127,12 +127,10 @@ const SidebarNav = () => {
           <Github size={20} />
         </a>
         <a href="#" className="text-gray-400 hover:text-white">
-          <Telegram size={20} />
+          <ExternalLink size={20} />
         </a>
         <a href="#" className="text-gray-400 hover:text-white">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm-3 17v-10l8 5-8 5z" />
-          </svg>
+          <BookOpen size={20} />
         </a>
       </div>
     </aside>
