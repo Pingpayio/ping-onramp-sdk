@@ -24,7 +24,7 @@ const AssetSelector = ({
       variant="ghost"
       onClick={() => setOpen(!open)}
       className={cn(
-        "w-full justify-between bg-transparent hover:bg-white/5 hover:shadow-none p-0", 
+        "w-full justify-between bg-transparent hover:bg-white/5 hover:shadow-none p-0 h-full", 
         className
       )}
     >

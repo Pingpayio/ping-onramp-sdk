@@ -60,8 +60,8 @@ const AssetSelection = ({
         {/* Network Badge moved above asset selection with minimal spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 4. Asset Selection Card with reduced padding - updated background and border */}
-        <div className="rounded-lg p-2 md:p-3 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)]">
+        {/* 4. Asset Selection Card with fixed height */}
+        <div className="rounded-lg p-2 md:p-3 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
           <AssetSelector
             selectedAsset={selectedAsset}
             onAssetSelect={onAssetSelect}
@@ -70,13 +70,13 @@ const AssetSelection = ({
           />
         </div>
         
-        {/* 5. Wallet Address Input with reduced spacing */}
+        {/* 5. Wallet Address Input with fixed height */}
         <WalletAddressInput 
           walletAddress={walletAddress}
           onWalletAddressChange={onWalletAddressChange}
         />
         
-        {/* 6. Payment Method Card - updated background and border */}
+        {/* 6. Payment Method Card with fixed height */}
         <PaymentMethod />
       </div>
       
