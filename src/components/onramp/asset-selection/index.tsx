@@ -57,9 +57,6 @@ const AssetSelection = ({
       
       {/* Selection cards with titles above each component */}
       <div className="w-full space-y-4 mt-2">
-        {/* Network Badge moved above asset selection with minimal spacing */}
-        <NetworkBadge selectedAsset={selectedAsset} />
-        
         {/* 4. Asset Selection Card with title */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Select Asset</label>
@@ -72,6 +69,9 @@ const AssetSelection = ({
             />
           </div>
         </div>
+        
+        {/* NetworkBadge moved here - between Asset Selection and Wallet Address */}
+        <NetworkBadge selectedAsset={selectedAsset} />
         
         {/* 5. Wallet Address Input with title */}
         <div className="flex flex-col">

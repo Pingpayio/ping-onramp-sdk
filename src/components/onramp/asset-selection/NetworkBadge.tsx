@@ -1,25 +1,44 @@
 
 import React from 'react';
-import { ChevronRight, Globe } from 'lucide-react';
+import { Globe } from 'lucide-react';
+import { 
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 interface NetworkBadgeProps {
   selectedAsset: string | null;
 }
 
 const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
+  // Determine network based on selected asset
+  const getNetworkForAsset = (asset: string | null) => {
+    if (!asset) return '';
+    return asset === 'NEAR' ? 'NEAR Protocol' : 'Base';
+  };
+
   return (
-    <div className="flex justify-start">
-      <button className="rounded-full bg-secondary/50 px-3 py-1 text-xs md:text-sm flex items-center gap-2 hover:bg-secondary transition-colors">
-        <div className="bg-secondary rounded-full p-1.5 mr-2">
-          <Globe className="h-3.5 w-3.5 text-ping-700" />
-        </div>
-        <div>
-          <span className="font-medium">
-            Network: {selectedAsset ? (selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base') : ''}
-          </span>
-        </div>
-        <ChevronRight className="h-4 w-4 text-muted-foreground" />
-      </button>
+    <div className="flex flex-col">
+      <label className="text-sm text-white mb-2">Network</label>
+      <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
+        <Select defaultValue={selectedAsset ? getNetworkForAsset(selectedAsset) : undefined}>
+          <SelectTrigger className="border-0 bg-transparent h-[50px] text-white focus:ring-0 focus:ring-offset-0">
+            <div className="flex items-center">
+              <div className="bg-secondary rounded-full p-1.5 mr-2">
+                <Globe className="h-3.5 w-3.5 text-ping-700" />
+              </div>
+              <SelectValue placeholder="Select network" />
+            </div>
+          </SelectTrigger>
+          <SelectContent className="bg-[#1A1F2C] border-white/10 text-white">
+            <SelectItem value="NEAR Protocol">NEAR Protocol</SelectItem>
+            <SelectItem value="Base">Base</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
     </div>
   );
 };
