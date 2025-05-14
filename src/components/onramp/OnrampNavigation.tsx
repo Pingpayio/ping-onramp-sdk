@@ -50,12 +50,11 @@ const OnrampNavigation = ({
       
       {currentStep < steps.length - 1 && (
         <Button
-          variant="gradient"
+          variant="outline"
           onClick={handleContinue}
           disabled={!canContinue()} // Call the function to get the boolean value
           withArrow
-          className={`rounded-full ${isMobile ? "w-1/2" : ""}`}
-          style={{ backgroundColor: "#AF9EF9" }}
+          className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${isMobile ? "w-1/2" : ""}`}
         >
           {getButtonText()}
         </Button>
