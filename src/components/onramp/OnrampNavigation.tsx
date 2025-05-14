@@ -24,8 +24,8 @@ const OnrampNavigation = ({
   
   // Function to determine button text based on current step
   const getButtonText = () => {
-    if (currentStep === 1) {
-      return "Continue";
+    if (currentStep === 0) {
+      return "Start Onramp";
     }
     return "Continue to Payment";
   };
@@ -55,6 +55,7 @@ const OnrampNavigation = ({
           disabled={!canContinue()} // Call the function to get the boolean value
           withArrow
           className={`rounded-full ${isMobile ? "w-1/2" : ""}`}
+          style={{ backgroundColor: "#AF9EF9" }}
         >
           {getButtonText()}
         </Button>
