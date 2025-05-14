@@ -39,7 +39,7 @@ const OnrampPage = () => {
 
           <main className="flex-1 flex gap-6 overflow-hidden mt-4">
             {/* Left container - Onramp container (existing) */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[640px]">
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[720px]">
               <OnrampStepContent
                 currentStep={currentStep}
                 steps={steps}
@@ -62,7 +62,7 @@ const OnrampPage = () => {
             </div>
             
             {/* Right container - New additional container */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col">
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[300px]">
               <h3 className="text-xl font-medium text-white mb-4">Transaction Information</h3>
               <div className="text-white/70 space-y-3">
                 <p>This area can contain supplementary information related to your transaction.</p>
