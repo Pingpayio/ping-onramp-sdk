@@ -51,7 +51,7 @@ const SidebarNav = () => {
   }];
   
   return (
-    <aside className="bg-[#1F1F1F] flex flex-col h-screen w-[256px] fixed left-0 top-0">
+    <aside className="bg-[#121212] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
       <div className="pt-[56px] pl-[40px]">
         <div className="text-white text-2xl font-semibold flex items-center">
