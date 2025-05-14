@@ -109,20 +109,20 @@ const PaymentCompletion = ({
         <h2 className="text-2xl font-bold mb-1">
           Buy ${parsedAmount.toFixed(2)} of {selectedAsset}
         </h2>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-white/60">
           {selectedAsset} price {getAssetPrice()}
         </p>
       </div>
       
       {/* Transaction Details List */}
-      <div className="w-full border rounded-lg overflow-hidden mb-4">
-        <div className="divide-y">
+      <div className="w-full border rounded-lg overflow-hidden mb-4 border-[rgba(255,255,255,0.18)]">
+        <div className="divide-y divide-[rgba(255,255,255,0.18)]">
           {/* Receive */}
           <div className="flex justify-between p-3.5">
-            <span className="text-muted-foreground">Receive</span>
+            <span className="text-white/60">Receive</span>
             <div className="text-right">
-              <span className="font-medium">{afterFeeAmount} {selectedAsset}</span>
-              <div className="text-xs text-muted-foreground">
+              <span className="font-normal text-white/90">{afterFeeAmount} {selectedAsset}</span>
+              <div className="text-xs text-white/60">
                 Fee: {feeAmount} {selectedAsset}
               </div>
             </div>
@@ -130,29 +130,29 @@ const PaymentCompletion = ({
           
           {/* Network */}
           <div className="flex justify-between p-3.5">
-            <span className="text-muted-foreground">Network</span>
-            <span className="font-medium">
+            <span className="text-white/60">Network</span>
+            <span className="font-normal text-white/90">
               {selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}
             </span>
           </div>
           
           {/* Pay with */}
           <div className="flex justify-between p-3.5">
-            <span className="text-muted-foreground">Pay with</span>
+            <span className="text-white/60">Pay with</span>
             <div className="flex items-center">
               <div className="flex items-center">
                 <div className="bg-gradient-ping rounded-full p-1 mr-2">
                   <div className="text-white font-bold text-xs">VISA</div>
                 </div>
-                <span className="font-medium">Visa **{getLastFourDigits()}</span>
+                <span className="font-normal text-white/90">Visa **{getLastFourDigits()}</span>
               </div>
             </div>
           </div>
           
           {/* To/Destination */}
           <div className="flex justify-between p-3.5">
-            <span className="text-muted-foreground">To</span>
-            <span className="font-medium break-all text-right">
+            <span className="text-white/60">To</span>
+            <span className="font-normal text-white/90 break-all text-right">
               {walletAddress || '0x...'}
             </span>
           </div>
@@ -160,7 +160,7 @@ const PaymentCompletion = ({
       </div>
       
       {/* Security Note */}
-      <div className="w-full text-xs text-muted-foreground mb-4 bg-gray-50 p-3 rounded-md">
+      <div className="w-full text-xs text-white/60 mb-4 bg-white/[0.08] p-3 rounded-md">
         <div className="flex items-start gap-1.5">
           <Shield className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
           <span>
@@ -171,12 +171,12 @@ const PaymentCompletion = ({
       </div>
       
       {/* Total */}
-      <div className="w-full border-t pt-4 mb-4">
+      <div className="w-full border-t pt-4 mb-4 border-[rgba(255,255,255,0.18)]">
         <div className="flex justify-between items-center">
           <div>
-            <span className="font-semibold">Total</span>
+            <span className="font-semibold text-white/90">Total</span>
           </div>
-          <div className="text-xl font-bold flex items-center">
+          <div className="text-xl font-bold flex items-center text-white">
             ${parsedAmount.toFixed(2)}
           </div>
         </div>

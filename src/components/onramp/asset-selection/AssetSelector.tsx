@@ -44,23 +44,6 @@ const AssetSelector = ({
         : "2a3c01e1-3a77-414b-959d-e162d59ba6b5.png"
     }`;
   };
-  
-  // Get full name of the asset
-  const getAssetName = (symbol: string | null) => {
-    if (!symbol) return '';
-    switch (symbol) {
-      case 'BTC':
-        return 'Bitcoin';
-      case 'ETH':
-        return 'Ethereum';
-      case 'NEAR':
-        return 'NEAR Protocol';
-      case 'USDC':
-        return 'USD Coin';
-      default:
-        return symbol;
-    }
-  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -84,7 +67,7 @@ const AssetSelector = ({
                     />
                   </div>
                 </div>
-                <span className="font-normal text-white/90">
+                <span className="font-normal text-white/60">
                   {selectedAsset}
                 </span>
               </>
