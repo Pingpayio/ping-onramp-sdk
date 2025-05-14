@@ -1,111 +1,62 @@
 
 import React from 'react';
-import { ChevronRight } from 'lucide-react';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import AssetList from './AssetList';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { ChevronDown } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { Button } from '@/components/ui/button';
 
 interface AssetSelectorProps {
   selectedAsset: string | null;
-  onAssetSelect: (symbol: string) => void;
+  onAssetSelect?: (symbol: string) => void;
   open: boolean;
   setOpen: (open: boolean) => void;
+  className?: string;
 }
 
 const AssetSelector = ({
   selectedAsset,
   onAssetSelect,
   open,
-  setOpen
+  setOpen,
+  className,
 }: AssetSelectorProps) => {
-  const isMobile = useIsMobile();
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const selectedAssetData = selectedAsset ? assets.find(a => a.symbol === selectedAsset) : null;
-
-  // The button that triggers the asset selector
-  const assetButton = (
-    <button
-      className="flex items-center justify-between w-full text-left"
-      role="combobox"
-      aria-expanded={open}
+  return (
+    <Button
+      variant="ghost"
+      onClick={() => setOpen(!open)}
+      className={cn(
+        "w-full justify-between bg-transparent hover:bg-white/5 hover:shadow-none p-0", 
+        className
+      )}
     >
       <div className="flex items-center">
-        {selectedAssetData ? (
+        {selectedAsset ? (
           <>
-            <div className="bg-secondary rounded-full p-2 mr-3">
-              <img 
-                src={selectedAssetData.logoUrl} 
-                alt={selectedAssetData.symbol} 
-                className="h-6 w-6" 
+            <div className="w-7 h-7 rounded-full mr-2 overflow-hidden">
+              <img
+                src={`/lovable-uploads/${
+                  selectedAsset === "BTC"
+                    ? "69cbddc8-b347-4890-9211-c65d570c867f.png"
+                    : selectedAsset === "ETH"
+                    ? "7f88aeb4-86f7-4fbf-a3d6-25d9625fdb5d.png"
+                    : selectedAsset === "NEAR"
+                    ? "f655448d-7787-4f68-bd65-c92b438f5d1c.png"
+                    : selectedAsset === "USDC"
+                    ? "a984f844-0031-4fc1-8792-d810f6bbd335.png"
+                    : "2a3c01e1-3a77-414b-959d-e162d59ba6b5.png"
+                }`}
+                alt={selectedAsset}
+                className="w-full h-full object-cover"
               />
             </div>
-            <div>
-              <p className="font-medium">Buy</p>
-              <p className="text-muted-foreground">{selectedAssetData.name}</p>
-            </div>
+            <span className="font-medium text-white">{selectedAsset}</span>
           </>
         ) : (
-          <>
-            <div className="bg-secondary rounded-full p-2 mr-3">
-              <div className="h-6 w-6 bg-gray-200 rounded-full"></div>
-            </div>
-            <p>Select an asset</p>
-          </>
+          <span className="text-muted-foreground">Select an asset</span>
         )}
       </div>
-      <ChevronRight className="h-5 w-5 text-muted-foreground" />
-    </button>
-  );
-  
-  // Mobile uses Sheet, Desktop uses Popover
-  if (isMobile) {
-    return (
-      <Sheet open={open} onOpenChange={setOpen}>
-        <SheetTrigger asChild>
-          {assetButton}
-        </SheetTrigger>
-        <SheetContent side="bottom" className="h-[70vh]">
-          <div className="pt-6 pb-2">
-            <h2 className="text-lg font-semibold mb-4">Select an asset</h2>
-            <AssetList 
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              onAssetSelect={(symbol) => {
-                onAssetSelect(symbol);
-                setSearchQuery('');
-              }}
-              selectedAsset={selectedAsset}
-            />
-          </div>
-        </SheetContent>
-      </Sheet>
-    );
-  }
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        {assetButton}
-      </PopoverTrigger>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-        <AssetList 
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          onAssetSelect={(symbol) => {
-            onAssetSelect(symbol);
-            setSearchQuery('');
-          }}
-          selectedAsset={selectedAsset}
-        />
-      </PopoverContent>
-    </Popover>
+      <ChevronDown className="h-4 w-4 opacity-50" />
+    </Button>
   );
 };
 
 export default AssetSelector;
-
-// Import at the top that couldn't be placed there due to the component reference
-import { useState } from 'react';
-import { assets } from '@/data/assets';
