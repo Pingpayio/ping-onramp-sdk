@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import { DollarSign } from 'lucide-react';
 import AssetSelector from './AssetSelector';
 import AmountInput from './AmountInput';
 import NetworkBadge from './NetworkBadge';
@@ -40,6 +41,7 @@ const AssetSelection = ({
     <div className="flex flex-col items-center h-full">
       {/* 1. Title section - "Buy Crypto" - styled to match Onramp History */}
       <div className="flex items-center gap-2 mb-4 w-full">
+        <DollarSign className="h-5 w-5 text-white" />
         <h2 className="text-xl font-medium text-white">
           {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
         </h2>
