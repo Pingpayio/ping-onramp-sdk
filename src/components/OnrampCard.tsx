@@ -23,8 +23,10 @@ const OnrampCard = ({
   return (
     <div 
       className={cn(
-        "card-gradient-hover flex flex-col p-6 rounded-lg border relative transition-all duration-200",
-        isSelected ? "border-2 border-ping-700 shadow-lg ping-shadow" : "border-border hover:shadow-md"
+        "card-gradient-hover flex flex-col p-6 rounded-lg relative transition-all duration-200",
+        isSelected 
+          ? "shadow-[0_2px_4px_-2px_rgba(0,0,0,0.1)] ping-shadow" 
+          : "hover:shadow-[0_2px_4px_-2px_rgba(0,0,0,0.1)]"
       )}
       onClick={onClick}
     >
