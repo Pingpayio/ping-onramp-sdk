@@ -6,11 +6,13 @@ import { User, CheckCircle2 } from 'lucide-react';
 interface WalletAddressInputProps {
   walletAddress: string;
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder?: string;
 }
 
 const WalletAddressInput = ({
   walletAddress,
-  onWalletAddressChange
+  onWalletAddressChange,
+  placeholder = "Enter destination wallet address"
 }: WalletAddressInputProps) => {
   const [isValid, setIsValid] = useState(false);
   
@@ -37,7 +39,7 @@ const WalletAddressInput = ({
             type="text"
             value={walletAddress}
             onChange={onWalletAddressChange}
-            placeholder="Enter destination wallet address"
+            placeholder={placeholder}
             className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-base md:text-sm text-foreground bg-transparent h-8"
           />
         </div>

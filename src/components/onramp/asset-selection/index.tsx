@@ -55,29 +55,39 @@ const AssetSelection = ({
         estimatedAmount={estimatedAmount}
       />
       
-      {/* Selection cards with further reduced spacing between items */}
-      <div className="w-full space-y-1 mt-0">
+      {/* Selection cards with titles above each component */}
+      <div className="w-full space-y-4 mt-2">
         {/* Network Badge moved above asset selection with minimal spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 4. Asset Selection Card with fixed height */}
-        <div className="rounded-lg p-2 md:p-3 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
-          <AssetSelector
-            selectedAsset={selectedAsset}
-            onAssetSelect={onAssetSelect}
-            open={open}
-            setOpen={setOpen}
+        {/* 4. Asset Selection Card with title */}
+        <div className="flex flex-col">
+          <label className="text-sm text-white mb-2">Select Asset</label>
+          <div className="rounded-lg p-2 md:p-3 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
+            <AssetSelector
+              selectedAsset={selectedAsset}
+              onAssetSelect={onAssetSelect}
+              open={open}
+              setOpen={setOpen}
+            />
+          </div>
+        </div>
+        
+        {/* 5. Wallet Address Input with title */}
+        <div className="flex flex-col">
+          <label className="text-sm text-white mb-2">Recipient Address (e.g. alice.near)</label>
+          <WalletAddressInput 
+            walletAddress={walletAddress}
+            onWalletAddressChange={onWalletAddressChange}
+            placeholder="Enter recipient address"
           />
         </div>
         
-        {/* 5. Wallet Address Input with fixed height */}
-        <WalletAddressInput 
-          walletAddress={walletAddress}
-          onWalletAddressChange={onWalletAddressChange}
-        />
-        
-        {/* 6. Payment Method Card with fixed height */}
-        <PaymentMethod />
+        {/* 6. Payment Method Card with title */}
+        <div className="flex flex-col">
+          <label className="text-sm text-white mb-2">Payment Method</label>
+          <PaymentMethod />
+        </div>
       </div>
       
       {/* 7. Minimum amount text - better positioned */}

@@ -1,17 +1,44 @@
 
-import React from 'react';
-import { CreditCard } from 'lucide-react';
+import React, { useState } from 'react';
+import { CreditCard, ChevronDown } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-const PaymentMethod = () => {
+interface PaymentMethodProps {
+  selectedMethod?: string;
+  onMethodSelect?: (method: string) => void;
+}
+
+const PaymentMethod = ({ 
+  selectedMethod = "card", 
+  onMethodSelect = () => {} 
+}: PaymentMethodProps) => {
+  const handleValueChange = (value: string) => {
+    onMethodSelect(value);
+  };
+
   return (
     <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
       <div className="flex items-center w-full px-3">
         <div className="bg-secondary rounded-full p-2 mr-3">
           <CreditCard className="h-4 w-4 text-muted-foreground" />
         </div>
-        <div>
-          <p className="font-medium text-sm md:text-base">Pay with</p>
-          <p className="text-muted-foreground text-xs md:text-sm">Credit or debit card</p>
+        <div className="flex-1">
+          <Select defaultValue={selectedMethod} onValueChange={handleValueChange}>
+            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-base md:text-sm bg-transparent h-8">
+              <SelectValue placeholder="Select payment method" />
+            </SelectTrigger>
+            <SelectContent className="bg-background border-white/20">
+              <SelectItem value="card">Debit or Credit Card</SelectItem>
+              <SelectItem value="ach">Bank Transfer (ACH)</SelectItem>
+              <SelectItem value="apple">Apple Pay</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
     </div>
