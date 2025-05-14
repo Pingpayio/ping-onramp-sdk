@@ -23,6 +23,9 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
     }
   };
 
+  // Retrieve network information for the selected asset
+  const { name, networks } = getNetworkInfo(selectedAsset);
+
   const getAssetLogoUrl = (symbol: string | null) => {
     if (!symbol) return '';
     return `/lovable-uploads/${
