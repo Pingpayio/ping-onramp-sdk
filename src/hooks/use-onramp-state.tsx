@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 export const useOnrampState = () => {
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedAsset, setSelectedAsset] = useState<string | null>(null);
+  const [selectedAsset, setSelectedAsset] = useState<string | null>("NEAR");
   const [open, setOpen] = useState(false);
   const [selectedOnramp, setSelectedOnramp] = useState<string | null>(null);
   const [walletAddress, setWalletAddress] = useState<string>('');
