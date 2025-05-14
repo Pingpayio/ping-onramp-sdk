@@ -88,7 +88,7 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-auto">
+      <div className="flex-grow overflow-auto px-8">
         {renderCurrentStep()}
       </div>
       <OnrampNavigation

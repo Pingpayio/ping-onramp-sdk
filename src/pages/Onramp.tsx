@@ -38,10 +38,8 @@ const OnrampPage = () => {
           <OnrampHeader />
 
           <main className="flex-1 flex flex-col overflow-hidden mt-4">
-            {/* Removed the StepProgress component */}
-            
-            {/* Adjusted this div to remove margin-bottom and align with button */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
+            {/* Container with max-width of 640px and centered */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[640px] mx-auto w-full">
               <OnrampStepContent
                 currentStep={currentStep}
                 steps={steps}
