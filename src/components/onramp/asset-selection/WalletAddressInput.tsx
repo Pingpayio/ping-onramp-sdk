@@ -40,7 +40,7 @@ const WalletAddressInput = ({
             value={walletAddress}
             onChange={onWalletAddressChange}
             placeholder={placeholder}
-            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal text-white/60 bg-transparent h-8"
+            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal text-white/60 bg-transparent h-8 placeholder:text-white/60"
           />
         </div>
         {isValid && (
