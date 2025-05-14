@@ -14,7 +14,7 @@ const OnrampHeader = () => {
       
       <Button 
         variant="outline" 
-        className="flex items-center gap-2 border-ping-600 text-ping-600 hover:bg-ping-600/10"
+        className="flex items-center gap-2 rounded-full border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 text-base font-normal"
       >
         <Wallet className="h-4 w-4" />
         <span>Connect Wallet</span>
