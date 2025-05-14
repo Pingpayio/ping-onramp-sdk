@@ -39,7 +39,7 @@ const OnrampPage = () => {
           <OnrampHeader />
 
           <main className="flex-1 flex flex-col overflow-hidden mt-4">
-            <div className="bg-white/5 rounded-xl border shadow-sm p-3 mb-2">
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 mb-2">
               <StepProgress 
                 steps={steps} 
                 currentStep={currentStep} 
@@ -48,7 +48,7 @@ const OnrampPage = () => {
               />
             </div>
 
-            <div className="bg-white/5 rounded-xl border shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col">
               <OnrampStepContent
                 currentStep={currentStep}
                 steps={steps}
