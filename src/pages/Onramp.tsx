@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
@@ -37,37 +38,26 @@ const OnrampPage = () => {
           <OnrampHeader />
 
           <main className="flex-1 flex flex-col overflow-hidden mt-4">
-            <div className="flex gap-6 h-full">
-              {/* New left container */}
-              <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden">
-                <h3 className="text-lg font-medium text-white/90 mb-4">Additional Information</h3>
-                <p className="text-white/70">
-                  This space can be used for displaying helpful information, notifications, or additional features related to the onramp process.
-                </p>
-              </div>
-              
-              {/* Existing onramp container */}
-              <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[640px] w-full">
-                <OnrampStepContent
-                  currentStep={currentStep}
-                  steps={steps}
-                  selectedAsset={selectedAsset}
-                  amount={amount}
-                  onAssetSelect={handleAssetSelect}
-                  onAmountChange={handleAmountChange}
-                  open={open}
-                  setOpen={setOpen}
-                  walletAddress={walletAddress}
-                  onWalletAddressChange={handleWalletAddressChange}
-                  selectedOnramp={selectedOnramp}
-                  onOnrampSelect={handleOnrampSelect}
-                  handleBack={handleBack}
-                  handleContinue={handleContinue}
-                  canContinue={canContinue}
-                  cardNumber={cardNumber}
-                  onCardNumberChange={handleCardNumberChange}
-                />
-              </div>
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[640px] w-full">
+              <OnrampStepContent
+                currentStep={currentStep}
+                steps={steps}
+                selectedAsset={selectedAsset}
+                amount={amount}
+                onAssetSelect={handleAssetSelect}
+                onAmountChange={handleAmountChange}
+                open={open}
+                setOpen={setOpen}
+                walletAddress={walletAddress}
+                onWalletAddressChange={handleWalletAddressChange}
+                selectedOnramp={selectedOnramp}
+                onOnrampSelect={handleOnrampSelect}
+                handleBack={handleBack}
+                handleContinue={handleContinue}
+                canContinue={canContinue}
+                cardNumber={cardNumber}
+                onCardNumberChange={handleCardNumberChange}
+              />
             </div>
           </main>
         </div>
