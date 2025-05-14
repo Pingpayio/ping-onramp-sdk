@@ -13,12 +13,12 @@ const MobileTopbar = () => {
   const menuItems = [{
     title: "Onramp",
     icon: <ArrowDownUp className="h-5 w-5" />,
-    path: "/dashboard",
+    path: "/onramp",
     disabled: false
   }, {
     title: "Dashboard",
     icon: <LayoutDashboard className="h-5 w-5" />,
-    path: "/markets",
+    path: "/dashboard",
     disabled: true
   }, {
     title: "Ping Links",
@@ -49,13 +49,13 @@ const MobileTopbar = () => {
   return (
     <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-[#121212] flex justify-between items-center px-4 z-50">
       {/* Logo */}
-      <RouterLink to="/" className="flex items-center">
+      <div className="flex items-center">
         <img 
           src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
           alt="PING" 
           className="h-[28px]" 
         />
-      </RouterLink>
+      </div>
 
       {/* Connect Wallet Button - simplified version for mobile */}
       <Button 
@@ -101,8 +101,7 @@ const MobileTopbar = () => {
                           to={item.path}
                           className={cn(
                             "flex items-center py-3 px-4 rounded-lg",
-                            location.pathname === item.path || 
-                            (item.path === "/dashboard" && location.pathname === "/onramp")
+                            location.pathname === item.path
                               ? "bg-[#AF9EF9] text-black"
                               : "text-white hover:bg-[#1A1326]"
                           )}

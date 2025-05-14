@@ -6,22 +6,17 @@ import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
   const location = useLocation();
-  const isActive = (path: string) => {
-    if (path === "/dashboard" && location.pathname === "/onramp") {
-      return true;
-    }
-    return location.pathname === path;
-  };
+  const isActive = (path: string) => location.pathname === path;
   
   const menuItems = [{
     title: "Onramp",
-    icon: <ArrowDownUp className="h-5 w-5" />, // Reverted back to ArrowDownUp for Onramp
-    path: "/dashboard",
+    icon: <ArrowDownUp className="h-5 w-5" />,
+    path: "/onramp",
     disabled: false
   }, {
     title: "Dashboard",
     icon: <LayoutDashboard className="h-5 w-5" />,
-    path: "/markets",
+    path: "/dashboard",
     disabled: true
   }, {
     title: "Ping Links",
@@ -30,7 +25,6 @@ const SidebarNav = () => {
     disabled: true
   }, {
     title: "Subscriptions",
-    // Using a combination of icons or styling to represent recurring arrows
     icon: (
       <div className="relative h-5 w-5 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-repeat">
@@ -69,11 +63,9 @@ const SidebarNav = () => {
           {menuItems.map(item => (
             <li key={item.title}>
               {item.disabled ? (
-                // Disabled item - only visual, not clickable
                 <div 
                   className={`flex items-center py-3 text-base font-medium relative transition-colors duration-300 text-gray-500 cursor-not-allowed`}
                 >
-                  {/* Icon bubble with greyed out styling */}
                   <div className="pl-[44px] flex items-center">
                     <div className="flex items-center justify-center w-9 h-9 rounded-full bg-transparent">
                       <span className="flex items-center justify-center text-gray-500">
@@ -81,12 +73,10 @@ const SidebarNav = () => {
                       </span>
                     </div>
                     
-                    {/* Text label */}
                     <span className="ml-3">{item.title}</span>
                   </div>
                 </div>
               ) : (
-                // Active item - clickable with original styling
                 <Link 
                   to={item.path} 
                   className={`flex items-center py-3 text-base font-medium relative transition-colors duration-300 ${
@@ -95,14 +85,11 @@ const SidebarNav = () => {
                     "text-white hover:text-[#AF9EF9]"
                   }`}
                 >
-                  {/* Active state pill background - with smooth animation */}
                   {isActive(item.path) && (
                     <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10 transition-all duration-300 ease-in-out"></div>
                   )}
                   
-                  {/* Icon and text content - always positioned the same way */}
                   <div className="pl-[44px] flex items-center">
-                    {/* Icon in circular bubble with smooth transition */}
                     <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 ${
                       isActive(item.path) ? 
                       "bg-[#1F1F1F]" : 
@@ -117,7 +104,6 @@ const SidebarNav = () => {
                       </span>
                     </div>
                     
-                    {/* Text label with proper spacing from icon */}
                     <span className="ml-3">{item.title}</span>
                   </div>
                 </Link>
@@ -127,7 +113,7 @@ const SidebarNav = () => {
         </ul>
       </nav>
 
-      {/* Social Links - Updated with 52px left padding */}
+      {/* Social Links */}
       <div className="flex pl-[52px] pt-2 pb-6 space-x-2">
         <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9]">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
