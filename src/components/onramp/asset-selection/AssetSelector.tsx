@@ -30,6 +30,21 @@ const AssetSelector = ({
     setOpen(false);
   };
 
+  const getAssetLogoUrl = (symbol: string | null) => {
+    if (!symbol) return '';
+    return `/lovable-uploads/${
+      symbol === "BTC"
+        ? "69cbddc8-b347-4890-9211-c65d570c867f.png"
+        : symbol === "ETH"
+        ? "7f88aeb4-86f7-4fbf-a3d6-25d9625fdb5d.png"
+        : symbol === "NEAR"
+        ? "f655448d-7787-4f68-bd65-c92b438f5d1c.png"
+        : symbol === "USDC"
+        ? "a984f844-0031-4fc1-8792-d810f6bbd335.png"
+        : "2a3c01e1-3a77-414b-959d-e162d59ba6b5.png"
+    }`;
+  };
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -43,22 +58,14 @@ const AssetSelector = ({
           <div className="flex items-center">
             {selectedAsset ? (
               <>
-                <div className="w-7 h-7 rounded-full mr-2 overflow-hidden">
-                  <img
-                    src={`/lovable-uploads/${
-                      selectedAsset === "BTC"
-                        ? "69cbddc8-b347-4890-9211-c65d570c867f.png"
-                        : selectedAsset === "ETH"
-                        ? "7f88aeb4-86f7-4fbf-a3d6-25d9625fdb5d.png"
-                        : selectedAsset === "NEAR"
-                        ? "f655448d-7787-4f68-bd65-c92b438f5d1c.png"
-                        : selectedAsset === "USDC"
-                        ? "a984f844-0031-4fc1-8792-d810f6bbd335.png"
-                        : "2a3c01e1-3a77-414b-959d-e162d59ba6b5.png"
-                    }`}
-                    alt={selectedAsset}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="bg-secondary rounded-full p-1.5 mr-2">
+                  <div className="w-3.5 h-3.5 rounded-full overflow-hidden">
+                    <img
+                      src={getAssetLogoUrl(selectedAsset)}
+                      alt={selectedAsset}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                 </div>
                 <span className="font-normal text-white/60">
                   {selectedAsset}
