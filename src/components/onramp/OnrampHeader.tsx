@@ -1,12 +1,11 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
 
 const OnrampHeader = () => {
   return (
-    <header className="flex justify-between items-center mb-2 h-[60px]">
+    <header className="flex justify-between items-center h-[60px]">
       <div className="flex items-center">
         <h1 className="text-[30px] font-normal text-white">
           Onramp
