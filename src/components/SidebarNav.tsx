@@ -47,8 +47,6 @@ const SidebarNav = () => {
         </div>
       </div>
 
-      {/* User Rank */}
-      
       {/* Navigation */}
       <nav className="mt-8 flex-1">
         <ul className="space-y-1">
