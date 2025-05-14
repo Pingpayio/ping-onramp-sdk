@@ -20,7 +20,6 @@ const App = () => (
           <Route path="/" element={<Navigate to="/onramp" replace />} />
           <Route path="/onramp" element={<Onramp />} />
           <Route path="/transaction" element={<Transaction />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

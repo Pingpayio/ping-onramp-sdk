@@ -18,6 +18,7 @@ const TransactionStatus = ({
   description,
   txHash
 }: TransactionStatusProps) => {
+  // Define status configurations with fallback to 'pending' if status is invalid
   const statusConfig = {
     pending: {
       icon: <Clock className="h-6 w-6 text-yellow-500" />,
@@ -36,7 +37,9 @@ const TransactionStatus = ({
     }
   };
 
-  const config = statusConfig[status];
+  // Ensure the status is valid, fallback to 'pending' if not
+  const validStatus: StatusType = statusConfig.hasOwnProperty(status) ? status : 'pending';
+  const config = statusConfig[validStatus];
 
   return (
     <div className={cn("border rounded-lg p-5", config.color)}>
@@ -55,7 +58,7 @@ const TransactionStatus = ({
             </div>
           )}
           
-          {status === 'pending' && (
+          {validStatus === 'pending' && (
             <div className="mt-3">
               <div className="h-2 w-full bg-yellow-200 rounded-full overflow-hidden">
                 <div className="h-full bg-yellow-500 rounded-full w-1/2 animate-pulse-slow"></div>
