@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Wallet } from "lucide-react";
 const OnrampHeader = () => {
-  return <header className="flex justify-between items-center h-[60px]">
+  return <header className="flex justify-between items-center h-[50px]">
       <div className="flex items-center">
         <h1 className="text-[30px] font-normal text-white leading-none flex items-center">Ping Onramp</h1>
       </div>

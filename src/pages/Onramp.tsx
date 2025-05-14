@@ -66,12 +66,13 @@ const OnrampPage = () => {
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">
-        <div className="px-[56px] py-[40px] flex flex-col h-full">
+        {/* Added -mt-3 (negative margin top) to shift everything up by 12px */}
+        <div className="px-[56px] py-[40px] -mt-3 flex flex-col h-full">
           <OnrampHeader />
 
           <main className="flex-1 flex gap-6 overflow-hidden mt-4">
-            {/* Left container - Onramp container (reduced width from 660px to 640px to accommodate right container increase) */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
+            {/* Left container - Added pb-4 to extend padding at the bottom */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 pb-10 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
@@ -95,8 +96,8 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Right container - History container (increased width from 360px to 400px to match Connect Wallet button alignment) */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[400px] border border-white/[0.16]">
+            {/* Right container - Also added pb-4 to extend padding at the bottom */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 pb-10 overflow-hidden flex flex-col w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
