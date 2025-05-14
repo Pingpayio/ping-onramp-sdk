@@ -20,7 +20,7 @@ interface OnrampStepContentProps {
   onOnrampSelect: (provider: string) => void;
   handleBack: () => void;
   handleContinue: () => void;
-  canContinue: () => boolean;
+  canContinue: () => boolean; // Ensuring this is typed as a function
   cardNumber?: string;
   onCardNumberChange?: (cardNumber: string) => void;
 }

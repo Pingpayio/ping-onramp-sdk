@@ -10,7 +10,7 @@ interface OnrampNavigationProps {
   steps: string[];
   handleBack: () => void;
   handleContinue: () => void;
-  canContinue: boolean;
+  canContinue: () => boolean; // Updated to accept a function that returns a boolean
 }
 
 const OnrampNavigation = ({
@@ -52,7 +52,7 @@ const OnrampNavigation = ({
         <Button
           variant="gradient"
           onClick={handleContinue}
-          disabled={!canContinue}
+          disabled={!canContinue()} // Call the function to get the boolean value
           withArrow
           className={isMobile ? "w-1/2" : ""}
         >
