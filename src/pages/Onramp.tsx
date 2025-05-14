@@ -68,13 +68,13 @@ const OnrampPage = () => {
           <OnrampHeader />
 
           <main className="flex-1 flex gap-6 overflow-hidden mt-4">
-            {/* Left container - Onramp container (updated padding from p-3 to p-6) */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[720px]">
+            {/* Left container - Onramp container (reduced width from 720px to 660px) */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[660px]">
               <OnrampStepContent currentStep={currentStep} steps={steps} selectedAsset={selectedAsset} amount={amount} onAssetSelect={handleAssetSelect} onAmountChange={handleAmountChange} open={open} setOpen={setOpen} walletAddress={walletAddress} onWalletAddressChange={handleWalletAddressChange} selectedOnramp={selectedOnramp} onOnrampSelect={handleOnrampSelect} handleBack={handleBack} handleContinue={handleContinue} canContinue={canContinue} cardNumber={cardNumber} onCardNumberChange={handleCardNumberChange} />
             </div>
             
-            {/* Right container - History container */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[300px]">
+            {/* Right container - History container (increased width from 300px to 360px) */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[360px]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
