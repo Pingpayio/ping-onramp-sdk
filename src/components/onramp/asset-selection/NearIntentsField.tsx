@@ -24,12 +24,10 @@ const NearIntentsField = ({
         <label className="text-sm text-white">NEAR Intents Deposit Address</label>
       </div>
       
-      {/* Address display - box removed, text color updated to match purple buttons */}
-      <div className="px-3 mt-1">
-        <div className="text-xs text-[#AF9EF9] font-normal w-full">
-          {depositAddress}
-        </div>
-      </div>
+      {/* Address display - removed nested div and aligned text directly below icon */}
+      <span className="text-xs text-[#AF9EF9] font-normal pl-1.5">
+        {depositAddress}
+      </span>
     </div>
   );
 };
