@@ -27,7 +27,7 @@ const WalletAddressInput = ({
   }, [walletAddress]);
 
   return (
-    <div className="rounded-lg p-3 md:p-4 hover:shadow-sm transition-shadow mt-3 bg-white/5">
+    <div className="rounded-lg p-3 md:p-4 hover:shadow-sm transition-shadow mt-3">
       <div className="flex items-center">
         <div className="bg-secondary rounded-full p-2 mr-3">
           <User className="h-5 w-5 text-muted-foreground" />
@@ -38,7 +38,7 @@ const WalletAddressInput = ({
             value={walletAddress}
             onChange={onWalletAddressChange}
             placeholder="Enter destination wallet address"
-            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-base md:text-sm text-foreground"
+            className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-base md:text-sm text-foreground bg-transparent"
           />
         </div>
         {isValid && (
