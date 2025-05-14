@@ -34,12 +34,11 @@ const OnrampPage = () => {
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">
-        <div className={`px-[56px] py-[40px] flex flex-col h-full ${isMobile ? 'max-w-full' : ''}`}>
+        <div className="px-[56px] py-[40px] flex flex-col h-full">
           <OnrampHeader />
 
           <main className="flex-1 flex flex-col overflow-hidden mt-4">
-            {/* Container with max-width of 640px and centered */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[640px] mx-auto w-full">
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 flex-1 overflow-hidden flex flex-col max-w-[640px] w-full">
               <OnrampStepContent
                 currentStep={currentStep}
                 steps={steps}
