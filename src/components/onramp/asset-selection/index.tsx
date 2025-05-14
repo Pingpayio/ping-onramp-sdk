@@ -56,8 +56,8 @@ const AssetSelection = ({
         {/* Network Badge moved above asset selection with minimal spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 4. Asset Selection Card with reduced padding */}
-        <div className="rounded-lg border p-2 md:p-3 hover:shadow-sm transition-shadow">
+        {/* 4. Asset Selection Card with reduced padding - removed border */}
+        <div className="rounded-lg p-2 md:p-3 hover:shadow-sm transition-shadow bg-white/5">
           <AssetSelector
             selectedAsset={selectedAsset}
             onAssetSelect={onAssetSelect}
@@ -72,7 +72,7 @@ const AssetSelection = ({
           onWalletAddressChange={onWalletAddressChange}
         />
         
-        {/* 6. Payment Method Card */}
+        {/* 6. Payment Method Card - removed border */}
         <PaymentMethod />
       </div>
       

@@ -4,7 +4,7 @@ import { CreditCard } from 'lucide-react';
 
 const PaymentMethod = () => {
   return (
-    <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow">
+    <div className="rounded-lg p-3 md:p-4 hover:shadow-sm transition-shadow bg-white/5">
       <div className="flex items-center justify-between">
         <div className="flex items-center">
           <div className="bg-secondary rounded-full p-2 mr-3">
