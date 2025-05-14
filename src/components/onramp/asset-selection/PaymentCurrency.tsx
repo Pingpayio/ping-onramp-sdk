@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { Banknote } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -63,9 +62,6 @@ const PaymentCurrency = ({
           focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none
           focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
         >
-          <div className="bg-secondary rounded-full p-1.5 mr-2">
-            <Banknote className="h-3.5 w-3.5 text-ping-700" />
-          </div>
           <SelectValue placeholder="Select payment currency" className="font-normal text-white/60" />
         </SelectTrigger>
         <SelectContent className="bg-[#1A1F2C] border-white/10 max-h-[300px] border-[#AF9EF9]">
