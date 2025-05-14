@@ -84,14 +84,9 @@ const AssetSelector = ({
                     />
                   </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-normal text-white/90">
-                    {getAssetName(selectedAsset)}
-                  </span>
-                  <span className="text-xs text-white/60">
-                    {selectedAsset}
-                  </span>
-                </div>
+                <span className="font-normal text-white/90">
+                  {selectedAsset}
+                </span>
               </>
             ) : (
               <span className="font-normal text-white/60">Select an asset</span>
