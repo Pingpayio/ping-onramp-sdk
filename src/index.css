@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -91,6 +92,13 @@
   body {
     @apply bg-background text-foreground;
     font-family: 'Inter', sans-serif;
+  }
+}
+
+/* Add padding-top for mobile content to account for the topbar */
+@media (max-width: 767px) {
+  main {
+    padding-top: 4rem; /* Matches the height of the mobile topbar */
   }
 }
 

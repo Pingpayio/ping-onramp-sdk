@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Onramp from "./pages/Onramp";
 import Transaction from "./pages/Transaction";
 import NotFound from "./pages/NotFound";
+import MobileTopbar from "./components/MobileTopbar";
 
 const queryClient = new QueryClient();
 
@@ -16,6 +17,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <MobileTopbar />
         <Routes>
           <Route path="/" element={<Navigate to="/onramp" replace />} />
           <Route path="/onramp" element={<Onramp />} />
