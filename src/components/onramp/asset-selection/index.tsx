@@ -65,7 +65,7 @@ const AssetSelection = ({
         {/* 4. Asset Selection Card with reduced label spacing */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-1">Select Asset</label>
-          <div className="rounded-lg p-2 md:p-2 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
+          <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center p-2 md:p-2">
             <AssetSelector
               selectedAsset={selectedAsset}
               onAssetSelect={onAssetSelect}
@@ -89,19 +89,13 @@ const AssetSelection = ({
         </div>
         
         {/* 6. Payment Currency dropdown with reduced label spacing */}
-        <div className="flex flex-col">
-          <label className="text-sm text-white mb-1">Payment Currency</label>
-          <PaymentCurrency 
-            selectedCurrency={selectedCurrency} 
-            onCurrencySelect={onCurrencySelect}
-          />
-        </div>
+        <PaymentCurrency 
+          selectedCurrency={selectedCurrency} 
+          onCurrencySelect={onCurrencySelect}
+        />
         
         {/* 7. Payment Method Card with reduced label spacing */}
-        <div className="flex flex-col">
-          <label className="text-sm text-white mb-1">Payment Method</label>
-          <PaymentMethod />
-        </div>
+        <PaymentMethod />
       </div>
       
       {/* 8. Minimum amount text - positioned with less padding */}
