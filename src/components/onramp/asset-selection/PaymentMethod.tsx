@@ -30,8 +30,11 @@ const PaymentMethod = ({
         </div>
         <div className="flex-1">
           <Select defaultValue={selectedMethod} onValueChange={handleValueChange}>
-            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal bg-transparent h-8 text-white/60 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1">
-              <SelectValue placeholder="Select payment method" />
+            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal bg-transparent h-8 text-white/60 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1 pr-0 flex justify-between">
+              <SelectValue placeholder="Select payment method" className="font-normal text-white/60" />
+              <div className="ml-auto mr-0 pl-2">
+                {/* Spacing added here instead of in SelectTrigger to maintain consistency */}
+              </div>
             </SelectTrigger>
             <SelectContent className="bg-background border-white/20 border-[#AF9EF9]">
               <SelectItem value="card" className="text-white/60 text-sm font-normal">Debit or Credit Card</SelectItem>

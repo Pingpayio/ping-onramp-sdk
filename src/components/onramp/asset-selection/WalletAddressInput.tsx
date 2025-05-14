@@ -44,7 +44,7 @@ const WalletAddressInput = ({
           />
         </div>
         {isValid && (
-          <div className="ml-2">
+          <div className="mr-0">
             <CheckCircle2 className="h-5 w-5 text-green-500" />
           </div>
         )}

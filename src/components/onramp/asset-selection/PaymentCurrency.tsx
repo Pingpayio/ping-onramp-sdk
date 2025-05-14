@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Banknote } from 'lucide-react';
+import { Banknote, ChevronDown } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -61,8 +61,11 @@ const PaymentCurrency = ({
         </div>
         <div className="flex-1">
           <Select defaultValue={selectedCurrency} onValueChange={handleValueChange}>
-            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal bg-transparent h-8 text-white/60 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1">
-              <SelectValue placeholder="Select payment currency" />
+            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal bg-transparent h-8 text-white/60 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1 pr-0 flex justify-between">
+              <SelectValue placeholder="Select payment currency" className="font-normal text-white/60" />
+              <div className="ml-auto mr-0 pl-2">
+                {/* Spacing added here instead of in SelectTrigger to maintain consistency */}
+              </div>
             </SelectTrigger>
             <SelectContent className="bg-background border-white/20 max-h-[300px] border-[#AF9EF9]">
               {currencies.map((currency) => (

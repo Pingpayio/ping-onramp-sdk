@@ -48,15 +48,15 @@ const AssetSelector = ({
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="font-medium text-white/60">
+            <span className="font-normal text-white/60">
               {selectedAsset}
             </span>
           </>
         ) : (
-          <span className="text-white/60">Select an asset</span>
+          <span className="font-normal text-white/60">Select an asset</span>
         )}
       </div>
-      <ChevronDown className="h-4 w-4 text-white/60" />
+      <ChevronDown className="h-4 w-4 text-white/60 mr-3" />
     </Button>
   );
 };

@@ -30,8 +30,11 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
           </div>
           <div className="flex-1">
             <Select defaultValue={selectedAsset ? getNetworkForAsset(selectedAsset) : undefined}>
-              <SelectTrigger className="border-0 bg-transparent h-8 text-white/60 focus:ring-0 focus:ring-offset-0 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1 pl-0 text-sm font-normal">
-                <SelectValue placeholder="Select network" />
+              <SelectTrigger className="border-0 bg-transparent h-8 text-white/60 focus:ring-0 focus:ring-offset-0 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1 pl-0 text-sm font-normal pr-0 flex justify-between">
+                <SelectValue placeholder="Select network" className="font-normal text-white/60" />
+                <div className="ml-auto mr-0 pl-2">
+                  {/* Spacing added here instead of in SelectTrigger to maintain consistency */}
+                </div>
               </SelectTrigger>
               <SelectContent className="bg-[#1A1F2C] border-white/10 text-white/60 border-[#AF9EF9]">
                 <SelectItem value="NEAR Protocol" className="text-white/60 text-sm font-normal">NEAR Protocol</SelectItem>
