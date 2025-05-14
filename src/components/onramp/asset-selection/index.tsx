@@ -65,7 +65,7 @@ const AssetSelection = ({
         {/* 4. Asset Selection Card with reduced label spacing */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-1">Select Asset</label>
-          <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center p-2 md:p-2">
+          <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center focus-within:border-[#AF9EF9] focus-within:border-[1.5px] hover:border-[#AF9EF9]/70">
             <AssetSelector
               selectedAsset={selectedAsset}
               onAssetSelect={onAssetSelect}

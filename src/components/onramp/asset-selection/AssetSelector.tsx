@@ -24,7 +24,7 @@ const AssetSelector = ({
       variant="ghost"
       onClick={() => setOpen(!open)}
       className={cn(
-        "w-full justify-between bg-transparent hover:bg-white/5 hover:shadow-none p-0 h-full focus:ring-[#AF9EF9] focus:ring-1", 
+        "w-full justify-between bg-transparent hover:bg-white/5 h-full", 
         className
       )}
     >
@@ -56,7 +56,7 @@ const AssetSelector = ({
           <span className="font-normal text-white/60">Select an asset</span>
         )}
       </div>
-      <ChevronDown className="h-4 w-4 text-white/60 mr-3" />
+      <ChevronDown className="h-4 w-4 text-white/60" />
     </Button>
   );
 };
