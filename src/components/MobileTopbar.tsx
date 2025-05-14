@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen } from 'lucide-react';
+import { Link as RouterLink, useLocation } from 'react-router-dom';
+import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -22,7 +22,7 @@ const MobileTopbar = () => {
     disabled: true
   }, {
     title: "Ping Links",
-    icon: <Link className="h-5 w-5" />,
+    icon: <LinkIcon className="h-5 w-5" />,
     path: "/stats",
     disabled: true
   }, {
@@ -49,13 +49,13 @@ const MobileTopbar = () => {
   return (
     <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-[#121212] flex justify-between items-center px-4 z-50">
       {/* Logo */}
-      <Link to="/" className="flex items-center">
+      <RouterLink to="/" className="flex items-center">
         <img 
           src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
           alt="PING" 
           className="h-[28px]" 
         />
-      </Link>
+      </RouterLink>
 
       {/* Connect Wallet Button - simplified version for mobile */}
       <Button 
@@ -97,7 +97,7 @@ const MobileTopbar = () => {
                           <span>{item.title}</span>
                         </div>
                       ) : (
-                        <Link
+                        <RouterLink
                           to={item.path}
                           className={cn(
                             "flex items-center py-3 px-4 rounded-lg",
@@ -109,7 +109,7 @@ const MobileTopbar = () => {
                         >
                           <span className="mr-3">{item.icon}</span>
                           <span>{item.title}</span>
-                        </Link>
+                        </RouterLink>
                       )}
                     </li>
                   ))}
