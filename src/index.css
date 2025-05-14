@@ -5,13 +5,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 7%; /* #121212 */
+    --background: 0 0% 12%; /* #1F1F1F */
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 7%; /* #121212 */
+    --card: 0 0% 12%; /* #1F1F1F */
     --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 0 0% 7%; /* #121212 */
+    --popover: 0 0% 12%; /* #1F1F1F */
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 255 57% 61%;
@@ -35,7 +35,7 @@
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 7%; /* #121212 */
+    --sidebar-background: 0 0% 12%; /* #1F1F1F */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -46,13 +46,13 @@
   }
 
   .dark {
-    --background: 0 0% 7%; /* #121212 */
+    --background: 0 0% 12%; /* #1F1F1F */
     --foreground: 210 40% 98%;
 
-    --card: 0 0% 7%; /* #121212 */
+    --card: 0 0% 12%; /* #1F1F1F */
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 7%; /* #121212 */
+    --popover: 0 0% 12%; /* #1F1F1F */
     --popover-foreground: 210 40% 98%;
 
     --primary: 255 57% 61%;
@@ -73,7 +73,7 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 255 57% 61%;
-    --sidebar-background: 0 0% 7%; /* #121212 */
+    --sidebar-background: 0 0% 12%; /* #1F1F1F */
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;

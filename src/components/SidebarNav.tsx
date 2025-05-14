@@ -51,7 +51,7 @@ const SidebarNav = () => {
   }];
   
   return (
-    <aside className="bg-[#121212] flex flex-col h-screen w-[256px] fixed left-0 top-0">
+    <aside className="bg-[#1F1F1F] flex flex-col h-screen w-[256px] fixed left-0 top-0">
       {/* Logo */}
       <div className="pt-[56px] pl-[40px]">
         <div className="text-white text-2xl font-semibold flex items-center">
@@ -105,7 +105,7 @@ const SidebarNav = () => {
                     {/* Icon in circular bubble with smooth transition */}
                     <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 ${
                       isActive(item.path) ? 
-                      "bg-[#121212]" : 
+                      "bg-[#1F1F1F]" : 
                       "bg-transparent hover:bg-[#1A1326]"
                     }`}>
                       <span className={`flex items-center justify-center transition-colors duration-300 ${
