@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Building2, BarChart2, Users, Target, ArrowDownUp, Github, ExternalLink, BookOpen } from 'lucide-react';
+import { LayoutDashboard, Link as LinkIcon, Gitlab, User, Github, ExternalLink, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
@@ -14,27 +14,27 @@ const SidebarNav = () => {
   
   const menuItems = [{
     title: "Onramp",
-    icon: <ArrowDownUp className="h-5 w-5" />,
+    icon: <LayoutDashboard className="h-5 w-5" />,
     path: "/dashboard",
     disabled: false
   }, {
-    title: "Dashboard", // Changed from Markets
-    icon: <Building2 className="h-5 w-5" />,
+    title: "Dashboard",
+    icon: <LayoutDashboard className="h-5 w-5" />,
     path: "/markets",
     disabled: true
   }, {
-    title: "Ping Links", // Changed from Stats
-    icon: <BarChart2 className="h-5 w-5" />,
+    title: "Ping Links",
+    icon: <LinkIcon className="h-5 w-5" />,
     path: "/stats",
     disabled: true
   }, {
-    title: "Subscriptions", // Changed from Referrals
-    icon: <Users className="h-5 w-5" />,
+    title: "Subscriptions",
+    icon: <Gitlab className="h-5 w-5" />,
     path: "/referrals",
     disabled: true
   }, {
-    title: "Ping Account", // Changed from Points
-    icon: <Target className="h-5 w-5" />,
+    title: "Ping Account",
+    icon: <User className="h-5 w-5" />,
     path: "/points",
     disabled: true
   }];
