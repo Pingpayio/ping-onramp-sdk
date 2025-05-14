@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Input } from '@/components/ui/input';
 
@@ -19,7 +20,7 @@ const WalletAddressInput = ({
       onChange={onWalletAddressChange}
       placeholder={placeholder}
       className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] 
-      text-white/60 flex items-center px-3
+      text-white/60 flex items-center px-3 text-sm font-normal
       focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none
       focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
     />

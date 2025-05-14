@@ -67,12 +67,12 @@ const AssetSelector = ({
                     />
                   </div>
                 </div>
-                <span className="font-normal text-white/60">
+                <span className="font-normal text-white/60 text-sm">
                   {selectedAsset}
                 </span>
               </>
             ) : (
-              <span className="font-normal text-white/60">Select an asset</span>
+              <span className="font-normal text-white/60 text-sm">Select an asset</span>
             )}
           </div>
           <ChevronDown className="h-4 w-4 text-white/60" />
