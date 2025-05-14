@@ -10,6 +10,7 @@ export const useOnrampState = () => {
   const [amount, setAmount] = useState<string>('100');
   const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
   const [cardNumber, setCardNumber] = useState<string>('');
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
 
   // Updated steps array - removed "Connect Wallet"
   const steps = ["Select Asset", "Payment Details", "Complete Payment"];
@@ -39,6 +40,10 @@ export const useOnrampState = () => {
 
   const handleCardNumberChange = (cardNum: string) => {
     setCardNumber(cardNum);
+  };
+
+  const handleCurrencySelect = (currency: string) => {
+    setSelectedCurrency(currency);
   };
 
   const handleContinue = () => {
@@ -89,12 +94,14 @@ export const useOnrampState = () => {
     amount,
     isWalletAddressValid,
     cardNumber,
+    selectedCurrency,
     steps,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
     handleCardNumberChange,
+    handleCurrencySelect,
     handleContinue,
     handleBack,
     canContinue,

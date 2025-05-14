@@ -5,6 +5,7 @@ import AssetSelector from './AssetSelector';
 import AmountInput from './AmountInput';
 import NetworkBadge from './NetworkBadge';
 import PaymentMethod from './PaymentMethod';
+import PaymentCurrency from './PaymentCurrency';
 import WalletAddressInput from './WalletAddressInput';
 import { calculateEstimatedAmount } from './PriceCalculator';
 
@@ -17,6 +18,8 @@ interface AssetSelectionProps {
   setOpen: (open: boolean) => void;
   walletAddress: string;
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedCurrency?: string;
+  onCurrencySelect?: (currency: string) => void;
 }
 
 const AssetSelection = ({
@@ -27,7 +30,9 @@ const AssetSelection = ({
   open,
   setOpen,
   walletAddress,
-  onWalletAddressChange
+  onWalletAddressChange,
+  selectedCurrency = "USD",
+  onCurrencySelect = () => {}
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
   
@@ -83,14 +88,23 @@ const AssetSelection = ({
           />
         </div>
         
-        {/* 6. Payment Method Card with title */}
+        {/* 6. Payment Currency dropdown */}
+        <div className="flex flex-col">
+          <label className="text-sm text-white mb-2">Payment Currency</label>
+          <PaymentCurrency 
+            selectedCurrency={selectedCurrency} 
+            onCurrencySelect={onCurrencySelect}
+          />
+        </div>
+        
+        {/* 7. Payment Method Card with title */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Payment Method</label>
           <PaymentMethod />
         </div>
       </div>
       
-      {/* 7. Minimum amount text - better positioned */}
+      {/* 8. Minimum amount text - better positioned */}
       <p className="text-xs md:text-sm text-muted-foreground mt-auto pt-2">
         Minimum amount: $10.00
       </p>

@@ -23,6 +23,8 @@ interface OnrampStepContentProps {
   canContinue: () => boolean; // Ensuring this is typed as a function
   cardNumber?: string;
   onCardNumberChange?: (cardNumber: string) => void;
+  selectedCurrency?: string;
+  onCurrencySelect?: (currency: string) => void;
 }
 
 const OnrampStepContent = ({
@@ -42,7 +44,9 @@ const OnrampStepContent = ({
   handleContinue,
   canContinue,
   cardNumber = '',
-  onCardNumberChange
+  onCardNumberChange,
+  selectedCurrency = 'USD',
+  onCurrencySelect
 }: OnrampStepContentProps) => {
   
   const renderCurrentStep = () => {
@@ -58,6 +62,8 @@ const OnrampStepContent = ({
             setOpen={setOpen}
             walletAddress={walletAddress}
             onWalletAddressChange={onWalletAddressChange}
+            selectedCurrency={selectedCurrency}
+            onCurrencySelect={onCurrencySelect}
           />
         );
       case 1:

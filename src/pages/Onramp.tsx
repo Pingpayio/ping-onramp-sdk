@@ -48,12 +48,14 @@ const OnrampPage = () => {
     walletAddress,
     amount,
     cardNumber,
+    selectedCurrency,
     steps,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
     handleCardNumberChange,
+    handleCurrencySelect,
     handleContinue,
     handleBack,
     canContinue,
@@ -70,7 +72,27 @@ const OnrampPage = () => {
           <main className="flex-1 flex gap-6 overflow-hidden mt-4">
             {/* Left container - Onramp container (reduced width from 660px to 640px to accommodate right container increase) */}
             <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
-              <OnrampStepContent currentStep={currentStep} steps={steps} selectedAsset={selectedAsset} amount={amount} onAssetSelect={handleAssetSelect} onAmountChange={handleAmountChange} open={open} setOpen={setOpen} walletAddress={walletAddress} onWalletAddressChange={handleWalletAddressChange} selectedOnramp={selectedOnramp} onOnrampSelect={handleOnrampSelect} handleBack={handleBack} handleContinue={handleContinue} canContinue={canContinue} cardNumber={cardNumber} onCardNumberChange={handleCardNumberChange} />
+              <OnrampStepContent 
+                currentStep={currentStep} 
+                steps={steps} 
+                selectedAsset={selectedAsset} 
+                amount={amount} 
+                onAssetSelect={handleAssetSelect} 
+                onAmountChange={handleAmountChange} 
+                open={open} 
+                setOpen={setOpen} 
+                walletAddress={walletAddress} 
+                onWalletAddressChange={handleWalletAddressChange} 
+                selectedOnramp={selectedOnramp} 
+                onOnrampSelect={handleOnrampSelect} 
+                handleBack={handleBack} 
+                handleContinue={handleContinue} 
+                canContinue={canContinue} 
+                cardNumber={cardNumber} 
+                onCardNumberChange={handleCardNumberChange}
+                selectedCurrency={selectedCurrency}
+                onCurrencySelect={handleCurrencySelect}
+              />
             </div>
             
             {/* Right container - History container (increased width from 360px to 400px to match Connect Wallet button alignment) */}
