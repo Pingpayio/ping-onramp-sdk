@@ -30,13 +30,13 @@ const PaymentMethod = ({
         </div>
         <div className="flex-1">
           <Select defaultValue={selectedMethod} onValueChange={handleValueChange}>
-            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-base md:text-sm bg-transparent h-8 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1">
+            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal bg-transparent h-8 text-white/60 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1">
               <SelectValue placeholder="Select payment method" />
             </SelectTrigger>
             <SelectContent className="bg-background border-white/20 border-[#AF9EF9]">
-              <SelectItem value="card">Debit or Credit Card</SelectItem>
-              <SelectItem value="ach">Bank Transfer (ACH)</SelectItem>
-              <SelectItem value="apple">Apple Pay</SelectItem>
+              <SelectItem value="card" className="text-white/60 text-sm font-normal">Debit or Credit Card</SelectItem>
+              <SelectItem value="ach" className="text-white/60 text-sm font-normal">Bank Transfer (ACH)</SelectItem>
+              <SelectItem value="apple" className="text-white/60 text-sm font-normal">Apple Pay</SelectItem>
             </SelectContent>
           </Select>
         </div>

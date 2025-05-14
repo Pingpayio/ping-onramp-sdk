@@ -61,12 +61,12 @@ const PaymentCurrency = ({
         </div>
         <div className="flex-1">
           <Select defaultValue={selectedCurrency} onValueChange={handleValueChange}>
-            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-base md:text-sm bg-transparent h-8 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1">
+            <SelectTrigger className="border-none shadow-none focus-visible:ring-0 focus-visible:ring-offset-0 pl-0 text-sm font-normal bg-transparent h-8 text-white/60 focus-visible:ring-[#AF9EF9] focus-visible:ring-offset-0 focus-visible:ring-1">
               <SelectValue placeholder="Select payment currency" />
             </SelectTrigger>
             <SelectContent className="bg-background border-white/20 max-h-[300px] border-[#AF9EF9]">
               {currencies.map((currency) => (
-                <SelectItem key={currency.value} value={currency.value}>
+                <SelectItem key={currency.value} value={currency.value} className="text-white/60 text-sm font-normal">
                   {currency.label}
                 </SelectItem>
               ))}
