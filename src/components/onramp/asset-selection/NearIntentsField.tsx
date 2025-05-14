@@ -26,7 +26,7 @@ const NearIntentsField = ({
       
       {/* Address display - box removed, text color updated to match purple buttons */}
       <div className="px-3 mt-1">
-        <div className="text-xs text-[#AF9EF9] font-normal w-full ml-7">
+        <div className="text-xs text-[#AF9EF9] font-normal w-full">
           {depositAddress}
         </div>
       </div>
