@@ -56,8 +56,8 @@ const PaymentCurrency = ({
   return (
     <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center focus-within:border-[#AF9EF9] focus-within:border-[1.5px] hover:border-[#AF9EF9]/70">
       <div className="flex items-center w-full px-3">
-        <div className="bg-secondary rounded-full p-2 mr-3">
-          <Banknote className="h-4 w-4 text-muted-foreground" />
+        <div className="bg-secondary rounded-full p-1.5 mr-2">
+          <Banknote className="h-3.5 w-3.5 text-ping-700" />
         </div>
         <div className="flex-1">
           <Select defaultValue={selectedCurrency} onValueChange={handleValueChange}>
