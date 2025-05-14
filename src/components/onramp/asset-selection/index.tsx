@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { DollarSign } from 'lucide-react';
 import AssetSelector from './AssetSelector';
@@ -6,7 +7,9 @@ import NetworkBadge from './NetworkBadge';
 import PaymentMethod from './PaymentMethod';
 import PaymentCurrency from './PaymentCurrency';
 import WalletAddressInput from './WalletAddressInput';
+import NearIntentsField from './NearIntentsField';
 import { calculateEstimatedAmount } from './PriceCalculator';
+
 interface AssetSelectionProps {
   selectedAsset: string | null;
   amount: string;
@@ -19,6 +22,7 @@ interface AssetSelectionProps {
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
 }
+
 const AssetSelection = ({
   selectedAsset,
   amount,
@@ -38,7 +42,9 @@ const AssetSelection = ({
     const calculated = calculateEstimatedAmount(selectedAsset, amount);
     setEstimatedAmount(calculated);
   }, [selectedAsset, amount]);
-  return <div className="flex flex-col items-center h-full">
+
+  return (
+    <div className="flex flex-col items-center h-full">
       {/* 1. Title section - "Buy Crypto" - reduced margin-bottom */}
       <div className="flex items-center gap-2 mb-2 w-full">
         <DollarSign className="h-5 w-5 text-white" />
@@ -74,10 +80,13 @@ const AssetSelection = ({
         
         {/* 7. Payment Method Card with reduced label spacing */}
         <PaymentMethod />
+        
+        {/* 8. NEAR Intents Deposit Address (new) */}
+        <NearIntentsField />
       </div>
       
-      {/* 8. Minimum amount text - positioned with less padding */}
-      
-    </div>;
+    </div>
+  );
 };
+
 export default AssetSelection;
