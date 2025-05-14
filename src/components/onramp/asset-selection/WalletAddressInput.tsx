@@ -27,7 +27,7 @@ const WalletAddressInput = ({
   }, [walletAddress]);
 
   return (
-    <div className="rounded-lg border p-3 md:p-4 hover:shadow-sm transition-shadow mt-3">
+    <div className="rounded-lg p-3 md:p-4 hover:shadow-sm transition-shadow mt-3 bg-white/5">
       <div className="flex items-center">
         <div className="bg-secondary rounded-full p-2 mr-3">
           <User className="h-5 w-5 text-muted-foreground" />
