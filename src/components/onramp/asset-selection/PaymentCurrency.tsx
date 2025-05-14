@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -64,7 +63,6 @@ const PaymentCurrency = ({
           focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
         >
           <SelectValue placeholder="Select payment currency" className="font-normal text-white/60" />
-          <ChevronDown className="h-4 w-4 text-white/60 ml-2" />
         </SelectTrigger>
         <SelectContent className="bg-[#1A1F2C] border-white/10 max-h-[300px] border-[#AF9EF9]">
           {currencies.map((currency) => (
