@@ -44,15 +44,15 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center h-full">
-      {/* 1. Title section - "Buy Crypto" - styled to match Onramp History */}
-      <div className="flex items-center gap-2 mb-4 w-full">
+      {/* 1. Title section - "Buy Crypto" - reduced margin-bottom */}
+      <div className="flex items-center gap-2 mb-2 w-full">
         <DollarSign className="h-5 w-5 text-white" />
         <h2 className="text-xl font-medium text-white">
           {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
         </h2>
       </div>
       
-      {/* 2 & 3. Amount input with estimated value - REDUCED spacing */}
+      {/* 2 & 3. Amount input with estimated value - reduced spacing */}
       <AmountInput 
         amount={amount}
         onAmountChange={onAmountChange}
@@ -60,12 +60,12 @@ const AssetSelection = ({
         estimatedAmount={estimatedAmount}
       />
       
-      {/* Selection cards with titles above each component */}
-      <div className="w-full space-y-4 mt-2">
-        {/* 4. Asset Selection Card with title */}
+      {/* Selection cards with reduced spacing throughout */}
+      <div className="w-full space-y-3 mt-1">
+        {/* 4. Asset Selection Card with reduced label spacing */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-2">Select Asset</label>
-          <div className="rounded-lg p-2 md:p-3 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
+          <label className="text-sm text-white mb-1">Select Asset</label>
+          <div className="rounded-lg p-2 md:p-2 hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[50px] flex items-center">
             <AssetSelector
               selectedAsset={selectedAsset}
               onAssetSelect={onAssetSelect}
@@ -75,12 +75,12 @@ const AssetSelection = ({
           </div>
         </div>
         
-        {/* NetworkBadge moved here - between Asset Selection and Wallet Address */}
+        {/* NetworkBadge with reduced spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 5. Wallet Address Input with title */}
+        {/* 5. Wallet Address Input with reduced label spacing */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-2">Recipient Address (e.g. alice.near)</label>
+          <label className="text-sm text-white mb-1">Recipient Address (e.g. alice.near)</label>
           <WalletAddressInput 
             walletAddress={walletAddress}
             onWalletAddressChange={onWalletAddressChange}
@@ -88,24 +88,24 @@ const AssetSelection = ({
           />
         </div>
         
-        {/* 6. Payment Currency dropdown */}
+        {/* 6. Payment Currency dropdown with reduced label spacing */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-2">Payment Currency</label>
+          <label className="text-sm text-white mb-1">Payment Currency</label>
           <PaymentCurrency 
             selectedCurrency={selectedCurrency} 
             onCurrencySelect={onCurrencySelect}
           />
         </div>
         
-        {/* 7. Payment Method Card with title */}
+        {/* 7. Payment Method Card with reduced label spacing */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-2">Payment Method</label>
+          <label className="text-sm text-white mb-1">Payment Method</label>
           <PaymentMethod />
         </div>
       </div>
       
-      {/* 8. Minimum amount text - better positioned */}
-      <p className="text-xs md:text-sm text-muted-foreground mt-auto pt-2">
+      {/* 8. Minimum amount text - positioned with less padding */}
+      <p className="text-xs md:text-sm text-muted-foreground mt-auto pt-1">
         Minimum amount: $10.00
       </p>
     </div>
