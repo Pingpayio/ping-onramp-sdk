@@ -17,7 +17,7 @@ const AmountInput = ({
   estimatedAmount
 }: AmountInputProps) => {
   return (
-    <div className="w-full mb-4">
+    <div className="w-full mb-3">
       {/* Adjusted font size and spacing for better proportions */}
       <div className="flex flex-row items-center justify-start py-2">
         <Input
@@ -31,9 +31,9 @@ const AmountInput = ({
         <span className="text-3xl md:text-5xl text-gray-500 font-normal -ml-1">USD</span>
       </div>
       
-      {/* Estimated token amount with better spacing */}
+      {/* Estimated token amount with reduced spacing */}
       {selectedAsset && parseFloat(amount) > 0 && (
-        <div className="flex items-start justify-start mb-2">
+        <div className="flex items-start justify-start">
           <div className="flex items-center">
             <ArrowUpDown className="h-4 w-4 text-[#AF9EF9] mr-1" />
             <span className="text-[#AF9EF9] text-sm md:text-base font-medium">

@@ -56,7 +56,7 @@ const AssetSelection = ({
       <AmountInput amount={amount} onAmountChange={onAmountChange} selectedAsset={selectedAsset} estimatedAmount={estimatedAmount} />
       
       {/* Selection cards with improved spacing throughout */}
-      <div className="w-full space-y-4 mt-4">
+      <div className="w-full space-y-3 mt-0">
         {/* 4. Asset Selection Card */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Select Asset</label>
