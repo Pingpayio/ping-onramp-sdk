@@ -62,7 +62,7 @@ const OnrampNavigation = ({
         <Button
           variant="outline"
           onClick={handleContinue}
-          disabled={!canContinue()}
+          disabled={!canContinue() || (currentStep === 0 && !isWalletConnected)} // Disable button if wallet is not connected on first step
           withArrow={isWalletConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
           icon={getButtonIcon()}
           className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${isMobile ? "w-1/2" : ""}`}
