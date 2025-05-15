@@ -62,9 +62,13 @@ const OnrampNavigation = ({
   // Don't show navigation buttons during transaction processing
   if (isProcessingTransaction) {
     return (
-      <div className="flex justify-between">
-        <Link to="/">
-          <Button variant="outline" icon={<Home className="h-4 w-4" />}>
+      <div className="flex justify-between w-full gap-4">
+        <Link to="/" className="w-full">
+          <Button
+            variant="outline"
+            icon={<Home className="h-4 w-4" />}
+            className="rounded-full w-full bg-white text-[#3D315E] hover:bg-white/90 border-none"
+          >
             Return Home
           </Button>
         </Link>
@@ -73,6 +77,7 @@ const OnrampNavigation = ({
           variant="outline" 
           onClick={openExplorer} 
           icon={<ExternalLink className="h-4 w-4" />}
+          className="rounded-full w-full bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 border-none"
         >
           View on Explorer
         </Button>
