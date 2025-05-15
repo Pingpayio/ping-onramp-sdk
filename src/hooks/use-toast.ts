@@ -8,7 +8,7 @@ import {
   ToastTitle,
   ToastViewport,
 } from "@/components/ui/toast"
-import { useToast as useToastOriginal, toast as toastOriginal } from "@/components/ui/toast"
+import { useToast as useToastOriginal, toast as toastOriginal, ToastType } from "@/components/ui/toast"
 
 export const ToastContext = React.createContext<ReturnType<typeof useToastOriginal> | null>(null)
 
@@ -25,5 +25,5 @@ export function useToast() {
 
 export { toastOriginal as toast }
 
-// Update the Toast type to include className
-export type { Toast } from "@/components/ui/toast"
+// Export the Toast type with className
+export type { ToastType as Toast } from "@/components/ui/toast"
