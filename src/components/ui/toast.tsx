@@ -1,4 +1,3 @@
-
 import * as React from "react"
 import * as ToastPrimitives from "@radix-ui/react-toast"
 import { cva, type VariantProps } from "class-variance-authority"
@@ -145,6 +144,8 @@ type ToasterToast = ToastType & {
   description?: React.ReactNode;
   action?: React.ReactNode;
   variant?: "default" | "destructive";
+  open?: boolean; // Add open property to the type
+  onOpenChange?: (open: boolean) => void; // Also add onOpenChange property
 };
 
 const actionTypes = {
