@@ -1,8 +1,6 @@
 
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
-import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
-import PaymentCompletion from '@/components/onramp/PaymentCompletion';
 import TransactionProgress from '@/components/onramp/TransactionProgress';
 import OnrampNavigation from '@/components/onramp/OnrampNavigation';
 
@@ -71,30 +69,10 @@ const OnrampStepContent = ({
         );
       case 1:
         return (
-          <OnrampMethodSelection
-            selectedOnramp={selectedOnramp}
-            onOnrampSelect={onOnrampSelect}
-            amount={amount}
-            selectedAsset={selectedAsset}
-            walletAddress={walletAddress}
-            onCardNumberChange={onCardNumberChange}
-          />
-        );
-      case 2:
-        return isProcessingTransaction ? (
           <TransactionProgress 
             asset={selectedAsset}
             amount={amount}
             walletAddress={walletAddress}
-          />
-        ) : (
-          <PaymentCompletion
-            amount={amount}
-            selectedAsset={selectedAsset}
-            walletAddress={walletAddress}
-            selectedOnramp={selectedOnramp}
-            cardNumber={cardNumber}
-            onStartTransaction={handleContinue}
           />
         );
       default:
@@ -117,7 +95,7 @@ const OnrampStepContent = ({
           handleBack={handleBack}
           handleContinue={handleContinue}
           canContinue={canContinue}
-          isProcessingTransaction={isProcessingTransaction}
+          isProcessingTransaction={isProcessingTransaction || currentStep === 1}
         />
       </div>
     </div>

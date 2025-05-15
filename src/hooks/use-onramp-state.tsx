@@ -16,8 +16,8 @@ export const useOnrampState = () => {
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
   const [isProcessingTransaction, setIsProcessingTransaction] = useState(false);
 
-  // Updated steps array - removed "Connect Wallet"
-  const steps = ["Select Asset", "Payment Details", "Complete Payment"];
+  // Updated steps array - removed intermediate steps
+  const steps = ["Select Asset", "Transaction"];
 
   const handleAssetSelect = (symbol: string) => {
     setSelectedAsset(symbol);
@@ -61,18 +61,20 @@ export const useOnrampState = () => {
       return; // Don't proceed if no recipient address or invalid address
     }
 
-    // If we're on the final step, start processing the transaction
-    if (currentStep === steps.length - 1 && !isProcessingTransaction) {
+    // If on first step, go directly to transaction progress step
+    if (currentStep === 0) {
       setIsProcessingTransaction(true);
+      // Set default payment provider
+      if (!selectedOnramp) {
+        setSelectedOnramp("apple");
+      }
+      setCurrentStep(1); // Move to transaction step
+      
       toast({
         title: "Processing Payment",
         description: "Your transaction is being processed...",
       });
       return;
-    }
-    
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
     }
   };
 
@@ -81,18 +83,10 @@ export const useOnrampState = () => {
       // If processing transaction, cancel it
       if (isProcessingTransaction) {
         setIsProcessingTransaction(false);
-        return;
       }
       setCurrentStep(currentStep - 1);
     }
   };
-
-  // For step 1 (Payment Details), set the default provider to "apple" instead of "coinbase"
-  useEffect(() => {
-    if (currentStep === 1 && !selectedOnramp) {
-      setSelectedOnramp("apple");
-    }
-  }, [currentStep, selectedOnramp]);
 
   const canContinue = () => {
     switch (currentStep) {
@@ -103,9 +97,7 @@ export const useOnrampState = () => {
                isWalletAddressValid && 
                parseFloat(amount) >= 10 && 
                isConnected; // Must have wallet connected
-      case 1: return !!selectedOnramp;
-      case 2: return !isProcessingTransaction; // Can't continue if already processing
-      default: return true;
+      default: return false; // Can't continue beyond transaction screen
     }
   };
 
@@ -115,11 +107,10 @@ export const useOnrampState = () => {
     if (isProcessingTransaction) return;
     
     // Only allow navigation to steps that have been completed or the current step
-    // For step 1, require wallet connection and valid recipient address
     if (stepIndex <= currentStep || 
         (stepIndex === 1 && 
          !!selectedAsset && 
-         recipientAddress.trim() !== '' && // Require a non-empty recipient address
+         recipientAddress.trim() !== '' && 
          isWalletAddressValid && 
          parseFloat(amount) >= 10 &&
          isConnected)) {
