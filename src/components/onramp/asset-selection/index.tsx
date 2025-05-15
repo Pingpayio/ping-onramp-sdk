@@ -62,7 +62,7 @@ const AssetSelection = ({
         {/* 4. Asset Selection Card */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Select Asset</label>
-          <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[42px] flex items-center focus-within:border-[#AF9EF9] focus-within:border-[1.5px] hover:border-[#AF9EF9]/70">
+          <div className="rounded-lg hover:shadow-sm transition-shadow h-[42px] flex items-center">
             <AssetSelector selectedAsset={selectedAsset} onAssetSelect={onAssetSelect} open={open} setOpen={setOpen} />
           </div>
         </div>
