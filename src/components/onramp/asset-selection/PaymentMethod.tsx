@@ -38,10 +38,10 @@ const PaymentMethod = ({
 
   return (
     <div className="flex flex-col">
-      <label className="text-sm text-white mb-2">Payment Method</label>
+      <label className="text-sm text-white mb-1">Payment Method</label>
       <Select defaultValue={selectedMethod} onValueChange={handleValueChange}>
         <SelectTrigger 
-          className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[42px] 
+          className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] 
           text-white/60 flex items-center px-3
           focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none
           focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
@@ -55,7 +55,7 @@ const PaymentMethod = ({
           <SelectItem value="apple" className="text-white/60 text-sm font-normal">Apple Pay</SelectItem>
         </SelectContent>
       </Select>
-      <p className="text-xs text-white/40 mt-2">
+      <p className="text-xs text-white/40 mt-1">
         {getMethodSubtext(selectedMethod)}
       </p>
     </div>

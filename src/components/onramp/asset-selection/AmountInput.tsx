@@ -17,9 +17,9 @@ const AmountInput = ({
   estimatedAmount
 }: AmountInputProps) => {
   return (
-    <div className="w-full mb-4">
-      {/* Adjusted padding and spacing */}
-      <div className="flex flex-row items-center justify-start py-2">
+    <div className="w-full mb-1 md:mb-2">
+      {/* Reduced font size (from 4xl/6xl to 3xl/5xl) and reduced spacing */}
+      <div className="flex flex-row items-center justify-start py-1">
         <Input
           type="number"
           value={amount}
@@ -31,9 +31,9 @@ const AmountInput = ({
         <span className="text-3xl md:text-5xl text-gray-500 font-normal -ml-1">USD</span>
       </div>
       
-      {/* Estimated token amount with adjusted spacing */}
+      {/* Estimated token amount with reduced spacing */}
       {selectedAsset && parseFloat(amount) > 0 && (
-        <div className="flex items-start justify-start mb-2">
+        <div className="flex items-start justify-start mb-1">
           <div className="flex items-center">
             <ArrowUpDown className="h-4 w-4 text-[#AF9EF9] mr-1" />
             <span className="text-[#AF9EF9] text-sm md:text-base font-medium">

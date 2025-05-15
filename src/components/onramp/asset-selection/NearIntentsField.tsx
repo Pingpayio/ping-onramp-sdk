@@ -6,9 +6,9 @@ interface NearIntentsFieldProps {
 const NearIntentsField = ({
   depositAddress = "0x2bC777d98282bd50dCF9AeBAe2F864816f9d54d9"
 }: NearIntentsFieldProps) => {
-  return <div className="flex flex-col mt-1">
+  return <div className="flex flex-col mt-3">
       {/* Title with NEAR Intents logo */}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-1">
         <div className="w-5 h-5 rounded-full bg-gradient-to-r from-green-500 to-white flex items-center justify-center overflow-hidden relative">
           <div className="absolute inset-0 flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -21,7 +21,7 @@ const NearIntentsField = ({
         <label className="text-sm text-white">NEAR Intents Deposit Address</label>
       </div>
       
-      {/* Address display */}
+      {/* Address display - removed padding-left completely */}
       <span className="text-xs text-[#AF9EF9] font-normal">
         {depositAddress}
       </span>
