@@ -20,23 +20,23 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
   const getNetworkInfo = (asset: string) => {
     switch (asset) {
       case 'BTC':
-        return { name: 'Bitcoin Network', networks: [{ id: 'bitcoin', name: 'Bitcoin Network' }] };
+        return { name: 'Bitcoin', networks: [{ id: 'bitcoin', name: 'Bitcoin' }] };
       case 'ETH':
-        return { name: 'Ethereum Network', networks: [{ id: 'ethereum', name: 'Ethereum Network' }] };
+        return { name: 'Ethereum', networks: [{ id: 'ethereum', name: 'Ethereum' }] };
       case 'NEAR':
-        return { name: 'NEAR Protocol', networks: [{ id: 'near', name: 'NEAR Protocol' }] };
+        return { name: 'NEAR', networks: [{ id: 'near', name: 'NEAR' }] };
       case 'USDC':
         return { 
           name: 'Multiple Networks', 
           networks: [
-            { id: 'ethereum', name: 'Ethereum Network' },
-            { id: 'polygon', name: 'Polygon Network' },
-            { id: 'solana', name: 'Solana Network' },
-            { id: 'near', name: 'NEAR Protocol' }
+            { id: 'ethereum', name: 'Ethereum' },
+            { id: 'polygon', name: 'Polygon' },
+            { id: 'solana', name: 'Solana' },
+            { id: 'near', name: 'NEAR' }
           ]
         };
       default:
-        return { name: 'Unknown Network', networks: [{ id: 'unknown', name: 'Unknown Network' }] };
+        return { name: 'Unknown Network', networks: [{ id: 'unknown', name: 'Unknown' }] };
     }
   };
 
@@ -84,7 +84,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
         <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between">
           <div className="flex items-center">
             <div className="bg-secondary rounded-full p-1.5 mr-2">
-              <Wifi className="w-3.5 h-3.5 text-white" />
+              <Wifi className="w-3.5 w-3.5 text-white" />
             </div>
             <span className="text-sm font-normal text-white/60">{networks[0].name}</span>
           </div>
