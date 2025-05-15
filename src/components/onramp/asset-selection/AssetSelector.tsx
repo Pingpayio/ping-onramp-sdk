@@ -51,7 +51,7 @@ const AssetSelector = ({
         <Button
           variant="ghost"
           className={cn(
-            "w-full justify-between bg-white/[0.08] hover:bg-white/[0.12] h-full text-left px-3 border border-[rgba(255,255,255,0.18)] hover:border-[#AF9EF9]/70", 
+            "w-full justify-between bg-transparent hover:bg-white/5 h-full text-left px-3", 
             className
           )}
         >
@@ -78,7 +78,7 @@ const AssetSelector = ({
           <ChevronDown className="h-4 w-4 text-white/60" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 border border-[#AF9EF9] bg-white/[0.08]">
+      <PopoverContent className="p-0 border border-[#AF9EF9] bg-[#1A1F2C]">
         <AssetList
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
