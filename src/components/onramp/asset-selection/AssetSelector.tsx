@@ -78,7 +78,7 @@ const AssetSelector = ({
           <ChevronDown className="h-4 w-4 text-white/60" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 border border-[#AF9EF9] bg-white/[0.08] rounded-lg">
+      <PopoverContent className="p-0 border border-[#AF9EF9] bg-[#1A1F2C]">
         <AssetList
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
