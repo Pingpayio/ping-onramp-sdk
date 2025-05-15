@@ -16,7 +16,7 @@ const TransactionProgressBar: React.FC<TransactionProgressBarProps> = ({ progres
       <Progress 
         value={progress} 
         className="h-2 bg-white/10" 
-        indicatorClassName="bg-[#AF9EF9]" 
+        indicatorColor="bg-[#AF9EF9]" 
       />
     </div>
   );
