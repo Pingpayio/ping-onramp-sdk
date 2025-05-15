@@ -1,21 +1,20 @@
 
 import React, { useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import TransactionStatus from '@/components/TransactionStatus';
-import SidebarNav from '@/components/SidebarNav';
-import { useTransactionProgress, TransactionStage } from '@/hooks/use-transaction-progress';
-import { Button } from '@/components/ui/button';
+import { useTransactionProgress } from '@/hooks/use-transaction-progress';
 import { toast } from '@/components/ui/use-toast';
+import TransactionContainer from '@/components/transaction/TransactionContainer';
+import TransactionActionButtons from '@/components/transaction/TransactionActionButtons';
+import { generateTransactionHash } from '@/components/transaction/utils/transactionUtils';
 
 const Transaction = () => {
   const location = useLocation();
-  const navigate = useNavigate();
   const { state } = location;
   
   const {
     currentStage,
     progress,
-    setStage,
     error
   } = useTransactionProgress({ simulateProgress: true });
   
@@ -32,16 +31,10 @@ const Transaction = () => {
   // Use state data if available, otherwise use default
   const transactionData = state?.txDetails || defaultData;
 
-  // Generate transaction hashes based on asset and wallet
-  const generateTxHash = (prefix: string) => {
-    const baseHash = '0x' + Array.from({ length: 40 }, () => 
-      Math.floor(Math.random() * 16).toString(16)).join('');
-    return `${prefix}${baseHash.substring(prefix.length)}`;
-  };
-
-  const onboardingTxHash = generateTxHash('0x7a');
-  const swapTxHash = generateTxHash('0x8b');
-  const finalTxHash = generateTxHash('0x9c');
+  // Generate transaction hashes
+  const onboardingTxHash = generateTransactionHash('0x7a');
+  const swapTxHash = generateTransactionHash('0x8b');
+  const finalTxHash = generateTransactionHash('0x9c');
   
   // Show toast notifications on stage changes with consistent styling
   useEffect(() => {
@@ -59,7 +52,7 @@ const Transaction = () => {
   }, [currentStage, transactionData]);
 
   // Map transaction stage to status
-  const getStatusFromStage = (stage: TransactionStage): 'pending' | 'completed' | 'failed' => {
+  const getStatusFromStage = (stage: string): 'pending' | 'completed' | 'failed' => {
     switch (stage) {
       case 'completed':
         return 'completed';
@@ -71,51 +64,26 @@ const Transaction = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#120714] overflow-hidden">
-      <SidebarNav />
-      
-      <div className="flex-1 ml-[256px]">
-        <div className="container mx-auto px-6 py-6 flex flex-col h-full">
-          <div className="flex-1 flex items-center justify-center">
-            <TransactionStatus 
-              status={getStatusFromStage(currentStage)}
-              title={transactionData.title || `${transactionData.asset} Transaction`}
-              description={transactionData.description || 
-                `Processing ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`}
-              txHash={finalTxHash}
-              stage={currentStage}
-              progress={progress}
-              onboardingTxHash={onboardingTxHash}
-              swapTxHash={swapTxHash}
-              amount={transactionData.amount}
-              asset={transactionData.asset}
-              walletAddress={transactionData.walletAddress}
-            />
-          </div>
-          
-          {/* Action buttons - shown on completion */}
-          {currentStage === 'completed' && (
-            <div className="flex justify-center gap-4 mt-6">
-              <Button
-                variant="outline"
-                className="bg-white/5 border border-white/20 text-white hover:bg-white/10"
-                onClick={() => navigate('/onramp')}
-              >
-                Buy More
-              </Button>
-              
-              <Button
-                variant="default"
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                onClick={() => navigate('/')}
-              >
-                Return Home
-              </Button>
-            </div>
-          )}
-        </div>
+    <TransactionContainer>
+      <div className="flex-1 flex items-center justify-center">
+        <TransactionStatus 
+          status={getStatusFromStage(currentStage)}
+          title={transactionData.title || `${transactionData.asset} Transaction`}
+          description={transactionData.description || 
+            `Processing ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`}
+          txHash={finalTxHash}
+          stage={currentStage}
+          progress={progress}
+          onboardingTxHash={onboardingTxHash}
+          swapTxHash={swapTxHash}
+          amount={transactionData.amount}
+          asset={transactionData.asset}
+          walletAddress={transactionData.walletAddress}
+        />
       </div>
-    </div>
+      
+      <TransactionActionButtons currentStage={currentStage} />
+    </TransactionContainer>
   );
 };
 
