@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
@@ -97,27 +96,27 @@ const OnrampPage = () => {
             
             {/* Right container - Updated styling to match the left container */}
             <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[400px] border border-white/[0.16]">
-              <div className="flex items-center gap-3 mb-6">
+              <div className="flex items-center gap-2 mb-5">
                 <History className="h-5 w-5 text-ping-700" />
-                <h3 className="text-white font-medium text-lg">Onramp History</h3>
+                <h3 className="text-xl font-medium text-white">Onramp History</h3>
               </div>
               
               <div className="overflow-y-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className="border-white/10">
-                      <TableHead className="text-white/60 text-xs font-medium">Date</TableHead>
-                      <TableHead className="text-white/60 text-xs font-medium">Asset</TableHead>
-                      <TableHead className="text-white/60 text-xs font-medium text-right">Amount</TableHead>
+                      <TableHead className="text-white/70 text-xs font-medium">Date</TableHead>
+                      <TableHead className="text-white/70 text-xs font-medium">Asset</TableHead>
+                      <TableHead className="text-white/70 text-xs font-medium text-right">Amount</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sampleHistory.map(tx => <TableRow key={tx.id} className="border-white/10 hover:bg-white/5">
-                        <TableCell className="text-white/90 text-sm py-3 font-normal">{tx.date}</TableCell>
-                        <TableCell className="text-white/90 text-sm py-3 font-normal">{tx.asset}</TableCell>
-                        <TableCell className="text-white py-3 text-right">
+                    {sampleHistory.map(tx => <TableRow key={tx.id} className="border-white/10">
+                        <TableCell className="text-white/80 text-sm py-3">{tx.date}</TableCell>
+                        <TableCell className="text-white/80 text-sm py-3">{tx.asset}</TableCell>
+                        <TableCell className="text-white/80 text-sm py-3 text-right">
                           <div>
-                            <div className={tx.status === 'Completed' ? 'text-green-400 text-sm font-medium' : 'text-red-400 text-sm font-medium'}>
+                            <div className={tx.status === 'Completed' ? 'text-green-400' : 'text-red-400'}>
                               {tx.amount} {tx.asset}
                             </div>
                             <div className="text-white/50 text-xs">{tx.fiat}</div>
