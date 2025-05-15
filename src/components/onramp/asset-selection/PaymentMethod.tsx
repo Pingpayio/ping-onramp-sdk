@@ -48,7 +48,7 @@ const PaymentMethod = ({
       <label className="text-sm text-white mb-2">Payment Method</label>
       <Select value={currentMethod} onValueChange={handleValueChange}>
         <SelectTrigger 
-          className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[42px] 
+          className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[42px] 
           text-white/60 flex items-center px-3
           focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none
           focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
@@ -56,7 +56,7 @@ const PaymentMethod = ({
           <SelectValue placeholder="Select payment method" className="font-normal text-white/60" />
           <ChevronDown className="h-4 w-4 text-white/60" />
         </SelectTrigger>
-        <SelectContent className="bg-[#1A1F2C] border-white/10 text-white/60 border-[#AF9EF9]">
+        <SelectContent className="bg-[#303030] border-white/10 text-white/60 border-[#AF9EF9]">
           <SelectItem value="card" className="text-white/60 text-sm font-normal">Debit or Credit Card</SelectItem>
           <SelectItem value="ach" className="text-white/60 text-sm font-normal">Bank Transfer (ACH)</SelectItem>
           <SelectItem value="apple" className="text-white/60 text-sm font-normal">Apple Pay</SelectItem>
