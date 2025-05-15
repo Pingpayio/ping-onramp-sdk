@@ -52,12 +52,15 @@ const OnrampPage = () => {
     selectedOnramp,
     walletAddress,
     amount,
+    cardNumber,
     selectedCurrency,
     steps,
     isProcessingTransaction,
     handleAssetSelect,
+    handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
+    handleCardNumberChange,
     handleCurrencySelect,
     handleContinue,
     handleBack,
@@ -88,10 +91,13 @@ const OnrampPage = () => {
                 setOpen={setOpen} 
                 walletAddress={walletAddress} 
                 onWalletAddressChange={handleWalletAddressChange} 
-                selectedOnramp={selectedOnramp}
+                selectedOnramp={selectedOnramp} 
+                onOnrampSelect={handleOnrampSelect} 
                 handleBack={handleBack} 
                 handleContinue={handleContinue} 
                 canContinue={canContinue} 
+                cardNumber={cardNumber} 
+                onCardNumberChange={handleCardNumberChange}
                 selectedCurrency={selectedCurrency}
                 onCurrencySelect={handleCurrencySelect}
                 isProcessingTransaction={isProcessingTransaction}
