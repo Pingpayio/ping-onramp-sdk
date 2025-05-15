@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
@@ -70,7 +69,7 @@ const OnrampPage = () => {
         <div className="px-[56px] py-[40px] -mt-3 flex flex-col h-full">
           <OnrampHeader />
 
-          <main className="flex-1 flex gap-6 overflow-hidden mt-4">
+          <main className="flex-1 flex gap-6 overflow-hidden mt-4 h-[calc(100vh-192px)]">
             {/* Left container - Changed pb-10 to pb-6 for more consistent spacing */}
             <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
