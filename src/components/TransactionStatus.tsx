@@ -3,7 +3,6 @@ import React from 'react';
 import { type TransactionStage } from '@/hooks/use-transaction-progress';
 import StatusProgressBar from './transaction/StatusProgressBar';
 import StatusCard from './transaction/StatusCard';
-import SwapVisualizationCard from './transaction/SwapVisualizationCard';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import CompletionMessage from './transaction/CompletionMessage';
 
@@ -49,9 +48,6 @@ const TransactionStatus = ({
         onboardingTxHash={onboardingTxHash}
         swapTxHash={swapTxHash}
       />
-      
-      {/* NEAR Intents swap visual (shown during swap stage) */}
-      {(stage === 'swap' || stage === 'sending') && <SwapVisualizationCard asset={asset} />}
 
       {/* Transaction details card - always visible */}
       <TransactionDetailsCard 

@@ -4,7 +4,6 @@ import { useTransactionProgress, TransactionStage } from '@/hooks/use-transactio
 import { generateTxHash } from '@/lib/transaction-utils';
 import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
-import SwapVisualizer from './transaction/SwapVisualizer';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import TransactionCompletionMessage from './transaction/TransactionCompletionMessage';
 
@@ -48,9 +47,6 @@ const TransactionProgress = ({
         walletAddress={walletAddress}
       />
       
-      {/* NEAR Intents swap visual (shown during appropriate stages) */}
-      <SwapVisualizer asset={asset} stage={currentStage} />
-
       {/* Completion message (shown when completed) */}
       {currentStage === 'completed' && (
         <TransactionCompletionMessage 
