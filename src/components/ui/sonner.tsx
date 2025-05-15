@@ -11,7 +11,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
-      position="top-right"
+      position="bottom-right"
       duration={400} // Reduced to 400ms for ultra-fast notifications
       toastOptions={{
         classNames: {
