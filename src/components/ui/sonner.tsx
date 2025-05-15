@@ -12,7 +12,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       theme={theme as ToasterProps["theme"]}
       className="toaster group"
       position="top-right"
-      duration={800} // Added shorter duration (800ms) to match our TOAST_REMOVE_DELAY value
+      duration={400} // Reduced to 400ms for ultra-fast notifications
       toastOptions={{
         classNames: {
           toast:
