@@ -54,6 +54,11 @@ export const useOnrampState = () => {
       return; // Don't proceed if wallet is not connected
     }
     
+    // Explicitly check for recipient address before proceeding from step 0
+    if (currentStep === 0 && (recipientAddress.trim() === '' || !isWalletAddressValid)) {
+      return; // Don't proceed if no recipient address or invalid address
+    }
+    
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     }
@@ -75,10 +80,9 @@ export const useOnrampState = () => {
   const canContinue = () => {
     switch (currentStep) {
       case 0: 
-        // Make sure all fields in step 1 are filled and wallet address is valid
-        // The wallet must be connected to proceed
+        // Ensure recipient address is provided and valid before allowing to continue
         return !!selectedAsset && 
-               !!recipientAddress && // Require a non-empty recipient address
+               recipientAddress.trim() !== '' && // Require a non-empty recipient address
                isWalletAddressValid && 
                parseFloat(amount) >= 10 && 
                isConnected; // Must have wallet connected
@@ -90,11 +94,11 @@ export const useOnrampState = () => {
   // Handle navigation through step clicking
   const handleStepClick = (stepIndex: number) => {
     // Only allow navigation to steps that have been completed or the current step
-    // For step 1, require wallet connection
+    // For step 1, require wallet connection and valid recipient address
     if (stepIndex <= currentStep || 
         (stepIndex === 1 && 
          !!selectedAsset && 
-         !!recipientAddress && // Require a non-empty recipient address
+         recipientAddress.trim() !== '' && // Require a non-empty recipient address
          isWalletAddressValid && 
          parseFloat(amount) >= 10 &&
          isConnected)) {
