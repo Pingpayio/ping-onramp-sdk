@@ -26,7 +26,6 @@ export const useOnrampState = () => {
   };
 
   const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    // This will be synced with the wallet context in a real implementation
     const address = e.target.value;
     
     // Validate wallet address
@@ -99,13 +98,7 @@ export const useOnrampState = () => {
     }
   };
 
-  // When wallet connects, update the wallet address in the form
-  useEffect(() => {
-    if (isConnected && walletAddress) {
-      // Set wallet address valid when connected through wallet context
-      setIsWalletAddressValid(true);
-    }
-  }, [isConnected, walletAddress]);
+  // Removed the effect that was automatically populating the wallet address field
 
   return {
     currentStep,
