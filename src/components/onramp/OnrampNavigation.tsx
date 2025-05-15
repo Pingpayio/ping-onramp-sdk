@@ -29,7 +29,7 @@ const OnrampNavigation = ({
   // Function to determine button text based on current step and wallet connection
   const getButtonText = () => {
     if (currentStep === 0) {
-      return isConnected ? "Start Onramp" : "Connect Wallet";
+      return isConnected ? "Start Onramp" : "Connect Wallet to Continue";
     }
     if (currentStep === 2 && !isProcessingTransaction) {
       return "Buy Now";
