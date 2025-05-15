@@ -63,10 +63,14 @@ const TransactionProgress = ({
         walletAddress={walletAddress} 
       />
       
-      {/* Warning message */}
-      {currentStage !== 'completed' && currentStage !== 'failed' && (
+      {/* Status message based on transaction stage */}
+      {currentStage !== 'completed' && currentStage !== 'failed' ? (
         <p className="text-center text-white/60 text-sm mt-2">
           Please do not close this window while your transaction is being processed.
+        </p>
+      ) : currentStage === 'completed' && (
+        <p className="text-center text-white/60 text-sm mt-2">
+          Transaction complete, you can now close this window.
         </p>
       )}
     </div>
