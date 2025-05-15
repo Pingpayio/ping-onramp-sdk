@@ -2,7 +2,6 @@
 import React, { useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import CryptoAsset from '@/components/CryptoAsset';
 import { assets, stablecoinSymbols } from '@/data/assets';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -54,6 +53,20 @@ const AssetList = ({
     );
   }, [searchQuery, sortedAssets]);
 
+  const getAssetLogoUrl = (symbol: string) => {
+    return `/lovable-uploads/${
+      symbol === "BTC"
+        ? "69cbddc8-b347-4890-9211-c65d570c867f.png"
+        : symbol === "ETH"
+        ? "7f88aeb4-86f7-4fbf-a3d6-25d9625fdb5d.png"
+        : symbol === "NEAR"
+        ? "f655448d-7787-4f68-bd65-c92b438f5d1c.png"
+        : symbol === "USDC"
+        ? "a984f844-0031-4fc1-8792-d810f6bbd335.png"
+        : "2a3c01e1-3a77-414b-959d-e162d59ba6b5.png"
+    }`;
+  };
+
   return (
     <Command>
       <div className="flex items-center border-b px-3">
@@ -73,14 +86,23 @@ const AssetList = ({
               key={asset.symbol}
               value={asset.name}
               onSelect={() => onAssetSelect(asset.symbol)}
-              className="cursor-pointer"
+              className="cursor-pointer hover:bg-accent/50"
             >
-              <CryptoAsset
-                name={asset.name}
-                symbol={asset.symbol}
-                logoUrl={asset.logoUrl}
-                isSelected={selectedAsset === asset.symbol}
-              />
+              <div className="flex items-center w-full">
+                <div className="bg-secondary rounded-full p-1.5 mr-2">
+                  <div className="w-3.5 h-3.5 rounded-full overflow-hidden">
+                    <img
+                      src={getAssetLogoUrl(asset.symbol)}
+                      alt={asset.symbol}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium text-white">{asset.name}</span>
+                  <span className="text-xs text-white/60">{asset.symbol}</span>
+                </div>
+              </div>
             </CommandItem>
           ))}
         </CommandGroup>
