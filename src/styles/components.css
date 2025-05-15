@@ -1,0 +1,13 @@
+
+/* Add z-index management for dropdowns and popovers */
+.radix-dropdown,
+.radix-popover,
+.radix-select {
+  z-index: 50;
+}
+
+/* Ensure dropdowns are fully visible */
+[data-radix-popper-content-wrapper] {
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+}
