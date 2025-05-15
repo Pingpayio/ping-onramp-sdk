@@ -5,6 +5,7 @@ import StatusProgressBar from './transaction/StatusProgressBar';
 import StatusCard from './transaction/StatusCard';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import CompletionMessage from './transaction/CompletionMessage';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionStatusProps {
   status: 'pending' | 'completed' | 'failed';
@@ -33,8 +34,10 @@ const TransactionStatus = ({
   asset,
   walletAddress
 }: TransactionStatusProps) => {
+  const isMobile = useIsMobile();
+
   return (
-    <div className="flex flex-col space-y-4 max-w-md w-full">
+    <div className={`flex flex-col space-y-4 w-full ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
       {/* Progress bar */}
       <StatusProgressBar progress={progress} />
       

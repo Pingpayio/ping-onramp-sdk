@@ -1,18 +1,24 @@
 
 import React from 'react';
 import SidebarNav from '@/components/SidebarNav';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionContainerProps {
   children: React.ReactNode;
 }
 
 const TransactionContainer: React.FC<TransactionContainerProps> = ({ children }) => {
+  const isMobile = useIsMobile();
+  
   return (
     <div className="flex h-screen bg-[#120714] overflow-hidden">
-      <SidebarNav />
+      {/* Only show sidebar on tablet and larger */}
+      <div className="hidden md:block">
+        <SidebarNav />
+      </div>
       
-      <div className="flex-1 ml-[256px]">
-        <div className="container mx-auto px-6 py-6 flex flex-col h-full">
+      <div className={`flex-1 ${isMobile ? 'ml-0' : 'md:ml-[256px]'}`}>
+        <div className="px-4 py-4 md:px-6 md:py-6 lg:container mx-auto flex flex-col h-full">
           {children}
         </div>
       </div>

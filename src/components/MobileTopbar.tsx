@@ -5,9 +5,10 @@ import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, Book
 import { cn } from '@/lib/utils';
 import Button from './Button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useWallet } from '@/hooks/use-wallet-context';
 
 const MobileTopbar = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isConnected, walletAddress, connectWallet } = useWallet();
   const location = useLocation();
   
   const menuItems = [{
@@ -46,6 +47,11 @@ const MobileTopbar = () => {
     disabled: true
   }];
 
+  // Truncate wallet address for display
+  const displayAddress = walletAddress ? 
+    `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 
+    '';
+
   return (
     <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-[#121212] flex justify-between items-center px-4 z-50">
       {/* Logo */}
@@ -58,13 +64,24 @@ const MobileTopbar = () => {
       </div>
 
       {/* Connect Wallet Button - simplified version for mobile */}
-      <Button 
-        variant="gradient" 
-        size="sm"
-        className="mr-3"
-      >
-        Connect
-      </Button>
+      {!isConnected ? (
+        <Button 
+          variant="gradient" 
+          size="sm"
+          className="mr-3"
+          onClick={connectWallet}
+        >
+          Connect
+        </Button>
+      ) : (
+        <Button 
+          variant="gradient" 
+          size="sm"
+          className="mr-3"
+        >
+          {displayAddress}
+        </Button>
+      )}
 
       {/* Mobile Menu */}
       <Sheet>

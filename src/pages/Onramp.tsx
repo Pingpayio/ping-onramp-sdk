@@ -72,15 +72,18 @@ const OnrampPage = () => {
 
   return (
     <div className="flex h-screen bg-[#121212] overflow-hidden">
-      <SidebarNav />
+      {/* Only show sidebar on tablet and larger */}
+      <div className="hidden md:block">
+        <SidebarNav />
+      </div>
       
-      <div className="flex-1 ml-[256px]">
-        <div className="px-[56px] py-[40px] flex flex-col h-full">
+      <div className={`flex-1 ${isMobile ? 'ml-0' : 'md:ml-[256px]'}`}>
+        <div className={`p-4 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
           <OnrampHeader />
 
-          <main className="flex-1 flex gap-6 overflow-hidden mt-4 h-[calc(100vh-192px)]">
-            {/* Left container - maintains consistent size across steps */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[640px] min-w-[640px] border border-white/[0.16]">
+          <main className={`flex-1 flex ${isMobile ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 overflow-hidden mt-4 h-[calc(100vh-192px)] md:h-[calc(100vh-192px)]`}>
+            {/* Left container - maintains consistent size across steps on desktop, full width on mobile */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex-1 overflow-hidden flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
@@ -106,8 +109,8 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Right container - maintains consistent size across steps */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[400px] min-w-[400px] border border-white/[0.16]">
+            {/* Right container - maintains consistent size on desktop, full width on mobile */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 overflow-hidden flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>

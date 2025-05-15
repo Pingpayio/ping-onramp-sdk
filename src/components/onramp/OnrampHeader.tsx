@@ -4,10 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Wallet, Copy, CheckCircle2 } from "lucide-react";
 import { useWallet } from '@/hooks/use-wallet-context';
 import { toast } from '@/components/ui/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const OnrampHeader = () => {
   const { isConnected, walletAddress, connectWallet } = useWallet();
   const [copied, setCopied] = useState(false);
+  const isMobile = useIsMobile();
 
   const copyAddress = () => {
     if (walletAddress) {
@@ -22,33 +24,38 @@ const OnrampHeader = () => {
     }
   };
 
+  // Truncate wallet address for mobile
+  const displayAddress = isMobile && walletAddress ? 
+    `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 
+    walletAddress;
+
   return (
-    <header className="flex justify-between items-center h-[50px]">
+    <header className="flex justify-between items-center h-[50px] mt-2 md:mt-0">
       <div className="flex items-center">
-        <h1 className="text-[30px] font-normal text-white leading-none flex items-center">Ping Onramp</h1>
+        <h1 className="text-[22px] md:text-[30px] font-normal text-white leading-none flex items-center">Ping Onramp</h1>
       </div>
       
       {!isConnected ? (
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 rounded-full border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 text-base font-normal"
+          className="flex items-center gap-1 md:gap-2 rounded-full border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 text-sm md:text-base font-normal px-3 md:px-4"
           onClick={connectWallet}
         >
-          <Wallet className="h-4 w-4" />
+          <Wallet className="h-3 w-3 md:h-4 md:w-4" />
           <span>Connect Wallet</span>
         </Button>
       ) : (
         <Button 
           variant="outline" 
-          className="flex items-center gap-2 rounded-full border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 text-base font-normal"
+          className="flex items-center gap-1 md:gap-2 rounded-full border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 text-sm md:text-base font-normal px-3 md:px-4"
           onClick={copyAddress}
         >
           {copied ? (
-            <CheckCircle2 className="h-4 w-4" />
+            <CheckCircle2 className="h-3 w-3 md:h-4 md:w-4" />
           ) : (
-            <Copy className="h-4 w-4" />
+            <Copy className="h-3 w-3 md:h-4 md:w-4" />
           )}
-          <span>{walletAddress}</span>
+          <span>{displayAddress}</span>
         </Button>
       )}
     </header>

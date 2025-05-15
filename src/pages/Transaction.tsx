@@ -7,10 +7,12 @@ import { toast } from '@/components/ui/use-toast';
 import TransactionContainer from '@/components/transaction/TransactionContainer';
 import TransactionActionButtons from '@/components/transaction/TransactionActionButtons';
 import { generateTransactionHash } from '@/components/transaction/utils/transactionUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Transaction = () => {
   const location = useLocation();
   const { state } = location;
+  const isMobile = useIsMobile();
   
   const {
     currentStage,
@@ -75,7 +77,7 @@ const Transaction = () => {
 
   return (
     <TransactionContainer>
-      <div className="flex-1 flex items-center justify-center">
+      <div className="flex-1 flex items-center justify-center p-4">
         <TransactionStatus 
           status={getStatusFromStage(currentStage)}
           title={transactionData.title || `${transactionData.asset} Transaction`}

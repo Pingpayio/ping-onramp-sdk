@@ -46,3 +46,60 @@ html, body {
   height: 100%;
   overflow: hidden;
 }
+
+/* Add padding-top for mobile content to account for the topbar */
+@media (max-width: 767px) {
+  body {
+    padding-top: 4rem; /* Matches the height of the mobile topbar */
+  }
+  
+  /* Adjust scrolling behavior for mobile */
+  .overflow-hidden {
+    overflow: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure tap targets are at least 44x44px on mobile */
+  button, 
+  [role="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve form element touch targets */
+  input, 
+  select,
+  textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    padding: 10px;
+  }
+}
+
+.card-gradient-hover {
+  @apply relative overflow-hidden transition-all duration-300;
+}
+
+.card-gradient-hover::before {
+  content: "";
+  @apply absolute inset-0 rounded-lg z-0 opacity-0 bg-gradient-ping transition-opacity duration-300;
+}
+
+.card-gradient-hover:hover::before {
+  @apply opacity-100;
+}
+
+.glow-border {
+  @apply relative rounded-lg;
+}
+
+.glow-border::after {
+  content: "";
+  @apply absolute -inset-[1px] rounded-lg bg-gradient-ping blur-sm opacity-50 z-0 transition-opacity duration-300;
+}
+
+.ping-shadow {
+  box-shadow: 0 0 25px rgba(116, 93, 220, 0.15);
+}
