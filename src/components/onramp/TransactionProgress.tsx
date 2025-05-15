@@ -39,56 +39,60 @@ const TransactionProgress = ({
   const isCompleted = currentStage === 'completed';
 
   return (
-    <div className="w-full space-y-3 flex flex-col h-full">
-      {/* Progress bar */}
-      <TransactionProgressBar progress={progress} />
-      
-      {/* Current stage card */}
-      <TransactionStageCard 
-        currentStage={currentStage}
-        onboardingTxHash={depositTxHash}
-        swapTxHash={swapTxHash}
-        finalTxHash={finalTxHash}
-        asset={asset}
-        amount={amount}
-        walletAddress={walletAddress}
-      />
-      
-      {/* NEAR Intents swap visual (shown during appropriate stages) */}
-      <SwapVisualizer asset={asset} stage={currentStage} />
-
-      {/* Completion message (shown when completed) */}
-      {isCompleted && (
-        <TransactionCompletionMessage 
-          amount={amount} 
-          asset={asset} 
+    <div className="w-full flex flex-col h-full">
+      <div className="space-y-3 flex-1 overflow-auto">
+        {/* Progress bar */}
+        <TransactionProgressBar progress={progress} />
+        
+        {/* Current stage card */}
+        <TransactionStageCard 
+          currentStage={currentStage}
+          onboardingTxHash={depositTxHash}
+          swapTxHash={swapTxHash}
+          finalTxHash={finalTxHash}
+          asset={asset}
+          amount={amount}
+          walletAddress={walletAddress}
         />
-      )}
+        
+        {/* NEAR Intents swap visual (shown during appropriate stages) */}
+        <SwapVisualizer asset={asset} stage={currentStage} />
 
-      {/* Transaction details - only shown when completed */}
-      {isCompleted && (
-        <TransactionDetailsCard 
-          amount={amount} 
-          asset={asset} 
-          walletAddress={walletAddress} 
-        />
-      )}
+        {/* Completion message (shown when completed) */}
+        {isCompleted && (
+          <TransactionCompletionMessage 
+            amount={amount} 
+            asset={asset} 
+          />
+        )}
+
+        {/* Transaction details - only shown when completed */}
+        {isCompleted && (
+          <TransactionDetailsCard 
+            amount={amount} 
+            asset={asset} 
+            walletAddress={walletAddress} 
+          />
+        )}
+      </div>
       
-      {/* Action buttons - moved to bottom with mt-auto to match Start Onramp position */}
+      {/* Action buttons - fixed to bottom of container */}
       <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
         <Button
           variant="default"
           className="bg-white text-[#3D315E] hover:bg-white rounded-[9999px] flex items-center gap-2"
           onClick={() => navigate('/')}
+          disabled={!isCompleted}
         >
           <Home className="h-4 w-4" />
           Return Home
         </Button>
         
         <Button
-          variant="outline"
-          className="bg-[#AF9EF9]/10 border-none text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2 rounded-[9999px]"
+          variant="default"
+          className="bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2] rounded-[9999px] flex items-center gap-2"
           onClick={() => window.open(`https://explorer.near.org/transactions/${finalTxHash}`, '_blank')}
+          disabled={!isCompleted}
         >
           <ExternalLink className="h-4 w-4" />
           View on Explorer
