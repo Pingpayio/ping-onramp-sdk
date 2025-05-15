@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Button from '@/components/Button';
 import { Shield } from 'lucide-react';
 import { mockPrices } from './asset-selection/PriceCalculator';
+import { toast } from '@/components/ui/use-toast';
 
 interface PaymentCompletionProps {
   amount: string;
@@ -20,6 +21,8 @@ const PaymentCompletion = ({
   selectedOnramp,
   cardNumber = ''
 }: PaymentCompletionProps) => {
+  const navigate = useNavigate();
+  
   // Get parsed amount and ensure it's a valid number
   const parsedAmount = parseFloat(amount) || 0;
 
@@ -93,13 +96,33 @@ const PaymentCompletion = ({
     return '0x' + Array.from({length: 40}, () => Math.floor(Math.random() * 16).toString(16)).join('');
   };
 
-  // Create transaction details object to pass to the transaction page
-  const transactionDetails = {
-    amount: parsedAmount,
-    asset: selectedAsset,
-    wallet: walletAddress,
-    fiatTxHash: generateMockTxHash(),
-    swapTxHash: generateMockTxHash()
+  // Handle the buy now action
+  const handleBuyNow = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Show processing toast
+    toast({
+      title: "Processing Payment",
+      description: "Redirecting to payment processor...",
+    });
+    
+    // Create transaction details object to pass to the transaction page
+    const transactionDetails = {
+      amount: afterFeeAmount,
+      fiatAmount: parsedAmount,
+      asset: selectedAsset,
+      walletAddress: walletAddress,
+      onboardingTxHash: generateMockTxHash(),
+      swapTxHash: generateMockTxHash(),
+      status: "pending",
+      title: `Buy ${selectedAsset}`,
+      description: `Purchasing ${afterFeeAmount} ${selectedAsset} for $${parsedAmount.toFixed(2)}`
+    };
+    
+    // Simulate a short delay for "processing" before redirecting
+    setTimeout(() => {
+      navigate('/transaction', { state: { txDetails: transactionDetails } });
+    }, 1000);
   };
 
   return (
@@ -184,19 +207,14 @@ const PaymentCompletion = ({
       
       {/* Buy Now Button */}
       <div className="w-full">
-        <Link 
-          to="/transaction" 
-          state={{ txDetails: transactionDetails }}
-          className="w-full block"
+        <Button 
+          variant="gradient" 
+          size="lg"
+          className="w-full py-6 rounded-xl font-bold"
+          onClick={handleBuyNow}
         >
-          <Button 
-            variant="gradient" 
-            size="lg"
-            className="w-full py-6 rounded-xl font-bold"
-          >
-            Buy now
-          </Button>
-        </Link>
+          Buy now
+        </Button>
       </div>
     </div>
   );
