@@ -38,7 +38,6 @@ const sampleHistory = [{
   fiat: '$500',
   status: 'Failed'
 }];
-
 const OnrampPage = () => {
   const isMobile = useIsMobile();
   const {
@@ -63,19 +62,17 @@ const OnrampPage = () => {
     handleStepClick,
     setOpen
   } = useOnrampState();
-  
   return <div className="flex h-screen bg-[#121212] overflow-hidden">
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">
-        {/* Use consistent padding of 40px top/bottom and 56px left/right */}
-        <div className="px-[56px] py-[40px] flex flex-col">
+        {/* Added -mt-3 (negative margin top) to shift everything up by 12px */}
+        <div className="px-[56px] py-[40px] -mt-3 flex flex-col h-full">
           <OnrampHeader />
 
-          {/* Main content area with calculated height to ensure equal spacing top and bottom */}
-          <main className="flex gap-6 mt-4 h-[calc(100vh-212px)]">
-            {/* Left container - form */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 flex flex-col max-w-[640px] border border-white/[0.16] overflow-hidden">
+          <main className="flex-1 flex gap-6 overflow-hidden mt-4">
+            {/* Left container - Changed pb-10 to pb-6 for more consistent spacing */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
@@ -99,8 +96,8 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Right container - history */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex flex-col w-[400px] border border-white/[0.16] overflow-hidden">
+            {/* Right container - Also changed pb-10 to pb-6 for consistency */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
@@ -141,5 +138,4 @@ const OnrampPage = () => {
       </div>
     </div>;
 };
-
 export default OnrampPage;
