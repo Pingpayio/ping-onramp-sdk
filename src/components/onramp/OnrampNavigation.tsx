@@ -31,7 +31,7 @@ const OnrampNavigation = ({
   };
   
   return (
-    <div className="flex justify-between py-3 mt-auto">
+    <div className="flex justify-between py-6">
       {currentStep > 0 ? (
         <Button
           variant="outline"

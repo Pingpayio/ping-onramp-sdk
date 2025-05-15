@@ -94,20 +94,18 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Added min-h-0 to ensure proper flexbox behavior */}
-      <div className="flex-grow overflow-auto min-h-0">
+      {/* Content section with padding at the top that matches the bottom padding */}
+      <div className="flex-grow overflow-auto min-h-0 pb-6">
         {renderCurrentStep()}
       </div>
-      {/* Added mt-auto to ensure navigation sticks to bottom */}
-      <div className="mt-auto">
-        <OnrampNavigation
-          currentStep={currentStep}
-          steps={steps}
-          handleBack={handleBack}
-          handleContinue={handleContinue}
-          canContinue={canContinue}
-        />
-      </div>
+      
+      <OnrampNavigation
+        currentStep={currentStep}
+        steps={steps}
+        handleBack={handleBack}
+        handleContinue={handleContinue}
+        canContinue={canContinue}
+      />
     </div>
   );
 };
