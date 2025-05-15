@@ -24,4 +24,6 @@ export function useToast() {
 }
 
 export { toastOriginal as toast }
+
+// Update the Toast type to include className
 export type { Toast } from "@/components/ui/toast"

@@ -133,6 +133,7 @@ type ToastType = {
   description?: React.ReactNode;
   action?: ToastActionElement;
   variant?: "default" | "destructive";
+  className?: string;  // Add className property
 };
 
 const TOAST_LIMIT = 5;
@@ -144,8 +145,9 @@ type ToasterToast = ToastType & {
   description?: React.ReactNode;
   action?: React.ReactNode;
   variant?: "default" | "destructive";
-  open?: boolean; // Add open property to the type
-  onOpenChange?: (open: boolean) => void; // Also add onOpenChange property
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  className?: string;  // Add className property
 };
 
 const actionTypes = {
