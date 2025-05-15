@@ -10,7 +10,7 @@ const ApplePayButton = ({ onSelect }: ApplePayButtonProps) => {
     <div className="w-full">
       <button 
         onClick={onSelect}
-        className="w-full h-[42px] bg-black rounded-lg text-white flex items-center justify-center"
+        className="w-full h-[42px] bg-black rounded-lg text-white flex items-center justify-center shadow-sm hover:shadow-md transition-shadow"
         style={{
           // Using standard CSS properties with fallbacks for Apple Pay styling
           // Casting to unknown first and then to React.CSSProperties to fix TypeScript error

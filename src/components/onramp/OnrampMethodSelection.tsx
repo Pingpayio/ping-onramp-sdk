@@ -39,7 +39,7 @@ const OnrampMethodSelection = ({
       {/* Divider with text */}
       <div className="flex items-center mb-6">
         <div className="flex-grow h-px bg-gray-200/20"></div>
-        <span className="px-4 text-gray-400 text-sm">Or pay with debit card</span>
+        <span className="px-4 text-white/40 text-sm">Or pay with debit card</span>
         <div className="flex-grow h-px bg-gray-200/20"></div>
       </div>
       
