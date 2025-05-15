@@ -73,7 +73,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
               <SelectItem 
                 key={network.id} 
                 value={network.id} 
-                className="text-white/60 hover:text-white hover:bg-white/5 cursor-pointer transition-colors py-3 focus:bg-white/5 focus:text-white px-3"
+                className="text-white/60 hover:text-white hover:bg-white/5 cursor-pointer transition-colors py-3 focus:bg-white/5 focus:text-white px-3 data-[highlighted]:bg-white/5 data-[highlighted]:text-white"
               >
                 <div className="flex items-center">
                   <div className="bg-secondary rounded-full p-1.5 mr-2">
