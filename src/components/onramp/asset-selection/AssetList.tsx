@@ -68,25 +68,25 @@ const AssetList = ({
   };
 
   return (
-    <Command>
-      <div className="flex items-center border-b px-3">
+    <Command className="bg-[#303030] border-none rounded-lg overflow-hidden">
+      <div className="flex items-center border-b border-white/10 px-3">
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <CommandInput 
           placeholder="Search for an asset..." 
-          className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-muted-foreground"
+          className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-muted-foreground text-white/60"
           value={searchQuery}
           onValueChange={setSearchQuery}
         />
       </div>
       <CommandList className={`${isMobile ? 'max-h-[50vh]' : 'max-h-[300px]'} overflow-auto`}>
-        <CommandEmpty>No asset found.</CommandEmpty>
+        <CommandEmpty className="text-white/60 text-sm py-2">No asset found.</CommandEmpty>
         <CommandGroup>
           {filteredAssets.map((asset) => (
             <CommandItem
               key={asset.symbol}
               value={asset.name}
               onSelect={() => onAssetSelect(asset.symbol)}
-              className="cursor-pointer hover:bg-accent/50"
+              className="cursor-pointer text-white/60 hover:bg-white/5 transition-colors"
             >
               <div className="flex items-center w-full">
                 <div className="bg-secondary rounded-full p-1.5 mr-2">
