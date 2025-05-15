@@ -15,6 +15,11 @@ const OnrampHeader = () => {
       navigator.clipboard.writeText(walletAddress);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      
+      toast({
+        title: "Address Copied",
+        description: "Wallet address copied to clipboard",
+      });
     }
   };
 

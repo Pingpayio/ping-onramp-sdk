@@ -3,12 +3,13 @@ import { useState, useEffect } from 'react';
 import { useWallet } from './use-wallet-context';
 
 export const useOnrampState = () => {
-  const { isConnected, walletAddress } = useWallet();
+  const { isConnected, walletAddress: connectedWalletAddress } = useWallet();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedAsset, setSelectedAsset] = useState<string | null>("NEAR");
   const [open, setOpen] = useState(false);
   const [selectedOnramp, setSelectedOnramp] = useState<string | null>(null);
   const [amount, setAmount] = useState<string>('100');
+  const [recipientAddress, setRecipientAddress] = useState<string>('');
   const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
   const [cardNumber, setCardNumber] = useState<string>('');
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
@@ -27,6 +28,7 @@ export const useOnrampState = () => {
 
   const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const address = e.target.value;
+    setRecipientAddress(address);
     
     // Validate wallet address
     const isNearAddress = address.trim().endsWith('.near');
@@ -98,14 +100,12 @@ export const useOnrampState = () => {
     }
   };
 
-  // Removed the effect that was automatically populating the wallet address field
-
   return {
     currentStep,
     selectedAsset,
     open,
     selectedOnramp,
-    walletAddress,
+    walletAddress: recipientAddress, // Use the user-entered recipient address
     amount,
     isWalletAddressValid,
     cardNumber,

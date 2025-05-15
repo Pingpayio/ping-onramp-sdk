@@ -1,5 +1,6 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { useToast } from "@/components/ui/use-toast";
 
 interface WalletContextType {
   isConnected: boolean;
@@ -56,5 +57,3 @@ export const useWallet = () => {
   }
   return context;
 };
-
-import { useToast } from "@/components/ui/use-toast";
