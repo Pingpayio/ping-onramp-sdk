@@ -94,6 +94,7 @@ const OnrampStepContent = ({
             walletAddress={walletAddress}
             selectedOnramp={selectedOnramp}
             cardNumber={cardNumber}
+            onStartTransaction={handleContinue}
           />
         );
       default:
@@ -103,12 +104,12 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Content section with adjusted spacing to prevent scrolling */}
-      <div className="flex-grow overflow-auto min-h-0 pb-1">
+      {/* Content section with adjusted spacing for consistent appearance */}
+      <div className="flex-grow overflow-auto pb-1">
         {renderCurrentStep()}
       </div>
       
-      {/* Keeping navigation buttons position fixed */}
+      {/* Navigation buttons with consistent styling */}
       <div className="mt-auto pt-4">
         <OnrampNavigation
           currentStep={currentStep}

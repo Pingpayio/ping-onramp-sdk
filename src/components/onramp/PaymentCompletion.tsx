@@ -1,7 +1,7 @@
 
 import React from 'react';
-import Button from '@/components/Button';
 import { Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { mockPrices } from './asset-selection/PriceCalculator';
 import { toast } from '@/components/ui/use-toast';
 
@@ -90,7 +90,7 @@ const PaymentCompletion = ({
 
   const { afterFeeAmount, feeAmount } = getEstimatedAmount();
 
-  // Handle the buy now action (now integrated with the onramp flow)
+  // Handle the buy now action
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     
@@ -107,10 +107,10 @@ const PaymentCompletion = ({
   };
 
   return (
-    <div className="flex flex-col h-full px-2">
+    <div className="flex flex-col h-full">
       {/* Title */}
-      <div className="text-center mb-3">
-        <h2 className="text-2xl font-bold mb-1">
+      <div className="text-center mb-6">
+        <h2 className="text-xl font-medium mb-1 text-white">
           Buy ${parsedAmount.toFixed(2)} of {selectedAsset}
         </h2>
         <p className="text-sm text-white/60">
@@ -119,13 +119,13 @@ const PaymentCompletion = ({
       </div>
       
       {/* Transaction Details List */}
-      <div className="w-full border rounded-lg overflow-hidden mb-4 border-[rgba(255,255,255,0.18)]">
+      <div className="w-full border rounded-lg overflow-hidden mb-4 border-[rgba(255,255,255,0.18)] bg-white/[0.08]">
         <div className="divide-y divide-[rgba(255,255,255,0.18)]">
           {/* Receive */}
-          <div className="flex justify-between p-3.5">
-            <span className="text-white/60">Receive</span>
+          <div className="flex justify-between p-4">
+            <span className="text-white/60 text-sm">Receive</span>
             <div className="text-right">
-              <span className="font-normal text-white/90">{afterFeeAmount} {selectedAsset}</span>
+              <span className="font-normal text-white">{afterFeeAmount} {selectedAsset}</span>
               <div className="text-xs text-white/60">
                 Fee: {feeAmount} {selectedAsset}
               </div>
@@ -133,30 +133,30 @@ const PaymentCompletion = ({
           </div>
           
           {/* Network */}
-          <div className="flex justify-between p-3.5">
-            <span className="text-white/60">Network</span>
-            <span className="font-normal text-white/90">
+          <div className="flex justify-between p-4">
+            <span className="text-white/60 text-sm">Network</span>
+            <span className="font-normal text-white">
               {selectedAsset === 'NEAR' ? 'NEAR Protocol' : 'Base'}
             </span>
           </div>
           
           {/* Pay with */}
-          <div className="flex justify-between p-3.5">
-            <span className="text-white/60">Pay with</span>
+          <div className="flex justify-between p-4">
+            <span className="text-white/60 text-sm">Pay with</span>
             <div className="flex items-center">
               <div className="flex items-center">
                 <div className="bg-gradient-ping rounded-full p-1 mr-2">
                   <div className="text-white font-bold text-xs">VISA</div>
                 </div>
-                <span className="font-normal text-white/90">Visa **{getLastFourDigits()}</span>
+                <span className="font-normal text-white">Visa **{getLastFourDigits()}</span>
               </div>
             </div>
           </div>
           
           {/* To/Destination */}
-          <div className="flex justify-between p-3.5">
-            <span className="text-white/60">To</span>
-            <span className="font-normal text-white/90 break-all text-right">
+          <div className="flex justify-between p-4">
+            <span className="text-white/60 text-sm">To</span>
+            <span className="font-normal text-white break-all text-right">
               {walletAddress || '0x...'}
             </span>
           </div>
@@ -164,9 +164,9 @@ const PaymentCompletion = ({
       </div>
       
       {/* Security Note */}
-      <div className="w-full text-xs text-white/60 mb-4 bg-white/[0.08] p-3 rounded-md">
+      <div className="w-full text-sm text-white/60 mb-5 bg-white/[0.08] p-3 rounded-md">
         <div className="flex items-start gap-1.5">
-          <Shield className="h-3.5 w-3.5 mt-0.5 flex-shrink-0" />
+          <Shield className="h-4 w-4 mt-0.5 flex-shrink-0" />
           <span>
             Sending funds is a permanent action. For your security, be sure you own the
             wallet address listed.
@@ -178,13 +178,15 @@ const PaymentCompletion = ({
       <div className="w-full border-t pt-4 mb-4 border-[rgba(255,255,255,0.18)]">
         <div className="flex justify-between items-center">
           <div>
-            <span className="font-semibold text-white/90">Total</span>
+            <span className="font-medium text-white/80 text-sm">Total</span>
           </div>
-          <div className="text-xl font-bold flex items-center text-white">
+          <div className="text-lg font-semibold flex items-center text-white">
             ${parsedAmount.toFixed(2)}
           </div>
         </div>
       </div>
+      
+      {/* Buy Button - This button was removed since we're now using the Continue button in the footer */}
     </div>
   );
 };
