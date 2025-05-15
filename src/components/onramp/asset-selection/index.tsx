@@ -5,7 +5,6 @@ import AssetSelector from './AssetSelector';
 import AmountInput from './AmountInput';
 import NetworkBadge from './NetworkBadge';
 import PaymentMethod from './PaymentMethod';
-import PaymentCurrency from './PaymentCurrency';
 import WalletAddressInput from './WalletAddressInput';
 import NearIntentsField from './NearIntentsField';
 import { calculateEstimatedAmount } from './PriceCalculator';
@@ -75,13 +74,10 @@ const AssetSelection = ({
           <WalletAddressInput walletAddress={walletAddress} onWalletAddressChange={onWalletAddressChange} placeholder="Enter recipient address" />
         </div>
         
-        {/* 6. Payment Currency dropdown with reduced label spacing */}
-        <PaymentCurrency selectedCurrency={selectedCurrency} onCurrencySelect={onCurrencySelect} />
-        
-        {/* 7. Payment Method Card with reduced label spacing */}
+        {/* Payment Method Card with reduced label spacing */}
         <PaymentMethod />
         
-        {/* 8. NEAR Intents Deposit Address (new) */}
+        {/* NEAR Intents Deposit Address (new) */}
         <NearIntentsField />
       </div>
       
