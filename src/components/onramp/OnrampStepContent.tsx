@@ -1,7 +1,9 @@
+
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
 import PaymentCompletion from '@/components/onramp/PaymentCompletion';
+import TransactionProgress from '@/components/onramp/TransactionProgress';
 import OnrampNavigation from '@/components/onramp/OnrampNavigation';
 
 interface OnrampStepContentProps {
@@ -24,6 +26,7 @@ interface OnrampStepContentProps {
   onCardNumberChange?: (cardNumber: string) => void;
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
+  isProcessingTransaction?: boolean;
 }
 
 const OnrampStepContent = ({
@@ -45,7 +48,8 @@ const OnrampStepContent = ({
   cardNumber = '',
   onCardNumberChange,
   selectedCurrency = 'USD',
-  onCurrencySelect
+  onCurrencySelect,
+  isProcessingTransaction = false
 }: OnrampStepContentProps) => {
   
   const renderCurrentStep = () => {
@@ -77,7 +81,13 @@ const OnrampStepContent = ({
           />
         );
       case 2:
-        return (
+        return isProcessingTransaction ? (
+          <TransactionProgress 
+            asset={selectedAsset}
+            amount={amount}
+            walletAddress={walletAddress}
+          />
+        ) : (
           <PaymentCompletion
             amount={amount}
             selectedAsset={selectedAsset}
@@ -106,6 +116,7 @@ const OnrampStepContent = ({
           handleBack={handleBack}
           handleContinue={handleContinue}
           canContinue={canContinue}
+          isProcessingTransaction={isProcessingTransaction}
         />
       </div>
     </div>

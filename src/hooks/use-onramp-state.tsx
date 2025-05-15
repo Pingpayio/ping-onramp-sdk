@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useWallet } from './use-wallet-context';
+import { toast } from '@/components/ui/use-toast';
 
 export const useOnrampState = () => {
   const { isConnected, walletAddress: connectedWalletAddress } = useWallet();
@@ -13,6 +14,7 @@ export const useOnrampState = () => {
   const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
   const [cardNumber, setCardNumber] = useState<string>('');
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
+  const [isProcessingTransaction, setIsProcessingTransaction] = useState(false);
 
   // Updated steps array - removed "Connect Wallet"
   const steps = ["Select Asset", "Payment Details", "Complete Payment"];
@@ -58,6 +60,16 @@ export const useOnrampState = () => {
     if (currentStep === 0 && (recipientAddress.trim() === '' || !isWalletAddressValid)) {
       return; // Don't proceed if no recipient address or invalid address
     }
+
+    // If we're on the final step, start processing the transaction
+    if (currentStep === steps.length - 1 && !isProcessingTransaction) {
+      setIsProcessingTransaction(true);
+      toast({
+        title: "Processing Payment",
+        description: "Your transaction is being processed...",
+      });
+      return;
+    }
     
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
@@ -66,6 +78,11 @@ export const useOnrampState = () => {
 
   const handleBack = () => {
     if (currentStep > 0) {
+      // If processing transaction, cancel it
+      if (isProcessingTransaction) {
+        setIsProcessingTransaction(false);
+        return;
+      }
       setCurrentStep(currentStep - 1);
     }
   };
@@ -87,12 +104,16 @@ export const useOnrampState = () => {
                parseFloat(amount) >= 10 && 
                isConnected; // Must have wallet connected
       case 1: return !!selectedOnramp;
+      case 2: return !isProcessingTransaction; // Can't continue if already processing
       default: return true;
     }
   };
 
   // Handle navigation through step clicking
   const handleStepClick = (stepIndex: number) => {
+    // Don't allow navigation while transaction is processing
+    if (isProcessingTransaction) return;
+    
     // Only allow navigation to steps that have been completed or the current step
     // For step 1, require wallet connection and valid recipient address
     if (stepIndex <= currentStep || 
@@ -117,6 +138,7 @@ export const useOnrampState = () => {
     cardNumber,
     selectedCurrency,
     steps,
+    isProcessingTransaction,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,

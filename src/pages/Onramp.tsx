@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
@@ -37,6 +38,7 @@ const sampleHistory = [{
   fiat: '$500',
   status: 'Failed'
 }];
+
 const OnrampPage = () => {
   const isMobile = useIsMobile();
   const {
@@ -49,6 +51,7 @@ const OnrampPage = () => {
     cardNumber,
     selectedCurrency,
     steps,
+    isProcessingTransaction,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
@@ -61,7 +64,9 @@ const OnrampPage = () => {
     handleStepClick,
     setOpen
   } = useOnrampState();
-  return <div className="flex h-screen bg-[#121212] overflow-hidden">
+
+  return (
+    <div className="flex h-screen bg-[#121212] overflow-hidden">
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">
@@ -91,6 +96,7 @@ const OnrampPage = () => {
                 onCardNumberChange={handleCardNumberChange}
                 selectedCurrency={selectedCurrency}
                 onCurrencySelect={handleCurrencySelect}
+                isProcessingTransaction={isProcessingTransaction}
               />
             </div>
             
@@ -134,6 +140,8 @@ const OnrampPage = () => {
           </main>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default OnrampPage;

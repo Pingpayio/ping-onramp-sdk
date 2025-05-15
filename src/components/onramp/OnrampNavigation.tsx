@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
-import { ArrowLeft, Wallet } from 'lucide-react';
+import { ArrowLeft, Wallet, Home } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallet } from '@/hooks/use-wallet-context';
 
@@ -12,6 +12,7 @@ interface OnrampNavigationProps {
   handleBack: () => void;
   handleContinue: () => void;
   canContinue: () => boolean;
+  isProcessingTransaction?: boolean;
 }
 
 const OnrampNavigation = ({
@@ -20,6 +21,7 @@ const OnrampNavigation = ({
   handleBack,
   handleContinue,
   canContinue,
+  isProcessingTransaction = false
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
   const { isConnected, connectWallet } = useWallet();
@@ -28,6 +30,9 @@ const OnrampNavigation = ({
   const getButtonText = () => {
     if (currentStep === 0) {
       return isConnected ? "Start Onramp" : "Connect Wallet";
+    }
+    if (currentStep === 2 && !isProcessingTransaction) {
+      return "Buy Now";
     }
     return "Continue to Payment";
   };
@@ -48,6 +53,19 @@ const OnrampNavigation = ({
       handleContinue();
     }
   };
+  
+  // Don't show navigation buttons during transaction processing
+  if (isProcessingTransaction) {
+    return (
+      <div className="flex justify-center">
+        <Link to="/">
+          <Button variant="outline" icon={<Home className="h-4 w-4" />}>
+            Return Home
+          </Button>
+        </Link>
+      </div>
+    );
+  }
   
   return (
     <div className="flex justify-between">
@@ -75,6 +93,17 @@ const OnrampNavigation = ({
           withArrow={isConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
           icon={getButtonIcon()}
           className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${isMobile ? "w-1/2" : ""}`}
+        >
+          {getButtonText()}
+        </Button>
+      )}
+      
+      {currentStep === steps.length - 1 && !isProcessingTransaction && (
+        <Button
+          variant="gradient"
+          onClick={handleButtonClick}
+          withArrow={true}
+          className={`rounded-full flex items-center gap-2 ${isMobile ? "w-1/2" : ""}`}
         >
           {getButtonText()}
         </Button>
