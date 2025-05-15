@@ -1,7 +1,8 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
-import { ArrowLeft, Wallet, Home, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Wallet, Home } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallet } from '@/hooks/use-wallet-context';
 
@@ -12,8 +13,6 @@ interface OnrampNavigationProps {
   handleContinue: () => void;
   canContinue: () => boolean;
   isProcessingTransaction?: boolean;
-  transactionCompleted?: boolean;
-  finalTxHash?: string;
 }
 
 const OnrampNavigation = ({
@@ -22,9 +21,7 @@ const OnrampNavigation = ({
   handleBack,
   handleContinue,
   canContinue,
-  isProcessingTransaction = false,
-  transactionCompleted = false,
-  finalTxHash = ''
+  isProcessingTransaction = false
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
   const { isConnected, connectWallet } = useWallet();
@@ -57,34 +54,9 @@ const OnrampNavigation = ({
     }
   };
   
-  // Generate Explorer URL for NEAR transaction
-  const getExplorerUrl = () => {
-    return `https://explorer.near.org/transactions/${finalTxHash}`;
-  };
-  
   // Don't show navigation buttons during transaction processing
   if (isProcessingTransaction) {
-    return (
-      <div className="flex justify-between">
-        <Link to="/">
-          <Button variant="outline" icon={<Home className="h-4 w-4" />}>
-            Return Home
-          </Button>
-        </Link>
-        
-        {transactionCompleted && finalTxHash && (
-          <a href={getExplorerUrl()} target="_blank" rel="noopener noreferrer">
-            <Button 
-              variant="outline" 
-              icon={<ExternalLink className="h-4 w-4" />}
-              className="rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90"
-            >
-              View on Explorer
-            </Button>
-          </a>
-        )}
-      </div>
-    );
+    return null;
   }
   
   return (

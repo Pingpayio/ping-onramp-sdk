@@ -6,7 +6,9 @@ import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import TransactionCompletionMessage from './transaction/TransactionCompletionMessage';
-import OnrampNavigation from './OnrampNavigation';
+import { Link } from 'react-router-dom';
+import Button from '@/components/Button';
+import { Home, ExternalLink } from 'lucide-react';
 
 interface TransactionProgressProps {
   asset: string | null;
@@ -31,6 +33,11 @@ const TransactionProgress = ({
   const depositTxHash = generateTxHash('0x7a');
   const swapTxHash = generateTxHash('0x8b');
   const finalTxHash = generateTxHash('0x9c');
+  
+  // Generate Explorer URL for NEAR transaction
+  const getExplorerUrl = () => {
+    return `https://explorer.near.org/transactions/${finalTxHash}`;
+  };
 
   return (
     <div className="w-full space-y-3">
@@ -65,16 +72,25 @@ const TransactionProgress = ({
       />
       
       {/* Navigation buttons */}
-      <OnrampNavigation 
-        currentStep={0}
-        steps={[]}
-        handleBack={() => {}}
-        handleContinue={() => {}}
-        canContinue={() => true}
-        isProcessingTransaction={true}
-        transactionCompleted={currentStage === 'completed'}
-        finalTxHash={finalTxHash}
-      />
+      <div className="flex justify-between">
+        <Link to="/">
+          <Button variant="outline" icon={<Home className="h-4 w-4" />}>
+            Return Home
+          </Button>
+        </Link>
+        
+        {currentStage === 'completed' && finalTxHash && (
+          <a href={getExplorerUrl()} target="_blank" rel="noopener noreferrer">
+            <Button 
+              variant="outline" 
+              icon={<ExternalLink className="h-4 w-4" />}
+              className="rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90"
+            >
+              View on Explorer
+            </Button>
+          </a>
+        )}
+      </div>
       
       {/* Status message based on transaction stage */}
       {currentStage !== 'completed' && currentStage !== 'failed' ? (
