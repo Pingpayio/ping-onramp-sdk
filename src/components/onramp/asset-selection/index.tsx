@@ -44,40 +44,40 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center h-full">
-      {/* 1. Title section - "Buy Crypto" - reduced margin-bottom */}
-      <div className="flex items-center gap-2 mb-2 w-full">
+      {/* 1. Title section - "Buy Crypto" - adjusted margin bottom */}
+      <div className="flex items-center gap-2 mb-4 w-full">
         <DollarSign className="h-5 w-5 text-white" />
         <h2 className="text-xl font-medium text-white">
           {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
         </h2>
       </div>
       
-      {/* 2 & 3. Amount input with estimated value - reduced spacing */}
+      {/* 2 & 3. Amount input with estimated value - adjusted margin */}
       <AmountInput amount={amount} onAmountChange={onAmountChange} selectedAsset={selectedAsset} estimatedAmount={estimatedAmount} />
       
-      {/* Selection cards with reduced spacing throughout */}
-      <div className="w-full space-y-3 mt-1">
-        {/* 4. Asset Selection Card with reduced label spacing */}
+      {/* Selection cards with improved spacing */}
+      <div className="w-full space-y-5 mt-3">
+        {/* 4. Asset Selection Card with better label spacing */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-1">Select Asset</label>
+          <label className="text-sm text-white mb-2">Select Asset</label>
           <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[42px] flex items-center focus-within:border-[#AF9EF9] focus-within:border-[1.5px] hover:border-[#AF9EF9]/70">
             <AssetSelector selectedAsset={selectedAsset} onAssetSelect={onAssetSelect} open={open} setOpen={setOpen} />
           </div>
         </div>
         
-        {/* NetworkBadge with reduced spacing */}
+        {/* NetworkBadge with consistent spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 5. Wallet Address Input with reduced label spacing */}
+        {/* 5. Wallet Address Input with better label spacing */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-1">Recipient Address (e.g. alice.near)</label>
+          <label className="text-sm text-white mb-2">Recipient Address (e.g. alice.near)</label>
           <WalletAddressInput walletAddress={walletAddress} onWalletAddressChange={onWalletAddressChange} placeholder="Enter recipient address" />
         </div>
         
-        {/* Payment Method Card with reduced label spacing */}
+        {/* Payment Method Card with better label spacing */}
         <PaymentMethod />
         
-        {/* NEAR Intents Deposit Address */}
+        {/* NEAR Intents Deposit Address with consistent spacing */}
         <NearIntentsField />
       </div>
     </div>
