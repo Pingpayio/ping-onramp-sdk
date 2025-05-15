@@ -70,7 +70,7 @@ const AssetList = ({
   return (
     <Command className="bg-[#303030] border-none rounded-lg overflow-hidden">
       <div className="flex items-center border-b border-white/10 px-3">
-        <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+        <Search className="mr-2 h-4 w-4 shrink-0 text-white/80" />
         <CommandInput 
           placeholder="Search for an asset..." 
           className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-white/40 text-white/80"
