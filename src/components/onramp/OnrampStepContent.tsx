@@ -73,9 +73,7 @@ const OnrampStepContent = ({
       </div>
       
       {/* Navigation buttons with consistent styling */}
-      <div className="mt-auto pt-4">
-        <OnrampNavigation currentStep={currentStep} steps={steps} handleBack={handleBack} handleContinue={handleContinue} canContinue={canContinue} isProcessingTransaction={isProcessingTransaction || currentStep === 1} />
-      </div>
+      
     </div>;
 };
 export default OnrampStepContent;
