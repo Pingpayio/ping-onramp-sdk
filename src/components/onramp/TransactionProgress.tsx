@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTransactionProgress, TransactionStage } from '@/hooks/use-transaction-progress';
 import { generateTxHash } from '@/lib/transaction-utils';
 import { Button } from '@/components/ui/button';
-import { Link } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
 import SwapVisualizer from './transaction/SwapVisualizer';
@@ -76,23 +76,22 @@ const TransactionProgress = ({
       
       {/* Action buttons - only enabled when completed */}
       {isCompleted && (
-        <div className="flex justify-between space-x-3 mt-6">
+        <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
           <Button
-            variant="outline"
-            className="bg-white/5 border border-white/20 text-white hover:bg-white/10 flex items-center gap-2"
+            variant="default"
+            className="bg-[#9b87f5] text-white hover:bg-[#9b87f5]/90"
             onClick={() => navigate('/')}
           >
-            <Link className="h-4 w-4" />
             Return Home
           </Button>
           
           <Button
             variant="outline"
-            className="bg-[#AF9EF9]/10 border border-[#AF9EF9]/20 text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2"
+            className="bg-[#AF9EF9]/10 border-none text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2"
             onClick={() => window.open(`https://explorer.near.org/transactions/${finalTxHash}`, '_blank')}
           >
-            <Link className="h-4 w-4" />
-            View on NEAR Explorer
+            <ExternalLink className="h-4 w-4" />
+            View on Explorer
           </Button>
         </div>
       )}
