@@ -51,7 +51,7 @@ const AssetSelector = ({
         <Button
           variant="ghost"
           className={cn(
-            "w-full justify-between bg-transparent hover:bg-white/5 h-full text-left", 
+            "w-full justify-between bg-transparent hover:bg-white/5 h-full text-left px-3", 
             className
           )}
         >
