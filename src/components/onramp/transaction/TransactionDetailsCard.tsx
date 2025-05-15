@@ -74,7 +74,7 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
               showValues ? "opacity-100" : "opacity-0"
             )}
           >
-            {showValues ? `$${fee} USD` : "--"}
+            {showValues ? `${fee} ${asset || 'NEAR'}` : "--"}
           </span>
         </div>
       </div>
