@@ -25,6 +25,7 @@ interface OnrampStepContentProps {
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
   isProcessingTransaction?: boolean;
+  walletAddressError?: boolean;
 }
 
 const OnrampStepContent = ({
@@ -47,7 +48,8 @@ const OnrampStepContent = ({
   onCardNumberChange,
   selectedCurrency = 'USD',
   onCurrencySelect,
-  isProcessingTransaction = false
+  isProcessingTransaction = false,
+  walletAddressError = false
 }: OnrampStepContentProps) => {
   
   const renderCurrentStep = () => {
@@ -65,6 +67,7 @@ const OnrampStepContent = ({
             onWalletAddressChange={onWalletAddressChange}
             selectedCurrency={selectedCurrency}
             onCurrencySelect={onCurrencySelect}
+            walletAddressError={walletAddressError}
           />
         );
       case 1:

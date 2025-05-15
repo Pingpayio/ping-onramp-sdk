@@ -15,6 +15,7 @@ export const useOnrampState = () => {
   const [cardNumber, setCardNumber] = useState<string>('');
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
   const [isProcessingTransaction, setIsProcessingTransaction] = useState(false);
+  const [walletAddressError, setWalletAddressError] = useState(false);
 
   // Updated steps array - removed intermediate steps
   const steps = ["Select Asset", "Transaction"];
@@ -36,6 +37,11 @@ export const useOnrampState = () => {
     const isNearAddress = address.trim().endsWith('.near');
     const isStandardAddress = address.length >= 42;
     setIsWalletAddressValid(isNearAddress || isStandardAddress);
+    
+    // Clear error state when user starts typing
+    if (address.trim() !== '') {
+      setWalletAddressError(false);
+    }
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,9 +63,18 @@ export const useOnrampState = () => {
     }
     
     // Explicitly check for recipient address before proceeding from step 0
-    if (currentStep === 0 && (recipientAddress.trim() === '' || !isWalletAddressValid)) {
-      return; // Don't proceed if no recipient address or invalid address
+    if (currentStep === 0 && recipientAddress.trim() === '') {
+      setWalletAddressError(true); // Set error state to true
+      return; // Don't proceed if no recipient address
     }
+    
+    // Check for valid wallet address
+    if (currentStep === 0 && !isWalletAddressValid) {
+      setWalletAddressError(true); // Set error state to true
+      return; // Don't proceed if invalid address
+    }
+
+    setWalletAddressError(false); // Clear error state
 
     // If on first step, go directly to transaction progress step
     if (currentStep === 0) {
@@ -130,6 +145,7 @@ export const useOnrampState = () => {
     selectedCurrency,
     steps,
     isProcessingTransaction,
+    walletAddressError,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,

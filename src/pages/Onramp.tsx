@@ -56,6 +56,7 @@ const OnrampPage = () => {
     selectedCurrency,
     steps,
     isProcessingTransaction,
+    walletAddressError,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
@@ -101,6 +102,7 @@ const OnrampPage = () => {
                 selectedCurrency={selectedCurrency}
                 onCurrencySelect={handleCurrencySelect}
                 isProcessingTransaction={isProcessingTransaction}
+                walletAddressError={walletAddressError}
               />
             </div>
             

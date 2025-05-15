@@ -20,6 +20,7 @@ interface AssetSelectionProps {
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
+  walletAddressError?: boolean;
 }
 
 const AssetSelection = ({
@@ -32,7 +33,8 @@ const AssetSelection = ({
   walletAddress,
   onWalletAddressChange,
   selectedCurrency = "USD",
-  onCurrencySelect = () => {}
+  onCurrencySelect = () => {},
+  walletAddressError = false
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
 
@@ -71,7 +73,13 @@ const AssetSelection = ({
         {/* 5. Wallet Address Input */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Recipient Address (e.g. alice.near)</label>
-          <WalletAddressInput walletAddress={walletAddress} onWalletAddressChange={onWalletAddressChange} placeholder="Enter recipient address" />
+          <WalletAddressInput 
+            walletAddress={walletAddress} 
+            onWalletAddressChange={onWalletAddressChange} 
+            placeholder="Enter recipient address" 
+            isError={walletAddressError}
+            errorMessage="Please enter a valid recipient address"
+          />
         </div>
         
         {/* Payment Method Card */}
