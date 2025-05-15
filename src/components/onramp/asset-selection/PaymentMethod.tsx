@@ -7,20 +7,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ChevronDown, CreditCard, WalletCards, AppleIcon } from 'lucide-react';
+import { ChevronDown, CreditCard, WalletCards, Apple } from 'lucide-react';
 
 interface PaymentMethodProps {
   selectedMethod?: string;
   onMethodSelect?: (method: string) => void;
 }
-
-// Custom AppleIcon since it might not be available in Lucide
-const AppleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-    <path d="M12 20.94c1.5 0 2.75 -.65 3.71 -1.27a9.97 9.97 0 0 0 2.33 -2.12c.44 -.55 .71 -1.27 .71 -2.05c0 -.85 -.14 -1.59 -.5 -2.24c-.7 -1.37 -1.9 -2.21 -3.25 -2.24c-.88 -.03 -1.58 .28 -2.18 .6c-.49 .27 -.94 .54 -1.82 .54c-.88 0 -1.33 -.27 -1.82 -.54c-.6 -.32 -1.3 -.63 -2.18 -.6c-1.35 .03 -2.56 .87 -3.25 2.24c-.36 .65 -.5 1.4 -.5 2.24c0 .78 .27 1.5 .71 2.05c.76 .95 1.53 1.65 2.33 2.12c.96 .62 2.19 1.27 3.71 1.27z"/>
-    <path d="M12 8.5c0 -1.95 1.53 -3.53 3.44 -3.5c.82 .03 1.56 .15 2.06 .4c.5 .25 .96 .63 1.5 1.1" />
-  </svg>
-);
 
 const PaymentMethod = ({ 
   selectedMethod = "card", 
@@ -58,7 +50,7 @@ const PaymentMethod = ({
       case 'ach':
         return <WalletCards className="h-3.5 w-3.5 text-white/60" />;
       case 'apple':
-        return <AppleIcon className="h-3.5 w-3.5 text-white/60" />;
+        return <Apple className="h-3.5 w-3.5 text-white/60" />;
       default:
         return <CreditCard className="h-3.5 w-3.5 text-white/60" />;
     }
@@ -102,7 +94,7 @@ const PaymentMethod = ({
           <SelectItem value="apple" className="text-white/60 text-sm font-normal hover:bg-white/10">
             <div className="flex items-center gap-2">
               <div className="bg-secondary rounded-full p-1 mr-1">
-                <AppleIcon className="h-3 w-3 text-white/60" />
+                <Apple className="h-3 w-3 text-white/60" />
               </div>
               <span>Apple Pay</span>
             </div>
