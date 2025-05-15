@@ -56,10 +56,10 @@ const PaymentMethod = ({
           <SelectValue placeholder="Select payment method" className="font-normal text-white/60" />
           <ChevronDown className="h-4 w-4 text-white/60" />
         </SelectTrigger>
-        <SelectContent className="bg-[#303030] border-white/10 text-white/60 border-[#AF9EF9]">
-          <SelectItem value="card" className="text-white/60 text-sm font-normal">Debit or Credit Card</SelectItem>
-          <SelectItem value="ach" className="text-white/60 text-sm font-normal">Bank Transfer (ACH)</SelectItem>
-          <SelectItem value="apple" className="text-white/60 text-sm font-normal">Apple Pay</SelectItem>
+        <SelectContent className="bg-[#303030] border-[#AF9EF9] text-white/60">
+          <SelectItem value="card" className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5">Debit or Credit Card</SelectItem>
+          <SelectItem value="ach" className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5">Bank Transfer (ACH)</SelectItem>
+          <SelectItem value="apple" className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5">Apple Pay</SelectItem>
         </SelectContent>
       </Select>
       <p className="text-xs text-white/40 mt-1">

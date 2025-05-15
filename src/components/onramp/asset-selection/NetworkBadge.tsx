@@ -58,7 +58,12 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
       
       {networks.length > 1 ? (
         <Select defaultValue={selectedNetwork} onValueChange={setSelectedNetwork}>
-          <SelectTrigger className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between">
+          <SelectTrigger 
+            className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] 
+            text-white/60 flex items-center px-3
+            focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none
+            focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
+          >
             <div className="flex items-center">
               <div className="bg-secondary rounded-full p-1.5 mr-2">
                 <Wifi className="w-3.5 h-3.5 text-white" />
@@ -67,11 +72,15 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
                 {getNetworkDisplayName(selectedNetwork)}
               </span>
             </div>
-            <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
+            <ChevronDown className="h-4 w-4 text-white/60" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1A1F2C] border border-[#AF9EF9]">
+          <SelectContent className="bg-[#303030] border border-[#AF9EF9] p-1">
             {networks.map((network) => (
-              <SelectItem key={network.id} value={network.id} className="text-white hover:bg-white/10">
+              <SelectItem 
+                key={network.id} 
+                value={network.id} 
+                className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5"
+              >
                 <div className="flex items-center gap-2">
                   <Wifi className="h-3.5 w-3.5 text-white/60" />
                   <span>{network.name}</span>
@@ -81,7 +90,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
           </SelectContent>
         </Select>
       ) : (
-        <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between">
+        <div className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between hover:border-[#AF9EF9]/70">
           <div className="flex items-center">
             <div className="bg-secondary rounded-full p-1.5 mr-2">
               <Wifi className="w-3.5 h-3.5 text-white" />
