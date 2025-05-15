@@ -32,6 +32,8 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 255 57% 61%;
+    --accent-border: 262 88% 77%; /* #AF9EF9 */
+    --hover-bg: 0 0% 100% / 0.05; /* white/5 */
 
     --radius: 0.5rem;
 
@@ -73,6 +75,9 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 255 57% 61%;
+    --accent-border: 262 88% 77%; /* #AF9EF9 */
+    --hover-bg: 0 0% 100% / 0.05; /* white/5 */
+    
     --sidebar-background: 0 0% 7%; /* #121212 */
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
