@@ -87,6 +87,9 @@ const Transaction = () => {
               progress={progress}
               onboardingTxHash={onboardingTxHash}
               swapTxHash={swapTxHash}
+              amount={transactionData.amount}
+              asset={transactionData.asset}
+              walletAddress={transactionData.walletAddress}
             />
           </div>
           

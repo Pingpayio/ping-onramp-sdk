@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { CheckCircle2, Clock, AlertCircle, ArrowUp } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { type TransactionStage } from '@/hooks/use-transaction-progress';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface TransactionStatusProps {
   status: 'pending' | 'completed' | 'failed';
@@ -14,6 +15,9 @@ interface TransactionStatusProps {
   progress?: number;
   onboardingTxHash?: string;
   swapTxHash?: string;
+  amount?: string;
+  asset?: string;
+  walletAddress?: string;
 }
 
 const TransactionStatus = ({
@@ -24,7 +28,10 @@ const TransactionStatus = ({
   stage = 'payment',
   progress = 0,
   onboardingTxHash,
-  swapTxHash
+  swapTxHash,
+  amount,
+  asset,
+  walletAddress
 }: TransactionStatusProps) => {
   // Define status configurations with fallback to 'pending' if status is invalid
   const statusConfig = {
@@ -77,22 +84,22 @@ const TransactionStatus = ({
       </div>
       
       {/* Current stage card */}
-      <div className={cn("border rounded-lg p-5", config.color)}>
+      <div className={cn("border rounded-lg p-5 bg-white/5 border-white/20")}>
         <div className="flex items-start">
           <div className="mr-3 mt-1">{config.icon}</div>
           <div>
-            <h3 className={cn("font-medium mb-1", config.textColor)}>
+            <h3 className="font-medium mb-1 text-white">
               {stage && stageLabels[stage] || title}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-white/60">
               {stage && stageDescriptions[stage] || description}
             </p>
             
             {/* Show appropriate transaction hash based on stage */}
             {stage === 'payment' && onboardingTxHash && (
               <div className="mt-3">
-                <p className="text-xs text-muted-foreground mb-1">Payment Transaction:</p>
-                <div className="bg-white bg-opacity-50 p-2 rounded text-xs font-mono break-all">
+                <p className="text-xs text-white/60 mb-1">Payment Transaction:</p>
+                <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
                   {onboardingTxHash}
                 </div>
               </div>
@@ -100,8 +107,8 @@ const TransactionStatus = ({
             
             {stage === 'swap' && swapTxHash && (
               <div className="mt-3">
-                <p className="text-xs text-muted-foreground mb-1">Swap Transaction:</p>
-                <div className="bg-white bg-opacity-50 p-2 rounded text-xs font-mono break-all">
+                <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+                <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
                   {swapTxHash}
                 </div>
               </div>
@@ -109,17 +116,9 @@ const TransactionStatus = ({
             
             {stage === 'completed' && txHash && (
               <div className="mt-3">
-                <p className="text-xs text-muted-foreground mb-1">Transaction Hash:</p>
-                <div className="bg-white bg-opacity-50 p-2 rounded text-xs font-mono break-all">
+                <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
+                <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
                   {txHash}
-                </div>
-              </div>
-            )}
-            
-            {validStatus === 'pending' && (
-              <div className="mt-3">
-                <div className="h-2 w-full bg-yellow-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500 rounded-full w-1/2 animate-pulse-slow"></div>
                 </div>
               </div>
             )}
@@ -154,12 +153,50 @@ const TransactionStatus = ({
             
             <div className="text-center">
               <div className="bg-white/10 h-10 w-10 rounded-full flex items-center justify-center mx-auto overflow-hidden">
-                {/* Placeholder for crypto icon */}
-                <span className="text-white/80">₿</span>
+                <span className="text-white/80">{asset?.charAt(0) || '₿'}</span>
               </div>
-              <p className="text-xs text-white/60 mt-1">Crypto</p>
+              <p className="text-xs text-white/60 mt-1">{asset || 'Crypto'}</p>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Transaction details card - always visible */}
+      <Card className="bg-white/5 border border-white/10">
+        <CardContent className="p-5">
+          <h4 className="text-white font-medium mb-2">Transaction Details</h4>
+          <div className="space-y-2 text-sm">
+            {amount && (
+              <div className="flex justify-between">
+                <span className="text-white/60">Amount:</span>
+                <span className="text-white">${amount} USD</span>
+              </div>
+            )}
+            {asset && (
+              <div className="flex justify-between">
+                <span className="text-white/60">Asset:</span>
+                <span className="text-white">{asset}</span>
+              </div>
+            )}
+            {walletAddress && (
+              <div className="flex justify-between">
+                <span className="text-white/60">Recipient:</span>
+                <span className="text-white/80 text-right max-w-[200px] break-all">
+                  {walletAddress}
+                </span>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Completion message - only shown when completed */}
+      {stage === 'completed' && (
+        <div className="text-center py-4">
+          <h3 className="text-2xl font-semibold text-white mb-1">
+            {amount} {asset}
+          </h3>
+          <p className="text-white/60">Successfully delivered to your wallet</p>
         </div>
       )}
     </div>

@@ -23,18 +23,37 @@ export const useTransactionProgress = ({
     let timeoutId: NodeJS.Timeout;
     
     if (currentStage === 'payment') {
-      // Simulate payment processing (3 seconds)
-      setProgress(25);
-      timeoutId = setTimeout(() => {
-        setCurrentStage('swap');
-        setProgress(50);
-      }, 3000);
+      // Start with 0% and animate to 30%
+      setProgress(0);
+      let currentProgress = 0;
+      
+      const incrementProgress = () => {
+        if (currentProgress < 40) {
+          currentProgress += 5;
+          setProgress(currentProgress);
+          timeoutId = setTimeout(incrementProgress, 300);
+        } else {
+          setCurrentStage('swap');
+        }
+      };
+      
+      timeoutId = setTimeout(incrementProgress, 500);
     } else if (currentStage === 'swap') {
-      // Simulate swap progress (4 seconds)
-      timeoutId = setTimeout(() => {
-        setCurrentStage('completed');
-        setProgress(100);
-      }, 4000);
+      // Start at 40% and animate to 100%
+      let currentProgress = 40;
+      
+      const incrementProgress = () => {
+        if (currentProgress < 95) {
+          currentProgress += 5;
+          setProgress(currentProgress);
+          timeoutId = setTimeout(incrementProgress, 300);
+        } else {
+          setProgress(100);
+          setCurrentStage('completed');
+        }
+      };
+      
+      timeoutId = setTimeout(incrementProgress, 500);
     }
     
     return () => {

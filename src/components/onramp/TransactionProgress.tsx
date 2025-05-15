@@ -4,6 +4,7 @@ import { useTransactionProgress, TransactionStage } from '@/hooks/use-transactio
 import { Progress } from '@/components/ui/progress';
 import { CheckCircle2, Clock, AlertCircle, ArrowUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Card } from '@/components/ui/card';
 
 interface TransactionProgressProps {
   asset: string | null;
@@ -143,7 +144,7 @@ const TransactionProgress = ({
       
       {/* NEAR Intents swap visual (shown during swap stage) */}
       {currentStage === 'swap' && (
-        <div className="bg-white/5 border border-white/10 rounded-lg p-5">
+        <Card className="bg-white/5 border border-white/10 p-5">
           <div className="flex items-center mb-3">
             <div className="w-7 h-7 rounded-full mr-2">
               <img 
@@ -173,7 +174,7 @@ const TransactionProgress = ({
               <p className="text-xs text-white/60 mt-1">{asset || 'Crypto'}</p>
             </div>
           </div>
-        </div>
+        </Card>
       )}
 
       {currentStage === 'completed' && (
@@ -188,7 +189,7 @@ const TransactionProgress = ({
       )}
 
       {/* Transaction details */}
-      <div className="bg-white/5 border border-white/10 rounded-lg p-5">
+      <Card className="bg-white/5 border border-white/10 p-5">
         <h4 className="text-white/80 text-sm font-medium mb-2">Transaction Details</h4>
         <div className="space-y-2 text-sm">
           <div className="flex justify-between">
@@ -204,7 +205,7 @@ const TransactionProgress = ({
             <span className="text-white/80 break-all text-right max-w-[200px]">{walletAddress}</span>
           </div>
         </div>
-      </div>
+      </Card>
     </div>
   );
 };
