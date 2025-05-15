@@ -57,7 +57,7 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
           <span className="text-white/60">Received:</span>
           <span 
             className={cn(
-              "text-white transition-all duration-500", 
+              "text-white font-bold transition-all duration-500", 
               showValues ? "opacity-100" : "opacity-0"
             )}
           >
@@ -70,7 +70,7 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
           <span className="text-white/60">Fee:</span>
           <span 
             className={cn(
-              "text-white transition-all duration-500", 
+              "text-white font-bold transition-all duration-500", 
               showValues ? "opacity-100" : "opacity-0"
             )}
           >
