@@ -77,7 +77,7 @@ const OnrampPage = () => {
         <SidebarNav />
       </div>
       
-      <div className={`flex-1 ${isMobile ? 'ml-0' : 'md:ml-[256px]'}`}>
+      <div className={`flex-1 ${isMobile ? 'ml-0 pt-[64px]' : 'md:ml-[256px]'}`}>
         <div className={`p-4 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
           <OnrampHeader />
 

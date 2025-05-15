@@ -45,6 +45,9 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 255 57% 61%;
+    
+    /* Define mobile topbar height for consistent spacing */
+    --topbar-height: 64px;
   }
 
   .dark {
@@ -102,10 +105,11 @@
 
 /* Add padding-top for mobile content to account for the topbar */
 @media (max-width: 767px) {
-  main {
-    padding-top: 4rem; /* Matches the height of the mobile topbar */
+  body {
+    padding-top: 0; /* Remove default padding */
+    @apply overflow-x-hidden;
   }
-
+  
   /* Improve touch targets for mobile */
   button, a {
     @apply min-h-[44px] min-w-[44px];
@@ -114,15 +118,20 @@
   input, select, textarea {
     @apply text-base py-3 min-h-[44px];
   }
-
-  /* Improve scrolling on mobile */
-  body {
-    @apply overflow-x-hidden;
-  }
-
+  
   /* Fix popovers and dropdowns on mobile */
   .popover-content, .dropdown-content {
     @apply max-w-[calc(100vw-24px)] !important;
+  }
+  
+  /* Properly space content below the fixed mobile topbar */
+  .pt-topbar {
+    padding-top: var(--topbar-height);
+  }
+  
+  /* Prevent double scrollbars */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
   }
 }
 
@@ -141,6 +150,18 @@
   }
   
   .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Make buttons more compact on very small screens */
+  .btn-sm, button.text-xs {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  /* Reduce container padding */
+  .container {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
   }

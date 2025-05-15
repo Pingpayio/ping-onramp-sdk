@@ -11,6 +11,11 @@ const OnrampHeader = () => {
   const [copied, setCopied] = useState(false);
   const isMobile = useIsMobile();
 
+  // Don't render the header on mobile as the MobileTopbar handles this functionality
+  if (isMobile) {
+    return null;
+  }
+
   const copyAddress = () => {
     if (walletAddress) {
       navigator.clipboard.writeText(walletAddress);
@@ -24,9 +29,9 @@ const OnrampHeader = () => {
     }
   };
 
-  // Truncate wallet address for mobile
+  // Truncate wallet address for display
   const displayAddress = walletAddress ? 
-    `${walletAddress.substring(0, isMobile ? 4 : 6)}...${walletAddress.substring(walletAddress.length - (isMobile ? 3 : 4))}` : 
+    `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 
     '';
 
   return (
