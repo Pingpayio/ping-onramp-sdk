@@ -43,7 +43,7 @@ const Transaction = () => {
   const swapTxHash = generateTxHash('0x8b');
   const finalTxHash = generateTxHash('0x9c');
   
-  // Show toast notifications on stage changes
+  // Show toast notifications on stage changes with consistent styling
   useEffect(() => {
     if (currentStage === 'swap') {
       toast({

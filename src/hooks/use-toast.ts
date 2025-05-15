@@ -23,7 +23,16 @@ export function useToast() {
   return context
 }
 
-export { toastOriginal as toast }
+// Standardized toast with consistent wallet styling for all notifications
+export const toast = (props: Parameters<typeof toastOriginal>[0]) => {
+  return toastOriginal({
+    ...props,
+    className: "bg-[#AF9EF9] text-white font-inter border-none",
+  });
+};
+
+// Export the original toast function as well in case it's needed
+export { toastOriginal as originalToast }
 
 // Export the Toast type with className
 export type { ToastType as Toast } from "@/components/ui/toast"

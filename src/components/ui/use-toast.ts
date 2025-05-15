@@ -1,13 +1,13 @@
 
 import { useToast, toast } from "@/hooks/use-toast";
 
-// Special toast variant for wallet notifications with custom styling
+// Re-export the standardized toast functions
+export { useToast, toast };
+
+// Export a special wallet toast function for backward compatibility
 export const walletToast = (title: string, description?: string) => {
   return toast({
     title,
-    description,
-    className: "bg-[#AF9EF9] text-white font-inter border-none"
+    description
   });
 };
-
-export { useToast, toast };
