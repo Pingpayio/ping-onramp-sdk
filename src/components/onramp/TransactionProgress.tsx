@@ -39,7 +39,7 @@ const TransactionProgress = ({
   const isCompleted = currentStage === 'completed';
 
   return (
-    <div className="w-full space-y-3">
+    <div className="w-full space-y-3 flex flex-col h-full">
       {/* Progress bar */}
       <TransactionProgressBar progress={progress} />
       
@@ -74,28 +74,26 @@ const TransactionProgress = ({
         />
       )}
       
-      {/* Action buttons - only enabled when completed */}
-      {isCompleted && (
-        <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
-          <Button
-            variant="default"
-            className="bg-white text-[#3D315E] hover:bg-white rounded-full flex items-center gap-2"
-            onClick={() => navigate('/')}
-          >
-            <Home className="h-4 w-4" />
-            Return Home
-          </Button>
-          
-          <Button
-            variant="outline"
-            className="bg-[#AF9EF9]/10 border-none text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2 rounded-full"
-            onClick={() => window.open(`https://explorer.near.org/transactions/${finalTxHash}`, '_blank')}
-          >
-            <ExternalLink className="h-4 w-4" />
-            View on Explorer
-          </Button>
-        </div>
-      )}
+      {/* Action buttons - moved to bottom with mt-auto to match Start Onramp position */}
+      <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
+        <Button
+          variant="default"
+          className="bg-white text-[#3D315E] hover:bg-white rounded-[9999px] flex items-center gap-2"
+          onClick={() => navigate('/')}
+        >
+          <Home className="h-4 w-4" />
+          Return Home
+        </Button>
+        
+        <Button
+          variant="outline"
+          className="bg-[#AF9EF9]/10 border-none text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2 rounded-[9999px]"
+          onClick={() => window.open(`https://explorer.near.org/transactions/${finalTxHash}`, '_blank')}
+        >
+          <ExternalLink className="h-4 w-4" />
+          View on Explorer
+        </Button>
+      </div>
     </div>
   );
 };
