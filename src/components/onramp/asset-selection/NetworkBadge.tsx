@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronDown, Wifi } from 'lucide-react';
+import { Wifi } from 'lucide-react';
 import { 
   Select,
   SelectContent,
@@ -58,35 +58,40 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
       
       {networks.length > 1 ? (
         <Select defaultValue={selectedNetwork} onValueChange={setSelectedNetwork}>
-          <SelectTrigger className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between">
+          <SelectTrigger className="rounded-lg bg-[#303030] border-none h-[40px] flex items-center px-3 text-white justify-between">
             <div className="flex items-center">
               <div className="bg-secondary rounded-full p-1.5 mr-2">
                 <Wifi className="w-3.5 h-3.5 text-white" />
               </div>
-              <span className="font-normal text-white/60 text-sm">
+              <span className="text-sm text-white/60">
                 {getNetworkDisplayName(selectedNetwork)}
               </span>
             </div>
-            <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1A1F2C] border border-[#AF9EF9]">
+          <SelectContent className="bg-[#303030] border-none rounded-lg overflow-hidden">
             {networks.map((network) => (
-              <SelectItem key={network.id} value={network.id} className="text-white hover:bg-white/10">
+              <SelectItem 
+                key={network.id} 
+                value={network.id} 
+                className="text-white/60 hover:text-white hover:bg-white/5 cursor-pointer transition-colors py-3 focus:bg-white/5 focus:text-white"
+              >
                 <div className="flex items-center gap-2">
-                  <Wifi className="h-3.5 w-3.5 text-white/60" />
-                  <span>{network.name}</span>
+                  <div className="bg-secondary rounded-full p-1.5 mr-2">
+                    <Wifi className="w-3.5 h-3.5 text-white" />
+                  </div>
+                  <span className="text-sm">{network.name}</span>
                 </div>
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       ) : (
-        <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between">
+        <div className="rounded-lg bg-[#303030] border-none h-[40px] flex items-center px-3 text-white justify-between">
           <div className="flex items-center">
             <div className="bg-secondary rounded-full p-1.5 mr-2">
               <Wifi className="w-3.5 h-3.5 text-white" />
             </div>
-            <span className="text-sm font-normal text-white/60">{networks[0].name}</span>
+            <span className="text-sm text-white/60">{networks[0].name}</span>
           </div>
         </div>
       )}
