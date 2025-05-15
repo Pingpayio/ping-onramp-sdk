@@ -31,13 +31,13 @@ const PaymentForm = ({ onCardNumberChange }: PaymentFormProps = {}) => {
   };
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-4">
       {/* Country and Mobile Number row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
-        <div>
-          <Label htmlFor="country" className="text-xs text-white">Country</Label>
-          <div className="relative mt-0.5">
-            <div className="flex items-center justify-between border rounded-md px-3 py-1.5 h-8 cursor-pointer hover:border-ping-600 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <Label htmlFor="country" className="text-sm text-white mb-2">Country</Label>
+          <div className="relative">
+            <div className="flex items-center justify-between border rounded-lg px-3 py-2 h-[42px] cursor-pointer hover:border-ping-600 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60">
               <span className="flex items-center gap-2">
                 <span className="text-sm">🇺🇸</span> 
                 US (+1)
@@ -47,85 +47,83 @@ const PaymentForm = ({ onCardNumberChange }: PaymentFormProps = {}) => {
           </div>
         </div>
         
-        <div>
-          <Label htmlFor="mobileNumber" className="text-xs text-white">Mobile number</Label>
-          <div className="mt-0.5">
-            <Input
-              id="mobileNumber"
-              name="mobileNumber"
-              placeholder="502-123-4567"
-              value={formData.mobileNumber}
-              onChange={handleInputChange}
-              className="py-1.5 h-8 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
-            />
-          </div>
+        <div className="flex flex-col">
+          <Label htmlFor="mobileNumber" className="text-sm text-white mb-2">Mobile number</Label>
+          <Input
+            id="mobileNumber"
+            name="mobileNumber"
+            placeholder="502-123-4567"
+            value={formData.mobileNumber}
+            onChange={handleInputChange}
+            className="rounded-lg h-[42px] bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
+          />
         </div>
       </div>
       
       {/* Name on card - full width */}
-      <div>
-        <Label htmlFor="nameOnCard" className="text-xs text-white">Name on card</Label>
+      <div className="flex flex-col">
+        <Label htmlFor="nameOnCard" className="text-sm text-white mb-2">Name on card</Label>
         <Input
           id="nameOnCard"
           name="nameOnCard"
           placeholder="John Doe"
           value={formData.nameOnCard}
           onChange={handleInputChange}
-          className="py-1.5 h-8 mt-0.5 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
+          className="rounded-lg h-[42px] bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
         />
       </div>
       
       {/* Card number - full width */}
-      <div>
-        <Label htmlFor="cardNumber" className="text-xs text-white">Card number</Label>
+      <div className="flex flex-col">
+        <Label htmlFor="cardNumber" className="text-sm text-white mb-2">Card number</Label>
         <Input
           id="cardNumber"
           name="cardNumber"
           placeholder="1234 5678 9012 3456"
           value={formData.cardNumber}
           onChange={handleInputChange}
-          className="py-1.5 h-8 mt-0.5 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
+          className="rounded-lg h-[42px] bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
         />
       </div>
       
       {/* Expiry date and CVV row */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-1.5">
-        <div>
-          <Label htmlFor="expiryDate" className="text-xs text-white">Expiry date</Label>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col">
+          <Label htmlFor="expiryDate" className="text-sm text-white mb-2">Expiry date</Label>
           <Input
             id="expiryDate"
             name="expiryDate"
             placeholder="MM/YY"
             value={formData.expiryDate}
             onChange={handleInputChange}
-            className="py-1.5 h-8 mt-0.5 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
+            className="rounded-lg h-[42px] bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
           />
         </div>
         
-        <div>
-          <Label htmlFor="cvv" className="text-xs text-white">CVV</Label>
+        <div className="flex flex-col">
+          <Label htmlFor="cvv" className="text-sm text-white mb-2">CVV</Label>
           <Input
             id="cvv"
             name="cvv"
             placeholder="123"
             value={formData.cvv}
             onChange={handleInputChange}
-            className="py-1.5 h-8 mt-0.5 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
+            className="rounded-lg h-[42px] bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
           />
         </div>
       </div>
       
       {/* Billing address */}
-      <div>
-        <Label htmlFor="billingAddress" className="text-xs text-white">Billing address</Label>
-        <div className="relative mt-0.5">
+      <div className="flex flex-col">
+        <Label htmlFor="billingAddress" className="text-sm text-white mb-2">Billing address</Label>
+        <div className="relative">
           <Input
             id="billingAddress"
             name="billingAddress"
             placeholder="12345 Street"
             value={formData.billingAddress}
             onChange={handleInputChange}
-            className="pl-9 py-1.5 h-8 bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
+            className="pl-9 rounded-lg h-[42px] bg-white/[0.08] border-[rgba(255,255,255,0.18)] text-white/60 focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 focus-visible:ring-0 focus-visible:outline-none"
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
             <svg className="h-4 w-4 text-white/60" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -133,7 +131,7 @@ const PaymentForm = ({ onCardNumberChange }: PaymentFormProps = {}) => {
             </svg>
           </div>
         </div>
-        <p className="text-[11px] text-white/60 mt-1 flex items-start gap-1">
+        <p className="text-xs text-white/60 mt-2 flex items-start gap-1">
           <Info className="h-3 w-3 mt-0.5 flex-shrink-0 text-white/60" />
           By tapping continue, you agree to our Terms and acknowledge that you have read our Privacy Policy.
         </p>
