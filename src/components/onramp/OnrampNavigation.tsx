@@ -68,7 +68,7 @@ const OnrampNavigation = ({
   }
   
   return (
-    <div className="flex justify-between">
+    <div className={`flex ${currentStep === 0 ? 'justify-center' : 'justify-between'}`}>
       {currentStep > 0 ? (
         <Button
           variant="outline"
@@ -77,37 +77,18 @@ const OnrampNavigation = ({
         >
           Back
         </Button>
-      ) : (
-        <Link to="/">
-          <Button variant="outline" icon={<ArrowLeft className="h-4 w-4" />}>
-            Back
-          </Button>
-        </Link>
-      )}
+      ) : null}
       
-      {currentStep < steps.length - 1 && (
-        <Button
-          variant="outline"
-          onClick={handleButtonClick}
-          disabled={!isConnected && currentStep > 0} // Only disable for steps after first if not connected
-          withArrow={isConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
-          icon={getButtonIcon()}
-          className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${isMobile ? "w-1/2" : ""}`}
-        >
-          {getButtonText()}
-        </Button>
-      )}
-      
-      {currentStep === steps.length - 1 && !isProcessingTransaction && (
-        <Button
-          variant="gradient"
-          onClick={handleButtonClick}
-          withArrow={true}
-          className={`rounded-full flex items-center gap-2 ${isMobile ? "w-1/2" : ""}`}
-        >
-          {getButtonText()}
-        </Button>
-      )}
+      <Button
+        variant="outline"
+        onClick={handleButtonClick}
+        disabled={!isConnected && currentStep > 0} // Only disable for steps after first if not connected
+        withArrow={isConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
+        icon={getButtonIcon()}
+        className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${currentStep === 0 ? 'w-full' : isMobile ? 'w-1/2' : ''}`}
+      >
+        {getButtonText()}
+      </Button>
     </div>
   );
 };
