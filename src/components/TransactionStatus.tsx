@@ -37,7 +37,7 @@ const TransactionStatus = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className={`flex flex-col space-y-4 w-full ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
+    <div className={`flex flex-col space-y-4 w-full mx-auto ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
       {/* Progress bar */}
       <StatusProgressBar progress={progress} />
       

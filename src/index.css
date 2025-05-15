@@ -105,6 +105,45 @@
   main {
     padding-top: 4rem; /* Matches the height of the mobile topbar */
   }
+
+  /* Improve touch targets for mobile */
+  button, a {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  input, select, textarea {
+    @apply text-base py-3 min-h-[44px];
+  }
+
+  /* Improve scrolling on mobile */
+  body {
+    @apply overflow-x-hidden;
+  }
+
+  /* Fix popovers and dropdowns on mobile */
+  .popover-content, .dropdown-content {
+    @apply max-w-[calc(100vw-24px)] !important;
+  }
+}
+
+/* Extra small screen optimizations */
+@media (max-width: 374px) {
+  .text-xs {
+    font-size: 0.7rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
 }
 
 .card-gradient-hover {
@@ -120,6 +159,13 @@
   @apply opacity-100;
 }
 
+/* Add active state for mobile */
+@media (max-width: 767px) {
+  .card-gradient-hover:active::before {
+    @apply opacity-100;
+  }
+}
+
 .glow-border {
   @apply relative rounded-lg;
 }
@@ -131,4 +177,18 @@
 
 .ping-shadow {
   box-shadow: 0 0 25px rgba(116, 93, 220, 0.15);
+}
+
+/* Animation for error indicators */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
 }

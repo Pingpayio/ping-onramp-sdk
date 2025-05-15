@@ -11,7 +11,7 @@ const TransactionContainer: React.FC<TransactionContainerProps> = ({ children })
   const isMobile = useIsMobile();
   
   return (
-    <div className="flex h-screen bg-[#120714] overflow-hidden">
+    <div className="flex min-h-screen bg-[#120714]">
       {/* Only show sidebar on tablet and larger */}
       <div className="hidden md:block">
         <SidebarNav />

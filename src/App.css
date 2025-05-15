@@ -44,19 +44,23 @@
 /* Make sure body and html have full height */
 html, body {
   height: 100%;
-  overflow: hidden;
 }
 
-/* Add padding-top for mobile content to account for the topbar */
+/* Mobile optimizations */
 @media (max-width: 767px) {
   body {
     padding-top: 4rem; /* Matches the height of the mobile topbar */
   }
   
-  /* Adjust scrolling behavior for mobile */
+  /* Improve scrolling on mobile */
   .overflow-hidden {
-    overflow: auto;
+    overflow: visible;
     -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix double scrollbar issues */
+  main {
+    overflow-x: hidden;
   }
   
   /* Ensure tap targets are at least 44x44px on mobile */
@@ -64,9 +68,13 @@ html, body {
   [role="button"],
   input[type="submit"],
   input[type="reset"],
-  input[type="button"] {
+  input[type="button"],
+  a.btn,
+  .btn,
+  .interactive-element {
     min-height: 44px;
     min-width: 44px;
+    padding: 12px !important;
   }
   
   /* Improve form element touch targets */
@@ -74,10 +82,24 @@ html, body {
   select,
   textarea {
     font-size: 16px; /* Prevents iOS zoom on focus */
-    padding: 10px;
+    padding: 12px;
+    min-height: 44px;
+  }
+
+  /* Extra small screens (iPhone SE, etc) */
+  @media (max-width: 374px) {
+    .text-xs {
+      font-size: 0.7rem;
+    }
+    
+    .px-4 {
+      padding-left: 0.75rem;
+      padding-right: 0.75rem;
+    }
   }
 }
 
+/* Fix for mobile buttons with gradient background */
 .card-gradient-hover {
   @apply relative overflow-hidden transition-all duration-300;
 }
@@ -91,6 +113,13 @@ html, body {
   @apply opacity-100;
 }
 
+/* Add tactile feedback for mobile touch */
+@media (max-width: 767px) {
+  .card-gradient-hover:active::before {
+    @apply opacity-100;
+  }
+}
+
 .glow-border {
   @apply relative rounded-lg;
 }
@@ -102,4 +131,9 @@ html, body {
 
 .ping-shadow {
   box-shadow: 0 0 25px rgba(116, 93, 220, 0.15);
+}
+
+/* Animate pulse slow for error indicators */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

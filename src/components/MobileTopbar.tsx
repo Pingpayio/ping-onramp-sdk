@@ -49,11 +49,11 @@ const MobileTopbar = () => {
 
   // Truncate wallet address for display
   const displayAddress = walletAddress ? 
-    `${walletAddress.substring(0, 6)}...${walletAddress.substring(walletAddress.length - 4)}` : 
+    `${walletAddress.substring(0, 4)}...${walletAddress.substring(walletAddress.length - 3)}` : 
     '';
 
   return (
-    <div className="md:hidden fixed top-0 left-0 w-full h-16 bg-[#121212] flex justify-between items-center px-4 z-50">
+    <div className="md:hidden fixed top-0 left-0 w-full h-[64px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
       {/* Logo */}
       <div className="flex items-center">
         <img 
@@ -68,7 +68,7 @@ const MobileTopbar = () => {
         <Button 
           variant="gradient" 
           size="sm"
-          className="mr-3"
+          className="mr-3 h-10"
           onClick={connectWallet}
         >
           Connect
@@ -77,7 +77,7 @@ const MobileTopbar = () => {
         <Button 
           variant="gradient" 
           size="sm"
-          className="mr-3"
+          className="mr-3 h-10"
         >
           {displayAddress}
         </Button>
@@ -86,7 +86,7 @@ const MobileTopbar = () => {
       {/* Mobile Menu */}
       <Sheet>
         <SheetTrigger asChild>
-          <button className="p-2 text-white focus:outline-none">
+          <button className="p-3 text-white focus:outline-none min-h-[44px] min-w-[44px]">
             <Menu size={24} />
           </button>
         </SheetTrigger>
@@ -96,7 +96,7 @@ const MobileTopbar = () => {
             <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">
               <div className="font-semibold text-lg">Menu</div>
               <SheetTrigger asChild>
-                <button className="p-2 text-white focus:outline-none hover:text-[#AF9EF9]">
+                <button className="p-3 text-white focus:outline-none hover:text-[#AF9EF9] min-h-[44px] min-w-[44px]">
                   <X size={24} />
                 </button>
               </SheetTrigger>
@@ -109,7 +109,7 @@ const MobileTopbar = () => {
                   {menuItems.map(item => (
                     <li key={item.title}>
                       {item.disabled ? (
-                        <div className="flex items-center py-3 px-4 text-gray-500 cursor-not-allowed">
+                        <div className="flex items-center py-4 px-4 text-gray-500 cursor-not-allowed min-h-[44px]">
                           <span className="mr-3 opacity-70">{item.icon}</span>
                           <span>{item.title}</span>
                         </div>
@@ -117,7 +117,7 @@ const MobileTopbar = () => {
                         <RouterLink
                           to={item.path}
                           className={cn(
-                            "flex items-center py-3 px-4 rounded-lg",
+                            "flex items-center py-4 px-4 rounded-lg min-h-[44px]",
                             location.pathname === item.path
                               ? "bg-[#AF9EF9] text-black"
                               : "text-white hover:bg-[#1A1326]"
@@ -135,20 +135,20 @@ const MobileTopbar = () => {
             
             {/* Social Links */}
             <div className="px-4 py-6 border-t border-[#1A1326]">
-              <div className="flex space-x-4">
-                <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9]">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+              <div className="flex space-x-6">
+                <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9] p-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                   </svg>
                 </a>
-                <a href="#" className="text-white hover:text-[#AF9EF9]">
-                  <Github size={20} />
+                <a href="#" className="text-white hover:text-[#AF9EF9] p-2">
+                  <Github size={24} />
                 </a>
-                <a href="#" className="text-white hover:text-[#AF9EF9]">
-                  <ExternalLink size={20} />
+                <a href="#" className="text-white hover:text-[#AF9EF9] p-2">
+                  <ExternalLink size={24} />
                 </a>
-                <a href="#" className="text-white hover:text-[#AF9EF9]">
-                  <BookOpen size={20} />
+                <a href="#" className="text-white hover:text-[#AF9EF9] p-2">
+                  <BookOpen size={24} />
                 </a>
               </div>
             </div>

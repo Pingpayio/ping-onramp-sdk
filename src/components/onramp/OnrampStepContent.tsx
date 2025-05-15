@@ -92,12 +92,12 @@ const OnrampStepContent = ({
   return (
     <div className="flex flex-col h-full">
       {/* Content section with adjusted spacing for consistent appearance */}
-      <div className="flex-grow overflow-auto pb-1">
+      <div className="flex-grow overflow-y-auto pb-1">
         {renderCurrentStep()}
       </div>
       
       {/* Navigation buttons with consistent styling */}
-      <div className="mt-auto pt-2 md:pt-4">
+      <div className="mt-auto pt-4">
         <OnrampNavigation 
           currentStep={currentStep} 
           steps={steps} 
