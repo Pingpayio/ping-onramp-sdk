@@ -69,7 +69,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             </div>
             <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1A1F2C] border border-[#AF9EF9]">
+          <SelectContent className="bg-white/5 border border-[#AF9EF9]">
             {networks.map((network) => (
               <SelectItem key={network.id} value={network.id} className="text-white hover:bg-white/10">
                 <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
         <div className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between">
           <div className="flex items-center">
             <div className="bg-secondary rounded-full p-1.5 mr-2">
-              <Wifi className="w-3.5 h-3.5 text-white" />
+              <Wifi className="w-3.5 w-3.5 text-white" />
             </div>
             <span className="text-sm font-normal text-white/60">{networks[0].name}</span>
           </div>
