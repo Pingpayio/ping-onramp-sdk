@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTransactionProgress, TransactionStage } from '@/hooks/use-transaction-progress';
 import { generateTxHash } from '@/lib/transaction-utils';
 import { Button } from '@/components/ui/button';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Home } from 'lucide-react';
 import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
 import SwapVisualizer from './transaction/SwapVisualizer';
@@ -79,15 +79,16 @@ const TransactionProgress = ({
         <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
           <Button
             variant="default"
-            className="bg-white text-[#3D315E] hover:bg-white"
+            className="bg-white text-[#3D315E] hover:bg-white rounded-full flex items-center gap-2"
             onClick={() => navigate('/')}
           >
+            <Home className="h-4 w-4" />
             Return Home
           </Button>
           
           <Button
             variant="outline"
-            className="bg-[#AF9EF9]/10 border-none text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2"
+            className="bg-[#AF9EF9]/10 border-none text-[#AF9EF9] hover:bg-[#AF9EF9]/20 flex items-center gap-2 rounded-full"
             onClick={() => window.open(`https://explorer.near.org/transactions/${finalTxHash}`, '_blank')}
           >
             <ExternalLink className="h-4 w-4" />
