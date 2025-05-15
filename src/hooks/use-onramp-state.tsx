@@ -1,12 +1,13 @@
 
 import { useState, useEffect } from 'react';
+import { useWallet } from './use-wallet-context';
 
 export const useOnrampState = () => {
+  const { isConnected, walletAddress } = useWallet();
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedAsset, setSelectedAsset] = useState<string | null>("NEAR");
   const [open, setOpen] = useState(false);
   const [selectedOnramp, setSelectedOnramp] = useState<string | null>(null);
-  const [walletAddress, setWalletAddress] = useState<string>('');
   const [amount, setAmount] = useState<string>('100');
   const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
   const [cardNumber, setCardNumber] = useState<string>('');
@@ -25,8 +26,8 @@ export const useOnrampState = () => {
   };
 
   const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // This will be synced with the wallet context in a real implementation
     const address = e.target.value;
-    setWalletAddress(address);
     
     // Validate wallet address
     const isNearAddress = address.trim().endsWith('.near');
@@ -48,8 +49,7 @@ export const useOnrampState = () => {
 
   const handleContinue = () => {
     // Check if wallet is connected before allowing progress from step 0
-    const isWalletConnected = walletAddress.trim().length > 0;
-    if (currentStep === 0 && !isWalletConnected) {
+    if (currentStep === 0 && !isConnected) {
       return; // Don't proceed if wallet is not connected
     }
     
@@ -72,9 +72,6 @@ export const useOnrampState = () => {
   }, [currentStep, selectedOnramp]);
 
   const canContinue = () => {
-    // Check wallet connection status
-    const isWalletConnected = walletAddress.trim().length > 0;
-    
     switch (currentStep) {
       case 0: 
         // Make sure all fields in step 1 are filled and wallet address is valid
@@ -82,7 +79,7 @@ export const useOnrampState = () => {
         return !!selectedAsset && 
                isWalletAddressValid && 
                parseFloat(amount) >= 10 && 
-               isWalletConnected; // Must have wallet connected
+               isConnected; // Must have wallet connected
       case 1: return !!selectedOnramp;
       default: return true;
     }
@@ -90,9 +87,6 @@ export const useOnrampState = () => {
 
   // Handle navigation through step clicking
   const handleStepClick = (stepIndex: number) => {
-    // Check wallet connection status
-    const isWalletConnected = walletAddress.trim().length > 0;
-    
     // Only allow navigation to steps that have been completed or the current step
     // For step 1, require wallet connection
     if (stepIndex <= currentStep || 
@@ -100,10 +94,18 @@ export const useOnrampState = () => {
          !!selectedAsset && 
          isWalletAddressValid && 
          parseFloat(amount) >= 10 &&
-         isWalletConnected)) {
+         isConnected)) {
       setCurrentStep(stepIndex);
     }
   };
+
+  // When wallet connects, update the wallet address in the form
+  useEffect(() => {
+    if (isConnected && walletAddress) {
+      // Set wallet address valid when connected through wallet context
+      setIsWalletAddressValid(true);
+    }
+  }, [isConnected, walletAddress]);
 
   return {
     currentStep,

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
@@ -48,9 +47,6 @@ const OnrampStepContent = ({
   selectedCurrency = 'USD',
   onCurrencySelect
 }: OnrampStepContentProps) => {
-  
-  // Check if wallet is connected based on wallet address
-  const isWalletConnected = walletAddress.trim().length > 0;
   
   const renderCurrentStep = () => {
     switch (currentStep) {
@@ -110,7 +106,6 @@ const OnrampStepContent = ({
           handleBack={handleBack}
           handleContinue={handleContinue}
           canContinue={canContinue}
-          isWalletConnected={isWalletConnected}
         />
       </div>
     </div>

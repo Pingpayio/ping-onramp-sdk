@@ -8,23 +8,26 @@ import Onramp from "./pages/Onramp";
 import Transaction from "./pages/Transaction";
 import NotFound from "./pages/NotFound";
 import MobileTopbar from "./components/MobileTopbar";
+import { WalletProvider } from "./hooks/use-wallet-context";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <MobileTopbar />
-        <Routes>
-          <Route path="/" element={<Navigate to="/onramp" replace />} />
-          <Route path="/onramp" element={<Onramp />} />
-          <Route path="/transaction" element={<Transaction />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <WalletProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <MobileTopbar />
+          <Routes>
+            <Route path="/" element={<Navigate to="/onramp" replace />} />
+            <Route path="/onramp" element={<Onramp />} />
+            <Route path="/transaction" element={<Transaction />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </WalletProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
