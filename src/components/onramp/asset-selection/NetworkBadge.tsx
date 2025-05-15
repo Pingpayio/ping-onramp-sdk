@@ -69,7 +69,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             </div>
             <ChevronDown className="h-4 w-4 opacity-50 ml-2" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1A1F2C] border border-[#AF9EF9]">
+          <SelectContent className="bg-white/[0.08] border border-[#AF9EF9]">
             {networks.map((network) => (
               <SelectItem key={network.id} value={network.id} className="text-white/60 hover:bg-white/10 hover:text-white">
                 <div className="flex items-center gap-2">
