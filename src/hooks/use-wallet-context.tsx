@@ -1,6 +1,7 @@
 
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { useToast } from "@/components/ui/use-toast";
+import { walletToast } from "@/components/ui/use-toast";
 
 interface WalletContextType {
   isConnected: boolean;
@@ -26,10 +27,13 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
           const mockAddress = "0x" + Math.random().toString(16).slice(2, 12) + "...";
           setWalletAddress(mockAddress);
           setIsConnected(true);
-          toast({
-            title: "Wallet Connected",
-            description: "Your wallet has been connected successfully!",
-          });
+          
+          // Use the custom wallet toast instead of the default one
+          walletToast(
+            "Wallet Connected",
+            "Your wallet has been connected successfully!"
+          );
+          
           resolve();
         }, 500);
       });

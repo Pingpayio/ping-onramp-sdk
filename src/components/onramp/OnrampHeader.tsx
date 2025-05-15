@@ -1,14 +1,12 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Wallet, Copy, CheckCircle2 } from "lucide-react";
-import { useToast } from "@/components/ui/use-toast";
 import { useWallet } from '@/hooks/use-wallet-context';
+import { walletToast } from '@/components/ui/use-toast';
 
 const OnrampHeader = () => {
   const { isConnected, walletAddress, connectWallet } = useWallet();
   const [copied, setCopied] = useState(false);
-  const { toast } = useToast();
 
   const copyAddress = () => {
     if (walletAddress) {
@@ -16,10 +14,10 @@ const OnrampHeader = () => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
       
-      toast({
-        title: "Address Copied",
-        description: "Wallet address copied to clipboard",
-      });
+      walletToast(
+        "Address Copied",
+        "Wallet address copied to clipboard"
+      );
     }
   };
 
