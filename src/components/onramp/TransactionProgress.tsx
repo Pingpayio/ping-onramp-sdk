@@ -79,7 +79,7 @@ const TransactionProgress = ({
         <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
           <Button
             variant="default"
-            className="bg-[#9b87f5] text-white hover:bg-[#9b87f5]/90"
+            className="bg-white text-[#3D315E] hover:bg-white"
             onClick={() => navigate('/')}
           >
             Return Home

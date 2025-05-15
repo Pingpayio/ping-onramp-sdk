@@ -56,15 +56,7 @@ const OnrampNavigation = ({
   
   // Don't show navigation buttons during transaction processing
   if (isProcessingTransaction) {
-    return (
-      <div className="flex justify-center">
-        <Link to="/">
-          <Button variant="outline" icon={<Home className="h-4 w-4" />}>
-            Return Home
-          </Button>
-        </Link>
-      </div>
-    );
+    return null; // Removed the Return Home button
   }
   
   return (
