@@ -21,7 +21,7 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
 }) => {
   return (
     <Card className="bg-white/5 border border-white/10 p-5">
-      <h4 className="text-white text-sm font-medium mb-2">Transaction Details</h4>
+      <h4 className="text-sm text-white mb-2">Transaction Details</h4>
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
           <span className="text-white/60">Onramp Amount:</span>
