@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -148,14 +147,6 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
                 {finalTxHash}
               </div>
-              <a 
-                href={`https://explorer.near.org/transactions/${finalTxHash}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-1 text-xs text-[#AF9EF9] hover:underline mt-1"
-              >
-                <Link className="h-3 w-3" /> View on NEAR Explorer
-              </a>
             </div>
           )}
         </div>
