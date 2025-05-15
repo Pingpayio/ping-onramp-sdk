@@ -38,6 +38,7 @@ const sampleHistory = [{
   fiat: '$500',
   status: 'Failed'
 }];
+
 const OnrampPage = () => {
   const isMobile = useIsMobile();
   const {
@@ -62,18 +63,19 @@ const OnrampPage = () => {
     handleStepClick,
     setOpen
   } = useOnrampState();
+  
   return <div className="flex h-screen bg-[#121212] overflow-hidden">
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">
-        {/* Maintain consistent vertical padding of 40px on top and bottom */}
+        {/* Use fixed vertical padding and ensure the content fills the space between */}
         <div className="px-[56px] py-[40px] flex flex-col h-[calc(100vh-80px)]">
           <OnrampHeader />
 
-          {/* Updated to fill available height with flex-grow */}
-          <main className="flex-grow flex gap-6 overflow-hidden mt-4">
-            {/* Left container - Made to fill available height */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-grow flex flex-col max-w-[640px] border border-white/[0.16]">
+          {/* Main container takes full height minus header and paddings */}
+          <main className="flex gap-6 mt-4 h-full">
+            {/* Left container - Fixed height to extend to bottom padding */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex flex-col max-w-[640px] border border-white/[0.16] w-full">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
@@ -97,14 +99,14 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Right container - Also made to fill available height */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex flex-col flex-grow w-[400px] border border-white/[0.16]">
+            {/* Right container - Fixed height to extend to bottom padding */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex flex-col w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
               </div>
               
-              <div className="flex-grow overflow-y-auto">
+              <div className="flex-1 overflow-y-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className="border-white/10">
@@ -139,4 +141,5 @@ const OnrampPage = () => {
       </div>
     </div>;
 };
+
 export default OnrampPage;
