@@ -28,7 +28,7 @@ const TransactionProgress = ({
   } = useTransactionProgress({ simulateProgress: isSimulated });
 
   // Generate mock transaction hashes
-  const onboardingTxHash = generateTxHash('0x7a');
+  const depositTxHash = generateTxHash('0x7a');
   const swapTxHash = generateTxHash('0x8b');
   const finalTxHash = generateTxHash('0x9c');
 
@@ -40,17 +40,24 @@ const TransactionProgress = ({
       {/* Current stage card */}
       <TransactionStageCard 
         currentStage={currentStage}
-        onboardingTxHash={onboardingTxHash}
+        onboardingTxHash={depositTxHash}
         swapTxHash={swapTxHash}
         finalTxHash={finalTxHash}
+        asset={asset}
+        amount={amount}
+        walletAddress={walletAddress}
       />
       
-      {/* NEAR Intents swap visual (shown during swap stage) */}
-      {currentStage === 'swap' && <SwapVisualizer asset={asset} />}
+      {/* NEAR Intents swap visual (shown during appropriate stages) */}
+      <SwapVisualizer asset={asset} stage={currentStage} />
 
       {/* Completion message (shown when completed) */}
       {currentStage === 'completed' && (
-        <TransactionCompletionMessage amount={amount} asset={asset} />
+        <TransactionCompletionMessage 
+          amount={amount} 
+          asset={asset} 
+          txHash={finalTxHash}
+        />
       )}
 
       {/* Transaction details */}

@@ -2,12 +2,19 @@
 import React from 'react';
 import { ArrowUp } from 'lucide-react';
 import { Card } from '@/components/ui/card';
+import { TransactionStage } from '@/hooks/use-transaction-progress';
 
 interface SwapVisualizerProps {
   asset: string | null;
+  stage: TransactionStage;
 }
 
-const SwapVisualizer: React.FC<SwapVisualizerProps> = ({ asset }) => {
+const SwapVisualizer: React.FC<SwapVisualizerProps> = ({ asset, stage }) => {
+  // Only show during querying, signing and sending stages
+  if (stage !== 'querying' && stage !== 'signing' && stage !== 'sending') {
+    return null;
+  }
+
   return (
     <Card className="bg-white/5 border border-white/10 p-5">
       <div className="flex items-center mb-3">
@@ -29,7 +36,7 @@ const SwapVisualizer: React.FC<SwapVisualizerProps> = ({ asset }) => {
         </div>
         
         <div className="flex-1 px-2 flex items-center justify-center">
-          <ArrowUp className="h-4 w-4 text-white/40 rotate-90 animate-pulse" />
+          <ArrowUp className={`h-4 w-4 text-[#AF9EF9] rotate-90 ${stage === 'querying' ? 'animate-pulse' : ''}`} />
         </div>
         
         <div className="text-center">

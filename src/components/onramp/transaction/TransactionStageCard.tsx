@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
-import { CheckCircle2, Clock, AlertCircle, ArrowUp } from 'lucide-react';
+import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TransactionStageCardProps {
@@ -9,26 +9,44 @@ interface TransactionStageCardProps {
   onboardingTxHash?: string;
   swapTxHash?: string;
   finalTxHash?: string;
+  asset?: string | null;
+  amount?: string;
+  walletAddress?: string;
 }
 
 export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
   currentStage,
   onboardingTxHash,
   swapTxHash,
-  finalTxHash
+  finalTxHash,
+  asset,
+  amount,
+  walletAddress
 }) => {
   // Define status configurations based on transaction stage
   const getStageConfig = () => {
     switch (currentStage) {
-      case 'payment':
+      case 'deposit':
         return {
           icon: <Clock className="h-6 w-6 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
           textColor: 'text-white/80'
         };
-      case 'swap':
+      case 'querying':
         return {
-          icon: <ArrowUp className="h-6 w-6 text-blue-400 rotate-45" />,
+          icon: <ArrowRight className="h-6 w-6 text-blue-400" />,
+          color: 'bg-white/5 border-blue-200/20',
+          textColor: 'text-white/80'
+        };
+      case 'signing':
+        return {
+          icon: <Wallet className="h-6 w-6 text-[#AF9EF9]" />,
+          color: 'bg-white/5 border-[#AF9EF9]/20',
+          textColor: 'text-white/80'
+        };
+      case 'sending':
+        return {
+          icon: <ArrowRight className="h-6 w-6 text-blue-400 rotate-45" />,
           color: 'bg-white/5 border-blue-200/20',
           textColor: 'text-white/80'
         };
@@ -40,7 +58,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
         };
       case 'failed':
         return {
-          icon: <AlertCircle className="h-6 w-6 text-red-500" />,
+          icon: <CircleX className="h-6 w-6 text-red-500" />,
           color: 'bg-white/5 border-red-200/20',
           textColor: 'text-white/80'
         };
@@ -56,42 +74,58 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
   const config = getStageConfig();
 
   const stageLabels = {
-    payment: 'Processing Payment',
-    swap: 'Executing NEAR Intents Swap',
+    deposit: 'Waiting for Deposit',
+    querying: 'Querying Quotes on NEAR Intents',
+    signing: 'Signing Intent Message',
+    sending: 'Sending to Recipient',
     completed: 'Transaction Complete',
     failed: 'Transaction Failed'
   };
 
-  const stageDescriptions = {
-    payment: 'Your payment is being processed. This should only take a moment.',
-    swap: 'Converting your funds through NEAR Intents protocol for best rates.',
-    completed: 'Your transaction has been completed successfully!',
-    failed: 'There was an issue processing your transaction.'
+  const getStageDescription = () => {
+    const assetDisplay = asset || 'tokens';
+    
+    switch (currentStage) {
+      case 'deposit':
+        return `Waiting for ${amount} ${assetDisplay} onramp deposit to NEAR Intents`;
+      case 'querying':
+        return `Please wait while we query quotes for ${amount} ${assetDisplay} on NEAR Intents`;
+      case 'signing':
+        return `Please sign the message in your wallet to send ${amount} ${assetDisplay} to the recipient address with a small network fee`;
+      case 'sending':
+        return `${amount} ${assetDisplay} is being sent to the recipient address ${walletAddress?.substring(0, 10)}...`;
+      case 'completed':
+        return `Successfully sent ${amount} ${assetDisplay} to the recipient address`;
+      case 'failed':
+        return 'There was an issue processing your transaction.';
+      default:
+        return 'Processing your transaction';
+    }
   };
 
   return (
     <div className={cn("border rounded-lg p-5", config.color)}>
       <div className="flex items-start">
         <div className="mr-3 mt-1">{config.icon}</div>
-        <div>
+        <div className="flex-1">
           <h3 className={cn("font-medium mb-1", config.textColor)}>
             {stageLabels[currentStage]}
           </h3>
           <p className="text-sm text-white/60">
-            {stageDescriptions[currentStage]}
+            {getStageDescription()}
           </p>
           
           {/* Show appropriate transaction hash based on stage */}
-          {currentStage === 'payment' && onboardingTxHash && (
+          {currentStage === 'deposit' && onboardingTxHash && (
             <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">Payment Transaction:</p>
+              <p className="text-xs text-white/60 mb-1">Deposit Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
                 {onboardingTxHash}
               </div>
             </div>
           )}
           
-          {currentStage === 'swap' && swapTxHash && (
+          {currentStage === 'sending' && swapTxHash && (
             <div className="mt-3">
               <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
@@ -101,11 +135,19 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           )}
           
           {currentStage === 'completed' && finalTxHash && (
-            <div className="mt-3">
+            <div className="mt-3 space-y-2">
               <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
                 {finalTxHash}
               </div>
+              <a 
+                href={`https://explorer.near.org/transactions/${finalTxHash}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-xs text-[#AF9EF9] hover:underline mt-1"
+              >
+                <Link className="h-3 w-3" /> View on NEAR Explorer
+              </a>
             </div>
           )}
         </div>

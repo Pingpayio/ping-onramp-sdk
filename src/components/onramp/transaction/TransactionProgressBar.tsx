@@ -13,7 +13,7 @@ const TransactionProgressBar: React.FC<TransactionProgressBarProps> = ({ progres
         <span className="text-sm font-medium text-white">Transaction Progress</span>
         <span className="text-sm font-medium text-white">{progress}%</span>
       </div>
-      <Progress value={progress} className="h-2 bg-white/10" />
+      <Progress value={progress} className="h-2 bg-white/10" indicatorColor="bg-[#AF9EF9]" />
     </div>
   );
 };
