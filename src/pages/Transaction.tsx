@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TransactionStatus from '@/components/TransactionStatus';
-import { useTransactionProgress } from '@/hooks/use-transaction-progress';
+import { useTransactionProgress, TransactionStage } from '@/hooks/use-transaction-progress';
 import { toast } from '@/components/ui/use-toast';
 import TransactionContainer from '@/components/transaction/TransactionContainer';
 import TransactionActionButtons from '@/components/transaction/TransactionActionButtons';
@@ -38,10 +38,20 @@ const Transaction = () => {
   
   // Show toast notifications on stage changes with consistent styling
   useEffect(() => {
-    if (currentStage === 'swap') {
+    if (currentStage === 'querying') {
       toast({
-        title: "Payment Processed",
-        description: "Now executing NEAR Intents swap...",
+        title: "Deposit Received",
+        description: "Now querying quotes on NEAR Intents...",
+      });
+    } else if (currentStage === 'signing') {
+      toast({
+        title: "Quotes Retrieved",
+        description: "Please sign the transaction message...",
+      });
+    } else if (currentStage === 'sending') {
+      toast({
+        title: "Transaction Signed",
+        description: "Now sending your assets...",
       });
     } else if (currentStage === 'completed') {
       toast({
@@ -52,7 +62,7 @@ const Transaction = () => {
   }, [currentStage, transactionData]);
 
   // Map transaction stage to status
-  const getStatusFromStage = (stage: string): 'pending' | 'completed' | 'failed' => {
+  const getStatusFromStage = (stage: TransactionStage): 'pending' | 'completed' | 'failed' => {
     switch (stage) {
       case 'completed':
         return 'completed';

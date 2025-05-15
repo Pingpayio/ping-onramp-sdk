@@ -48,6 +48,10 @@ const StatusCard: React.FC<StatusCardProps> = ({
   const config = statusConfig[validStatus];
 
   const stageLabels = {
+    deposit: 'Waiting for Deposit',
+    querying: 'Querying Quotes on NEAR Intents',
+    signing: 'Signing Intent Message',
+    sending: 'Sending to Recipient',
     payment: 'Processing Payment',
     swap: 'Executing NEAR Intents Swap',
     completed: 'Transaction Complete',
@@ -56,6 +60,10 @@ const StatusCard: React.FC<StatusCardProps> = ({
 
   // Stage-specific descriptions
   const stageDescriptions = {
+    deposit: 'Waiting for deposit to NEAR Intents',
+    querying: 'Please wait while we query the best rates',
+    signing: 'Please sign the transaction in your wallet',
+    sending: 'Your assets are being transferred',
     payment: 'Your payment is being processed. This should only take a moment.',
     swap: 'Converting your funds through NEAR Intents protocol for best rates.',
     completed: 'Your transaction has been completed successfully!',
@@ -75,7 +83,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
           </p>
           
           {/* Show appropriate transaction hash based on stage */}
-          {stage === 'payment' && onboardingTxHash && (
+          {(stage === 'payment' || stage === 'deposit') && onboardingTxHash && (
             <div className="mt-3">
               <p className="text-xs text-white/60 mb-1">Payment Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
@@ -84,7 +92,7 @@ const StatusCard: React.FC<StatusCardProps> = ({
             </div>
           )}
           
-          {stage === 'swap' && swapTxHash && (
+          {(stage === 'swap' || stage === 'sending') && swapTxHash && (
             <div className="mt-3">
               <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">

@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 
-export type TransactionStage = 'deposit' | 'querying' | 'signing' | 'sending' | 'completed' | 'failed';
+export type TransactionStage = 'deposit' | 'querying' | 'signing' | 'sending' | 'payment' | 'swap' | 'completed' | 'failed';
 
 interface UseTransactionProgressProps {
   initialStage?: TransactionStage;
@@ -107,6 +107,12 @@ export const useTransactionProgress = ({
         break;
       case 'sending':
         setProgress(75);
+        break;
+      case 'payment':
+        setProgress(20);
+        break;
+      case 'swap':
+        setProgress(60);
         break;
       case 'completed':
         setProgress(100);

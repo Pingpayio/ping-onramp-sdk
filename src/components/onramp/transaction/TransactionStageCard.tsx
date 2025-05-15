@@ -27,6 +27,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
   const getStageConfig = () => {
     switch (currentStage) {
       case 'deposit':
+      case 'payment':
         return {
           icon: <Clock className="h-6 w-6 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
@@ -45,6 +46,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           textColor: 'text-white/80'
         };
       case 'sending':
+      case 'swap':
         return {
           icon: <ArrowRight className="h-6 w-6 text-blue-400 rotate-45" />,
           color: 'bg-white/5 border-blue-200/20',
@@ -78,6 +80,8 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
     querying: 'Querying Quotes on NEAR Intents',
     signing: 'Signing Intent Message',
     sending: 'Sending to Recipient',
+    payment: 'Processing Payment',
+    swap: 'Executing NEAR Intents Swap',
     completed: 'Transaction Complete',
     failed: 'Transaction Failed'
   };
@@ -88,12 +92,16 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
     switch (currentStage) {
       case 'deposit':
         return `Waiting for ${amount} ${assetDisplay} onramp deposit to NEAR Intents`;
+      case 'payment':
+        return `Your payment is being processed. This should only take a moment.`;
       case 'querying':
         return `Please wait while we query quotes for ${amount} ${assetDisplay} on NEAR Intents`;
       case 'signing':
         return `Please sign the message in your wallet to send ${amount} ${assetDisplay} to the recipient address with a small network fee`;
       case 'sending':
         return `${amount} ${assetDisplay} is being sent to the recipient address ${walletAddress?.substring(0, 10)}...`;
+      case 'swap':
+        return `Converting your funds through NEAR Intents protocol for best rates.`;
       case 'completed':
         return `Successfully sent ${amount} ${assetDisplay} to the recipient address`;
       case 'failed':
@@ -116,7 +124,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           </p>
           
           {/* Show appropriate transaction hash based on stage */}
-          {currentStage === 'deposit' && onboardingTxHash && (
+          {(currentStage === 'deposit' || currentStage === 'payment') && onboardingTxHash && (
             <div className="mt-3">
               <p className="text-xs text-white/60 mb-1">Deposit Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
@@ -125,7 +133,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
             </div>
           )}
           
-          {currentStage === 'sending' && swapTxHash && (
+          {(currentStage === 'sending' || currentStage === 'swap') && swapTxHash && (
             <div className="mt-3">
               <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">

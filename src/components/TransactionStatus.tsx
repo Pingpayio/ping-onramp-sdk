@@ -26,7 +26,7 @@ const TransactionStatus = ({
   title,
   description,
   txHash,
-  stage = 'payment',
+  stage = 'deposit',
   progress = 0,
   onboardingTxHash,
   swapTxHash,
@@ -51,7 +51,7 @@ const TransactionStatus = ({
       />
       
       {/* NEAR Intents swap visual (shown during swap stage) */}
-      {stage === 'swap' && <SwapVisualizationCard asset={asset} />}
+      {(stage === 'swap' || stage === 'sending') && <SwapVisualizationCard asset={asset} />}
 
       {/* Transaction details card - always visible */}
       <TransactionDetailsCard 
@@ -61,11 +61,13 @@ const TransactionStatus = ({
       />
 
       {/* Completion message - only shown when completed */}
-      <CompletionMessage 
-        amount={amount}
-        asset={asset}
-        stage={stage}
-      />
+      {stage === 'completed' && (
+        <CompletionMessage 
+          amount={amount}
+          asset={asset}
+          stage={stage}
+        />
+      )}
     </div>
   );
 };

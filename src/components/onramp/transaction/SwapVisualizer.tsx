@@ -10,8 +10,8 @@ interface SwapVisualizerProps {
 }
 
 const SwapVisualizer: React.FC<SwapVisualizerProps> = ({ asset, stage }) => {
-  // Only show during querying, signing and sending stages
-  if (stage !== 'querying' && stage !== 'signing' && stage !== 'sending') {
+  // Only show during querying, signing, sending stages or swap stage
+  if (stage !== 'querying' && stage !== 'signing' && stage !== 'sending' && stage !== 'swap') {
     return null;
   }
 
