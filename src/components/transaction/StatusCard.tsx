@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
+import { CheckCircle2, Clock, AlertCircle, ArrowRight, Wallet } from 'lucide-react';
 import { type TransactionStage } from '@/hooks/use-transaction-progress';
 
 interface StatusCardProps {
@@ -23,29 +23,49 @@ const StatusCard: React.FC<StatusCardProps> = ({
   onboardingTxHash,
   swapTxHash
 }) => {
-  // Define status configurations with fallback to 'pending' if status is invalid
-  const statusConfig = {
-    pending: {
-      icon: <Clock className="h-6 w-6 text-yellow-500" />,
-      color: 'bg-yellow-50 border-yellow-200',
-      textColor: 'text-yellow-700'
-    },
-    completed: {
-      icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-      color: 'bg-green-50 border-green-200',
-      textColor: 'text-green-700'
-    },
-    failed: {
-      icon: <AlertCircle className="h-6 w-6 text-red-500" />,
-      color: 'bg-red-50 border-red-200',
-      textColor: 'text-red-700'
+  // Define icon based on current stage for better consistency with TransactionStageCard
+  const getStageIcon = () => {
+    switch (stage) {
+      case 'deposit':
+      case 'payment':
+        return <Clock className="h-8 w-8 text-yellow-500" />;
+      case 'querying':
+        return <ArrowRight className="h-8 w-8 text-blue-400" />;
+      case 'signing':
+        return <Wallet className="h-8 w-8 text-[#AF9EF9]" />;
+      case 'sending':
+      case 'swap':
+        return <ArrowRight className="h-8 w-8 text-blue-400 rotate-45" />;
+      case 'completed':
+        return <CheckCircle2 className="h-8 w-8 text-green-500" />;
+      case 'failed':
+        return <AlertCircle className="h-8 w-8 text-red-500" />;
+      default:
+        return <Clock className="h-8 w-8 text-yellow-500" />;
     }
   };
 
-  // Ensure the status is valid, fallback to 'pending' if not
-  const validStatus: 'pending' | 'completed' | 'failed' = 
-    statusConfig.hasOwnProperty(status) ? status : 'pending';
-  const config = statusConfig[validStatus];
+  // Get border color based on stage
+  const getStageBorderColor = () => {
+    switch (stage) {
+      case 'deposit':
+      case 'payment':
+        return 'border-yellow-200/20';
+      case 'querying':
+        return 'border-blue-200/20';
+      case 'signing':
+        return 'border-[#AF9EF9]/20';
+      case 'sending':
+      case 'swap':
+        return 'border-blue-200/20';
+      case 'completed':
+        return 'border-green-200/20';
+      case 'failed':
+        return 'border-red-200/20';
+      default:
+        return 'border-yellow-200/20';
+    }
+  };
 
   const stageLabels = {
     deposit: 'Waiting for Deposit',
@@ -70,45 +90,57 @@ const StatusCard: React.FC<StatusCardProps> = ({
     failed: 'There was an issue processing your transaction.'
   };
 
+  const renderTransactionHash = () => {
+    if ((stage === 'payment' || stage === 'deposit') && onboardingTxHash) {
+      return (
+        <div className="mt-4">
+          <p className="text-xs text-white/60 mb-1">Payment Transaction:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {onboardingTxHash}
+          </div>
+        </div>
+      );
+    } else if ((stage === 'swap' || stage === 'sending') && swapTxHash) {
+      return (
+        <div className="mt-4">
+          <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {swapTxHash}
+          </div>
+        </div>
+      );
+    } else if (stage === 'completed' && txHash) {
+      return (
+        <div className="mt-4">
+          <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {txHash}
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
-    <div className={cn("border rounded-lg p-5 bg-white/5 border-white/20")}>
+    <div className={cn(
+      "border rounded-lg p-5 bg-white/5 min-h-[180px] transition-all duration-500 ease-in-out", 
+      getStageBorderColor()
+    )}>
       <div className="flex items-start">
-        <div className="mr-3 mt-1">{config.icon}</div>
-        <div>
-          <h3 className="font-medium mb-1 text-white">
+        <div className="mr-4 mt-1 flex-shrink-0 w-8 h-8 flex items-center justify-center">
+          {getStageIcon()}
+        </div>
+        <div className="flex-1">
+          <h3 className="font-medium mb-2 text-lg text-white">
             {stage && stageLabels[stage] || title}
           </h3>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-white/60 mb-2 min-h-[40px]">
             {stage && stageDescriptions[stage] || description}
           </p>
           
-          {/* Show appropriate transaction hash based on stage */}
-          {(stage === 'payment' || stage === 'deposit') && onboardingTxHash && (
-            <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">Payment Transaction:</p>
-              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {onboardingTxHash}
-              </div>
-            </div>
-          )}
-          
-          {(stage === 'swap' || stage === 'sending') && swapTxHash && (
-            <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
-              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {swapTxHash}
-              </div>
-            </div>
-          )}
-          
-          {stage === 'completed' && txHash && (
-            <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
-              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {txHash}
-              </div>
-            </div>
-          )}
+          {renderTransactionHash()}
         </div>
       </div>
     </div>

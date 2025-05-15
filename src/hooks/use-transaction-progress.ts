@@ -29,11 +29,12 @@ export const useTransactionProgress = ({
       
       const incrementProgress = () => {
         if (currentProgress < 20) {
-          currentProgress += 2;
+          currentProgress += 1; // Smaller increment for smoother animation
           setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 300);
+          timeoutId = setTimeout(incrementProgress, 150);
         } else {
-          setCurrentStage('querying');
+          // Add a slight delay before changing stages for smoother transition
+          setTimeout(() => setCurrentStage('querying'), 300);
         }
       };
       
@@ -44,11 +45,11 @@ export const useTransactionProgress = ({
       
       const incrementProgress = () => {
         if (currentProgress < 40) {
-          currentProgress += 2;
+          currentProgress += 1; // Smaller increment for smoother animation
           setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 300);
+          timeoutId = setTimeout(incrementProgress, 150);
         } else {
-          setCurrentStage('signing');
+          setTimeout(() => setCurrentStage('signing'), 300);
         }
       };
       
@@ -59,11 +60,11 @@ export const useTransactionProgress = ({
       
       const incrementProgress = () => {
         if (currentProgress < 60) {
-          currentProgress += 2;
+          currentProgress += 1; // Smaller increment for smoother animation
           setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 300);
+          timeoutId = setTimeout(incrementProgress, 150);
         } else {
-          setCurrentStage('sending');
+          setTimeout(() => setCurrentStage('sending'), 300);
         }
       };
       
@@ -74,12 +75,15 @@ export const useTransactionProgress = ({
       
       const incrementProgress = () => {
         if (currentProgress < 95) {
-          currentProgress += 3;
+          currentProgress += 1; // Smaller increment for smoother animation
           setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 300);
+          timeoutId = setTimeout(incrementProgress, 150);
         } else {
-          setProgress(100);
-          setCurrentStage('completed');
+          // Ensure we reach exactly 100% with a nice animation
+          setTimeout(() => {
+            setProgress(100);
+            setTimeout(() => setCurrentStage('completed'), 300);
+          }, 300);
         }
       };
       
@@ -94,7 +98,7 @@ export const useTransactionProgress = ({
   const setStage = (stage: TransactionStage) => {
     setCurrentStage(stage);
     
-    // Update progress based on stage
+    // Update progress based on stage with a smooth transition
     switch (stage) {
       case 'deposit':
         setProgress(10);

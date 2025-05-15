@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -28,44 +29,44 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
       case 'deposit':
       case 'payment':
         return {
-          icon: <Clock className="h-6 w-6 text-yellow-500" />,
+          icon: <Clock className="h-8 w-8 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
           textColor: 'text-white/80'
         };
       case 'querying':
         return {
-          icon: <ArrowRight className="h-6 w-6 text-blue-400" />,
+          icon: <ArrowRight className="h-8 w-8 text-blue-400" />,
           color: 'bg-white/5 border-blue-200/20',
           textColor: 'text-white/80'
         };
       case 'signing':
         return {
-          icon: <Wallet className="h-6 w-6 text-[#AF9EF9]" />,
+          icon: <Wallet className="h-8 w-8 text-[#AF9EF9]" />,
           color: 'bg-white/5 border-[#AF9EF9]/20',
           textColor: 'text-white/80'
         };
       case 'sending':
       case 'swap':
         return {
-          icon: <ArrowRight className="h-6 w-6 text-blue-400 rotate-45" />,
+          icon: <ArrowRight className="h-8 w-8 text-blue-400 rotate-45" />,
           color: 'bg-white/5 border-blue-200/20',
           textColor: 'text-white/80'
         };
       case 'completed':
         return {
-          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
+          icon: <CheckCircle2 className="h-8 w-8 text-green-500" />,
           color: 'bg-white/5 border-green-200/20',
           textColor: 'text-white/80'
         };
       case 'failed':
         return {
-          icon: <CircleX className="h-6 w-6 text-red-500" />,
+          icon: <CircleX className="h-8 w-8 text-red-500" />,
           color: 'bg-white/5 border-red-200/20',
           textColor: 'text-white/80'
         };
       default:
         return {
-          icon: <Clock className="h-6 w-6 text-yellow-500" />,
+          icon: <Clock className="h-8 w-8 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
           textColor: 'text-white/80'
         };
@@ -110,45 +111,55 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
     }
   };
 
+  const renderTransactionHash = () => {
+    if ((currentStage === 'deposit' || currentStage === 'payment') && onboardingTxHash) {
+      return (
+        <div className="mt-4">
+          <p className="text-xs text-white/60 mb-1">Deposit Transaction:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {onboardingTxHash}
+          </div>
+        </div>
+      );
+    } else if ((currentStage === 'sending' || currentStage === 'swap') && swapTxHash) {
+      return (
+        <div className="mt-4">
+          <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {swapTxHash}
+          </div>
+        </div>
+      );
+    } else if (currentStage === 'completed' && finalTxHash) {
+      return (
+        <div className="mt-4">
+          <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {finalTxHash}
+          </div>
+        </div>
+      );
+    }
+    
+    return null;
+  };
+
   return (
-    <div className={cn("border rounded-lg p-5", config.color)}>
+    <div className={cn(
+      "border rounded-lg p-5 min-h-[180px] transition-all duration-500 ease-in-out", 
+      config.color
+    )}>
       <div className="flex items-start">
-        <div className="mr-3 mt-1">{config.icon}</div>
+        <div className="mr-4 mt-1 flex-shrink-0 w-8 h-8 flex items-center justify-center">{config.icon}</div>
         <div className="flex-1">
-          <h3 className={cn("font-medium mb-1", config.textColor)}>
+          <h3 className={cn("font-medium mb-2 text-lg", config.textColor)}>
             {stageLabels[currentStage]}
           </h3>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-white/60 mb-2 min-h-[40px]">
             {getStageDescription()}
           </p>
           
-          {/* Show appropriate transaction hash based on stage */}
-          {(currentStage === 'deposit' || currentStage === 'payment') && onboardingTxHash && (
-            <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">Deposit Transaction:</p>
-              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {onboardingTxHash}
-              </div>
-            </div>
-          )}
-          
-          {(currentStage === 'sending' || currentStage === 'swap') && swapTxHash && (
-            <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
-              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {swapTxHash}
-              </div>
-            </div>
-          )}
-          
-          {currentStage === 'completed' && finalTxHash && (
-            <div className="mt-3 space-y-2">
-              <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
-              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {finalTxHash}
-              </div>
-            </div>
-          )}
+          {renderTransactionHash()}
         </div>
       </div>
     </div>
