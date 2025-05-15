@@ -31,6 +31,9 @@ const TransactionProgress = ({
   const swapTxHash = generateTxHash('0x8b');
   const finalTxHash = generateTxHash('0x9c');
 
+  // Check if transaction is completed
+  const isCompleted = currentStage === 'completed';
+
   return (
     <div className="w-full space-y-3">
       {/* Progress bar */}
@@ -48,7 +51,7 @@ const TransactionProgress = ({
       />
       
       {/* Completion message (shown when completed) */}
-      {currentStage === 'completed' && (
+      {isCompleted && (
         <TransactionCompletionMessage 
           amount={amount} 
           asset={asset} 
@@ -60,7 +63,8 @@ const TransactionProgress = ({
       <TransactionDetailsCard 
         amount={amount} 
         asset={asset} 
-        walletAddress={walletAddress} 
+        walletAddress={walletAddress}
+        isCompleted={isCompleted}
       />
       
       {/* Status message based on transaction stage */}
