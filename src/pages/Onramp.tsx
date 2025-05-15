@@ -68,13 +68,13 @@ const OnrampPage = () => {
       <SidebarNav />
       
       <div className="flex-1 ml-[256px]">
-        {/* Use fixed vertical padding and ensure the content fills the space between */}
-        <div className="px-[56px] py-[40px] flex flex-col h-[calc(100vh-80px)]">
+        {/* Use fixed vertical padding for top and bottom */}
+        <div className="px-[56px] py-[40px] flex flex-col h-full">
           <OnrampHeader />
 
-          {/* Main container takes full height minus header and paddings */}
-          <main className="flex flex-1 gap-6 mt-4">
-            {/* Left container - Ensure it extends to full height */}
+          {/* Main container with balanced spacing */}
+          <main className="flex gap-6 mt-4" style={{ height: 'calc(100% - 50px - 40px)' }}>
+            {/* Left container - Height calculated to match top spacing */}
             <div className="bg-white/5 rounded-xl shadow-sm p-6 flex flex-col max-w-[640px] border border-white/[0.16] w-full h-full">
               <OnrampStepContent 
                 currentStep={currentStep} 
@@ -99,7 +99,7 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Right container - Ensure it extends to full height */}
+            {/* Right container - Height calculated to match top spacing */}
             <div className="bg-white/5 rounded-xl shadow-sm p-6 flex flex-col w-[400px] border border-white/[0.16] h-full">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
