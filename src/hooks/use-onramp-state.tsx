@@ -78,6 +78,7 @@ export const useOnrampState = () => {
         // Make sure all fields in step 1 are filled and wallet address is valid
         // The wallet must be connected to proceed
         return !!selectedAsset && 
+               !!recipientAddress && // Require a non-empty recipient address
                isWalletAddressValid && 
                parseFloat(amount) >= 10 && 
                isConnected; // Must have wallet connected
@@ -93,6 +94,7 @@ export const useOnrampState = () => {
     if (stepIndex <= currentStep || 
         (stepIndex === 1 && 
          !!selectedAsset && 
+         !!recipientAddress && // Require a non-empty recipient address
          isWalletAddressValid && 
          parseFloat(amount) >= 10 &&
          isConnected)) {
