@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowDownUp, LayoutDashboard, Link as LinkIcon, User, Github, ExternalLink, BookOpen } from 'lucide-react';
@@ -52,8 +53,8 @@ const SidebarNav = () => {
   
   return (
     <aside className="bg-[#121212] hidden md:flex flex-col h-screen w-[256px] fixed left-0 top-0">
-      {/* Logo */}
-      <div className="pt-[56px] pl-[40px]">
+      {/* Logo - reduced pt from 56px to 40px to move it up */}
+      <div className="pt-[40px] pl-[40px]">
         <div 
           className="text-white text-2xl font-semibold flex items-center cursor-pointer" 
           onClick={handleLogoClick}
@@ -66,8 +67,8 @@ const SidebarNav = () => {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="mt-8 flex-1">
+      {/* Navigation - reduced mt from 8 to align with the logo adjustment */}
+      <nav className="mt-6 flex-1">
         <ul className="space-y-1">
           {menuItems.map(item => (
             <li key={item.title}>
