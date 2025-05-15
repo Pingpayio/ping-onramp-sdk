@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Wallet } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface OnrampNavigationProps {
@@ -10,7 +10,8 @@ interface OnrampNavigationProps {
   steps: string[];
   handleBack: () => void;
   handleContinue: () => void;
-  canContinue: () => boolean; // Updated to accept a function that returns a boolean
+  canContinue: () => boolean;
+  isWalletConnected?: boolean; // New prop to track wallet connection state
 }
 
 const OnrampNavigation = ({
@@ -18,16 +19,25 @@ const OnrampNavigation = ({
   steps,
   handleBack,
   handleContinue,
-  canContinue
+  canContinue,
+  isWalletConnected = false // Default to false if not provided
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
   
-  // Function to determine button text based on current step
+  // Function to determine button text based on current step and wallet connection
   const getButtonText = () => {
     if (currentStep === 0) {
-      return "Start Onramp";
+      return isWalletConnected ? "Start Onramp" : "Connect Wallet";
     }
     return "Continue to Payment";
+  };
+
+  // Get button icon based on wallet connection status
+  const getButtonIcon = () => {
+    if (currentStep === 0 && !isWalletConnected) {
+      return <Wallet className="h-4 w-4" />;
+    }
+    return null;
   };
   
   return (
@@ -52,8 +62,9 @@ const OnrampNavigation = ({
         <Button
           variant="outline"
           onClick={handleContinue}
-          disabled={!canContinue()} // Call the function to get the boolean value
-          withArrow
+          disabled={!canContinue()}
+          withArrow={isWalletConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
+          icon={getButtonIcon()}
           className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${isMobile ? "w-1/2" : ""}`}
         >
           {getButtonText()}
