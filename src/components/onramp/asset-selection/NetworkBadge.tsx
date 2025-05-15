@@ -68,12 +68,12 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
               </span>
             </div>
           </SelectTrigger>
-          <SelectContent className="bg-[#303030] border-none rounded-lg overflow-hidden">
+          <SelectContent className="bg-[#303030] border-none rounded-lg overflow-hidden p-0">
             {networks.map((network) => (
               <SelectItem 
                 key={network.id} 
                 value={network.id} 
-                className="text-white/60 hover:text-white hover:bg-white/5 cursor-pointer transition-colors py-3 focus:bg-white/5 focus:text-white"
+                className="text-white/60 hover:text-white hover:bg-white/5 cursor-pointer transition-colors py-3 focus:bg-white/5 focus:text-white px-3"
               >
                 <div className="flex items-center">
                   <div className="bg-secondary rounded-full p-1.5 mr-2">
