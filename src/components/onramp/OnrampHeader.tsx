@@ -25,7 +25,7 @@ const OnrampHeader = () => {
   return (
     <header className="flex justify-between items-start h-[50px]">
       <div className="flex items-start">
-        <h1 className="text-[30px] font-normal text-white leading-none flex items-center mt-[-8px]">Ping Onramp</h1>
+        <h1 className="text-[30px] font-normal text-white leading-none flex items-center mt-[-16px]">Ping Onramp</h1>
       </div>
       
       {!isConnected ? (
