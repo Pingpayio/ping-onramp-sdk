@@ -73,7 +73,7 @@ const AssetList = ({
         <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
         <CommandInput 
           placeholder="Search for an asset..." 
-          className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-white/40 text-white/60"
+          className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-white/40 text-white/80"
           value={searchQuery}
           onValueChange={setSearchQuery}
         />
@@ -86,7 +86,7 @@ const AssetList = ({
               key={asset.symbol}
               value={asset.name}
               onSelect={() => onAssetSelect(asset.symbol)}
-              className="cursor-pointer hover:bg-white/5 transition-colors py-2.5"
+              className="cursor-pointer hover:bg-white/5 transition-colors py-3"
             >
               <div className="flex items-center w-full">
                 <div className="bg-secondary rounded-full p-1.5 mr-2">
@@ -99,8 +99,8 @@ const AssetList = ({
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-medium text-white text-sm">{asset.name}</span>
-                  <span className="text-xs text-white/40">{asset.symbol}</span>
+                  <span className="font-medium text-white text-base">{asset.name}</span>
+                  <span className="text-xs text-gray-400">{asset.symbol}</span>
                 </div>
               </div>
             </CommandItem>
