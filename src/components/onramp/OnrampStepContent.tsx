@@ -72,11 +72,19 @@ const OnrampStepContent = ({
         );
       case 1:
         return (
-          <TransactionProgress 
-            asset={selectedAsset}
-            amount={amount}
-            walletAddress={walletAddress}
-          />
+          <div className="flex flex-col items-center h-full">
+            {/* Title section - same as in AssetSelection */}
+            <div className="flex items-center gap-2 mb-4 w-full">
+              <h2 className="text-xl font-medium text-white">Transaction Progress</h2>
+            </div>
+            
+            {/* Transaction progress container with same height as asset selection form */}
+            <TransactionProgress 
+              asset={selectedAsset}
+              amount={amount}
+              walletAddress={walletAddress}
+            />
+          </div>
         );
       default:
         return null;

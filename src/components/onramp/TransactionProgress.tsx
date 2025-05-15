@@ -33,7 +33,7 @@ const TransactionProgress = ({
   const finalTxHash = generateTxHash('0x9c');
 
   return (
-    <div className="flex flex-col space-y-4 w-full max-w-md mx-auto">
+    <div className="w-full space-y-3">
       {/* Progress bar */}
       <TransactionProgressBar progress={progress} />
       
