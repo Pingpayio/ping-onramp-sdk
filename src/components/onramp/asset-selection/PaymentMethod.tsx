@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Select,
   SelectContent,
@@ -18,7 +18,14 @@ const PaymentMethod = ({
   selectedMethod = "card", 
   onMethodSelect = () => {} 
 }: PaymentMethodProps) => {
+  const [currentMethod, setCurrentMethod] = useState(selectedMethod);
+  
+  useEffect(() => {
+    setCurrentMethod(selectedMethod);
+  }, [selectedMethod]);
+
   const handleValueChange = (value: string) => {
+    setCurrentMethod(value);
     onMethodSelect(value);
   };
 
@@ -39,7 +46,7 @@ const PaymentMethod = ({
   return (
     <div className="flex flex-col">
       <label className="text-sm text-white mb-2">Payment Method</label>
-      <Select defaultValue={selectedMethod} onValueChange={handleValueChange}>
+      <Select value={currentMethod} onValueChange={handleValueChange}>
         <SelectTrigger 
           className="rounded-lg hover:shadow-sm transition-shadow bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[42px] 
           text-white/60 flex items-center px-3
@@ -56,7 +63,7 @@ const PaymentMethod = ({
         </SelectContent>
       </Select>
       <p className="text-xs text-white/40 mt-1">
-        {getMethodSubtext(selectedMethod)}
+        {getMethodSubtext(currentMethod)}
       </p>
     </div>
   );
