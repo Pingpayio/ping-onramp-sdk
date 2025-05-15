@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { ChevronDown, Wifi } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import { 
   Select,
   SelectContent,
@@ -20,23 +20,75 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
   const getNetworkInfo = (asset: string) => {
     switch (asset) {
       case 'BTC':
-        return { name: 'Bitcoin Network', networks: [{ id: 'bitcoin', name: 'Bitcoin Network' }] };
+        return { 
+          name: 'Bitcoin Network', 
+          networks: [
+            { 
+              id: 'bitcoin', 
+              name: 'Bitcoin Network',
+              logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=029'
+            }
+          ] 
+        };
       case 'ETH':
-        return { name: 'Ethereum Network', networks: [{ id: 'ethereum', name: 'Ethereum Network' }] };
+        return { 
+          name: 'Ethereum Network', 
+          networks: [
+            { 
+              id: 'ethereum', 
+              name: 'Ethereum Network',
+              logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=029'
+            }
+          ] 
+        };
       case 'NEAR':
-        return { name: 'NEAR Protocol', networks: [{ id: 'near', name: 'NEAR Protocol' }] };
+        return { 
+          name: 'NEAR Protocol', 
+          networks: [
+            { 
+              id: 'near', 
+              name: 'NEAR Protocol',
+              logo: 'https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029'
+            }
+          ] 
+        };
       case 'USDC':
         return { 
           name: 'Multiple Networks', 
           networks: [
-            { id: 'ethereum', name: 'Ethereum Network' },
-            { id: 'polygon', name: 'Polygon Network' },
-            { id: 'solana', name: 'Solana Network' },
-            { id: 'near', name: 'NEAR Protocol' }
+            { 
+              id: 'ethereum', 
+              name: 'Ethereum Network',
+              logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=029'
+            },
+            { 
+              id: 'polygon', 
+              name: 'Polygon Network',
+              logo: 'https://cryptologos.cc/logos/polygon-matic-logo.svg?v=029'
+            },
+            { 
+              id: 'solana', 
+              name: 'Solana Network',
+              logo: 'https://cryptologos.cc/logos/solana-sol-logo.svg?v=029'
+            },
+            { 
+              id: 'near', 
+              name: 'NEAR Protocol',
+              logo: 'https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029'
+            }
           ]
         };
       default:
-        return { name: 'Unknown Network', networks: [{ id: 'unknown', name: 'Unknown Network' }] };
+        return { 
+          name: 'Unknown Network', 
+          networks: [
+            { 
+              id: 'unknown', 
+              name: 'Unknown Network',
+              logo: 'https://cryptologos.cc/logos/generic-crypto-logo.svg?v=029'
+            }
+          ] 
+        };
     }
   };
 
@@ -52,6 +104,12 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
     return network ? network.name : 'Select Network';
   };
 
+  // Helper to get network logo from id
+  const getNetworkLogo = (networkId: string) => {
+    const network = networks.find(n => n.id === networkId);
+    return network ? network.logo : '';
+  };
+
   return (
     <div className="flex flex-col">
       <label className="text-sm text-white mb-1">Network</label>
@@ -65,8 +123,12 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70"
           >
             <div className="flex items-center">
-              <div className="bg-secondary rounded-full p-1.5 mr-2">
-                <Wifi className="w-3.5 h-3.5 text-white" />
+              <div className="h-5 w-5 rounded-full mr-2 overflow-hidden flex items-center justify-center">
+                <img 
+                  src={getNetworkLogo(selectedNetwork)} 
+                  alt={getNetworkDisplayName(selectedNetwork)} 
+                  className="h-4 w-4 object-contain" 
+                />
               </div>
               <span className="font-normal text-white/60 text-sm">
                 {getNetworkDisplayName(selectedNetwork)}
@@ -82,7 +144,13 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
                 className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5"
               >
                 <div className="flex items-center gap-2">
-                  <Wifi className="h-3.5 w-3.5 text-white/60" />
+                  <div className="h-5 w-5 rounded-full overflow-hidden flex items-center justify-center">
+                    <img 
+                      src={network.logo} 
+                      alt={network.name} 
+                      className="h-4 w-4 object-contain" 
+                    />
+                  </div>
                   <span>{network.name}</span>
                 </div>
               </SelectItem>
@@ -92,8 +160,12 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
       ) : (
         <div className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between hover:border-[#AF9EF9]/70">
           <div className="flex items-center">
-            <div className="bg-secondary rounded-full p-1.5 mr-2">
-              <Wifi className="w-3.5 h-3.5 text-white" />
+            <div className="h-5 w-5 rounded-full mr-2 overflow-hidden flex items-center justify-center">
+              <img 
+                src={networks[0].logo} 
+                alt={networks[0].name} 
+                className="h-4 w-4 object-contain" 
+              />
             </div>
             <span className="text-sm font-normal text-white/60">{networks[0].name}</span>
           </div>
