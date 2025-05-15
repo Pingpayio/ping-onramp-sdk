@@ -6,6 +6,7 @@ import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import TransactionCompletionMessage from './transaction/TransactionCompletionMessage';
+import OnrampNavigation from './OnrampNavigation';
 
 interface TransactionProgressProps {
   asset: string | null;
@@ -65,6 +66,18 @@ const TransactionProgress = ({
         asset={asset} 
         walletAddress={walletAddress}
         isCompleted={isCompleted}
+      />
+      
+      {/* Navigation buttons */}
+      <OnrampNavigation
+        currentStep={2} // Use a fixed step since we're in the transaction process
+        steps={[]}
+        handleBack={() => {}}
+        handleContinue={() => {}}
+        canContinue={() => true}
+        isProcessingTransaction={true}
+        transactionCompleted={isCompleted}
+        finalTxHash={finalTxHash}
       />
       
       {/* Status message based on transaction stage */}

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
@@ -13,6 +12,8 @@ interface OnrampNavigationProps {
   handleContinue: () => void;
   canContinue: () => boolean;
   isProcessingTransaction?: boolean;
+  transactionCompleted?: boolean;
+  finalTxHash?: string;
 }
 
 const OnrampNavigation = ({
@@ -21,7 +22,9 @@ const OnrampNavigation = ({
   handleBack,
   handleContinue,
   canContinue,
-  isProcessingTransaction = false
+  isProcessingTransaction = false,
+  transactionCompleted = false,
+  finalTxHash = ''
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
   const { isConnected, connectWallet } = useWallet();
@@ -56,10 +59,15 @@ const OnrampNavigation = ({
   
   // Open blockchain explorer in a new tab
   const openExplorer = () => {
-    window.open('https://explorer.near.org', '_blank');
+    const baseExplorerUrl = 'https://explorer.near.org';
+    // If we have a transaction hash and the transaction is completed, link directly to it
+    const explorerUrl = finalTxHash && transactionCompleted 
+      ? `${baseExplorerUrl}/transactions/${finalTxHash}`
+      : baseExplorerUrl;
+    window.open(explorerUrl, '_blank');
   };
   
-  // Don't show navigation buttons during transaction processing
+  // Show transaction navigation buttons
   if (isProcessingTransaction) {
     return (
       <div className="flex justify-between w-full gap-4">
@@ -68,6 +76,7 @@ const OnrampNavigation = ({
             variant="outline"
             icon={<Home className="h-4 w-4" />}
             className="rounded-full w-full bg-white text-[#3D315E] hover:bg-white/90 border-none"
+            disabled={!transactionCompleted}
           >
             Return Home
           </Button>
@@ -78,6 +87,7 @@ const OnrampNavigation = ({
           onClick={openExplorer} 
           icon={<ExternalLink className="h-4 w-4" />}
           className="rounded-full w-full bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 border-none"
+          disabled={!transactionCompleted}
         >
           View on Explorer
         </Button>
