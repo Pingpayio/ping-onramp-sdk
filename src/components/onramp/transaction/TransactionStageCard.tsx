@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -31,44 +30,44 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
         return {
           icon: <Clock className="h-8 w-8 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
       case 'querying':
         return {
           icon: <ArrowRight className="h-8 w-8 text-blue-400" />,
           color: 'bg-white/5 border-blue-200/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
       case 'signing':
         return {
           icon: <Wallet className="h-8 w-8 text-[#AF9EF9]" />,
           color: 'bg-white/5 border-[#AF9EF9]/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
       case 'sending':
       case 'swap':
         return {
           icon: <ArrowRight className="h-8 w-8 text-blue-400 rotate-45" />,
           color: 'bg-white/5 border-blue-200/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
       case 'completed':
         return {
           icon: <CheckCircle2 className="h-8 w-8 text-green-500" />,
           color: 'bg-white/5 border-green-200/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
       case 'failed':
         return {
           icon: <CircleX className="h-8 w-8 text-red-500" />,
           color: 'bg-white/5 border-red-200/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
       default:
         return {
           icon: <Clock className="h-8 w-8 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
-          textColor: 'text-white/80'
+          textColor: 'text-white'
         };
     }
   };
@@ -167,4 +166,3 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
 };
 
 export default TransactionStageCard;
-
