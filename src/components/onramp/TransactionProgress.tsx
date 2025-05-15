@@ -76,28 +76,7 @@ const TransactionProgress = ({
         )}
       </div>
       
-      {/* Action buttons - fixed to bottom of container */}
-      <div className="mt-auto pt-4 grid grid-cols-2 gap-3">
-        <Button
-          variant="default"
-          className="bg-white text-[#3D315E] hover:bg-white rounded-[9999px] flex items-center gap-2"
-          onClick={() => navigate('/')}
-          disabled={!isCompleted}
-        >
-          <Home className="h-4 w-4" />
-          Return Home
-        </Button>
-        
-        <Button
-          variant="default"
-          className="bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2] rounded-[9999px] flex items-center gap-2"
-          onClick={() => window.open(`https://explorer.near.org/transactions/${finalTxHash}`, '_blank')}
-          disabled={!isCompleted}
-        >
-          <ExternalLink className="h-4 w-4" />
-          View on Explorer
-        </Button>
-      </div>
+      {/* The action buttons have been removed from here */}
     </div>
   );
 };
