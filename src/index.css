@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -122,6 +121,14 @@
   /* Fix popovers and dropdowns on mobile */
   .popover-content, .dropdown-content {
     @apply max-w-[calc(100vw-24px)] !important;
+    transform: translateY(5px) !important;
+  }
+  
+  /* Force dropdowns and popups to appear below their triggers */
+  [data-radix-popper-content-wrapper] {
+    transform: translate3d(0, 5px, 0) !important;
+    top: 100% !important;
+    bottom: auto !important;
   }
   
   /* Properly space content below the fixed mobile topbar */
@@ -132,6 +139,19 @@
   /* Prevent double scrollbars */
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure dropdown lists always appear below their triggers */
+  [role="listbox"],
+  [role="menu"] {
+    top: 100% !important;
+    bottom: auto !important;
+  }
+  
+  /* Improve modal positioning on mobile */
+  [role="dialog"] {
+    max-height: 90vh;
+    margin-top: 5vh;
   }
 }
 
@@ -164,6 +184,13 @@
   .container {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
+  }
+  
+  /* Improve dropdown positioning on small screens */
+  [data-radix-popper-content-wrapper] {
+    max-width: calc(100vw - 16px) !important;
+    width: calc(100vw - 16px) !important;
+    left: 8px !important;
   }
 }
 
@@ -212,4 +239,17 @@
   50% {
     opacity: 0.7;
   }
+}
+
+/* Add z-index management for dropdowns and popovers */
+.radix-dropdown,
+.radix-popover,
+.radix-select {
+  z-index: 50;
+}
+
+/* Ensure dropdowns are fully visible */
+[data-radix-popper-content-wrapper] {
+  max-height: 80vh !important;
+  overflow-y: auto !important;
 }

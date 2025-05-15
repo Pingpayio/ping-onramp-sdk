@@ -82,6 +82,7 @@ const SelectContent = React.forwardRef<
       align="start"
       alignOffset={0}
       avoidCollisions={false}
+      side="bottom"
       style={{ width: 'var(--radix-select-trigger-width)' }}
     >
       <SelectScrollUpButton />
