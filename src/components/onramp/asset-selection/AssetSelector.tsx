@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import AssetList from './AssetList';
+import { assets } from '@/data/assets';
 
 interface AssetSelectorProps {
   selectedAsset: string | null;
@@ -32,17 +33,8 @@ const AssetSelector = ({
 
   const getAssetLogoUrl = (symbol: string | null) => {
     if (!symbol) return '';
-    return `/lovable-uploads/${
-      symbol === "BTC"
-        ? "69cbddc8-b347-4890-9211-c65d570c867f.png"
-        : symbol === "ETH"
-        ? "7f88aeb4-86f7-4fbf-a3d6-25d9625fdb5d.png"
-        : symbol === "NEAR"
-        ? "f655448d-7787-4f68-bd65-c92b438f5d1c.png"
-        : symbol === "USDC"
-        ? "a984f844-0031-4fc1-8792-d810f6bbd335.png"
-        : "2a3c01e1-3a77-414b-959d-e162d59ba6b5.png"
-    }`;
+    const asset = assets.find(a => a.symbol === symbol);
+    return asset ? asset.logoUrl : '';
   };
 
   return (
@@ -59,7 +51,7 @@ const AssetSelector = ({
             {selectedAsset ? (
               <>
                 <div className="bg-secondary rounded-full p-1.5 mr-2">
-                  <div className="w-3.5 h-3.5 rounded-full overflow-hidden">
+                  <div className="w-3.5 h-3.5 rounded-full overflow-hidden flex items-center justify-center">
                     <img
                       src={getAssetLogoUrl(selectedAsset)}
                       alt={selectedAsset}
@@ -78,7 +70,7 @@ const AssetSelector = ({
           <ChevronDown className="h-4 w-4 text-white/60" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="p-0 border border-[#AF9EF9] bg-[#303030]">
+      <PopoverContent className="p-0 border border-[#AF9EF9] bg-[#303030] z-50">
         <AssetList
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
