@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TransactionStatus from '@/components/TransactionStatus';
@@ -92,7 +91,10 @@ const Transaction = () => {
         />
       </div>
       
-      <TransactionActionButtons currentStage={currentStage} />
+      <TransactionActionButtons 
+        currentStage={currentStage}
+        txHash={finalTxHash}
+      />
     </TransactionContainer>
   );
 };
