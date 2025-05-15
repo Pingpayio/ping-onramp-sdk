@@ -8,11 +8,12 @@ import SidebarNav from '@/components/SidebarNav';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { History } from 'lucide-react';
 
-// Sample history data - in a real app, this would come from an API or state
+// Sample history data with added network information
 const sampleHistory = [{
   id: 1,
   date: '2025-05-10',
   asset: 'BTC',
+  network: 'Bitcoin Network',
   amount: '0.015',
   fiat: '$500',
   status: 'Completed'
@@ -20,6 +21,7 @@ const sampleHistory = [{
   id: 2,
   date: '2025-05-05',
   asset: 'ETH',
+  network: 'Ethereum Network',
   amount: '0.35',
   fiat: '$750',
   status: 'Completed'
@@ -27,6 +29,7 @@ const sampleHistory = [{
   id: 3,
   date: '2025-04-25',
   asset: 'NEAR',
+  network: 'NEAR Protocol',
   amount: '125',
   fiat: '$250',
   status: 'Completed'
@@ -34,6 +37,7 @@ const sampleHistory = [{
   id: 4,
   date: '2025-04-18',
   asset: 'USDC',
+  network: 'Ethereum Network',
   amount: '500',
   fiat: '$500',
   status: 'Failed'
@@ -119,7 +123,14 @@ const OnrampPage = () => {
                   <TableBody>
                     {sampleHistory.map(tx => <TableRow key={tx.id} className="border-white/10">
                         <TableCell className="text-white/70 text-xs py-2">{tx.date}</TableCell>
-                        <TableCell className="text-white/70 text-xs py-2">{tx.asset}</TableCell>
+                        <TableCell className="text-white/70 text-xs py-2">
+                          <div>
+                            <div className="text-white">
+                              {tx.asset}
+                            </div>
+                            <div className="text-white/40 text-[10px]">{tx.network}</div>
+                          </div>
+                        </TableCell>
                         <TableCell className="text-white/70 text-xs py-2 text-right">
                           <div>
                             <div className={tx.status === 'Completed' ? 'text-green-400' : 'text-red-400'}>
