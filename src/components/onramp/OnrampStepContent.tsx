@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
@@ -20,7 +19,7 @@ interface OnrampStepContentProps {
   onOnrampSelect: (provider: string) => void;
   handleBack: () => void;
   handleContinue: () => void;
-  canContinue: () => boolean; // Ensuring this is typed as a function
+  canContinue: () => boolean;
   cardNumber?: string;
   onCardNumberChange?: (cardNumber: string) => void;
   selectedCurrency?: string;
@@ -94,12 +93,13 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Content section with consistent spacing between components */}
-      <div className="flex-grow overflow-auto min-h-0 space-y-4">
+      {/* Content section with improved spacing between components */}
+      <div className="flex-grow overflow-auto min-h-0">
         {renderCurrentStep()}
       </div>
       
-      <div className="mt-4">
+      {/* Keeping navigation buttons position fixed */}
+      <div className="mt-auto pt-5">
         <OnrampNavigation
           currentStep={currentStep}
           steps={steps}
