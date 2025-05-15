@@ -1,8 +1,7 @@
-
 import { ToasterToast } from "./toast-types";
 
 export const TOAST_LIMIT = 5;
-export const TOAST_REMOVE_DELAY = 1000000;
+export const TOAST_REMOVE_DELAY = 3000; // Reduced from 1000000 to 3000ms (3 seconds)
 
 export const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
