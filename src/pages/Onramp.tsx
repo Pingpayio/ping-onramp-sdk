@@ -71,8 +71,8 @@ const OnrampPage = () => {
           <OnrampHeader />
 
           <main className="flex-1 flex gap-6 overflow-hidden mt-4">
-            {/* Left container - Added pb-4 to extend padding at the bottom */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 pb-10 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
+            {/* Left container - Changed pb-10 to pb-6 for more consistent spacing */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 flex-1 overflow-hidden flex flex-col max-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
@@ -96,8 +96,8 @@ const OnrampPage = () => {
               />
             </div>
             
-            {/* Right container - Also added pb-4 to extend padding at the bottom */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-6 pb-10 overflow-hidden flex flex-col w-[400px] border border-white/[0.16]">
+            {/* Right container - Also changed pb-10 to pb-6 for consistency */}
+            <div className="bg-white/5 rounded-xl shadow-sm p-6 overflow-hidden flex flex-col w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
