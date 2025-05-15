@@ -26,19 +26,19 @@ const StatusCard: React.FC<StatusCardProps> = ({
   // Define status configurations with fallback to 'pending' if status is invalid
   const statusConfig = {
     pending: {
-      icon: <Clock className="h-5 w-5 text-yellow-500" />,
-      color: 'bg-white/5 border-white/20',
-      textColor: 'text-white'
+      icon: <Clock className="h-6 w-6 text-yellow-500" />,
+      color: 'bg-yellow-50 border-yellow-200',
+      textColor: 'text-yellow-700'
     },
     completed: {
-      icon: <CheckCircle2 className="h-5 w-5 text-green-500" />,
-      color: 'bg-white/5 border-white/20',
-      textColor: 'text-white'
+      icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
+      color: 'bg-green-50 border-green-200',
+      textColor: 'text-green-700'
     },
     failed: {
-      icon: <AlertCircle className="h-5 w-5 text-red-500" />,
-      color: 'bg-white/5 border-white/20',
-      textColor: 'text-white'
+      icon: <AlertCircle className="h-6 w-6 text-red-500" />,
+      color: 'bg-red-50 border-red-200',
+      textColor: 'text-red-700'
     }
   };
 
@@ -70,51 +70,42 @@ const StatusCard: React.FC<StatusCardProps> = ({
     failed: 'There was an issue processing your transaction.'
   };
 
-  // Determine if we should show transaction hash information for this stage
-  const showTxDetails = () => {
-    if ((stage === 'payment' || stage === 'deposit') && onboardingTxHash) {
-      return {
-        label: 'Payment Transaction:',
-        hash: onboardingTxHash
-      };
-    } else if ((stage === 'swap' || stage === 'sending') && swapTxHash) {
-      return {
-        label: 'Swap Transaction:',
-        hash: swapTxHash
-      };
-    } else if (stage === 'completed' && txHash) {
-      return {
-        label: 'Transaction Hash:',
-        hash: txHash
-      };
-    }
-    return null;
-  };
-
-  const txDetails = showTxDetails();
-
   return (
-    <div className={cn("border rounded-lg p-5 min-h-[160px]", config.color)}>
+    <div className={cn("border rounded-lg p-5 bg-white/5 border-white/20")}>
       <div className="flex items-start">
-        {/* Icon container with consistent size and position */}
-        <div className="mr-3 mt-1 flex-shrink-0 w-6 h-6 flex items-center justify-center">
-          {config.icon}
-        </div>
-        
-        <div className="flex-1">
-          <h3 className="font-medium text-base mb-1 text-white">
+        <div className="mr-3 mt-1">{config.icon}</div>
+        <div>
+          <h3 className="font-medium mb-1 text-white">
             {stage && stageLabels[stage] || title}
           </h3>
-          <p className="text-sm text-white/60 min-h-[40px]">
+          <p className="text-sm text-white/60">
             {stage && stageDescriptions[stage] || description}
           </p>
           
-          {/* Transaction hash information with consistent styling */}
-          {txDetails && (
+          {/* Show appropriate transaction hash based on stage */}
+          {(stage === 'payment' || stage === 'deposit') && onboardingTxHash && (
             <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">{txDetails.label}</p>
+              <p className="text-xs text-white/60 mb-1">Payment Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {txDetails.hash}
+                {onboardingTxHash}
+              </div>
+            </div>
+          )}
+          
+          {(stage === 'swap' || stage === 'sending') && swapTxHash && (
+            <div className="mt-3">
+              <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+                {swapTxHash}
+              </div>
+            </div>
+          )}
+          
+          {stage === 'completed' && txHash && (
+            <div className="mt-3">
+              <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
+              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+                {txHash}
               </div>
             </div>
           )}

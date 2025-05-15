@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -29,44 +28,44 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
       case 'deposit':
       case 'payment':
         return {
-          icon: <Clock className="h-5 w-5 text-yellow-500" />,
+          icon: <Clock className="h-6 w-6 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
           textColor: 'text-white/80'
         };
       case 'querying':
         return {
-          icon: <ArrowRight className="h-5 w-5 text-blue-400" />,
+          icon: <ArrowRight className="h-6 w-6 text-blue-400" />,
           color: 'bg-white/5 border-blue-200/20',
           textColor: 'text-white/80'
         };
       case 'signing':
         return {
-          icon: <Wallet className="h-5 w-5 text-[#AF9EF9]" />,
+          icon: <Wallet className="h-6 w-6 text-[#AF9EF9]" />,
           color: 'bg-white/5 border-[#AF9EF9]/20',
           textColor: 'text-white/80'
         };
       case 'sending':
       case 'swap':
         return {
-          icon: <ArrowRight className="h-5 w-5 text-blue-400 rotate-45" />,
+          icon: <ArrowRight className="h-6 w-6 text-blue-400 rotate-45" />,
           color: 'bg-white/5 border-blue-200/20',
           textColor: 'text-white/80'
         };
       case 'completed':
         return {
-          icon: <CheckCircle2 className="h-5 w-5 text-green-500" />,
+          icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
           color: 'bg-white/5 border-green-200/20',
           textColor: 'text-white/80'
         };
       case 'failed':
         return {
-          icon: <CircleX className="h-5 w-5 text-red-500" />,
+          icon: <CircleX className="h-6 w-6 text-red-500" />,
           color: 'bg-white/5 border-red-200/20',
           textColor: 'text-white/80'
         };
       default:
         return {
-          icon: <Clock className="h-5 w-5 text-yellow-500" />,
+          icon: <Clock className="h-6 w-6 text-yellow-500" />,
           color: 'bg-white/5 border-yellow-200/20',
           textColor: 'text-white/80'
         };
@@ -111,52 +110,42 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
     }
   };
 
-  // Determine if we should show transaction hash information for this stage
-  const showTxDetails = () => {
-    if ((currentStage === 'deposit' || currentStage === 'payment') && onboardingTxHash) {
-      return {
-        label: 'Deposit Transaction:',
-        hash: onboardingTxHash
-      };
-    } else if ((currentStage === 'sending' || currentStage === 'swap') && swapTxHash) {
-      return {
-        label: 'Swap Transaction:',
-        hash: swapTxHash
-      };
-    } else if (currentStage === 'completed' && finalTxHash) {
-      return {
-        label: 'Transaction Hash:',
-        hash: finalTxHash
-      };
-    }
-    return null;
-  };
-
-  const txDetails = showTxDetails();
-
   return (
-    <div className={cn("border rounded-lg p-5 min-h-[160px]", config.color)}>
+    <div className={cn("border rounded-lg p-5", config.color)}>
       <div className="flex items-start">
-        {/* Icon container with consistent size and position */}
-        <div className="mr-3 mt-1 flex-shrink-0 w-6 h-6 flex items-center justify-center">
-          {config.icon}
-        </div>
-        
-        {/* Content with consistent text sizes and spacing */}
+        <div className="mr-3 mt-1">{config.icon}</div>
         <div className="flex-1">
-          <h3 className={cn("font-medium text-base mb-1", config.textColor)}>
+          <h3 className={cn("font-medium mb-1", config.textColor)}>
             {stageLabels[currentStage]}
           </h3>
-          <p className="text-sm text-white/60 min-h-[40px]">
+          <p className="text-sm text-white/60">
             {getStageDescription()}
           </p>
           
-          {/* Transaction hash information with consistent styling */}
-          {txDetails && (
+          {/* Show appropriate transaction hash based on stage */}
+          {(currentStage === 'deposit' || currentStage === 'payment') && onboardingTxHash && (
             <div className="mt-3">
-              <p className="text-xs text-white/60 mb-1">{txDetails.label}</p>
+              <p className="text-xs text-white/60 mb-1">Deposit Transaction:</p>
               <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-                {txDetails.hash}
+                {onboardingTxHash}
+              </div>
+            </div>
+          )}
+          
+          {(currentStage === 'sending' || currentStage === 'swap') && swapTxHash && (
+            <div className="mt-3">
+              <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+                {swapTxHash}
+              </div>
+            </div>
+          )}
+          
+          {currentStage === 'completed' && finalTxHash && (
+            <div className="mt-3 space-y-2">
+              <p className="text-xs text-white/60 mb-1">Transaction Hash:</p>
+              <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+                {finalTxHash}
               </div>
             </div>
           )}
