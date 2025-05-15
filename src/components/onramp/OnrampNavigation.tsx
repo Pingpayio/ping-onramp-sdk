@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
-import { ArrowLeft, Wallet, Home } from 'lucide-react';
+import { ArrowLeft, Wallet, Home, ExternalLink } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useWallet } from '@/hooks/use-wallet-context';
 
@@ -54,15 +54,28 @@ const OnrampNavigation = ({
     }
   };
   
+  // Open blockchain explorer in a new tab
+  const openExplorer = () => {
+    window.open('https://explorer.near.org', '_blank');
+  };
+  
   // Don't show navigation buttons during transaction processing
   if (isProcessingTransaction) {
     return (
-      <div className="flex justify-center">
+      <div className="flex justify-between">
         <Link to="/">
           <Button variant="outline" icon={<Home className="h-4 w-4" />}>
             Return Home
           </Button>
         </Link>
+        
+        <Button 
+          variant="outline" 
+          onClick={openExplorer} 
+          icon={<ExternalLink className="h-4 w-4" />}
+        >
+          View on Explorer
+        </Button>
       </div>
     );
   }
