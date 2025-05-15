@@ -1,4 +1,3 @@
-
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
 import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
@@ -94,12 +93,12 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Content section takes available space and pushes navigation to bottom */}
-      <div className="flex-1 min-h-0 space-y-4 overflow-auto">
+      {/* Content section fills available space and pushes navigation to bottom */}
+      <div className="flex-1 overflow-auto space-y-4">
         {renderCurrentStep()}
       </div>
       
-      {/* Navigation section stays at bottom with fixed spacing */}
+      {/* Navigation stays at bottom with fixed spacing */}
       <div className="mt-auto pt-6">
         <OnrampNavigation
           currentStep={currentStep}
