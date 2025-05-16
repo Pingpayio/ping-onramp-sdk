@@ -50,7 +50,7 @@
   
   /* Improved menu icon hover and active states */
   .menu-icon {
-    color: #FFFFFF; /* Set default color to white */
+    color: #FFFFFF; /* Default white color */
     transition: color 0.2s ease-in-out;
   }
   
@@ -70,7 +70,7 @@
     color: #AF9EF9 !important;
   }
   
-  /* More specific rule to ensure X icon changes color only on interaction */
+  /* X icon specific styles - ensure white by default, purple on hover */
   button[aria-expanded="true"] svg {
     color: #FFFFFF; /* Default white color for X icon */
   }
