@@ -1,3 +1,4 @@
+
 /* Add padding-top for mobile content to account for the topbar */
 @media (max-width: 767px) {
   body {
@@ -28,11 +29,11 @@
   
   /* Ensure consistent spacing between trigger and dropdown */
   [data-radix-popover-content] {
-    margin-top: 5px !important;
+    margin-top: 4px !important;
   }
   
   [data-radix-select-content] {
-    margin-top: 5px !important;
+    margin-top: 4px !important;
   }
   
   /* Properly space content below the fixed mobile topbar */
