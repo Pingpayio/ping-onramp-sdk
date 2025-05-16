@@ -95,6 +95,14 @@
     background-color: rgba(0, 0, 0, 0.7) !important;
   }
   
+  /* Style for menu properly aligned with topbar */
+  [data-radix-dialog-content][data-side="right"] {
+    height: calc(100vh - 54px) !important;
+    top: 54px !important; 
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+  
   /* Ensure menu items have proper contrast */
   .mobile-menu-item {
     @apply min-h-[44px] flex items-center py-3 px-4;
