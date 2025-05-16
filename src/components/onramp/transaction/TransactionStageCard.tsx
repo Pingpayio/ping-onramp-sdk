@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -134,9 +135,16 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
     return null;
   };
 
+  // Determine if this stage should have a consistent height (signing, querying, sending)
+  const shouldHaveConsistentHeight = 
+    currentStage === 'signing' || 
+    currentStage === 'querying' || 
+    currentStage === 'sending';
+
   return (
     <div className={cn(
-      "border rounded-lg p-5 transition-all duration-500 ease-in-out min-h-[180px]", 
+      "border rounded-lg p-5 transition-all duration-500 ease-in-out",
+      shouldHaveConsistentHeight ? "min-h-[180px]" : "",
       config.color
     )}>
       <div className="flex items-start">
