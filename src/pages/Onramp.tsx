@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
@@ -78,7 +77,7 @@ const OnrampPage = () => {
       </div>
       
       <div className={`flex-1 ${isMobile ? 'ml-0 pt-[54px]' : 'md:ml-[256px]'}`}>
-        <div className={`p-4 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
+        <div className={`px-4 py-4 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
           <OnrampHeader />
 
           <main className={`flex-1 flex ${isMobile || window.innerWidth < 1280 ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 mt-4 ${isMobile ? 'pb-4' : ''} half-screen-optimize`}>
