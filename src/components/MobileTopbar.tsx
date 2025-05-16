@@ -1,6 +1,7 @@
+
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon } from 'lucide-react';
+import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -94,20 +95,22 @@ const MobileTopbar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - styled for mobile */}
+        {/* Connect Wallet Button - restyled for mobile with reduced height */}
         {!isConnected ? (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] py-1.5 px-4 md:py-2 md:px-5 rounded-full hover:opacity-90 transition-opacity h-9 text-sm font-medium"
+            className="bg-[#AB9FF2] text-[#3D315E] py-0.5 px-2 rounded-full hover:opacity-90 transition-opacity h-6 text-xs font-medium flex items-center gap-1"
             onClick={connectWallet}
           >
-            Connect
+            <Wallet className="h-3 w-3" />
+            <span>Connect</span>
           </Button>
         ) : (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] py-1.5 px-4 md:py-2 md:px-5 rounded-full hover:opacity-90 transition-opacity h-9 text-sm font-medium"
+            className="bg-[#AB9FF2] text-[#3D315E] py-0.5 px-2 rounded-full hover:opacity-90 transition-opacity h-6 text-xs font-medium flex items-center gap-1"
             onClick={copyAddress}
           >
-            {displayAddress}
+            <Wallet className="h-3 w-3" />
+            <span>{displayAddress}</span>
           </Button>
         )}
 
