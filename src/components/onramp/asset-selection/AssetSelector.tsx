@@ -82,9 +82,6 @@ const AssetSelector = ({
         alignOffset={0}
         avoidCollisions={false}
         sideOffset={5}
-        style={{
-          width: 'var(--radix-popover-trigger-width)'
-        }}
       >
         <AssetList
           searchQuery={searchQuery}

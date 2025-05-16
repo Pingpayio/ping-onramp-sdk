@@ -26,6 +26,7 @@
     z-index: 999 !important; /* Ensure dropdowns appear above other content */
     max-width: 100% !important;
     width: var(--radix-select-trigger-width) !important;
+    margin-top: 5px !important; /* Consistent spacing */
   }
   
   /* Asset selector specific styling for mobile */
