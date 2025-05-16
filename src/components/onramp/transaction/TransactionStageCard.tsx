@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -121,16 +120,6 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           </div>
         </div>
       );
-    } else if (currentStage === 'swap' && swapTxHash) {
-      // Only show swap transaction in the swap stage, not in sending stage
-      return (
-        <div className="mt-2">
-          <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
-          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
-            {swapTxHash}
-          </div>
-        </div>
-      );
     } else if (currentStage === 'completed' && finalTxHash) {
       return (
         <div className="mt-2">
@@ -156,7 +145,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           <h3 className={cn("font-medium mb-1 text-lg", config.textColor)}>
             {stageLabels[currentStage]}
           </h3>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-white/60 min-h-[40px]">
             {getStageDescription()}
           </p>
           
