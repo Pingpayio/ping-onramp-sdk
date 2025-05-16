@@ -49,7 +49,7 @@ html, body {
 /* Mobile optimizations */
 @media (max-width: 767px) {
   body {
-    padding-top: 4rem; /* Matches the height of the mobile topbar */
+    padding-top: 54px; /* Updated to match new mobile topbar height */
   }
   
   /* Improve scrolling on mobile */

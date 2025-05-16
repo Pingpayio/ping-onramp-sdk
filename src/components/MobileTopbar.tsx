@@ -67,36 +67,42 @@ const MobileTopbar = () => {
     }
   };
 
+  // Scroll to top function for logo click
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
-    <div className="md:hidden fixed top-0 left-0 w-full h-[64px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
+    <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
       {/* Logo */}
       <div className="flex items-center">
-        <RouterLink to="/">
+        <RouterLink to="/" onClick={scrollToTop}>
           <img 
             src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
             alt="PING" 
-            className="h-[28px]" 
+            className="h-6" 
           />
         </RouterLink>
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - simplified version for mobile */}
+        {/* Connect Wallet Button - styled to match desktop */}
         {!isConnected ? (
           <Button 
-            variant="gradient" 
-            size="sm"
+            className="bg-[#AB9FF2] text-[#3D315E] rounded-full h-8 py-1.5 px-4 hover:opacity-90 sm:py-2 sm:px-5"
             onClick={connectWallet}
-            className="h-9 px-3 text-sm"
+            size="sm"
           >
             Connect
           </Button>
         ) : (
           <Button 
-            variant="gradient" 
-            size="sm"
+            className="bg-[#AB9FF2] text-[#3D315E] rounded-full h-8 py-1.5 px-4 hover:opacity-90 sm:py-2 sm:px-5"
             onClick={copyAddress}
-            className="h-9 px-3 text-sm"
+            size="sm"
           >
             {displayAddress}
           </Button>
@@ -105,11 +111,11 @@ const MobileTopbar = () => {
         {/* Mobile Menu */}
         <Sheet>
           <SheetTrigger asChild>
-            <button className="p-2 text-white focus:outline-none min-h-[44px] min-w-[44px]">
+            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px]">
               <Menu size={24} />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0">
+          <SheetContent side="right" className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-40 pt-[54px]">
             <div className="flex flex-col h-full">
               {/* Menu header */}
               <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">

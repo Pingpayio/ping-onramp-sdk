@@ -6,6 +6,16 @@
   z-index: 50;
 }
 
+/* Mobile menu drawer should be below the header but above content */
+.mobile-menu-drawer {
+  z-index: 40;
+}
+
+/* Fixed mobile header should be on top */
+.mobile-topbar {
+  z-index: 50;
+}
+
 /* Ensure dropdowns are fully visible */
 [data-radix-popper-content-wrapper] {
   max-height: 80vh !important;

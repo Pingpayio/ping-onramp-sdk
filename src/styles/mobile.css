@@ -30,7 +30,7 @@
   
   /* Properly space content below the fixed mobile topbar */
   .pt-topbar {
-    padding-top: var(--topbar-height);
+    padding-top: 54px; /* Updated to match new topbar height */
   }
   
   /* Prevent double scrollbars */
@@ -49,6 +49,16 @@
   [role="dialog"] {
     max-height: 90vh;
     margin-top: 5vh;
+  }
+
+  /* Style for the connect wallet button on mobile */
+  .wallet-button-mobile {
+    @apply py-1.5 px-4 h-8 text-sm;
+  }
+  
+  /* Adjust header height in mobile menu */
+  .mobile-menu {
+    @apply pt-[54px];
   }
 }
 
