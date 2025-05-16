@@ -6,6 +6,7 @@ import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import TransactionCompletionMessage from './transaction/TransactionCompletionMessage';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionProgressProps {
   asset: string | null;
@@ -26,6 +27,8 @@ const TransactionProgress = ({
     error
   } = useTransactionProgress({ simulateProgress: isSimulated });
 
+  const isMobile = useIsMobile();
+
   // Generate mock transaction hashes
   const depositTxHash = generateTxHash('0x7a');
   const swapTxHash = generateTxHash('0x8b');
@@ -39,16 +42,18 @@ const TransactionProgress = ({
       {/* Progress bar */}
       <TransactionProgressBar progress={progress} />
       
-      {/* Current stage card */}
-      <TransactionStageCard 
-        currentStage={currentStage}
-        onboardingTxHash={depositTxHash}
-        swapTxHash={swapTxHash}
-        finalTxHash={finalTxHash}
-        asset={asset}
-        amount={amount}
-        walletAddress={walletAddress}
-      />
+      {/* Current stage card with consistent height */}
+      <div className={`${isMobile ? 'transaction-stage-mobile' : ''}`}>
+        <TransactionStageCard 
+          currentStage={currentStage}
+          onboardingTxHash={depositTxHash}
+          swapTxHash={swapTxHash}
+          finalTxHash={finalTxHash}
+          asset={asset}
+          amount={amount}
+          walletAddress={walletAddress}
+        />
+      </div>
       
       {/* Completion message (shown when completed) */}
       {isCompleted && (

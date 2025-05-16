@@ -1,8 +1,10 @@
+
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
 import TransactionProgress from '@/components/onramp/TransactionProgress';
 import OnrampNavigation from '@/components/onramp/OnrampNavigation';
 import { useIsMobile } from '@/hooks/use-mobile';
+
 interface OnrampStepContentProps {
   currentStep: number;
   steps: string[];
@@ -26,6 +28,7 @@ interface OnrampStepContentProps {
   isProcessingTransaction?: boolean;
   walletAddressError?: boolean;
 }
+
 const OnrampStepContent = ({
   currentStep,
   steps,
@@ -50,6 +53,7 @@ const OnrampStepContent = ({
   walletAddressError = false
 }: OnrampStepContentProps) => {
   const isMobile = useIsMobile();
+  
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
@@ -61,16 +65,19 @@ const OnrampStepContent = ({
               <h2 className="text-lg md:text-xl font-medium text-white">Processing Your Onramp</h2>
             </div>
             
-            {/* Transaction progress container with same height as asset selection form */}
-            <TransactionProgress asset={selectedAsset} amount={amount} walletAddress={walletAddress} />
+            {/* Transaction progress container with consistent height */}
+            <div className={`w-full ${isMobile ? 'onramp-progress-container' : ''}`}>
+              <TransactionProgress asset={selectedAsset} amount={amount} walletAddress={walletAddress} />
+            </div>
           </div>;
       default:
         return null;
     }
   };
+  
   return <div className="flex flex-col h-full">
-      {/* Content section with adjusted spacing for consistent appearance */}
-      <div className="flex-grow overflow-y-auto pb-1">
+      {/* Content section with consistent height and spacing */}
+      <div className={`flex-grow overflow-y-auto pb-1 ${isMobile ? 'onramp-step-content' : ''}`}>
         {renderCurrentStep()}
       </div>
       
@@ -80,4 +87,5 @@ const OnrampStepContent = ({
       </div>
     </div>;
 };
+
 export default OnrampStepContent;
