@@ -75,16 +75,13 @@ const AssetSelector = ({
       <PopoverContent 
         className={cn(
           "p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-full shadow-md",
-          isMobile && "popover-mobile-full asset-selector-popover"
+          isMobile && "asset-selector-popover"
         )}
         side="bottom"
         align="start"
         alignOffset={0}
-        avoidCollisions={false}
         sideOffset={5}
-        style={{
-          width: 'var(--radix-popover-trigger-width)'
-        }}
+        avoidCollisions={false}
       >
         <AssetList
           searchQuery={searchQuery}

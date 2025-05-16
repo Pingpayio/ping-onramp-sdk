@@ -25,6 +25,7 @@ const PopoverContent = React.forwardRef<
       )}
       style={{
         width: 'var(--radix-popover-trigger-width)',
+        maxWidth: 'var(--radix-popover-trigger-width)',
         ...style
       }}
       {...props}
