@@ -10,4 +10,28 @@
 [data-radix-popper-content-wrapper] {
   max-height: 80vh !important;
   overflow-y: auto !important;
+  z-index: 100 !important;
+}
+
+/* Improve mobile handling of popovers and dropdowns */
+@media (max-width: 767px) {
+  [data-radix-popper-content-wrapper] {
+    position: fixed !important;
+    width: calc(100vw - 24px) !important;
+    left: 12px !important;
+    margin: 0 auto !important;
+  }
+  
+  /* Fix iOS text input zoom issue */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+  
+  /* Ensure content always appears on top of other elements */
+  .radix-popover-content,
+  [role="dialog"],
+  [role="listbox"],
+  [role="menu"] {
+    z-index: 100 !important;
+  }
 }
