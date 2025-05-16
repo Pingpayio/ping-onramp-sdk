@@ -11,6 +11,7 @@ import { toast } from '@/components/ui/use-toast';
 const MobileTopbar = () => {
   const { isConnected, walletAddress, connectWallet } = useWallet();
   const [copied, setCopied] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   
   const menuItems = [{
@@ -74,6 +75,11 @@ const MobileTopbar = () => {
       behavior: 'smooth'
     });
   };
+  
+  // Toggle menu open/closed state
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
 
   return (
     <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
@@ -106,26 +112,27 @@ const MobileTopbar = () => {
           </Button>
         )}
 
-        {/* Mobile Menu */}
-        <Sheet>
-          <SheetTrigger asChild>
+        {/* Mobile Menu with Sheet */}
+        <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
+          <SheetTrigger asChild onClick={toggleMenu}>
             <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center">
-              <Menu size={24} />
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </SheetTrigger>
           <SheetContent 
             side="right" 
-            className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-50 top-[54px] h-[calc(100vh-54px)] mt-0 pt-0"
+            className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-50 top-[54px] h-[calc(100vh-54px)] mt-0 pt-0 sheet-content"
           >
             <div className="flex flex-col h-full">
               {/* Menu header */}
               <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">
                 <div className="font-semibold text-lg">Menu</div>
-                <SheetTrigger asChild>
-                  <button className="p-2 text-white focus:outline-none hover:text-[#AF9EF9] min-h-[44px] min-w-[44px] flex items-center justify-center">
-                    <X size={24} />
-                  </button>
-                </SheetTrigger>
+                <button 
+                  className="p-2 text-white focus:outline-none hover:text-[#AF9EF9] min-h-[44px] min-w-[44px] flex items-center justify-center"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <X size={24} />
+                </button>
               </div>
               
               {/* Menu items */}
@@ -148,6 +155,7 @@ const MobileTopbar = () => {
                                 ? "bg-[#AF9EF9] text-black"
                                 : "text-white hover:bg-[#1A1326]"
                             )}
+                            onClick={() => setIsMenuOpen(false)}
                           >
                             <span className="mr-3">{item.icon}</span>
                             <span>{item.title}</span>
