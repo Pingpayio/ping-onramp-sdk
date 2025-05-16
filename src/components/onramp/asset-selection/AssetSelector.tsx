@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { 
   Select,
@@ -83,7 +82,7 @@ const AssetSelector = ({
             )}
           </div>
         </SelectValue>
-        <ChevronDown className="h-4 w-4 text-white/60" />
+        {/* Removed the duplicate ChevronDown component that was here */}
       </SelectTrigger>
       <SelectContent
         className={cn(
