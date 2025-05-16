@@ -1,7 +1,6 @@
 
 import React, { useMemo } from 'react';
 import { Search } from 'lucide-react';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { assets, stablecoinSymbols } from '@/data/assets';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -59,25 +58,27 @@ const AssetList = ({
   };
 
   return (
-    <Command className="bg-[#303030] border-none rounded-lg overflow-hidden">
+    <div className="bg-[#303030] border-none rounded-lg overflow-hidden">
       <div className="flex items-center border-b border-white/10 px-3">
         <Search className="mr-2 h-4 w-4 shrink-0 text-white/80" />
-        <CommandInput 
-          placeholder="Search for an asset..." 
-          className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-white/40 text-white/80"
+        <input
+          type="text"
+          placeholder="Search for an asset..."
+          className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-white/40 text-white/80 border-none"
           value={searchQuery}
-          onValueChange={setSearchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <CommandList className={`${isMobile ? 'max-h-[50vh]' : 'max-h-[300px]'} overflow-auto`}>
-        <CommandEmpty className="text-white/60 text-sm py-2">No asset found.</CommandEmpty>
-        <CommandGroup>
+      <div className={`${isMobile ? 'max-h-[50vh]' : 'max-h-[300px]'} overflow-auto`}>
+        {filteredAssets.length === 0 && (
+          <div className="text-white/60 text-sm py-6 text-center">No asset found.</div>
+        )}
+        <div className="py-1">
           {filteredAssets.map((asset) => (
-            <CommandItem
+            <div
               key={asset.symbol}
-              value={asset.name}
-              onSelect={() => onAssetSelect(asset.symbol)}
-              className={`cursor-pointer transition-colors py-3 ${
+              onClick={() => onAssetSelect(asset.symbol)}
+              className={`cursor-pointer transition-colors py-3 px-2 ${
                 asset.symbol === selectedAsset 
                   ? 'bg-white/5 text-white' 
                   : 'text-white/60 hover:text-white hover:bg-white/5'
@@ -98,11 +99,11 @@ const AssetList = ({
                   <span className="text-xs text-gray-400">{asset.symbol}</span>
                 </div>
               </div>
-            </CommandItem>
+            </div>
           ))}
-        </CommandGroup>
-      </CommandList>
-    </Command>
+        </div>
+      </div>
+    </div>
   );
 };
 

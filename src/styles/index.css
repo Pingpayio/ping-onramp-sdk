@@ -1,6 +1,6 @@
 
 /* Import all CSS files */
 @import './base.css';
-@import './mobile.css';
+@import './mobile/index.css';
 @import './animations.css';
 @import './components.css';

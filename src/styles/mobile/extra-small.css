@@ -1,0 +1,39 @@
+
+/* Extra small screen optimizations */
+@media (max-width: 374px) {
+  .text-xs {
+    font-size: 0.7rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Make buttons more compact on very small screens */
+  .btn-sm, button.text-xs {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  /* Reduce container padding */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Improve dropdown positioning on small screens */
+  [data-radix-popper-content-wrapper] {
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
+    left: 0 !important;
+  }
+}

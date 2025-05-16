@@ -1,6 +1,4 @@
-
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
 import { 
   Select,
   SelectContent,
@@ -134,7 +132,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
                 {getNetworkDisplayName(selectedNetwork)}
               </span>
             </div>
-            <ChevronDown className="h-4 w-4 text-white/60" />
+            {/* The SelectTrigger already has a chevron added automatically by the component */}
           </SelectTrigger>
           <SelectContent className="bg-[#303030] border border-[#AF9EF9] p-1 w-full">
             {networks.map((network) => (

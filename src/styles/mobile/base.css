@@ -1,0 +1,27 @@
+
+/* Base mobile styles */
+@media (max-width: 767px) {
+  body {
+    padding-top: 0; /* Remove default padding */
+    @apply overflow-x-hidden;
+  }
+  
+  /* Improve touch targets for mobile */
+  button, a, [role="button"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  input, select, textarea {
+    @apply text-base py-3 min-h-[44px];
+  }
+  
+  /* Prevent double scrollbars */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Properly space content below the fixed mobile topbar */
+  .pt-topbar {
+    padding-top: 54px; /* Updated to match topbar height */
+  }
+}

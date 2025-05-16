@@ -78,10 +78,10 @@ const OnrampPage = () => {
       </div>
       
       <div className={`flex-1 ${isMobile ? 'ml-0 pt-[54px]' : 'md:ml-[256px]'}`}>
-        <div className={`p-4 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
+        <div className={`px-4 pt-2 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
           <OnrampHeader />
 
-          <main className={`flex-1 flex ${isMobile ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 mt-4 ${isMobile ? 'pb-4' : ''}`}>
+          <main className={`flex-1 flex ${isMobile || window.innerWidth < 1280 ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 mt-4 ${isMobile ? 'pb-4' : ''} half-screen-optimize`}>
             {/* Left container - maintains consistent size across steps on desktop, full width on mobile */}
             <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex-1 flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
@@ -116,7 +116,7 @@ const OnrampPage = () => {
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
               </div>
               
-              <div className="overflow-x-auto">
+              <div className="overflow-x-auto table-container transaction-table">
                 <Table>
                   <TableHeader>
                     <TableRow className="border-white/10">

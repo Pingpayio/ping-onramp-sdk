@@ -1,9 +1,12 @@
 
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { 
+  Select,
+  SelectContent,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select';
 import AssetList from './AssetList';
 import { assets } from '@/data/assets';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -39,16 +42,25 @@ const AssetSelector = ({
     return asset ? asset.logoUrl : '';
   };
 
+  // Handle open state manually to match the API of the previous Popover implementation
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
+  };
+
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="ghost"
-          className={cn(
-            "w-full justify-between bg-white/[0.08] hover:bg-white/5 border border-[rgba(255,255,255,0.18)] h-[42px] text-left px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70", 
-            className
-          )}
-        >
+    <Select 
+      open={open} 
+      onOpenChange={handleOpenChange}
+      value={selectedAsset || ""}
+      onValueChange={handleAssetSelect}
+    >
+      <SelectTrigger
+        className={cn(
+          "w-full justify-between bg-white/[0.08] hover:bg-white/5 border border-[rgba(255,255,255,0.18)] h-[42px] text-left px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 touch-feedback",
+          className
+        )}
+      >
+        <SelectValue placeholder="Select an asset">
           <div className="flex items-center">
             {selectedAsset ? (
               <>
@@ -69,17 +81,14 @@ const AssetSelector = ({
               <span className="font-normal text-white/60 text-sm">Select an asset</span>
             )}
           </div>
-          <ChevronDown className="h-4 w-4 text-white/60" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent 
+        </SelectValue>
+        {/* Removed the duplicate ChevronDown component that was here */}
+      </SelectTrigger>
+      <SelectContent
         className={cn(
-          "p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-[var(--radix-popover-trigger-width)] shadow-md",
-          isMobile && "popover-mobile-full"
+          "p-0 border border-[#AF9EF9] bg-[#303030] z-50 w-full shadow-md",
+          isMobile && "max-h-[50vh]"
         )}
-        side="bottom"
-        avoidCollisions={false}
-        sideOffset={5}
       >
         <AssetList
           searchQuery={searchQuery}
@@ -87,8 +96,8 @@ const AssetSelector = ({
           onAssetSelect={handleAssetSelect}
           selectedAsset={selectedAsset}
         />
-      </PopoverContent>
-    </Popover>
+      </SelectContent>
+    </Select>
   );
 };
 

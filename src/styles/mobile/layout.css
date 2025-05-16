@@ -1,0 +1,47 @@
+
+/* Mobile layout-specific styles */
+@media (max-width: 767px) {
+  /* Improve modal positioning on mobile */
+  [role="dialog"] {
+    max-height: 90vh;
+    margin-top: 5vh;
+  }
+
+  /* Style for the connect wallet button on mobile */
+  .wallet-button-mobile {
+    @apply py-2.5 px-5 text-sm min-h-[40px];
+  }
+  
+  /* Improve onramp page layout for mobile */
+  .onramp-container {
+    @apply flex-col !important;
+  }
+  
+  /* Center align mobile content */
+  .mobile-centered {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Adjust form spacing on mobile */
+  .mobile-stacked-form > * {
+    @apply mb-4 w-full;
+  }
+}
+
+/* Half-screen desktop optimization - new breakpoint */
+@media (min-width: 768px) and (max-width: 1279px) {
+  /* Optimize layout for half-screen desktop views */
+  .half-screen-optimize {
+    @apply flex-col !important;
+  }
+  
+  /* Reduce side padding for content containers */
+  .content-container {
+    @apply px-4 !important;
+  }
+  
+  /* Ensure table containers allow horizontal scrolling */
+  .table-container {
+    @apply w-full overflow-x-auto;
+  }
+}

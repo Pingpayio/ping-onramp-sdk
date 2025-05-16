@@ -87,6 +87,26 @@ html, body {
   }
 }
 
+/* Half-screen desktop optimization */
+@media (min-width: 768px) and (max-width: 1279px) {
+  .half-screen-container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    max-width: 100%;
+  }
+  
+  .half-screen-flex-column {
+    flex-direction: column !important;
+  }
+  
+  /* Make transaction history tables horizontally scrollable */
+  .transaction-table {
+    overflow-x: auto;
+    white-space: nowrap;
+    display: block;
+  }
+}
+
 /* Fix for mobile buttons with gradient background */
 .card-gradient-hover {
   @apply relative overflow-hidden transition-all duration-300;
@@ -136,4 +156,12 @@ html, body {
 /* Animate pulse slow for error indicators */
 .animate-pulse-slow {
   animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Improve touch feedback */
+@media (max-width: 767px) {
+  .touch-feedback:active {
+    opacity: 0.7;
+    transition: opacity 0.1s;
+  }
 }

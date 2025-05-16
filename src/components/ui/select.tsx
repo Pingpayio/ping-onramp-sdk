@@ -18,12 +18,15 @@ const SelectTrigger = React.forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+      "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 touch-feedback",
       className
     )}
     {...props}
   >
     {children}
+    <SelectPrimitive.Icon asChild>
+      <ChevronDown className="h-4 w-4 text-white/60" />
+    </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
 SelectTrigger.displayName = SelectPrimitive.Trigger.displayName
@@ -82,15 +85,18 @@ const SelectContent = React.forwardRef<
       align="start"
       alignOffset={0}
       avoidCollisions={false}
-      side="bottom"
-      style={{ width: 'var(--radix-select-trigger-width)' }}
+      side="bottom" 
+      style={{ 
+        width: 'var(--radix-select-trigger-width)',
+        ...(props.style || {})
+      }}
     >
       <SelectScrollUpButton />
       <SelectPrimitive.Viewport
         className={cn(
           "p-1",
           position === "popper" &&
-            "h-[var(--radix-select-trigger-height)] min-w-[var(--radix-select-trigger-width)]"
+            "h-[var(--radix-select-trigger-height)] w-full"
         )}
       >
         {children}

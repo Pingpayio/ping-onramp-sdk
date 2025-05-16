@@ -20,6 +20,19 @@
 [data-radix-popper-content-wrapper] {
   max-height: 80vh !important;
   overflow-y: auto !important;
+  z-index: 999 !important;
+}
+
+/* Ensure consistent dropdown/popover width */
+[data-radix-select-content] {
+  width: var(--radix-select-trigger-width) !important;
+  min-width: var(--radix-select-trigger-width) !important;
+}
+
+[data-radix-popover-content] {
+  width: var(--radix-popover-trigger-width) !important;
+  min-width: var(--radix-popover-trigger-width) !important;
+  max-width: var(--radix-popover-trigger-width) !important;
 }
 
 /* Ensure mobile popovers are properly positioned */
@@ -30,11 +43,25 @@
     left: 16px !important;
     right: 16px !important;
   }
+}
+
+/* Half-screen desktop optimizations */
+@media (min-width: 768px) and (max-width: 1279px) {
+  /* Ensure popovers don't exceed viewport */
+  [data-radix-popper-content-wrapper] {
+    max-width: 100% !important;
+  }
   
-  /* Fix position for asset selector and other dropdowns */
-  .asset-selector-popover [data-radix-popper-content-wrapper] {
-    width: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
+  /* Make tables horizontally scrollable */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Adjust card layouts for narrower screens */
+  .card-flex-column {
+    flex-direction: column !important;
   }
 }

@@ -28,7 +28,7 @@ const AmountInput = ({
           className="text-3xl md:text-5xl font-bold border-none shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[160px] min-h-[45px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="0"
         />
-        <span className="text-3xl md:text-5xl text-gray-500 font-normal -ml-1">USD</span>
+        <span className="text-3xl md:text-5xl text-white/40 font-normal -ml-1">USD</span>
       </div>
       
       {/* Estimated token amount with reduced spacing */}
