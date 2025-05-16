@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import OnrampHeader from '@/components/onramp/OnrampHeader';
@@ -77,13 +76,13 @@ const OnrampPage = () => {
         <SidebarNav />
       </div>
       
-      <div className={`flex-1 ${isMobile ? 'ml-0 pt-[64px]' : 'md:ml-[256px]'}`}>
-        <div className={`p-4 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
+      <div className={`flex-1 ${isMobile ? 'ml-0 pt-[54px]' : 'md:ml-[256px]'}`}>
+        <div className={`p-3 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
           <OnrampHeader />
 
-          <main className={`flex-1 flex ${isMobile ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 mt-4 ${isMobile ? 'pb-4' : ''}`}>
+          <main className={`flex-1 flex ${isMobile ? 'flex-col' : 'lg:flex-row'} gap-3 md:gap-6 ${isMobile ? 'mt-2' : 'mt-4'} ${isMobile ? 'pb-3' : ''}`}>
             {/* Left container - maintains consistent size across steps on desktop, full width on mobile */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex-1 flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16]">
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 md:p-6 flex-1 flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
@@ -110,7 +109,7 @@ const OnrampPage = () => {
             </div>
             
             {/* Right container - maintains consistent size on desktop, full width on mobile */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
+            <div className="bg-white/5 rounded-xl shadow-sm p-3 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>

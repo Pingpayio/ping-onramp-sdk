@@ -76,8 +76,8 @@ const MobileTopbar = () => {
   };
 
   return (
-    <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
-      {/* Logo - now with improved vertical centering */}
+    <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-3 z-50 border-b border-white/10">
+      {/* Logo - vertically centered */}
       <div className="flex items-center justify-center h-full">
         <RouterLink to="/" onClick={scrollToTop} className="flex items-center">
           <img 
@@ -88,28 +88,28 @@ const MobileTopbar = () => {
         </RouterLink>
       </div>
 
-      <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - styled to match the image */}
+      <div className="flex items-center gap-1.5">
+        {/* Connect Wallet Button - optimized for small screens */}
         {!isConnected ? (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px]"
+            className="card-gradient-hover bg-[#AB9FF2] text-[#3D315E] rounded-full px-4 py-2 text-sm hover:opacity-90 min-h-[40px] truncate max-w-[100px] xs:max-w-[120px] sm:max-w-none sm:px-5"
             onClick={connectWallet}
           >
             Connect
           </Button>
         ) : (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px]"
+            className="card-gradient-hover bg-[#AB9FF2] text-[#3D315E] rounded-full px-4 py-2 text-sm hover:opacity-90 min-h-[40px] truncate max-w-[100px] xs:max-w-[120px] sm:max-w-none sm:px-5"
             onClick={copyAddress}
           >
             {displayAddress}
           </Button>
         )}
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu - optimized for small screens */}
         <Sheet>
           <SheetTrigger asChild>
-            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px]">
+            <button className="p-1.5 ml-1 text-white focus:outline-none min-h-[44px] min-w-[44px]">
               <Menu size={24} />
             </button>
           </SheetTrigger>
