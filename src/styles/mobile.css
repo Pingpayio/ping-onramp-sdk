@@ -33,6 +33,11 @@
     padding-top: var(--topbar-height);
   }
   
+  /* Account for the mobile topbar in scrollable containers */
+  .content-container {
+    padding-top: var(--topbar-height);
+  }
+  
   /* Prevent double scrollbars */
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
