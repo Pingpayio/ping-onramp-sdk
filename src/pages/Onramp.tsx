@@ -52,22 +52,25 @@ const OnrampPage = () => {
     selectedOnramp,
     walletAddress,
     amount,
-    cardNumber,
     selectedCurrency,
     steps,
-    isProcessingTransaction,
-    walletAddressError,
+    walletAddressError, 
+    isWalletAddressValid, 
+    nearIntentsDepositAddress, 
+    currentIntentStage,
+    intentProgress, 
+    intentError,
+    nearIntentsDisplayInfo,
+    setIntentStage,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
-    handleCardNumberChange,
     handleCurrencySelect,
     handleContinue,
     handleBack,
     canContinue,
-    handleStepClick,
-    setOpen
+    setOpen,
   } = useOnrampState();
 
   return (
@@ -91,24 +94,27 @@ const OnrampPage = () => {
                 amount={amount} 
                 onAssetSelect={handleAssetSelect} 
                 onAmountChange={handleAmountChange} 
-                open={open} 
-                setOpen={setOpen} 
-                walletAddress={walletAddress} 
-                onWalletAddressChange={handleWalletAddressChange} 
-                selectedOnramp={selectedOnramp} 
-                onOnrampSelect={handleOnrampSelect} 
-                handleBack={handleBack} 
-                handleContinue={handleContinue} 
-                canContinue={canContinue} 
-                cardNumber={cardNumber} 
-                onCardNumberChange={handleCardNumberChange}
+                open={open}
+                setOpen={setOpen}
+                walletAddress={walletAddress}
+                onWalletAddressChange={handleWalletAddressChange}
+                selectedOnramp={selectedOnramp}
+                onOnrampSelect={handleOnrampSelect}
+                handleBack={handleBack}
+                handleContinue={handleContinue}
+                canContinue={canContinue}
                 selectedCurrency={selectedCurrency}
                 onCurrencySelect={handleCurrencySelect}
-                isProcessingTransaction={isProcessingTransaction}
                 walletAddressError={walletAddressError}
+                nearIntentsDepositAddress={nearIntentsDepositAddress}
+                currentIntentStage={currentIntentStage}
+                intentProgress={intentProgress}
+                intentError={intentError}
+                nearIntentsDisplayInfo={nearIntentsDisplayInfo}
+                isWalletAddressValid={isWalletAddressValid}
               />
             </div>
-            
+
             {/* Right container - maintains consistent size on desktop, full width on mobile */}
             <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">

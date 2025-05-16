@@ -22,6 +22,7 @@ interface AssetSelectionProps {
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
   walletAddressError?: boolean;
+  nearIntentsDepositAddress: string | null;
 }
 
 const AssetSelection = ({
@@ -35,7 +36,8 @@ const AssetSelection = ({
   onWalletAddressChange,
   selectedCurrency = "USD",
   onCurrencySelect = () => {},
-  walletAddressError = false
+  walletAddressError = false,
+  nearIntentsDepositAddress,
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
   const isMobile = useIsMobile();
@@ -72,23 +74,24 @@ const AssetSelection = ({
         {/* NetworkBadge with better spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 5. Wallet Address Input */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-2">Recipient Wallet Address</label>
-          <WalletAddressInput 
-            walletAddress={walletAddress} 
-            onWalletAddressChange={onWalletAddressChange} 
-            placeholder="Enter recipient address" 
+          <label className="text-sm text-white mb-2">NEAR Recipient Address (e.g., alice.near)</label>
+          <WalletAddressInput
+            walletAddress={walletAddress}
+            onWalletAddressChange={onWalletAddressChange}
+            placeholder="Enter .near recipient address"
             isError={walletAddressError}
-            errorMessage="Please enter a valid recipient address"
+            errorMessage="Please enter a valid NEAR recipient address (e.g. alice.near or 64-char hex)"
           />
+          <p className="text-xs text-white/50 mt-1 px-1">
+            Funds will be on-ramped and then bridged to this NEAR address.
+          </p>
         </div>
         
         {/* Payment Method Card */}
         <PaymentMethod />
         
-        {/* NEAR Intents Deposit Address */}
-        <NearIntentsField />
+        <NearIntentsField depositAddress={nearIntentsDepositAddress} />
       </div>
     </div>
   );

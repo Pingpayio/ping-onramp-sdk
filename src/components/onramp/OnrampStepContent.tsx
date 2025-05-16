@@ -3,6 +3,7 @@ import AssetSelection from '@/components/onramp/asset-selection';
 import TransactionProgress from '@/components/onramp/TransactionProgress';
 import OnrampNavigation from '@/components/onramp/OnrampNavigation';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { TransactionStage } from '@/hooks/use-transaction-progress';
 interface OnrampStepContentProps {
   currentStep: number;
   steps: string[];
@@ -19,13 +20,18 @@ interface OnrampStepContentProps {
   handleBack: () => void;
   handleContinue: () => void;
   canContinue: () => boolean;
-  cardNumber?: string;
-  onCardNumberChange?: (cardNumber: string) => void;
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
-  isProcessingTransaction?: boolean;
   walletAddressError?: boolean;
+
+  nearIntentsDepositAddress: string | null;
+  currentIntentStage?: TransactionStage;
+  intentProgress?: number;
+  intentError?: string | null;
+  nearIntentsDisplayInfo?: { message?: string; amountIn?: number; amountOut?: number; explorerUrl?: string; error?: string };
+  isWalletAddressValid?: boolean;
 }
+
 const OnrampStepContent = ({
   currentStep,
   steps,
@@ -35,48 +41,83 @@ const OnrampStepContent = ({
   onAmountChange,
   open,
   setOpen,
-  walletAddress,
-  onWalletAddressChange,
+  walletAddress, 
+  onWalletAddressChange, 
   selectedOnramp,
   onOnrampSelect,
   handleBack,
   handleContinue,
   canContinue,
-  cardNumber = '',
-  onCardNumberChange,
   selectedCurrency = 'USD',
   onCurrencySelect,
-  isProcessingTransaction = false,
-  walletAddressError = false
+  walletAddressError = false,
+  nearIntentsDepositAddress,
+  currentIntentStage,
+  intentProgress,
+  intentError,
+  nearIntentsDisplayInfo,
+  isWalletAddressValid,
 }: OnrampStepContentProps) => {
   const isMobile = useIsMobile();
+
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
-        return <AssetSelection selectedAsset={selectedAsset} amount={amount} onAssetSelect={onAssetSelect} onAmountChange={onAmountChange} open={open} setOpen={setOpen} walletAddress={walletAddress} onWalletAddressChange={onWalletAddressChange} selectedCurrency={selectedCurrency} onCurrencySelect={onCurrencySelect} walletAddressError={walletAddressError} />;
+        return (
+          <AssetSelection
+            selectedAsset={selectedAsset}
+            amount={amount}
+            onAssetSelect={onAssetSelect}
+            onAmountChange={onAmountChange}
+            open={open}
+            setOpen={setOpen}
+            walletAddress={walletAddress}
+            onWalletAddressChange={onWalletAddressChange}
+            selectedCurrency={selectedCurrency}
+            onCurrencySelect={onCurrencySelect}
+            walletAddressError={walletAddressError}
+            nearIntentsDepositAddress={nearIntentsDepositAddress} // Pass down
+          />
+        );
       case 1:
+        // TransactionProgress will now use intent-specific props
         return <div className="flex flex-col items-center h-full">
-            {/* Title section - same as in AssetSelection */}
+            {/* Title section */}
             <div className="flex items-center gap-2 mb-4 w-full">
-              <h2 className="text-lg md:text-xl font-medium text-white">Processing Your Onramp</h2>
+              <h2 className="text-lg md:text-xl font-medium text-white">Processing NEAR Intent</h2>
             </div>
             
-            {/* Transaction progress container with same height as asset selection form */}
-            <TransactionProgress asset={selectedAsset} amount={amount} walletAddress={walletAddress} />
+            <TransactionProgress
+              asset={selectedAsset} // e.g., "USDC"
+              amount={amount} // Fiat amount
+              walletAddress={walletAddress} // Target NEAR recipient
+              currentStage={currentIntentStage}
+              progress={intentProgress}
+              error={intentError}
+              displayInfo={nearIntentsDisplayInfo}
+              // TODO: TransactionProgress might need setIntentStage if it has retry logic
+            />
           </div>;
       default:
         return null;
     }
   };
+
   return <div className="flex flex-col h-full">
-      {/* Content section with adjusted spacing for consistent appearance */}
       <div className="flex-grow overflow-y-auto pb-1">
         {renderCurrentStep()}
       </div>
       
-      {/* Navigation buttons with consistent styling */}
       <div className="mt-auto pt-4">
-        <OnrampNavigation currentStep={currentStep} steps={steps} handleBack={handleBack} handleContinue={handleContinue} canContinue={canContinue} isProcessingTransaction={isProcessingTransaction || currentStep === 1} />
+        {/* isProcessingTransaction is now determined by whether it's step 1 (TransactionProgress step) */}
+        <OnrampNavigation
+          currentStep={currentStep}
+          steps={steps}
+          handleBack={handleBack}
+          handleContinue={handleContinue}
+          canContinue={canContinue}
+          isProcessingTransaction={currentStep === 1 && !['intent_completed', 'intent_failed'].includes(currentIntentStage || '')}
+        />
       </div>
     </div>;
 };
