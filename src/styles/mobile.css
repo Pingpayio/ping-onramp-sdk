@@ -7,7 +7,7 @@
   }
   
   /* Improve touch targets for mobile */
-  button, a {
+  button, a, [role="button"] {
     @apply min-h-[44px] min-w-[44px];
   }
 
@@ -35,7 +35,7 @@
   
   /* Properly space content below the fixed mobile topbar */
   .pt-topbar {
-    padding-top: 54px; /* Updated to match new topbar height */
+    padding-top: 54px; /* Updated to match topbar height */
   }
   
   /* Prevent double scrollbars */
@@ -118,5 +118,28 @@
     max-width: calc(100vw - 16px) !important;
     width: calc(100vw - 16px) !important;
     left: 8px !important;
+  }
+}
+
+/* Half-screen desktop optimization - new breakpoint */
+@media (min-width: 768px) and (max-width: 1279px) {
+  /* Optimize layout for half-screen desktop views */
+  .half-screen-optimize {
+    @apply flex-col !important;
+  }
+  
+  /* Reduce side padding for content containers */
+  .content-container {
+    @apply px-4 !important;
+  }
+  
+  /* Ensure table containers allow horizontal scrolling */
+  .table-container {
+    @apply w-full overflow-x-auto;
+  }
+  
+  /* Make sure dropdowns appear in correct position */
+  [data-radix-popper-content-wrapper] {
+    max-width: 90% !important;
   }
 }

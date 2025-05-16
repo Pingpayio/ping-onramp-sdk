@@ -18,7 +18,7 @@ const TransactionContainer: React.FC<TransactionContainerProps> = ({ children })
       </div>
       
       <div className={`flex-1 ${isMobile ? 'ml-0 pt-[54px]' : 'md:ml-[256px]'}`}>
-        <div className="px-3 py-3 md:px-6 md:py-6 lg:container mx-auto flex flex-col h-full">
+        <div className="px-3 py-3 md:px-6 md:py-6 lg:container mx-auto flex flex-col h-full half-screen-container">
           {children}
         </div>
       </div>

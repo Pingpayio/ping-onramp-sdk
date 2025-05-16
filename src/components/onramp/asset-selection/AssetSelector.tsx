@@ -45,7 +45,7 @@ const AssetSelector = ({
         <Button
           variant="ghost"
           className={cn(
-            "w-full justify-between bg-white/[0.08] hover:bg-white/5 border border-[rgba(255,255,255,0.18)] h-[42px] text-left px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70", 
+            "w-full justify-between bg-white/[0.08] hover:bg-white/5 border border-[rgba(255,255,255,0.18)] h-[42px] text-left px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 touch-feedback", 
             className
           )}
         >
@@ -75,9 +75,11 @@ const AssetSelector = ({
       <PopoverContent 
         className={cn(
           "p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-[var(--radix-popover-trigger-width)] shadow-md",
-          isMobile && "popover-mobile-full"
+          isMobile && "popover-mobile-full asset-selector-popover"
         )}
         side="bottom"
+        align="start"
+        alignOffset={0}
         avoidCollisions={false}
         sideOffset={5}
       >
