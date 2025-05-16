@@ -74,7 +74,7 @@ const AssetSelection = ({
         
         {/* 5. Wallet Address Input */}
         <div className="flex flex-col">
-          <label className="text-sm text-white mb-2">Recipient Address (e.g. alice.near)</label>
+          <label className="text-sm text-white mb-2">Recipient Wallet Address</label>
           <WalletAddressInput 
             walletAddress={walletAddress} 
             onWalletAddressChange={onWalletAddressChange} 
