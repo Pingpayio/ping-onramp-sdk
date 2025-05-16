@@ -77,9 +77,9 @@ const MobileTopbar = () => {
 
   return (
     <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
-      {/* Logo - now with improved vertical centering */}
-      <div className="flex items-center justify-center h-full">
-        <RouterLink to="/" onClick={scrollToTop} className="flex items-center">
+      {/* Logo - vertically centered */}
+      <div className="flex items-center h-full">
+        <RouterLink to="/" onClick={scrollToTop} className="flex items-center justify-center">
           <img 
             src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
             alt="PING" 
@@ -109,7 +109,7 @@ const MobileTopbar = () => {
         {/* Mobile Menu */}
         <Sheet>
           <SheetTrigger asChild>
-            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px]">
+            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center">
               <Menu size={24} />
             </button>
           </SheetTrigger>
@@ -119,7 +119,7 @@ const MobileTopbar = () => {
               <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">
                 <div className="font-semibold text-lg">Menu</div>
                 <SheetTrigger asChild>
-                  <button className="p-2 text-white focus:outline-none hover:text-[#AF9EF9] min-h-[44px] min-w-[44px]">
+                  <button className="p-2 text-white focus:outline-none hover:text-[#AF9EF9] min-h-[44px] min-w-[44px] flex items-center justify-center">
                     <X size={24} />
                   </button>
                 </SheetTrigger>
@@ -159,18 +159,18 @@ const MobileTopbar = () => {
               {/* Social Links */}
               <div className="px-4 py-6 border-t border-[#1A1326]">
                 <div className="flex space-x-6">
-                  <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9] p-2">
+                  <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                     </svg>
                   </a>
-                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2">
+                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
                     <Github size={24} />
                   </a>
-                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2">
+                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
                     <ExternalLink size={24} />
                   </a>
-                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2">
+                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
                     <BookOpen size={24} />
                   </a>
                 </div>

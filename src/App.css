@@ -44,6 +44,8 @@
 /* Make sure body and html have full height */
 html, body {
   height: 100%;
+  width: 100%;
+  overflow-x: hidden;
 }
 
 /* Mobile optimizations */
@@ -74,7 +76,6 @@ html, body {
   .interactive-element {
     min-height: 44px;
     min-width: 44px;
-    padding: 12px !important;
   }
   
   /* Improve form element touch targets */
@@ -82,20 +83,7 @@ html, body {
   select,
   textarea {
     font-size: 16px; /* Prevents iOS zoom on focus */
-    padding: 12px;
     min-height: 44px;
-  }
-
-  /* Extra small screens (iPhone SE, etc) */
-  @media (max-width: 374px) {
-    .text-xs {
-      font-size: 0.7rem;
-    }
-    
-    .px-4 {
-      padding-left: 0.75rem;
-      padding-right: 0.75rem;
-    }
   }
 }
 
@@ -117,6 +105,18 @@ html, body {
 @media (max-width: 767px) {
   .card-gradient-hover:active::before {
     @apply opacity-100;
+  }
+  
+  /* Prevent content from being hidden under fixed elements */
+  .has-fixed-header {
+    padding-top: 54px;
+  }
+  
+  /* Make popover menus full width on mobile */
+  .popover-fullwidth [data-radix-popper-content-wrapper] {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+    left: 16px !important;
   }
 }
 

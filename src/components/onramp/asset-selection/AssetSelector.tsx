@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import AssetList from './AssetList';
 import { assets } from '@/data/assets';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AssetSelectorProps {
   selectedAsset: string | null;
@@ -23,6 +24,7 @@ const AssetSelector = ({
   className,
 }: AssetSelectorProps) => {
   const [searchQuery, setSearchQuery] = React.useState('');
+  const isMobile = useIsMobile();
 
   const handleAssetSelect = (symbol: string) => {
     if (onAssetSelect) {
@@ -71,7 +73,10 @@ const AssetSelector = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-[var(--radix-popover-trigger-width)] shadow-md"
+        className={cn(
+          "p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-[var(--radix-popover-trigger-width)] shadow-md",
+          isMobile && "popover-mobile-full"
+        )}
         side="bottom"
         avoidCollisions={false}
         sideOffset={5}

@@ -26,6 +26,11 @@
     transform: translate3d(0, 5px, 0) !important;
     top: 100% !important;
     bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: 95vw !important;
+    width: 95vw !important;
   }
   
   /* Properly space content below the fixed mobile topbar */
@@ -59,6 +64,21 @@
   /* Adjust header height in mobile menu */
   .mobile-menu {
     @apply pt-[54px];
+  }
+  
+  /* Improve onramp page layout for mobile */
+  .onramp-container {
+    @apply flex-col !important;
+  }
+  
+  /* Center align mobile content */
+  .mobile-centered {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Adjust form spacing on mobile */
+  .mobile-stacked-form > * {
+    @apply mb-4 w-full;
   }
 }
 

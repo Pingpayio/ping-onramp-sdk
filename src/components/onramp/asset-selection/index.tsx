@@ -8,6 +8,7 @@ import PaymentMethod from './PaymentMethod';
 import WalletAddressInput from './WalletAddressInput';
 import NearIntentsField from './NearIntentsField';
 import { calculateEstimatedAmount } from './PriceCalculator';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AssetSelectionProps {
   selectedAsset: string | null;
@@ -37,6 +38,7 @@ const AssetSelection = ({
   walletAddressError = false
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
+  const isMobile = useIsMobile();
 
   // Calculate estimated token amount based on USD amount and selected asset
   useEffect(() => {
@@ -58,7 +60,7 @@ const AssetSelection = ({
       <AmountInput amount={amount} onAmountChange={onAmountChange} selectedAsset={selectedAsset} estimatedAmount={estimatedAmount} />
       
       {/* Selection cards with improved spacing throughout */}
-      <div className="w-full space-y-3 mt-0">
+      <div className="w-full space-y-3 mt-0 mobile-stacked-form">
         {/* 4. Asset Selection Card */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Select Asset</label>
