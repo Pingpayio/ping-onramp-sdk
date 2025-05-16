@@ -71,8 +71,9 @@ const AssetSelector = ({
         </Button>
       </PopoverTrigger>
       <PopoverContent 
-        className="p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 shadow-md w-full"
-        align="start"
+        className="p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-[var(--radix-popover-trigger-width)] shadow-md"
+        side="bottom"
+        avoidCollisions={false}
         sideOffset={5}
       >
         <AssetList

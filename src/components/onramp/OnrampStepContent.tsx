@@ -76,7 +76,7 @@ const OnrampStepContent = ({
         return (
           <div className="flex flex-col items-center h-full">
             {/* Title section - same as in AssetSelection */}
-            <div className="flex items-center gap-2 mb-3 md:mb-4 w-full">
+            <div className="flex items-center gap-2 mb-4 w-full">
               <h2 className="text-lg md:text-xl font-medium text-white">Processing Your Transaction</h2>
             </div>
             
@@ -97,7 +97,7 @@ const OnrampStepContent = ({
       </div>
       
       {/* Navigation buttons with consistent styling */}
-      <div className="mt-auto pt-3 md:pt-4">
+      <div className="mt-auto pt-4">
         <OnrampNavigation 
           currentStep={currentStep} 
           steps={steps} 
