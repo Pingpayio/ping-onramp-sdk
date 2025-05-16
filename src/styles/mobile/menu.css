@@ -50,6 +50,7 @@
   
   /* Improved menu icon hover and active states */
   .menu-icon {
+    color: #FFFFFF; /* Set default color to white */
     transition: color 0.2s ease-in-out;
   }
   
@@ -69,8 +70,11 @@
     color: #AF9EF9 !important;
   }
   
-  /* More specific rule to ensure X icon changes color */
-  button[aria-expanded="true"] svg.menu-icon,
+  /* More specific rule to ensure X icon changes color only on interaction */
+  button[aria-expanded="true"] svg {
+    color: #FFFFFF; /* Default white color for X icon */
+  }
+  
   button[aria-expanded="true"]:hover svg,
   button[aria-expanded="true"]:active svg {
     color: #AF9EF9 !important;

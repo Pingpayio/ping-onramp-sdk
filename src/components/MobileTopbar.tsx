@@ -122,7 +122,7 @@ const MobileTopbar = () => {
               {isMenuOpen ? (
                 <X size={24} className="menu-icon" />
               ) : (
-                <Menu size={24} />
+                <Menu size={24} className="menu-icon" />
               )}
             </button>
           </SheetTrigger>
