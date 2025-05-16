@@ -34,7 +34,7 @@ const MobileTopbar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - matched to the logo height */}
+        {/* Connect Wallet Button - with updated sizing */}
         <MobileWalletButton />
 
         {/* Mobile Menu */}

@@ -36,8 +36,9 @@ const MobileWalletButton = ({ className }: MobileWalletButtonProps) => {
       {!isConnected ? (
         <Button 
           size="sm"
-          className={`h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium flex items-center ${className}`}
+          className={`h-auto min-h-[52px] max-h-[64px] bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-5 py-3 text-sm md:text-base font-medium flex items-center ${className}`}
           onClick={connectWallet}
+          style={{ lineHeight: 1.2 }}
         >
           <Wallet className="h-3 w-3 mr-1" />
           <span>Connect</span>
@@ -45,8 +46,9 @@ const MobileWalletButton = ({ className }: MobileWalletButtonProps) => {
       ) : (
         <Button 
           size="sm"
-          className={`h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium flex items-center ${className}`}
+          className={`h-auto min-h-[52px] max-h-[64px] bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-5 py-3 text-sm md:text-base font-medium flex items-center ${className}`}
           onClick={copyAddress}
+          style={{ lineHeight: 1.2 }}
         >
           <Wallet className="h-3 w-3 mr-1" />
           <span>{displayAddress}</span>
