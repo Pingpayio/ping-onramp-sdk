@@ -1,3 +1,4 @@
+
 /* Add padding-top for mobile content to account for the topbar */
 @media (max-width: 767px) {
   body {
@@ -101,6 +102,8 @@
     margin-top: 0 !important;
     padding-top: 0 !important;
     border-top: none !important;
+    border: none !important; /* Remove all borders */
+    background-color: #121212 !important; /* Set explicit background color */
   }
   
   /* Ensure menu items have proper contrast */
@@ -116,10 +119,26 @@
   /* Ensure sheet animations work properly - slide from right animation */
   [data-state=open].sheet-content {
     animation: slide-in-from-right 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    border: none !important; /* Remove all borders */
   }
   
   [data-state=closed].sheet-content {
     animation: slide-out-to-right 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* Menu icon hover effect */
+  .menu-icon:hover {
+    color: #AF9EF9;
+  }
+  
+  /* Make the menu icon transition smooth */
+  .p-2.ml-2 button svg,
+  .p-2.ml-2 svg {
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .p-2.ml-2:hover svg {
+    color: #AF9EF9;
   }
   
   @keyframes slide-in-from-right {

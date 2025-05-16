@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, Link as LinkIcon } from 'lucide-react';
@@ -114,13 +115,13 @@ const MobileTopbar = () => {
         {/* Mobile Menu with Sheet */}
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild onClick={toggleMenu}>
-            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center">
-              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-[#AB9FF2] transition-colors">
+              {isMenuOpen ? <X size={24} className="menu-icon" /> : <Menu size={24} />}
             </button>
           </SheetTrigger>
           <SheetContent 
             side="right" 
-            className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-50 top-[54px] h-[calc(100vh-54px)] mt-0 pt-0 sheet-content"
+            className="w-[85%] sm:w-[385px] bg-[#121212] text-white p-0 z-50 top-[54px] h-[calc(100vh-54px)] mt-0 pt-0 sheet-content border-none"
           >
             <div className="flex flex-col h-full">
               <div className="flex-1 overflow-y-auto py-4">
