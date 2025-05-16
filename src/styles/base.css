@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -46,7 +47,7 @@
     --sidebar-ring: 255 57% 61%;
     
     /* Define mobile topbar height for consistent spacing */
-    --topbar-height: 54px;
+    --topbar-height: 64px;
   }
 
   .dark {

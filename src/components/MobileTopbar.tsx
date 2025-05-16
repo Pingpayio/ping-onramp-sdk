@@ -1,17 +1,16 @@
 
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon, Wallet } from 'lucide-react';
+import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import Button from './Button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Button } from '@/components/ui/button';  // Changed to import shadcn Button
 import { useWallet } from '@/hooks/use-wallet-context';
 import { toast } from '@/components/ui/use-toast';
 
 const MobileTopbar = () => {
   const { isConnected, walletAddress, connectWallet } = useWallet();
   const [copied, setCopied] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   
   const menuItems = [{
@@ -68,66 +67,49 @@ const MobileTopbar = () => {
     }
   };
 
-  // Scroll to top function
-  const scrollToTop = () => {
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
-  };
-
-  // Handle menu open/close
-  const toggleMenu = (open: boolean) => {
-    setIsMenuOpen(open);
-  };
-
   return (
-    <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
+    <div className="md:hidden fixed top-0 left-0 w-full h-[64px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
       {/* Logo */}
       <div className="flex items-center">
-        <button onClick={scrollToTop} className="focus:outline-none">
+        <RouterLink to="/">
           <img 
             src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
             alt="PING" 
-            className="h-6" 
+            className="h-[28px]" 
           />
-        </button>
+        </RouterLink>
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - properly sized at 24px height */}
+        {/* Connect Wallet Button - simplified version for mobile */}
         {!isConnected ? (
           <Button 
+            variant="gradient" 
             size="sm"
-            className="h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium"
             onClick={connectWallet}
+            className="h-9 px-3 text-sm"
           >
-            <Wallet className="h-3 w-3 mr-1" />
-            <span>Connect</span>
+            Connect
           </Button>
         ) : (
           <Button 
+            variant="gradient" 
             size="sm"
-            className="h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium"
             onClick={copyAddress}
+            className="h-9 px-3 text-sm"
           >
-            <Wallet className="h-3 w-3 mr-1" />
-            <span>{displayAddress}</span>
+            {displayAddress}
           </Button>
         )}
 
         {/* Mobile Menu */}
-        <Sheet open={isMenuOpen} onOpenChange={toggleMenu}>
+        <Sheet>
           <SheetTrigger asChild>
-            <button className="p-2 text-white focus:outline-none min-h-[44px] min-w-[44px] ml-2">
-              {isMenuOpen ? (
-                <X size={24} />
-              ) : (
-                <Menu size={24} />
-              )}
+            <button className="p-2 text-white focus:outline-none min-h-[44px] min-w-[44px]">
+              <Menu size={24} />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 pt-[54px] z-40">
+          <SheetContent side="right" className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0">
             <div className="flex flex-col h-full">
               {/* Menu header */}
               <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">
@@ -159,7 +141,6 @@ const MobileTopbar = () => {
                                 ? "bg-[#AF9EF9] text-black"
                                 : "text-white hover:bg-[#1A1326]"
                             )}
-                            onClick={() => toggleMenu(false)}
                           >
                             <span className="mr-3">{item.icon}</span>
                             <span>{item.title}</span>

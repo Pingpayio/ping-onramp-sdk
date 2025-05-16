@@ -67,7 +67,6 @@ const AssetList = ({
           className="flex h-11 w-full rounded-md bg-transparent py-3 outline-none placeholder:text-white/40 text-white/80"
           value={searchQuery}
           onValueChange={setSearchQuery}
-          autoFocus={false}
         />
       </div>
       <CommandList className={`${isMobile ? 'max-h-[50vh]' : 'max-h-[300px]'} overflow-auto`}>
