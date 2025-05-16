@@ -32,11 +32,9 @@
     right: 16px !important;
   }
   
-  /* Fix position for asset selector and other dropdowns */
+  /* Adjust positioning for asset selector and other dropdowns */
   .asset-selector-popover [data-radix-popper-content-wrapper] {
     width: 100% !important;
-    left: 0 !important;
-    right: 0 !important;
   }
 }
 

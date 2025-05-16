@@ -15,22 +15,16 @@
     @apply text-base py-3 min-h-[44px];
   }
   
-  /* Fix popovers and dropdowns on mobile */
+  /* Fix popovers and dropdowns on mobile - less restrictive positioning */
   .popover-content, .dropdown-content {
     @apply max-w-[calc(100vw-24px)] !important;
-    transform: translateY(5px) !important;
   }
   
-  /* Force dropdowns and popups to appear below their triggers */
+  /* Improve dropdown positioning without overriding Radix UI positioning logic */
   [data-radix-popper-content-wrapper] {
-    transform: translate3d(0, 5px, 0) !important;
-    top: 100% !important;
-    bottom: auto !important;
-    left: 50% !important;
-    right: auto !important;
-    transform: translateX(-50%) !important;
+    /* Remove conflicting transform properties and fixed positioning */
+    z-index: 999 !important; /* Ensure dropdowns appear above other content */
     max-width: 95vw !important;
-    width: 95vw !important;
   }
   
   /* Properly space content below the fixed mobile topbar */
@@ -116,8 +110,6 @@
   /* Improve dropdown positioning on small screens */
   [data-radix-popper-content-wrapper] {
     max-width: calc(100vw - 16px) !important;
-    width: calc(100vw - 16px) !important;
-    left: 8px !important;
   }
 }
 
