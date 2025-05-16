@@ -15,21 +15,7 @@
     @apply text-base py-3 min-h-[44px];
   }
   
-  /* Fix popovers and dropdowns on mobile */
-  .popover-content, .dropdown-content {
-    @apply max-w-[calc(100vw-24px)] !important;
-  }
-  
-  /* Fix dropdown positioning on mobile */
-  [data-radix-popper-content-wrapper] {
-    width: calc(100vw - 16px) !important;
-    max-width: calc(100vw - 16px) !important;
-    transform: translate3d(0, 0, 0) !important;
-    position: fixed !important;
-    top: auto !important;
-    left: 8px !important;
-    z-index: 9999 !important;
-  }
+  /* Fix popovers and dropdowns on mobile - REMOVED conflicting styles */
   
   /* Properly space content below the fixed mobile topbar */
   .pt-topbar {
@@ -41,17 +27,7 @@
     -webkit-overflow-scrolling: touch;
   }
   
-  /* Ensure dropdown lists always appear below their triggers */
-  [role="listbox"],
-  [role="menu"] {
-    position: fixed !important;
-    max-width: calc(100vw - 16px) !important;
-    width: calc(100vw - 16px) !important;
-    left: 8px !important;
-    z-index: 9999 !important;
-  }
-  
-  /* Improve modal positioning on mobile */
+  /* Ensure modal positioning on mobile */
   [role="dialog"] {
     max-height: 90vh;
     margin-top: 5vh;
@@ -70,17 +46,6 @@
   /* Reduce spacing between topbar and content */
   .topbar-content-gap {
     @apply mt-2;
-  }
-  
-  /* Ensure dropdown menus show properly on mobile */
-  .radix-dropdown-content,
-  .radix-popover-content,
-  .radix-select-content {
-    z-index: 9999 !important;
-    position: fixed !important;
-    width: calc(100vw - 16px) !important;
-    max-width: calc(100vw - 16px) !important;
-    left: 8px !important;
   }
 }
 
@@ -113,13 +78,6 @@
   .container {
     padding-left: 0.75rem;
     padding-right: 0.75rem;
-  }
-  
-  /* Improve dropdown positioning on small screens */
-  [data-radix-popper-content-wrapper] {
-    max-width: calc(100vw - 16px) !important;
-    width: calc(100vw - 16px) !important;
-    left: 8px !important;
   }
 }
 

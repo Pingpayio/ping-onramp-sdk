@@ -72,10 +72,8 @@ const AssetSelector = ({
       </PopoverTrigger>
       <PopoverContent 
         className="p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 shadow-md w-full"
-        side="bottom"
-        avoidCollisions={false}
-        sideOffset={5}
         align="start"
+        sideOffset={5}
       >
         <AssetList
           searchQuery={searchQuery}

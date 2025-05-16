@@ -1,3 +1,4 @@
+
 #root {
   margin: 0 auto;
   text-align: center;
@@ -84,6 +85,13 @@ html, body {
     min-height: 44px;
   }
 
+  /* Add specific styles for Radix UI dropdowns */
+  .radix-dropdown-content,
+  .radix-popover-content,
+  .radix-select-content {
+    z-index: 9999 !important;
+  }
+
   /* Extra small screens (iPhone SE, etc) */
   @media (max-width: 374px) {
     .text-xs {
@@ -116,6 +124,11 @@ html, body {
   .card-gradient-hover:active::before {
     @apply opacity-100;
   }
+
+  /* Ensure dropdown portals work on mobile */
+  [data-radix-popper-content-wrapper] {
+    z-index: 9999 !important;
+  }
 }
 
 .glow-border {
@@ -134,4 +147,12 @@ html, body {
 /* Animate pulse slow for error indicators */
 .animate-pulse-slow {
   animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Ensure dropdowns have higher z-index than other elements */
+[role="listbox"],
+[role="menu"],
+[id^="radix-"],
+[id^="popover-"] {
+  z-index: 9999 !important;
 }

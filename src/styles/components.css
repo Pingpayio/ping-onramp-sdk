@@ -25,19 +25,23 @@
 
 /* Fix dropdown positioning on mobile */
 @media (max-width: 767px) {
+  /* Fixed positioning for all dropdowns on mobile */
   [data-radix-popper-content-wrapper] {
     position: fixed !important;
-    width: calc(100% - 16px) !important;
-    max-width: calc(100% - 16px) !important;
-    left: 8px !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
   }
   
+  /* Common styling for all dropdown types */
   .radix-dropdown-content,
   .radix-popover-content,
   .radix-select-content {
     position: fixed !important;
-    width: calc(100% - 16px) !important;
-    max-width: calc(100% - 16px) !important;
-    left: 8px !important;
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+    left: 16px !important;
   }
 }
