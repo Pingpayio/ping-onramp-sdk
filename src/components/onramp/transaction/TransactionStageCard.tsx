@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -140,12 +141,13 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
       );
     }
     
-    return null;
+    // Even when no hash is displayed, add an empty div with min-height to maintain consistency
+    return <div className="min-h-[36px] mt-2"></div>;
   };
 
   return (
     <div className={cn(
-      "border rounded-lg p-5 transition-all duration-500 ease-in-out", 
+      "border rounded-lg p-5 transition-all duration-500 ease-in-out min-h-[180px]", 
       config.color
     )}>
       <div className="flex items-start">
@@ -154,7 +156,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           <h3 className={cn("font-medium mb-1 text-lg", config.textColor)}>
             {stageLabels[currentStage]}
           </h3>
-          <p className="text-sm text-white/60">
+          <p className="text-sm text-white/60 min-h-[40px]">
             {getStageDescription()}
           </p>
           
