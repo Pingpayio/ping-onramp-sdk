@@ -34,8 +34,15 @@
   }
   
   /* Adjust positioning for asset selector and other dropdowns */
+  .asset-selector-popover {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
   .asset-selector-popover [data-radix-popper-content-wrapper] {
     width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
   }
 }
 
@@ -43,8 +50,8 @@
 @media (min-width: 768px) and (max-width: 1279px) {
   /* Ensure popovers don't exceed viewport */
   [data-radix-popper-content-wrapper] {
-    max-width: 350px !important;
-    right: auto !important;
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
   }
   
   /* Make tables horizontally scrollable */

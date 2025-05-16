@@ -24,7 +24,15 @@
   [data-radix-popper-content-wrapper] {
     /* Remove conflicting transform properties and fixed positioning */
     z-index: 999 !important; /* Ensure dropdowns appear above other content */
-    max-width: 95vw !important;
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
+  }
+  
+  /* Asset selector specific styling for mobile */
+  .asset-selector-popover [data-radix-popper-content-wrapper] {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
   }
   
   /* Properly space content below the fixed mobile topbar */
@@ -109,7 +117,9 @@
   
   /* Improve dropdown positioning on small screens */
   [data-radix-popper-content-wrapper] {
-    max-width: calc(100vw - 16px) !important;
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
+    left: 0 !important;
   }
 }
 
@@ -132,6 +142,7 @@
   
   /* Make sure dropdowns appear in correct position */
   [data-radix-popper-content-wrapper] {
-    max-width: 90% !important;
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
   }
 }
