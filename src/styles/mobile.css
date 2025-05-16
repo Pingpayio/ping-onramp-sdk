@@ -126,19 +126,32 @@
     animation: slide-out-to-right 300ms cubic-bezier(0.16, 1, 0.3, 1);
   }
   
-  /* Menu icon hover effect */
-  .menu-icon:hover {
-    color: #AF9EF9;
-  }
-  
-  /* Make the menu icon transition smooth */
-  .p-2.ml-2 button svg,
-  .p-2.ml-2 svg {
+  /* Improved menu icon hover and active states */
+  .menu-icon {
     transition: color 0.2s ease-in-out;
   }
   
-  .p-2.ml-2:hover svg {
-    color: #AF9EF9;
+  .menu-icon:hover,
+  .menu-icon:active {
+    color: #AF9EF9 !important;
+  }
+  
+  /* Fix hover effect for both hamburger and X icons */
+  .p-2.ml-2 button {
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .p-2.ml-2 button:hover svg,
+  .p-2.ml-2 button:active svg,
+  .p-2.ml-2 button:focus svg {
+    color: #AF9EF9 !important;
+  }
+  
+  /* More specific rule to ensure X icon changes color */
+  button[aria-expanded="true"] svg.menu-icon,
+  button[aria-expanded="true"]:hover svg,
+  button[aria-expanded="true"]:active svg {
+    color: #AF9EF9 !important;
   }
   
   @keyframes slide-in-from-right {

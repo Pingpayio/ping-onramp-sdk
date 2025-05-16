@@ -115,8 +115,15 @@ const MobileTopbar = () => {
         {/* Mobile Menu with Sheet */}
         <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
           <SheetTrigger asChild onClick={toggleMenu}>
-            <button className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-[#AB9FF2] transition-colors">
-              {isMenuOpen ? <X size={24} className="menu-icon" /> : <Menu size={24} />}
+            <button 
+              className="p-2 ml-2 text-white focus:outline-none min-h-[44px] min-w-[44px] flex items-center justify-center hover:text-[#AF9EF9] transition-colors"
+              aria-expanded={isMenuOpen}
+            >
+              {isMenuOpen ? (
+                <X size={24} className="menu-icon" />
+              ) : (
+                <Menu size={24} />
+              )}
             </button>
           </SheetTrigger>
           <SheetContent 
