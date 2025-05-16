@@ -3,7 +3,7 @@
 .radix-dropdown,
 .radix-popover,
 .radix-select {
-  z-index: 50;
+  z-index: 9999;
 }
 
 /* Mobile menu drawer should be below the header but above content */
@@ -13,11 +13,31 @@
 
 /* Fixed mobile header should be on top */
 .mobile-topbar {
-  z-index: 50;
+  z-index: 9998;
 }
 
 /* Ensure dropdowns are fully visible */
 [data-radix-popper-content-wrapper] {
-  max-height: 80vh !important;
+  max-height: 90vh !important;
   overflow-y: auto !important;
+  z-index: 9999 !important;
+}
+
+/* Fix dropdown positioning on mobile */
+@media (max-width: 767px) {
+  [data-radix-popper-content-wrapper] {
+    position: fixed !important;
+    width: calc(100% - 16px) !important;
+    max-width: calc(100% - 16px) !important;
+    left: 8px !important;
+  }
+  
+  .radix-dropdown-content,
+  .radix-popover-content,
+  .radix-select-content {
+    position: fixed !important;
+    width: calc(100% - 16px) !important;
+    max-width: calc(100% - 16px) !important;
+    left: 8px !important;
+  }
 }
