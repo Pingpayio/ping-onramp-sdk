@@ -37,7 +37,7 @@ const TransactionStatus = ({
   const isMobile = useIsMobile();
 
   return (
-    <div className={`flex flex-col space-y-4 w-full mx-auto min-h-[500px] ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
+    <div className={`flex flex-col space-y-4 w-full mx-auto ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
       {/* Progress bar */}
       <StatusProgressBar progress={progress} />
       
@@ -51,9 +51,6 @@ const TransactionStatus = ({
         onboardingTxHash={onboardingTxHash}
         swapTxHash={swapTxHash}
       />
-
-      {/* Flex spacer to push items apart */}
-      <div className="flex-grow min-h-[20px]"></div>
 
       {/* Transaction details card - always visible */}
       <TransactionDetailsCard 

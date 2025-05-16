@@ -78,22 +78,20 @@ const Transaction = () => {
   return (
     <TransactionContainer>
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-md min-h-[550px]">
-          <TransactionStatus 
-            status={getStatusFromStage(currentStage)}
-            title={transactionData.title || `${transactionData.asset} Transaction`}
-            description={transactionData.description || 
-              `Processing ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`}
-            txHash={finalTxHash}
-            stage={currentStage}
-            progress={progress}
-            onboardingTxHash={onboardingTxHash}
-            swapTxHash={swapTxHash}
-            amount={transactionData.amount}
-            asset={transactionData.asset}
-            walletAddress={transactionData.walletAddress}
-          />
-        </div>
+        <TransactionStatus 
+          status={getStatusFromStage(currentStage)}
+          title={transactionData.title || `${transactionData.asset} Transaction`}
+          description={transactionData.description || 
+            `Processing ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`}
+          txHash={finalTxHash}
+          stage={currentStage}
+          progress={progress}
+          onboardingTxHash={onboardingTxHash}
+          swapTxHash={swapTxHash}
+          amount={transactionData.amount}
+          asset={transactionData.asset}
+          walletAddress={transactionData.walletAddress}
+        />
       </div>
       
       <TransactionActionButtons currentStage={currentStage} />

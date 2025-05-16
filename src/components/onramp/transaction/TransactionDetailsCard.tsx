@@ -34,7 +34,7 @@ const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
   }, [isCompleted]);
 
   return (
-    <Card className="bg-white/5 border border-white/10 p-5 min-h-[180px]">
+    <Card className="bg-white/5 border border-white/10 p-5">
       <h4 className="text-sm text-white mb-2">Transaction Details</h4>
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">

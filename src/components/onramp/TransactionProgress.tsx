@@ -35,11 +35,11 @@ const TransactionProgress = ({
   const isCompleted = currentStage === 'completed';
 
   return (
-    <div className="w-full space-y-3 min-h-[500px] flex flex-col">
+    <div className="w-full space-y-3">
       {/* Progress bar */}
       <TransactionProgressBar progress={progress} />
       
-      {/* Current stage card - Important information, always visible */}
+      {/* Current stage card */}
       <TransactionStageCard 
         currentStage={currentStage}
         onboardingTxHash={depositTxHash}
@@ -50,9 +50,15 @@ const TransactionProgress = ({
         walletAddress={walletAddress}
       />
       
-      {/* Flex spacer to push items apart */}
-      <div className="flex-grow"></div>
-      
+      {/* Completion message (shown when completed) */}
+      {isCompleted && (
+        <TransactionCompletionMessage 
+          amount={amount} 
+          asset={asset} 
+          txHash={finalTxHash}
+        />
+      )}
+
       {/* Transaction details */}
       <TransactionDetailsCard 
         amount={amount} 

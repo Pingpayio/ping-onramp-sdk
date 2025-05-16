@@ -83,7 +83,7 @@ const OnrampPage = () => {
 
           <main className={`flex-1 flex ${isMobile || window.innerWidth < 1280 ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 mt-4 ${isMobile ? 'pb-4' : ''} half-screen-optimize`}>
             {/* Left container - maintains consistent size across steps on desktop, full width on mobile */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex-1 flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16] min-h-[550px]">
+            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex-1 flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16]">
               <OnrampStepContent 
                 currentStep={currentStep} 
                 steps={steps} 
