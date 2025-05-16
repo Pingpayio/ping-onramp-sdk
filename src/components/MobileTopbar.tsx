@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon } from 'lucide-react';
+import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, Link as LinkIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Button from './Button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -166,12 +165,6 @@ const MobileTopbar = () => {
                   </a>
                   <a href="#" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
                     <Github size={24} />
-                  </a>
-                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
-                    <ExternalLink size={24} />
-                  </a>
-                  <a href="#" className="text-white hover:text-[#AF9EF9] p-2 flex items-center justify-center">
-                    <BookOpen size={24} />
                   </a>
                 </div>
               </div>

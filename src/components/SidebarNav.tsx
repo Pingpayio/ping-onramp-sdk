@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ArrowDownUp, LayoutDashboard, Link as LinkIcon, User, Github, ExternalLink, BookOpen } from 'lucide-react';
+import { ArrowDownUp, LayoutDashboard, Link as LinkIcon, User, Github } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
@@ -132,12 +131,6 @@ const SidebarNav = () => {
         </a>
         <a href="#" className="text-white hover:text-[#AF9EF9] ml-[8px]">
           <Github size={20} />
-        </a>
-        <a href="#" className="text-white hover:text-[#AF9EF9] ml-[8px]">
-          <ExternalLink size={20} />
-        </a>
-        <a href="#" className="text-white hover:text-[#AF9EF9] ml-[8px]">
-          <BookOpen size={20} />
         </a>
       </div>
     </aside>
