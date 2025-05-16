@@ -74,13 +74,13 @@ const AssetSelector = ({
       </PopoverTrigger>
       <PopoverContent 
         className={cn(
-          "p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 shadow-md",
+          "p-0 border border-[#AF9EF9] bg-[#303030] z-50 mt-1 w-full shadow-md",
           isMobile && "asset-selector-popover"
         )}
         side="bottom"
         align="start"
         alignOffset={0}
-        sideOffset={4}
+        sideOffset={5}
         avoidCollisions={false}
       >
         <AssetList
