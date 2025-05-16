@@ -25,13 +25,6 @@
   min-width: var(--radix-select-trigger-width, auto) !important;
 }
 
-/* Consistent styling for all dropdown types */
-[data-radix-select-content],
-[data-radix-dropdown-menu-content],
-[data-radix-popover-content] {
-  margin-top: 5px !important; /* Consistent spacing for all dropdowns */
-}
-
 /* Ensure mobile popovers are properly positioned */
 @media (max-width: 767px) {
   .popover-mobile-full {
