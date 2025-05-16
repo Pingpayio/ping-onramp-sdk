@@ -1,9 +1,9 @@
 
 import React from 'react';
 import AssetSelection from '@/components/onramp/asset-selection';
-import OnrampMethodSelection from '@/components/onramp/OnrampMethodSelection';
-import PaymentCompletion from '@/components/onramp/PaymentCompletion';
+import TransactionProgress from '@/components/onramp/TransactionProgress';
 import OnrampNavigation from '@/components/onramp/OnrampNavigation';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface OnrampStepContentProps {
   currentStep: number;
@@ -23,6 +23,10 @@ interface OnrampStepContentProps {
   canContinue: () => boolean;
   cardNumber?: string;
   onCardNumberChange?: (cardNumber: string) => void;
+  selectedCurrency?: string;
+  onCurrencySelect?: (currency: string) => void;
+  isProcessingTransaction?: boolean;
+  walletAddressError?: boolean;
 }
 
 const OnrampStepContent = ({
@@ -42,44 +46,43 @@ const OnrampStepContent = ({
   handleContinue,
   canContinue,
   cardNumber = '',
-  onCardNumberChange
+  onCardNumberChange,
+  selectedCurrency = 'USD',
+  onCurrencySelect,
+  isProcessingTransaction = false,
+  walletAddressError = false
 }: OnrampStepContentProps) => {
+  const isMobile = useIsMobile();
   
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
         return (
-          <AssetSelection
-            selectedAsset={selectedAsset}
-            amount={amount}
-            onAssetSelect={onAssetSelect}
-            onAmountChange={onAmountChange}
-            open={open}
-            setOpen={setOpen}
-            walletAddress={walletAddress}
-            onWalletAddressChange={onWalletAddressChange}
+          <AssetSelection 
+            selectedAsset={selectedAsset} 
+            amount={amount} 
+            onAssetSelect={onAssetSelect} 
+            onAmountChange={onAmountChange} 
+            open={open} 
+            setOpen={setOpen} 
+            walletAddress={walletAddress} 
+            onWalletAddressChange={onWalletAddressChange} 
+            selectedCurrency={selectedCurrency} 
+            onCurrencySelect={onCurrencySelect} 
+            walletAddressError={walletAddressError}
           />
         );
       case 1:
         return (
-          <OnrampMethodSelection
-            selectedOnramp={selectedOnramp}
-            onOnrampSelect={onOnrampSelect}
-            amount={amount}
-            selectedAsset={selectedAsset}
-            walletAddress={walletAddress}
-            onCardNumberChange={onCardNumberChange}
-          />
-        );
-      case 2:
-        return (
-          <PaymentCompletion
-            amount={amount}
-            selectedAsset={selectedAsset}
-            walletAddress={walletAddress}
-            selectedOnramp={selectedOnramp}
-            cardNumber={cardNumber}
-          />
+          <div className="flex flex-col items-center h-full">
+            {/* Title section - same as in AssetSelection */}
+            <div className="flex items-center gap-2 mb-4 w-full">
+              <h2 className="text-lg md:text-xl font-medium text-white">Processing Your Transaction</h2>
+            </div>
+            
+            {/* Transaction progress container with same height as asset selection form */}
+            <TransactionProgress asset={selectedAsset} amount={amount} walletAddress={walletAddress} />
+          </div>
         );
       default:
         return null;
@@ -88,16 +91,22 @@ const OnrampStepContent = ({
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex-grow overflow-auto">
+      {/* Content section with adjusted spacing for consistent appearance */}
+      <div className="flex-grow overflow-y-auto pb-1">
         {renderCurrentStep()}
       </div>
-      <OnrampNavigation
-        currentStep={currentStep}
-        steps={steps}
-        handleBack={handleBack}
-        handleContinue={handleContinue}
-        canContinue={canContinue()}
-      />
+      
+      {/* Navigation buttons with consistent styling */}
+      <div className="mt-auto pt-4">
+        <OnrampNavigation 
+          currentStep={currentStep} 
+          steps={steps} 
+          handleBack={handleBack} 
+          handleContinue={handleContinue} 
+          canContinue={canContinue} 
+          isProcessingTransaction={isProcessingTransaction || currentStep === 1} 
+        />
+      </div>
     </div>
   );
 };

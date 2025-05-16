@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import Button from './Button';
 import { Wallet, Copy, CheckCircle2 } from 'lucide-react';
+import { toast } from '@/components/ui/use-toast';
 
 interface ConnectWalletProps {
   onConnect: (address: string) => void;
@@ -21,6 +22,12 @@ const ConnectWallet = ({ onConnect }: ConnectWalletProps) => {
         setAddress(mockAddress);
         setIsConnected(true);
         onConnect(mockAddress);
+        
+        // Use standardized toast
+        toast({
+          title: "Wallet Connected", 
+          description: "Your wallet has been connected successfully!"
+        });
       }, 1000);
     } catch (error) {
       console.error("Error connecting wallet:", error);
@@ -31,6 +38,11 @@ const ConnectWallet = ({ onConnect }: ConnectWalletProps) => {
     navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+    
+    toast({
+      title: "Address Copied",
+      description: "Wallet address copied to clipboard"
+    });
   };
 
   return (

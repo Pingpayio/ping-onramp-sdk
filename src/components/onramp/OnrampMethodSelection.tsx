@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import ApplePayButton from './payment-methods/ApplePayButton';
 import PaymentForm from './payment-methods/PaymentForm';
-import { Separator } from '@/components/ui/separator';
 
 interface OnrampMethodSelectionProps {
   selectedOnramp: string | null;
@@ -29,8 +28,8 @@ const OnrampMethodSelection = ({
   }, [onOnrampSelect, selectedOnramp]);
 
   return (
-    <div>
-      <h2 className="text-xl md:text-2xl font-semibold mb-3">
+    <div className="space-y-6">
+      <h2 className="text-xl md:text-2xl font-semibold mb-5 text-white">
         Payment method
       </h2>
       
@@ -38,10 +37,10 @@ const OnrampMethodSelection = ({
       <ApplePayButton onSelect={() => onOnrampSelect("apple")} />
       
       {/* Divider with text */}
-      <div className="flex items-center mb-4">
-        <div className="flex-grow h-px bg-gray-200"></div>
-        <span className="px-4 text-gray-400 text-sm">Or pay with debit card</span>
-        <div className="flex-grow h-px bg-gray-200"></div>
+      <div className="flex items-center mb-6">
+        <div className="flex-grow h-px bg-gray-200/20"></div>
+        <span className="px-4 text-white/40 text-sm">Or pay with debit card</span>
+        <div className="flex-grow h-px bg-gray-200/20"></div>
       </div>
       
       {/* Credit Card Form */}

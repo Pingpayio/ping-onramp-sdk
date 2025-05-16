@@ -1,27 +1,29 @@
 
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ArrowDownUp, LayoutDashboard, Link as LinkIcon, User, Github, ExternalLink, BookOpen } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const SidebarNav = () => {
   const location = useLocation();
-  const isActive = (path: string) => {
-    if (path === "/dashboard" && location.pathname === "/onramp") {
-      return true;
-    }
-    return location.pathname === path;
+  const navigate = useNavigate();
+  const isActive = (path: string) => location.pathname === path;
+  
+  const handleLogoClick = () => {
+    navigate('/onramp');
+    // Force a page refresh
+    window.location.reload();
   };
   
   const menuItems = [{
     title: "Onramp",
-    icon: <ArrowDownUp className="h-5 w-5" />, // Reverted back to ArrowDownUp for Onramp
-    path: "/dashboard",
+    icon: <ArrowDownUp className="h-5 w-5" />,
+    path: "/onramp",
     disabled: false
   }, {
     title: "Dashboard",
     icon: <LayoutDashboard className="h-5 w-5" />,
-    path: "/markets",
+    path: "/dashboard",
     disabled: true
   }, {
     title: "Ping Links",
@@ -30,7 +32,6 @@ const SidebarNav = () => {
     disabled: true
   }, {
     title: "Subscriptions",
-    // Using a combination of icons or styling to represent recurring arrows
     icon: (
       <div className="relative h-5 w-5 flex items-center justify-center">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-repeat">
@@ -51,10 +52,13 @@ const SidebarNav = () => {
   }];
   
   return (
-    <aside className="bg-[#1F1F1F] flex flex-col h-screen w-[256px] fixed left-0 top-0">
-      {/* Logo */}
-      <div className="pt-[56px] pl-[40px]">
-        <div className="text-white text-2xl font-semibold flex items-center">
+    <aside className="bg-[#121212] hidden md:flex flex-col h-screen w-[256px] fixed left-0 top-0">
+      {/* Logo - reduced pt from 56px to 40px to move it up */}
+      <div className="pt-[40px] pl-[40px]">
+        <div 
+          className="text-white text-2xl font-semibold flex items-center cursor-pointer" 
+          onClick={handleLogoClick}
+        >
           <img 
             src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
             alt="PING" 
@@ -63,17 +67,15 @@ const SidebarNav = () => {
         </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="mt-8 flex-1">
+      {/* Navigation - reduced mt from 8 to align with the logo adjustment */}
+      <nav className="mt-6 flex-1">
         <ul className="space-y-1">
           {menuItems.map(item => (
             <li key={item.title}>
               {item.disabled ? (
-                // Disabled item - only visual, not clickable
                 <div 
                   className={`flex items-center py-3 text-base font-medium relative transition-colors duration-300 text-gray-500 cursor-not-allowed`}
                 >
-                  {/* Icon bubble with greyed out styling */}
                   <div className="pl-[44px] flex items-center">
                     <div className="flex items-center justify-center w-9 h-9 rounded-full bg-transparent">
                       <span className="flex items-center justify-center text-gray-500">
@@ -81,12 +83,10 @@ const SidebarNav = () => {
                       </span>
                     </div>
                     
-                    {/* Text label */}
                     <span className="ml-3">{item.title}</span>
                   </div>
                 </div>
               ) : (
-                // Active item - clickable with original styling
                 <Link 
                   to={item.path} 
                   className={`flex items-center py-3 text-base font-medium relative transition-colors duration-300 ${
@@ -95,14 +95,11 @@ const SidebarNav = () => {
                     "text-white hover:text-[#AF9EF9]"
                   }`}
                 >
-                  {/* Active state pill background - with smooth animation */}
                   {isActive(item.path) && (
                     <div className="absolute left-[40px] h-[44px] w-[176px] bg-[#AF9EF9] rounded-full -z-10 transition-all duration-300 ease-in-out"></div>
                   )}
                   
-                  {/* Icon and text content - always positioned the same way */}
                   <div className="pl-[44px] flex items-center">
-                    {/* Icon in circular bubble with smooth transition */}
                     <div className={`flex items-center justify-center w-9 h-9 rounded-full transition-colors duration-300 ${
                       isActive(item.path) ? 
                       "bg-[#1F1F1F]" : 
@@ -117,7 +114,6 @@ const SidebarNav = () => {
                       </span>
                     </div>
                     
-                    {/* Text label with proper spacing from icon */}
                     <span className="ml-3">{item.title}</span>
                   </div>
                 </Link>
@@ -127,8 +123,8 @@ const SidebarNav = () => {
         </ul>
       </nav>
 
-      {/* Social Links - Updated spacing and left alignment */}
-      <div className="flex pl-[40px] pt-2 pb-6 space-x-2">
+      {/* Social Links */}
+      <div className="flex pl-[52px] pt-2 pb-6 space-x-2">
         <a href="https://x.com/pingpay_io" target="_blank" rel="noopener noreferrer" className="text-white hover:text-[#AF9EF9]">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
             <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />

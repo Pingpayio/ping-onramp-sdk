@@ -1,0 +1,40 @@
+
+/* Add z-index management for dropdowns and popovers */
+.radix-dropdown,
+.radix-popover,
+.radix-select {
+  z-index: 50;
+}
+
+/* Mobile menu drawer should be below the header but above content */
+.mobile-menu-drawer {
+  z-index: 40;
+}
+
+/* Fixed mobile header should be on top */
+.mobile-topbar {
+  z-index: 50;
+}
+
+/* Ensure dropdowns are fully visible */
+[data-radix-popper-content-wrapper] {
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+}
+
+/* Ensure mobile popovers are properly positioned */
+@media (max-width: 767px) {
+  .popover-mobile-full {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+  }
+  
+  /* Fix position for asset selector and other dropdowns */
+  .asset-selector-popover [data-radix-popper-content-wrapper] {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+}

@@ -1,72 +1,72 @@
 
 import React from 'react';
-import { cn } from '@/lib/utils';
-import { CheckCircle2, Clock, AlertCircle } from 'lucide-react';
-
-type StatusType = 'pending' | 'completed' | 'failed';
+import { type TransactionStage } from '@/hooks/use-transaction-progress';
+import StatusProgressBar from './transaction/StatusProgressBar';
+import StatusCard from './transaction/StatusCard';
+import TransactionDetailsCard from './transaction/TransactionDetailsCard';
+import CompletionMessage from './transaction/CompletionMessage';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionStatusProps {
-  status: StatusType;
+  status: 'pending' | 'completed' | 'failed';
   title: string;
   description: string;
   txHash?: string;
+  stage?: TransactionStage;
+  progress?: number;
+  onboardingTxHash?: string;
+  swapTxHash?: string;
+  amount?: string;
+  asset?: string;
+  walletAddress?: string;
 }
 
 const TransactionStatus = ({
   status,
   title,
   description,
-  txHash
+  txHash,
+  stage = 'deposit',
+  progress = 0,
+  onboardingTxHash,
+  swapTxHash,
+  amount,
+  asset,
+  walletAddress
 }: TransactionStatusProps) => {
-  // Define status configurations with fallback to 'pending' if status is invalid
-  const statusConfig = {
-    pending: {
-      icon: <Clock className="h-6 w-6 text-yellow-500" />,
-      color: 'bg-yellow-50 border-yellow-200',
-      textColor: 'text-yellow-700'
-    },
-    completed: {
-      icon: <CheckCircle2 className="h-6 w-6 text-green-500" />,
-      color: 'bg-green-50 border-green-200',
-      textColor: 'text-green-700'
-    },
-    failed: {
-      icon: <AlertCircle className="h-6 w-6 text-red-500" />,
-      color: 'bg-red-50 border-red-200',
-      textColor: 'text-red-700'
-    }
-  };
-
-  // Ensure the status is valid, fallback to 'pending' if not
-  const validStatus: StatusType = statusConfig.hasOwnProperty(status) ? status : 'pending';
-  const config = statusConfig[validStatus];
+  const isMobile = useIsMobile();
 
   return (
-    <div className={cn("border rounded-lg p-5", config.color)}>
-      <div className="flex items-start">
-        <div className="mr-3 mt-1">{config.icon}</div>
-        <div>
-          <h3 className={cn("font-medium mb-1", config.textColor)}>{title}</h3>
-          <p className="text-sm text-muted-foreground">{description}</p>
-          
-          {txHash && (
-            <div className="mt-3">
-              <p className="text-xs text-muted-foreground mb-1">Transaction Hash:</p>
-              <div className="bg-white bg-opacity-50 p-2 rounded text-xs font-mono break-all">
-                {txHash}
-              </div>
-            </div>
-          )}
-          
-          {validStatus === 'pending' && (
-            <div className="mt-3">
-              <div className="h-2 w-full bg-yellow-200 rounded-full overflow-hidden">
-                <div className="h-full bg-yellow-500 rounded-full w-1/2 animate-pulse-slow"></div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
+    <div className={`flex flex-col space-y-4 w-full mx-auto ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
+      {/* Progress bar */}
+      <StatusProgressBar progress={progress} />
+      
+      {/* Current stage card */}
+      <StatusCard 
+        status={status}
+        title={title}
+        description={description}
+        txHash={txHash}
+        stage={stage}
+        onboardingTxHash={onboardingTxHash}
+        swapTxHash={swapTxHash}
+      />
+
+      {/* Transaction details card - always visible */}
+      <TransactionDetailsCard 
+        amount={amount}
+        asset={asset}
+        walletAddress={walletAddress}
+      />
+
+      {/* Completion message - only shown when completed */}
+      {stage === 'completed' && (
+        <CompletionMessage 
+          amount={amount}
+          asset={asset}
+          stage={stage}
+        />
+      )}
     </div>
   );
 };

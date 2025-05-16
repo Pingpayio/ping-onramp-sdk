@@ -1,11 +1,14 @@
 
 import React, { useState, useEffect } from 'react';
+import { DollarSign } from 'lucide-react';
 import AssetSelector from './AssetSelector';
 import AmountInput from './AmountInput';
 import NetworkBadge from './NetworkBadge';
 import PaymentMethod from './PaymentMethod';
 import WalletAddressInput from './WalletAddressInput';
+import NearIntentsField from './NearIntentsField';
 import { calculateEstimatedAmount } from './PriceCalculator';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AssetSelectionProps {
   selectedAsset: string | null;
@@ -16,6 +19,9 @@ interface AssetSelectionProps {
   setOpen: (open: boolean) => void;
   walletAddress: string;
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  selectedCurrency?: string;
+  onCurrencySelect?: (currency: string) => void;
+  walletAddressError?: boolean;
 }
 
 const AssetSelection = ({
@@ -26,10 +32,14 @@ const AssetSelection = ({
   open,
   setOpen,
   walletAddress,
-  onWalletAddressChange
+  onWalletAddressChange,
+  selectedCurrency = "USD",
+  onCurrencySelect = () => {},
+  walletAddressError = false
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
-  
+  const isMobile = useIsMobile();
+
   // Calculate estimated token amount based on USD amount and selected asset
   useEffect(() => {
     const calculated = calculateEstimatedAmount(selectedAsset, amount);
@@ -38,48 +48,48 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center h-full">
-      {/* 1. Title section - "Buy Crypto" - reduced margin */}
-      <h2 className="text-lg md:text-xl font-semibold mb-1 md:mb-2 text-center">
-        {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
-      </h2>
+      {/* 1. Title section - "Buy Crypto" - better spacing */}
+      <div className="flex items-center gap-2 mb-4 w-full">
+        <DollarSign className="h-5 w-5 text-white" />
+        <h2 className="text-xl font-medium text-white">
+          {selectedAsset ? `Buy ${selectedAsset}` : 'Buy Crypto'}
+        </h2>
+      </div>
       
-      {/* 2 & 3. Amount input with estimated value - REDUCED spacing */}
-      <AmountInput 
-        amount={amount}
-        onAmountChange={onAmountChange}
-        selectedAsset={selectedAsset}
-        estimatedAmount={estimatedAmount}
-      />
+      {/* 2 & 3. Amount input with estimated value - better spacing */}
+      <AmountInput amount={amount} onAmountChange={onAmountChange} selectedAsset={selectedAsset} estimatedAmount={estimatedAmount} />
       
-      {/* Selection cards with further reduced spacing between items */}
-      <div className="w-full space-y-1 mt-0">
-        {/* Network Badge moved above asset selection with minimal spacing */}
+      {/* Selection cards with improved spacing throughout */}
+      <div className="w-full space-y-3 mt-0 mobile-stacked-form">
+        {/* 4. Asset Selection Card */}
+        <div className="flex flex-col">
+          <label className="text-sm text-white mb-2">Select Asset</label>
+          <div className="rounded-lg hover:shadow-sm transition-shadow h-[42px] flex items-center">
+            <AssetSelector selectedAsset={selectedAsset} onAssetSelect={onAssetSelect} open={open} setOpen={setOpen} />
+          </div>
+        </div>
+        
+        {/* NetworkBadge with better spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
-        {/* 4. Asset Selection Card with reduced padding */}
-        <div className="rounded-lg border p-2 md:p-3 hover:shadow-sm transition-shadow">
-          <AssetSelector
-            selectedAsset={selectedAsset}
-            onAssetSelect={onAssetSelect}
-            open={open}
-            setOpen={setOpen}
+        {/* 5. Wallet Address Input */}
+        <div className="flex flex-col">
+          <label className="text-sm text-white mb-2">Recipient Address (e.g. alice.near)</label>
+          <WalletAddressInput 
+            walletAddress={walletAddress} 
+            onWalletAddressChange={onWalletAddressChange} 
+            placeholder="Enter recipient address" 
+            isError={walletAddressError}
+            errorMessage="Please enter a valid recipient address"
           />
         </div>
         
-        {/* 5. Wallet Address Input with reduced spacing */}
-        <WalletAddressInput 
-          walletAddress={walletAddress}
-          onWalletAddressChange={onWalletAddressChange}
-        />
-        
-        {/* 6. Payment Method Card */}
+        {/* Payment Method Card */}
         <PaymentMethod />
+        
+        {/* NEAR Intents Deposit Address */}
+        <NearIntentsField />
       </div>
-      
-      {/* 7. Minimum amount text - better positioned */}
-      <p className="text-xs md:text-sm text-muted-foreground mt-auto pt-2">
-        Minimum amount: $10.00
-      </p>
     </div>
   );
 };

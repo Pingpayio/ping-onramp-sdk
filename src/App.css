@@ -44,5 +44,96 @@
 /* Make sure body and html have full height */
 html, body {
   height: 100%;
-  overflow: hidden;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  body {
+    padding-top: 54px; /* Updated to match new mobile topbar height */
+  }
+  
+  /* Improve scrolling on mobile */
+  .overflow-hidden {
+    overflow: visible;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Fix double scrollbar issues */
+  main {
+    overflow-x: hidden;
+  }
+  
+  /* Ensure tap targets are at least 44x44px on mobile */
+  button, 
+  [role="button"],
+  input[type="submit"],
+  input[type="reset"],
+  input[type="button"],
+  a.btn,
+  .btn,
+  .interactive-element {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Improve form element touch targets */
+  input, 
+  select,
+  textarea {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+    min-height: 44px;
+  }
+}
+
+/* Fix for mobile buttons with gradient background */
+.card-gradient-hover {
+  @apply relative overflow-hidden transition-all duration-300;
+}
+
+.card-gradient-hover::before {
+  content: "";
+  @apply absolute inset-0 rounded-lg z-0 opacity-0 bg-gradient-ping transition-opacity duration-300;
+}
+
+.card-gradient-hover:hover::before {
+  @apply opacity-100;
+}
+
+/* Add tactile feedback for mobile touch */
+@media (max-width: 767px) {
+  .card-gradient-hover:active::before {
+    @apply opacity-100;
+  }
+  
+  /* Prevent content from being hidden under fixed elements */
+  .has-fixed-header {
+    padding-top: 54px;
+  }
+  
+  /* Make popover menus full width on mobile */
+  .popover-fullwidth [data-radix-popper-content-wrapper] {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+    left: 16px !important;
+  }
+}
+
+.glow-border {
+  @apply relative rounded-lg;
+}
+
+.glow-border::after {
+  content: "";
+  @apply absolute -inset-[1px] rounded-lg bg-gradient-ping blur-sm opacity-50 z-0 transition-opacity duration-300;
+}
+
+.ping-shadow {
+  box-shadow: 0 0 25px rgba(116, 93, 220, 0.15);
+}
+
+/* Animate pulse slow for error indicators */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

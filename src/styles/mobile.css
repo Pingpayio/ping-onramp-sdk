@@ -1,0 +1,122 @@
+
+/* Add padding-top for mobile content to account for the topbar */
+@media (max-width: 767px) {
+  body {
+    padding-top: 0; /* Remove default padding */
+    @apply overflow-x-hidden;
+  }
+  
+  /* Improve touch targets for mobile */
+  button, a {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  input, select, textarea {
+    @apply text-base py-3 min-h-[44px];
+  }
+  
+  /* Fix popovers and dropdowns on mobile */
+  .popover-content, .dropdown-content {
+    @apply max-w-[calc(100vw-24px)] !important;
+    transform: translateY(5px) !important;
+  }
+  
+  /* Force dropdowns and popups to appear below their triggers */
+  [data-radix-popper-content-wrapper] {
+    transform: translate3d(0, 5px, 0) !important;
+    top: 100% !important;
+    bottom: auto !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    max-width: 95vw !important;
+    width: 95vw !important;
+  }
+  
+  /* Properly space content below the fixed mobile topbar */
+  .pt-topbar {
+    padding-top: 54px; /* Updated to match new topbar height */
+  }
+  
+  /* Prevent double scrollbars */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Ensure dropdown lists always appear below their triggers */
+  [role="listbox"],
+  [role="menu"] {
+    top: 100% !important;
+    bottom: auto !important;
+  }
+  
+  /* Improve modal positioning on mobile */
+  [role="dialog"] {
+    max-height: 90vh;
+    margin-top: 5vh;
+  }
+
+  /* Style for the connect wallet button on mobile */
+  .wallet-button-mobile {
+    @apply py-2.5 px-5 text-sm min-h-[40px];
+  }
+  
+  /* Adjust header height in mobile menu */
+  .mobile-menu {
+    @apply pt-[54px];
+  }
+  
+  /* Improve onramp page layout for mobile */
+  .onramp-container {
+    @apply flex-col !important;
+  }
+  
+  /* Center align mobile content */
+  .mobile-centered {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Adjust form spacing on mobile */
+  .mobile-stacked-form > * {
+    @apply mb-4 w-full;
+  }
+}
+
+/* Extra small screen optimizations */
+@media (max-width: 374px) {
+  .text-xs {
+    font-size: 0.7rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Make buttons more compact on very small screens */
+  .btn-sm, button.text-xs {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  /* Reduce container padding */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Improve dropdown positioning on small screens */
+  [data-radix-popper-content-wrapper] {
+    max-width: calc(100vw - 16px) !important;
+    width: calc(100vw - 16px) !important;
+    left: 8px !important;
+  }
+}

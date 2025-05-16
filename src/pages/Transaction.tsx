@@ -1,56 +1,101 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import TransactionStatus from '@/components/TransactionStatus';
-import SidebarNav from '@/components/SidebarNav';
+import { useTransactionProgress, TransactionStage } from '@/hooks/use-transaction-progress';
+import { toast } from '@/components/ui/use-toast';
+import TransactionContainer from '@/components/transaction/TransactionContainer';
+import TransactionActionButtons from '@/components/transaction/TransactionActionButtons';
+import { generateTransactionHash } from '@/components/transaction/utils/transactionUtils';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const Transaction = () => {
   const location = useLocation();
   const { state } = location;
+  const isMobile = useIsMobile();
+  
+  const {
+    currentStage,
+    progress,
+    error
+  } = useTransactionProgress({ simulateProgress: true });
   
   const defaultData = {
     status: "pending",
     title: "Transaction Processing",
     description: "Your transaction is currently being processed. This may take a few minutes.",
-    txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+    txHash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+    asset: "NEAR",
+    amount: "100",
+    walletAddress: "0x1234...5678"
   };
   
   // Use state data if available, otherwise use default
-  const transactionData = state || defaultData;
+  const transactionData = state?.txDetails || defaultData;
 
-  // Ensure status is valid by checking against allowed values
-  const validStatus = ['pending', 'completed', 'failed'].includes(transactionData.status) 
-    ? transactionData.status 
-    : 'pending';
+  // Generate transaction hashes
+  const onboardingTxHash = generateTransactionHash('0x7a');
+  const swapTxHash = generateTransactionHash('0x8b');
+  const finalTxHash = generateTransactionHash('0x9c');
+  
+  // Show toast notifications on stage changes with consistent styling
+  useEffect(() => {
+    if (currentStage === 'querying') {
+      toast({
+        title: "Deposit Received",
+        description: "Now querying quotes on NEAR Intents...",
+      });
+    } else if (currentStage === 'signing') {
+      toast({
+        title: "Quotes Retrieved",
+        description: "Please sign the transaction message...",
+      });
+    } else if (currentStage === 'sending') {
+      toast({
+        title: "Transaction Signed",
+        description: "Now sending your assets...",
+      });
+    } else if (currentStage === 'completed') {
+      toast({
+        title: "Transaction Complete",
+        description: `Successfully delivered ${transactionData.amount} ${transactionData.asset} to your wallet.`,
+      });
+    }
+  }, [currentStage, transactionData]);
 
-  // Convert transaction data to the format expected by TransactionStatus
-  const statusProps = {
-    status: validStatus as 'pending' | 'completed' | 'failed',
-    title: transactionData.title || `${transactionData.asset || 'Crypto'} Transaction`,
-    description: transactionData.description || 
-      (transactionData.amount && transactionData.asset && transactionData.walletAddress 
-        ? `Sending ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`
-        : "Transaction details"),
-    txHash: transactionData.txHash
+  // Map transaction stage to status
+  const getStatusFromStage = (stage: TransactionStage): 'pending' | 'completed' | 'failed' => {
+    switch (stage) {
+      case 'completed':
+        return 'completed';
+      case 'failed':
+        return 'failed';
+      default:
+        return 'pending';
+    }
   };
 
   return (
-    <div className="flex h-screen bg-[#120714] overflow-hidden">
-      <SidebarNav />
-      
-      <div className="flex-1 ml-[256px]">
-        <div className="container mx-auto px-6 py-6 flex flex-col h-full">
-          <div className="flex-1 flex items-center justify-center">
-            <TransactionStatus 
-              status={statusProps.status}
-              title={statusProps.title}
-              description={statusProps.description}
-              txHash={statusProps.txHash}
-            />
-          </div>
-        </div>
+    <TransactionContainer>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <TransactionStatus 
+          status={getStatusFromStage(currentStage)}
+          title={transactionData.title || `${transactionData.asset} Transaction`}
+          description={transactionData.description || 
+            `Processing ${transactionData.amount} ${transactionData.asset} to ${transactionData.walletAddress}`}
+          txHash={finalTxHash}
+          stage={currentStage}
+          progress={progress}
+          onboardingTxHash={onboardingTxHash}
+          swapTxHash={swapTxHash}
+          amount={transactionData.amount}
+          asset={transactionData.asset}
+          walletAddress={transactionData.walletAddress}
+        />
       </div>
-    </div>
+      
+      <TransactionActionButtons currentStage={currentStage} />
+    </TransactionContainer>
   );
 };
 

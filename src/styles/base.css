@@ -5,13 +5,13 @@
 
 @layer base {
   :root {
-    --background: 0 0% 12%; /* #1F1F1F */
+    --background: 0 0% 7%; /* #121212 */
     --foreground: 222.2 84% 4.9%;
 
-    --card: 0 0% 12%; /* #1F1F1F */
+    --card: 0 0% 7%; /* #121212 */
     --card-foreground: 222.2 84% 4.9%;
 
-    --popover: 0 0% 12%; /* #1F1F1F */
+    --popover: 0 0% 7%; /* #121212 */
     --popover-foreground: 222.2 84% 4.9%;
 
     --primary: 255 57% 61%;
@@ -32,10 +32,12 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
     --ring: 255 57% 61%;
+    --accent-border: 262 88% 77%; /* #AF9EF9 */
+    --hover-bg: 0 0% 100% / 0.05; /* white/5 */
 
     --radius: 0.5rem;
 
-    --sidebar-background: 0 0% 12%; /* #1F1F1F */
+    --sidebar-background: 0 0% 7%; /* #121212 */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 240 5.9% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
@@ -43,16 +45,19 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 255 57% 61%;
+    
+    /* Define mobile topbar height for consistent spacing */
+    --topbar-height: 64px;
   }
 
   .dark {
-    --background: 0 0% 12%; /* #1F1F1F */
+    --background: 0 0% 7%; /* #121212 */
     --foreground: 210 40% 98%;
 
-    --card: 0 0% 12%; /* #1F1F1F */
+    --card: 0 0% 7%; /* #121212 */
     --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 12%; /* #1F1F1F */
+    --popover: 0 0% 7%; /* #121212 */
     --popover-foreground: 210 40% 98%;
 
     --primary: 255 57% 61%;
@@ -73,7 +78,10 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 255 57% 61%;
-    --sidebar-background: 0 0% 12%; /* #1F1F1F */
+    --accent-border: 262 88% 77%; /* #AF9EF9 */
+    --hover-bg: 0 0% 100% / 0.05; /* white/5 */
+    
+    --sidebar-background: 0 0% 7%; /* #121212 */
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
     --sidebar-primary-foreground: 0 0% 100%;
@@ -91,31 +99,6 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
   }
-}
-
-.card-gradient-hover {
-  @apply relative overflow-hidden transition-all duration-300;
-}
-
-.card-gradient-hover::before {
-  content: "";
-  @apply absolute inset-0 rounded-lg z-0 opacity-0 bg-gradient-ping transition-opacity duration-300;
-}
-
-.card-gradient-hover:hover::before {
-  @apply opacity-100;
-}
-
-.glow-border {
-  @apply relative rounded-lg;
-}
-
-.glow-border::after {
-  content: "";
-  @apply absolute -inset-[1px] rounded-lg bg-gradient-ping blur-sm opacity-50 z-0 transition-opacity duration-300;
-}
-
-.ping-shadow {
-  box-shadow: 0 0 25px rgba(116, 93, 220, 0.15);
 }
