@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon } from 'lucide-react';
@@ -89,20 +88,18 @@ const MobileTopbar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - styled to match desktop */}
+        {/* Connect Wallet Button - styled to match the image */}
         {!isConnected ? (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] rounded-full h-8 py-1.5 px-4 hover:opacity-90 sm:py-2 sm:px-5"
+            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px]"
             onClick={connectWallet}
-            size="sm"
           >
             Connect
           </Button>
         ) : (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] rounded-full h-8 py-1.5 px-4 hover:opacity-90 sm:py-2 sm:px-5"
+            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px]"
             onClick={copyAddress}
-            size="sm"
           >
             {displayAddress}
           </Button>
