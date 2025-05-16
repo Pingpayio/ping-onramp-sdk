@@ -1,4 +1,3 @@
-
 /* Add padding-top for mobile content to account for the topbar */
 @media (max-width: 767px) {
   body {
@@ -82,32 +81,6 @@
   /* Adjust form spacing on mobile */
   .mobile-stacked-form > * {
     @apply mb-4 w-full;
-  }
-  
-  /* Ensure consistent height for onramp content across stages */
-  .onramp-step-content {
-    min-height: 460px;
-  }
-  
-  /* Ensure consistent height for transaction progress container */
-  .onramp-progress-container {
-    min-height: 380px;
-  }
-  
-  /* Make consistent heights for specific transaction stages */
-  .consistent-height-stages {
-    min-height: 145px;
-  }
-  
-  /* Ensure consistent height for transaction stage cards on mobile */
-  .transaction-stage-mobile {
-    min-height: 160px;
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .transaction-stage-mobile > div {
-    flex-grow: 1;
   }
 }
 

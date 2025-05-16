@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TransactionStageCardProps {
   currentStage: TransactionStage;
@@ -24,8 +22,6 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
   amount,
   walletAddress
 }) => {
-  const isMobile = useIsMobile();
-  
   // Define status configurations based on transaction stage
   const getStageConfig = () => {
     switch (currentStage) {
@@ -115,13 +111,21 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
   };
 
   const renderTransactionHash = () => {
-    // Only show transaction hash for deposit/payment and completed stages
     if ((currentStage === 'deposit' || currentStage === 'payment') && onboardingTxHash) {
       return (
         <div className="mt-2">
           <p className="text-xs text-white/60 mb-1">Deposit Transaction:</p>
           <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
             {onboardingTxHash}
+          </div>
+        </div>
+      );
+    } else if ((currentStage === 'sending' || currentStage === 'swap') && swapTxHash) {
+      return (
+        <div className="mt-2">
+          <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {swapTxHash}
           </div>
         </div>
       );
@@ -136,18 +140,13 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
       );
     }
     
-    // Remove the swap transaction hash display for sending stage
     return null;
   };
-
-  // Determine if we need a consistent height based on stage
-  const needsConsistentHeight = currentStage === 'querying' || currentStage === 'signing' || currentStage === 'sending';
 
   return (
     <div className={cn(
       "border rounded-lg p-5 transition-all duration-500 ease-in-out", 
-      config.color,
-      needsConsistentHeight && isMobile ? "consistent-height-stages" : ""
+      config.color
     )}>
       <div className="flex items-start">
         <div className="mr-4 mt-1 flex-shrink-0 w-8 h-8 flex items-center justify-center">{config.icon}</div>
