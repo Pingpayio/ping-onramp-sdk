@@ -89,17 +89,17 @@ const MobileTopbar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - now with the same gradient hover effect */}
+        {/* Connect Wallet Button - styled to match the image */}
         {!isConnected ? (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px] card-gradient-hover"
+            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px]"
             onClick={connectWallet}
           >
             Connect
           </Button>
         ) : (
           <Button 
-            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px] card-gradient-hover"
+            className="bg-[#AB9FF2] text-[#3D315E] rounded-full px-5 py-2.5 text-sm hover:opacity-90 min-h-[40px]"
             onClick={copyAddress}
           >
             {displayAddress}
