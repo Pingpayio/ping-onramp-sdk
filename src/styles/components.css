@@ -43,12 +43,6 @@
     left: 16px !important;
     right: 16px !important;
   }
-  
-  /* Make asset selector match parent trigger width */
-  .asset-selector-popover {
-    width: 100% !important;
-    max-width: 100% !important;
-  }
 }
 
 /* Half-screen desktop optimizations */
