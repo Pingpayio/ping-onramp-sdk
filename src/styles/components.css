@@ -21,6 +21,7 @@
   max-height: 80vh !important;
   overflow-y: auto !important;
   z-index: 999 !important;
+  width: var(--radix-select-trigger-width, auto) !important;
 }
 
 /* Ensure mobile popovers are properly positioned */
