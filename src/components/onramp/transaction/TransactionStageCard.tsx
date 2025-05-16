@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TransactionStage } from '@/hooks/use-transaction-progress';
 import { CheckCircle2, CircleX, Clock, ArrowRight, Wallet, Link } from 'lucide-react';
@@ -121,6 +120,15 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           </div>
         </div>
       );
+    } else if ((currentStage === 'sending' || currentStage === 'swap') && swapTxHash) {
+      return (
+        <div className="mt-2">
+          <p className="text-xs text-white/60 mb-1">Swap Transaction:</p>
+          <div className="bg-white/5 p-2 rounded text-xs font-mono break-all text-white/40">
+            {swapTxHash}
+          </div>
+        </div>
+      );
     } else if (currentStage === 'completed' && finalTxHash) {
       return (
         <div className="mt-2">
@@ -135,16 +143,9 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
     return null;
   };
 
-  // Determine if this stage should have a consistent height (signing, querying, sending)
-  const shouldHaveConsistentHeight = 
-    currentStage === 'signing' || 
-    currentStage === 'querying' || 
-    currentStage === 'sending';
-
   return (
     <div className={cn(
-      "border rounded-lg p-5 transition-all duration-500 ease-in-out",
-      shouldHaveConsistentHeight ? "min-h-[180px]" : "",
+      "border rounded-lg p-5 transition-all duration-500 ease-in-out", 
       config.color
     )}>
       <div className="flex items-start">
@@ -153,7 +154,7 @@ export const TransactionStageCard: React.FC<TransactionStageCardProps> = ({
           <h3 className={cn("font-medium mb-1 text-lg", config.textColor)}>
             {stageLabels[currentStage]}
           </h3>
-          <p className="text-sm text-white/60 min-h-[40px]">
+          <p className="text-sm text-white/60">
             {getStageDescription()}
           </p>
           
