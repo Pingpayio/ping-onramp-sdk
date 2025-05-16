@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, ExternalLink, BookOpen, Link as LinkIcon } from 'lucide-react';
@@ -76,13 +77,13 @@ const MobileTopbar = () => {
 
   return (
     <div className="md:hidden fixed top-0 left-0 w-full h-[54px] bg-[#121212] flex justify-between items-center px-4 z-50 border-b border-white/10">
-      {/* Logo */}
-      <div className="flex items-center">
-        <RouterLink to="/" onClick={scrollToTop}>
+      {/* Logo - now with improved vertical centering */}
+      <div className="flex items-center justify-center h-full">
+        <RouterLink to="/" onClick={scrollToTop} className="flex items-center">
           <img 
             src="/lovable-uploads/f655448d-7787-4f68-bd65-c92b438f5d1c.png" 
             alt="PING" 
-            className="h-6" 
+            className="h-6"
           />
         </RouterLink>
       </div>
