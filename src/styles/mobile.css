@@ -1,3 +1,4 @@
+
 /* Add padding-top for mobile content to account for the topbar */
 @media (max-width: 767px) {
   body {
@@ -81,6 +82,41 @@
   /* Adjust form spacing on mobile */
   .mobile-stacked-form > * {
     @apply mb-4 w-full;
+  }
+  
+  /* Mobile menu styles */
+  [data-radix-dialog-content] {
+    z-index: 50 !important;
+  }
+  
+  /* Ensure sheet content is always on top */
+  [data-radix-dialog-overlay] {
+    z-index: 40 !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
+  
+  /* Ensure menu items have proper contrast */
+  .mobile-menu-item {
+    @apply min-h-[44px] flex items-center py-3 px-4;
+  }
+  
+  /* Active menu item styling */
+  .mobile-menu-item-active {
+    @apply bg-[#AF9EF9] text-black rounded-lg;
+  }
+  
+  /* Ensure sheet animations work properly */
+  [data-state=open].sheet-content {
+    animation: slide-in-from-right 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  @keyframes slide-in-from-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
   }
 }
 

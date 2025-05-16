@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, Link as LinkIcon } from 'lucide-react';
@@ -112,7 +113,7 @@ const MobileTopbar = () => {
               <Menu size={24} />
             </button>
           </SheetTrigger>
-          <SheetContent side="right" className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-40 pt-[54px]">
+          <SheetContent side="right" className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-50 pt-[54px]">
             <div className="flex flex-col h-full">
               {/* Menu header */}
               <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">
