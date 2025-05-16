@@ -76,10 +76,6 @@ const SelectContent = React.forwardRef<
         className
       )}
       position={position}
-      onOpenAutoFocus={(e) => {
-        // Prevent automatic focus which can cause issues on mobile
-        e.preventDefault();
-      }}
       {...props}
       sideOffset={5}
       align="start"
