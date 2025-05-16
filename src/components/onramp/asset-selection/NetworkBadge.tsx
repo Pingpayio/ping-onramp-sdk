@@ -46,7 +46,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             { 
               id: 'near', 
               name: 'NEAR Protocol',
-              logo: 'https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029'
+              logo: '/cryptologos/near-protocol-near-logo.svg?v=029'
             }
           ] 
         };
@@ -72,7 +72,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             { 
               id: 'near', 
               name: 'NEAR Protocol',
-              logo: 'https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029'
+              logo: '/cryptologos/near-protocol-near-logo.svg?v=029'
             }
           ]
         };
@@ -113,7 +113,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
       <label className="text-sm text-white mb-1">Network</label>
       
       {networks.length > 1 ? (
-        <Select defaultValue={selectedNetwork} onValueChange={setSelectedNetwork}>
+        <Select defaultValue={selectedNetwork} onValueChange={setSelectedNetwork} disabled>
           <SelectTrigger 
             className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] 
             text-white/60 flex items-center px-3
@@ -170,9 +170,9 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
         </div>
       )}
 
-      <p className="text-xs text-white/40 mt-1">
+      {/* <p className="text-xs text-white/40 mt-1">
         {selectedAsset} is available on {networks.length} network{networks.length > 1 ? 's' : ''}
-      </p>
+      </p> */}
     </div>
   );
 };

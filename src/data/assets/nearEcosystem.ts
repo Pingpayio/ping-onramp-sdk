@@ -3,7 +3,7 @@ export const nearEcosystem = [
   {
     name: "NEAR Protocol",
     symbol: "NEAR",
-    logoUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029",
+    logoUrl: "/cryptologos/near-protocol-near-logo.svg?v=029",
   },
   {
     name: "Black Dragon",

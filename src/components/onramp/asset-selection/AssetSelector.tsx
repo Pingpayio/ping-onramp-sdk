@@ -53,6 +53,7 @@ const AssetSelector = ({
       onOpenChange={handleOpenChange}
       value={selectedAsset || ""}
       onValueChange={handleAssetSelect}
+      disabled
     >
       <SelectTrigger
         className={cn(

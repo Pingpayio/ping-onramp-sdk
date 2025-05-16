@@ -33,6 +33,6 @@ export const majorCoins = [
   {
     name: "Wrapped NEAR",
     symbol: "wNEAR",
-    logoUrl: "https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029",
+    logoUrl: "/cryptologos/near-protocol-near-logo.svg?v=029",
   },
 ];
