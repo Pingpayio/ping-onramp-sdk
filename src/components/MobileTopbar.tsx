@@ -95,11 +95,11 @@ const MobileTopbar = () => {
       </div>
 
       <div className="flex items-center gap-2">
-        {/* Connect Wallet Button - properly sized at 24px height */}
+        {/* Connect Wallet Button - matched to the logo height */}
         {!isConnected ? (
           <Button 
             size="sm"
-            className="h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium"
+            className="h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium flex items-center"
             onClick={connectWallet}
           >
             <Wallet className="h-3 w-3 mr-1" />
@@ -108,7 +108,7 @@ const MobileTopbar = () => {
         ) : (
           <Button 
             size="sm"
-            className="h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium"
+            className="h-6 bg-[#AB9FF2] text-[#3D315E] rounded-full hover:bg-[#AB9FF2]/90 px-2 py-0 text-xs font-medium flex items-center"
             onClick={copyAddress}
           >
             <Wallet className="h-3 w-3 mr-1" />
