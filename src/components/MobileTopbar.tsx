@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link as RouterLink, useLocation } from 'react-router-dom';
 import { Menu, X, ArrowDownUp, LayoutDashboard, User, Github, Link as LinkIcon } from 'lucide-react';
@@ -124,18 +123,6 @@ const MobileTopbar = () => {
             className="w-[85%] sm:w-[385px] bg-[#121212] text-white border-l border-[#1A1326] p-0 z-50 top-[54px] h-[calc(100vh-54px)] mt-0 pt-0 sheet-content"
           >
             <div className="flex flex-col h-full">
-              {/* Menu header */}
-              <div className="px-4 py-6 border-b border-[#1A1326] flex justify-between items-center">
-                <div className="font-semibold text-lg">Menu</div>
-                <button 
-                  className="p-2 text-white focus:outline-none hover:text-[#AF9EF9] min-h-[44px] min-w-[44px] flex items-center justify-center"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <X size={24} />
-                </button>
-              </div>
-              
-              {/* Menu items */}
               <div className="flex-1 overflow-y-auto py-4">
                 <nav>
                   <ul className="space-y-1 px-2">
