@@ -8,7 +8,7 @@ export const stablecoins = [
   {
     name: "USD Coin",
     symbol: "USDC",
-    logoUrl: "https://cryptologos.cc/logos/usd-coin-usdc-logo.svg?v=029",
+    logoUrl: "/cryptologos/usd-coin-usdc-logo.svg?v=029",
   },
   {
     name: "DAI",

@@ -19,14 +19,12 @@ const OnrampPage = () => {
     amount,
     selectedCurrency,
     steps,
-    walletAddressError, 
-    isWalletAddressValid, 
-    nearIntentsDepositAddress, 
-    currentIntentStage,
-    intentProgress, 
-    intentError,
+    walletAddressError,
+    isWalletAddressValid,
+    nearIntentsDepositAddress,
+    intentProgress,
+    errorMessage,
     nearIntentsDisplayInfo,
-    setIntentStage,
     handleAssetSelect,
     handleOnrampSelect,
     handleWalletAddressChange,
@@ -72,58 +70,25 @@ const OnrampPage = () => {
                 onCurrencySelect={handleCurrencySelect}
                 walletAddressError={walletAddressError}
                 nearIntentsDepositAddress={nearIntentsDepositAddress}
-                currentIntentStage={currentIntentStage}
                 intentProgress={intentProgress}
-                intentError={intentError}
+                errorMessage={errorMessage}
                 nearIntentsDisplayInfo={nearIntentsDisplayInfo}
                 isWalletAddressValid={isWalletAddressValid}
               />
             </div>
 
-            {/* Right container - maintains consistent size on desktop, full width on mobile */}
-            {/* <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
+            {/* Right container for future history or other content */}
+            {/* 
+            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
               </div>
-              
-              <div className="overflow-x-auto table-container transaction-table">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="border-white/10">
-                      <TableHead className="text-white/80 text-xs font-medium">Date</TableHead>
-                      <TableHead className="text-white/80 text-xs font-medium">Asset</TableHead>
-                      <TableHead className="text-white/80 text-xs font-medium text-right">Amount</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {sampleHistory.map(tx => <TableRow key={tx.id} className="border-white/10">
-                        <TableCell className="text-white/70 text-xs py-2">{tx.date}</TableCell>
-                        <TableCell className="text-white/70 text-xs py-2">
-                          <div>
-                            <div className="text-white">
-                              {tx.asset}
-                            </div>
-                            <div className="text-white/40 text-[10px]">{tx.network}</div>
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-white/70 text-xs py-2 text-right">
-                          <div>
-                            <div className={tx.status === 'Completed' ? 'text-green-400' : 'text-red-400'}>
-                              {tx.amount} {tx.asset}
-                            </div>
-                            <div className="text-white/40 text-[10px]">{tx.fiat}</div>
-                          </div>
-                        </TableCell>
-                      </TableRow>)}
-                  </TableBody>
-                </Table>
+              <div className="text-white/50 text-center py-8">
+                <p>Transaction history will be shown here.</p>
               </div>
-              
-              {sampleHistory.length === 0 && <div className="text-white/50 text-center py-8">
-                  <p>No transaction history yet.</p>
-                </div>}
-            </div> */}
+            </div>
+            */}
           </main>
         </div>
       </div>

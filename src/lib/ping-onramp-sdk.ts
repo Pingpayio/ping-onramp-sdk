@@ -16,7 +16,7 @@ import {
   type UnifiedTokenInfo
 } from 'near-intents-sdk';
 import { parseErc6492Signature } from 'viem';
-import type { TransactionStage } from '../hooks/use-transaction-progress';
+import type { IntentProgress, CallbackParams, TokenInfo as GuideTokenInfo } from '@/types/onramp';
 
 export const findTokenFromList = (
   symbol: string,
@@ -43,168 +43,194 @@ export const findTokenFromList = (
 
 
 interface ProcessNearIntentParams {
-  urlParams: URLSearchParams;
-  connectedWalletAddress: string;
-  signMessageAsync: (message: string) => Promise<string>;
-  fiatAmount: string;
-  setIntentStage: (stage: TransactionStage) => void;
-  setIntentError: (error: string | null) => void;
-  setNearIntentsDisplayInfo: React.Dispatch<React.SetStateAction<{ message?: string; amountIn?: number; amountOut?: number; explorerUrl?: string; error?: string }>>;
-  setCurrentStepForPage: (step: number) => void;
-  toastFn: (options: { title: string; description: string; variant?: "default" | "destructive" }) => void;
-  masterTokenList: (BaseTokenInfo | UnifiedTokenInfo)[];
+  callbackParams: Required<CallbackParams>;
+  userEvmAddress: string;
+  signMessageAsync: (args: { message: string }) => Promise<`0x${string}`>;
+  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[];
+  updateProgress: (progress: IntentProgress) => void;
+  updateErrorMessage: (message: string | null) => void;
+  updateDisplayInfo: React.Dispatch<React.SetStateAction<{ message?: string; amountIn?: number; amountOut?: number; explorerUrl?: string }>>;
+  toastFn: (title: string, options: { description: string; }) => void;
 }
 
 export const processNearIntentWithdrawal = async ({
-  urlParams,
-  connectedWalletAddress,
+  callbackParams,
+  userEvmAddress,
   signMessageAsync,
-  fiatAmount,
-  setIntentStage,
-  setIntentError,
-  setNearIntentsDisplayInfo,
-  setCurrentStepForPage,
+  tokenList,
+  updateProgress,
+  updateErrorMessage,
+  updateDisplayInfo,
   toastFn,
-  masterTokenList,
 }: ProcessNearIntentParams): Promise<void> => {
-  const asset = urlParams.get("asset");
-  const nearRecipient = urlParams.get("recipient");
+  const { amount: fiatAmountStr, asset: assetSymbol, recipient: nearRecipient } = callbackParams;
 
-  if (!asset || !fiatAmount || !nearRecipient) {
-    setIntentError("Missing critical information from URL to process NEAR transaction.");
-    setIntentStage('intent_failed');
+  if (!assetSymbol || !fiatAmountStr || !nearRecipient) {
+    updateErrorMessage("Missing critical information from onramp callback.");
+    updateProgress('error');
     return;
   }
 
-  setCurrentStepForPage(1);
-
   try {
-    const tokenIn = findTokenFromList("USDC", "base", masterTokenList);
-    const tokenOut = findTokenFromList("USDC", "near", masterTokenList);
-    const nearToken = findTokenFromList("NEAR", "near", masterTokenList);
+    const tokenIn = findTokenFromList(assetSymbol, "base", tokenList);
+    const tokenOut = findTokenFromList(assetSymbol, "near", tokenList);
+    const nearStorageTokenDef = findTokenFromList("NEAR", "near", tokenList);
 
-    if (!tokenIn || !tokenOut || !nearToken) { 
-      setIntentError("Token configuration error for NEAR transaction. Required tokens (USDC.base, USDC.near, NEAR.near) not found.");
-      setIntentStage('intent_failed');
-      console.error("SDK: TokenIn, TokenOut, or NearToken not found in masterTokenList", { tokenIn, tokenOut, nearToken });
+
+    if (!tokenIn || !tokenOut || !nearStorageTokenDef) {
+      updateErrorMessage("Token configuration error. Required tokens (USDC.base, USDC.near, NEAR.near) not found.");
+      updateProgress('error');
+      console.error("SDK: TokenIn, TokenOut, or NearStorageTokenDef not found in masterTokenList", { tokenIn, tokenOut, nearStorageTokenDef });
       return;
     }
+    
+    const NEP141_STORAGE_TOKEN_ID = nearStorageTokenDef.defuseAssetId;
 
-    setNearIntentsDisplayInfo({ message: `Waiting for your ${asset} deposit to be confirmed...` });
-    setIntentStage('confirming_evm_deposit');
-    await waitForDepositsCompletion(connectedWalletAddress.toLowerCase() as IntentsUserId);
+    updateDisplayInfo({ message: `Waiting for your ${assetSymbol} deposit to be confirmed...` });
+    updateProgress('depositing');
+    await waitForDepositsCompletion(userEvmAddress.toLowerCase() as IntentsUserId);
 
-    const cryptoAmountInEstimated = BigInt(Math.floor(parseFloat(fiatAmount) * (10 ** tokenIn.decimals)));
-    setNearIntentsDisplayInfo({ message: `Quoting bridge for ${parseFloat(fiatAmount)} ${asset}...`, amountIn: parseFloat(fiatAmount) });
-    setIntentStage('quoting_bridge_swap');
+    const fiatAmountNum = parseFloat(fiatAmountStr);
+    if (isNaN(fiatAmountNum) || fiatAmountNum <= 0) {
+        updateErrorMessage("Invalid amount received from onramp callback.");
+        updateProgress("error");
+        throw new Error("Invalid amount from callback.");
+    }
+    const amountInBigInt = BigInt(Math.floor(fiatAmountNum * (10 ** tokenIn.decimals)));
+    updateDisplayInfo(prev => ({ ...prev, message: `Quoting bridge for ${fiatAmountNum.toFixed(2)} ${assetSymbol}...`, amountIn: fiatAmountNum }));
+    updateProgress('querying');
 
     const quoteInput = {
       tokensIn: [tokenIn],
       tokenOut: tokenOut,
-      amountIn: { amount: cryptoAmountInEstimated, decimals: tokenIn.decimals },
-      balances: { [tokenIn.defuseAssetId]: cryptoAmountInEstimated },
-      waitMs: 2000,
+      amountIn: { amount: amountInBigInt, decimals: tokenIn.decimals },
+      balances: { [tokenIn.defuseAssetId]: amountInBigInt },
+      waitMs: 3000,
     };
-
-    const quoteResult: QuoteResult = await queryQuote(quoteInput as Parameters<typeof queryQuote>[0]);
+    // Using 'as any' for quoteInput due to potential subtle mismatches between the locally constructed object
+    // and the precise input type expected by the SDK's queryQuote function.
+    // BaseTokenInfo is used for tokens, but the overall structure or other properties might have
+    // stricter requirements not fully captured here without direct access to the SDK's internal QuoteInput type.
+    // TODO: Revisit this if SDK types are updated or a more precise local type can be defined.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const quoteResult: QuoteResult = await queryQuote(quoteInput as any);
 
 
     if (quoteResult.tag === 'err') {
       console.error("SDK: Failed to get quote:", quoteResult.value);
-      const reason = (quoteResult.value && 'reason' in quoteResult.value && typeof quoteResult.value.reason === 'string') ? quoteResult.value.reason : 'Unknown error';
-      setIntentError(`Could not find a bridge route: ${reason}`);
-      setIntentStage('intent_failed');
+      const reason = (quoteResult.value && typeof quoteResult.value === 'object' && 'reason' in quoteResult.value && typeof quoteResult.value.reason === 'string') ? quoteResult.value.reason : 'Unknown error';
+      updateErrorMessage(`Could not find a bridge route: ${reason}`);
+      updateProgress('error');
       return;
     }
 
-    const quoteValue = quoteResult.value as AggregatedQuote; // SDK types suggest this is AggregatedQuote
-    const actualAmountOutBI = quoteValue.tokenDeltas[1][1];
-    const actualAmountOut = Number(actualAmountOutBI) / (10 ** tokenOut.decimals);
-    setNearIntentsDisplayInfo(prev => ({ ...prev, message: `Preparing to bridge ${actualAmountOut.toFixed(tokenOut.decimals)} ${tokenOut.symbol}...`, amountOut: actualAmountOut }));
+    const swapQuote = quoteResult.value as AggregatedQuote;
+    const usdcNearAmountOutGross = swapQuote.tokenDeltas[1][1];
+    const grossAmountOutDisplay = Number(usdcNearAmountOutGross) / (10 ** tokenOut.decimals);
+    updateDisplayInfo(prev => ({ ...prev, message: `Preparing to bridge ${grossAmountOutDisplay.toFixed(tokenOut.decimals)} ${tokenOut.symbol}...`, amountOut: grossAmountOutDisplay }));
+
 
     const storageRequiredResult: Output = await getNEP141StorageRequired({ token: tokenOut, userAccountId: nearRecipient });
     if (storageRequiredResult.tag === 'err') {
-      setIntentError("Error checking storage requirements for recipient.");
-      setIntentStage('intent_failed');
+      const reason = (storageRequiredResult.value && typeof storageRequiredResult.value === 'object' && 'reason' in storageRequiredResult.value && typeof storageRequiredResult.value.reason === 'string') ? storageRequiredResult.value.reason : 'Unknown error';
+      updateErrorMessage(`Error checking storage requirements: ${reason}`);
+      updateProgress('error');
       return;
     }
-    const storageDepositAmount = storageRequiredResult.value;
-    const needsStorageDeposit = storageDepositAmount > BigInt(0);
+    const storageDepositNearAmount = storageRequiredResult.value;
+    const needsStorageDeposit = storageDepositNearAmount > BigInt(0);
 
-    let quoteStorageResult: QuoteResult | null = null;
+    let storageSwapQuote: AggregatedQuote | null = null;
+    let storageCostInAsset = BigInt(0);
+
     if (needsStorageDeposit) {
-      quoteStorageResult = await queryQuoteExactOut(
-        { tokenIn: tokenOut.defuseAssetId, tokenOut: nearToken.defuseAssetId, exactAmountOut: storageDepositAmount, minDeadlineMs: 10 * 60 * 1000 },
+      const storageQuoteResult = await queryQuoteExactOut(
+        {
+          tokenIn: tokenOut.defuseAssetId,
+          tokenOut: NEP141_STORAGE_TOKEN_ID,
+          exactAmountOut: storageDepositNearAmount,
+          minDeadlineMs: 10 * 60 * 1000,
+        },
         { logBalanceSufficient: true }
       );
-      if (quoteStorageResult.tag === 'err') {
-        setIntentError("Could not find a quote for storage deposit.");
-        setIntentStage('intent_failed');
+      if (storageQuoteResult.tag === 'err') {
+        const reason = (storageQuoteResult.value && typeof storageQuoteResult.value === 'object' && 'reason' in storageQuoteResult.value && typeof storageQuoteResult.value.reason === 'string') ? storageQuoteResult.value.reason : 'Unknown error';
+        updateErrorMessage(`Could not find a quote for storage deposit: ${reason}`);
+        updateProgress('error');
         return;
       }
+      storageSwapQuote = storageQuoteResult.value as AggregatedQuote;
+      storageCostInAsset = -storageSwapQuote.tokenDeltas[0][1];
     }
-    
-    const storageQuoteValue = quoteStorageResult?.value as AggregatedQuote | undefined;
-    const storageCostInTokenOut = storageQuoteValue ? -(storageQuoteValue.tokenDeltas[0][1]) : BigInt(0);
-    const finalAmountOutToRecipient = actualAmountOutBI - storageCostInTokenOut;
+
+    const finalAmountToReceive = usdcNearAmountOutGross - storageCostInAsset;
+    const finalAmountDisplay = Number(finalAmountToReceive) / (10 ** tokenOut.decimals);
+    updateDisplayInfo(prev => ({ ...prev, amountOut: finalAmountDisplay }));
 
 
-    const intentMessageObj = createWithdrawIntentMessage(
-      { type: 'to_near', amount: finalAmountOutToRecipient, tokenAccountId: getTokenAccountIds([tokenOut])[0], receiverId: nearRecipient, storageDeposit: storageDepositAmount },
-      { signerId: connectedWalletAddress.toLowerCase() as IntentsUserId }
+    const intentMessagePayload = createWithdrawIntentMessage(
+      { type: 'to_near', amount: finalAmountToReceive, tokenAccountId: getTokenAccountIds([tokenOut])[0], receiverId: nearRecipient, storageDeposit: storageDepositNearAmount },
+      { signerId: userEvmAddress.toLowerCase() as IntentsUserId }
     );
 
-    const intentObject = JSON.parse(intentMessageObj.ERC191.message);
-    const referral = "ping-onramp.near";
+    const intentObject = JSON.parse(intentMessagePayload.ERC191.message);
+    const referral = "pingpay.near";
 
-    if (Number(storageCostInTokenOut) > 0 && storageQuoteValue) {
+    if (needsStorageDeposit && storageSwapQuote) {
       intentObject.intents.unshift({
         intent: "token_diff",
-        diff: { [tokenOut.defuseAssetId]: `-${storageCostInTokenOut.toString()}`, [nearToken.defuseAssetId]: storageDepositAmount.toString() },
+        diff: {
+          [tokenOut.defuseAssetId]: "-" + storageCostInAsset.toString(),
+          [NEP141_STORAGE_TOKEN_ID]: storageDepositNearAmount.toString(),
+        },
         referral,
       });
     }
     intentObject.intents.unshift({
       intent: "token_diff",
-      diff: { [tokenIn.defuseAssetId]: `-${cryptoAmountInEstimated.toString()}`, [tokenOut.defuseAssetId]: actualAmountOutBI.toString() },
+      diff: {
+        [tokenIn.defuseAssetId]: "-" + amountInBigInt.toString(),
+        [tokenOut.defuseAssetId]: usdcNearAmountOutGross.toString(),
+      },
       referral,
     });
 
-    const displayFinalAmount = (Number(finalAmountOutToRecipient * BigInt(1000000) / BigInt(10 ** tokenOut.decimals)) / 1000000).toFixed(Math.min(tokenOut.decimals, 6));
-    setNearIntentsDisplayInfo(prev => ({ ...prev, message: `Please sign the transaction in your wallet to bridge ${displayFinalAmount} ${tokenOut.symbol} to ${nearRecipient}.` }));
-    setIntentStage('awaiting_intent_signature');
+    updateDisplayInfo(prev => ({ ...prev, message: `Please sign the transaction in your wallet to bridge ${finalAmountDisplay.toFixed(Math.min(tokenOut.decimals, 6))} ${tokenOut.symbol} to ${nearRecipient}.` }));
+    updateProgress('signing');
 
     const messageToSign = JSON.stringify(intentObject);
-    const signature = await signMessageAsync(messageToSign);
-    const signatureData = parseErc6492Signature(signature as `0x${string}`).signature;
+    const signature = await signMessageAsync({ message: messageToSign });
+    const signatureData = parseErc6492Signature(signature).signature;
 
-    setNearIntentsDisplayInfo(prev => ({ ...prev, message: `Publishing your bridge transaction...` }));
-    setIntentStage('publishing_intent');
+    updateDisplayInfo(prev => ({ ...prev, message: `Publishing your bridge transaction...` }));
+    updateProgress('withdrawing');
 
-    const quoteHashes = storageQuoteValue ? [quoteValue.quoteHashes[0], storageQuoteValue.quoteHashes[0]] : [quoteValue.quoteHashes[0]];
+    const quoteHashes = [swapQuote.quoteHashes[0]];
+    if (storageSwapQuote) {
+      quoteHashes.push(storageSwapQuote.quoteHashes[0]);
+    }
     const publishResult = await publishIntent(
       { type: 'ERC191', signatureData: signatureData as `0x${string}`, signedData: { message: messageToSign } },
-      { userAddress: connectedWalletAddress, userChainType: 'evm' },
+      { userAddress: userEvmAddress, userChainType: 'evm' },
       quoteHashes
     );
 
     if (publishResult.tag === 'err') {
       console.error("SDK: Failed to publish intent:", publishResult.value);
-      const reason = (publishResult.value && 'reason' in publishResult.value) ? (publishResult.value as { reason: string }).reason : 'Unknown error';
-      setIntentError(`Failed to publish transaction: ${reason}`);
-      setIntentStage('intent_failed');
+      const reason = (publishResult.value && typeof publishResult.value === 'object' && 'reason' in publishResult.value) ? (publishResult.value as { reason: string }).reason : 'Unknown error';
+      updateErrorMessage(`Failed to publish transaction: ${reason}`);
+      updateProgress('error');
       return;
     }
     const intentHash = publishResult.value;
 
-    setNearIntentsDisplayInfo(prev => ({ ...prev, message: `Waiting for bridge transaction to complete...` }));
-    setIntentStage('awaiting_intent_settlement');
+    updateDisplayInfo(prev => ({ ...prev, message: `Waiting for bridge transaction to complete...` }));
     await waitForIntentSettlement(new AbortController().signal, intentHash);
 
     const explorerUrl = `https://nearblocks.io/txns/${intentHash}`;
-    setNearIntentsDisplayInfo({ message: `Successfully bridged ${displayFinalAmount} ${tokenOut.symbol} to ${nearRecipient}!`, explorerUrl });
-    setIntentStage('intent_completed');
-    toastFn({ title: "Bridge Successful", description: `${displayFinalAmount} ${tokenOut.symbol} sent to ${nearRecipient}.` });
+    updateDisplayInfo({ message: `Successfully bridged ${finalAmountDisplay.toFixed(Math.min(tokenOut.decimals, 6))} ${tokenOut.symbol} to ${nearRecipient}!`, explorerUrl, amountOut: finalAmountDisplay });
+    updateProgress('done');
+    toastFn("Bridge Successful", { description: `${finalAmountDisplay.toFixed(Math.min(tokenOut.decimals, 6))} ${tokenOut.symbol} sent to ${nearRecipient}.` });
 
   } catch (err: unknown) {
     console.error("SDK: NEAR Intent processing failed:", err);
@@ -214,8 +240,13 @@ export const processNearIntentWithdrawal = async ({
     } else if (err instanceof Error) {
       errorMessage = err.message;
     }
-    setIntentError(errorMessage);
-    setIntentStage('intent_failed');
-    setNearIntentsDisplayInfo(prev => ({ ...prev, error: errorMessage }));
+    updateErrorMessage(errorMessage);
+    updateProgress('error');
+    updateDisplayInfo(prev => ({
+      amountIn: prev.amountIn,
+      message: `Error: ${errorMessage}`,
+      explorerUrl: undefined,
+      amountOut: undefined,
+    }));
   }
 };

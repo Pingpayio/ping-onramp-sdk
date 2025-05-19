@@ -1,22 +1,9 @@
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React from "react";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
+import { ReactNode } from "react";
 import { base } from "wagmi/chains";
-import { toast } from "sonner";
-
-interface WalletContextType {
-  isConnected: boolean;
-  walletAddress: string;
-  setIsConnected: (connected: boolean) => void;
-  setWalletAddress: (address: string) => void;
-  connectWallet: () => Promise<void>;
-}
-
-const WalletContext = createContext<WalletContextType | undefined>(undefined);
 
 export const WalletProvider = ({ children }: { children: ReactNode }) => {
-  const [isConnected, setIsConnected] = useState(false);
-  const [walletAddress, setWalletAddress] = useState("");
-
   // Access environment variables directly
   const walletConnectProjectId =
     import.meta.env.VITE_PUBLIC_CDP_PROJECT_ID ||
@@ -37,65 +24,20 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
     cdpProjectId: cdpProjectId ? "Set" : "Not set",
   });
 
-  // Mock wallet connection - in a real app, this would connect to an actual wallet
-  const connectWallet = async () => {
-    try {
-      // Simulate wallet connection delay
-      return new Promise<void>((resolve) => {
-        setTimeout(() => {
-          const mockAddress =
-            "0x" + Math.random().toString(16).slice(2, 12) + "...";
-          setWalletAddress(mockAddress);
-          setIsConnected(true);
-
-          toast("Wallet Connected", {
-            description: "Your wallet has been connected successfully!",
-          });
-
-          resolve();
-        }, 500);
-      });
-    } catch (error) {
-      console.error("Error connecting wallet:", error);
-      toast("Connection Failed", {
-        // variant: "destructive",
-        description: "Failed to connect to wallet. Please try again.",
-      });
-    }
-  };
-
   return (
-    <WalletContext.Provider
-      value={{
-        isConnected,
-        walletAddress,
-        setIsConnected,
-        setWalletAddress,
-        connectWallet,
+    <OnchainKitProvider
+      chain={base}
+      projectId={cdpProjectId}
+      apiKey={onchainKitApiKey}
+      config={{
+        appearance: {
+          name: projectName,
+          theme: "default",
+          mode: "light",
+        },
       }}
     >
-      <OnchainKitProvider
-        chain={base}
-        projectId={cdpProjectId}
-        apiKey={onchainKitApiKey}
-        config={{
-          appearance: {
-            name: projectName,
-            theme: "default",
-            mode: "light",
-          },
-        }}
-      >
-        {children}
-      </OnchainKitProvider>
-    </WalletContext.Provider>
+      {children}
+    </OnchainKitProvider>
   );
-};
-
-export const useWallet = () => {
-  const context = useContext(WalletContext);
-  if (context === undefined) {
-    throw new Error("useWallet must be used within a WalletProvider");
-  }
-  return context;
 };

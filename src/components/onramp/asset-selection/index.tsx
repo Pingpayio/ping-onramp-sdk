@@ -8,7 +8,6 @@ import PaymentMethod from './PaymentMethod';
 import WalletAddressInput from './WalletAddressInput';
 import NearIntentsField from './NearIntentsField';
 import { calculateEstimatedAmount } from './PriceCalculator';
-import { useIsMobile } from '@/hooks/use-mobile';
 
 interface AssetSelectionProps {
   selectedAsset: string | null;
@@ -19,8 +18,8 @@ interface AssetSelectionProps {
   setOpen: (open: boolean) => void;
   walletAddress: string;
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  selectedCurrency?: string;
-  onCurrencySelect?: (currency: string) => void;
+  selectedCurrency?: string; // Added
+  onCurrencySelect?: (currency: string) => void; // Added
   walletAddressError?: boolean;
   nearIntentsDepositAddress: string | null;
 }
@@ -34,13 +33,12 @@ const AssetSelection = ({
   setOpen,
   walletAddress,
   onWalletAddressChange,
-  selectedCurrency = "USD",
-  onCurrencySelect = () => {},
+  selectedCurrency = 'USD', // Added, with default
+  onCurrencySelect, // Added
   walletAddressError = false,
   nearIntentsDepositAddress,
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
-  const isMobile = useIsMobile();
 
   // Calculate estimated token amount based on USD amount and selected asset
   useEffect(() => {
@@ -50,7 +48,6 @@ const AssetSelection = ({
 
   return (
     <div className="flex flex-col items-center h-full">
-      {/* 1. Title section - "Buy Crypto" - better spacing */}
       <div className="flex items-center gap-2 mb-4 w-full">
         <DollarSign className="h-5 w-5 text-white" />
         <h2 className="text-xl font-medium text-white">
@@ -58,12 +55,16 @@ const AssetSelection = ({
         </h2>
       </div>
       
-      {/* 2 & 3. Amount input with estimated value - better spacing */}
-      <AmountInput amount={amount} onAmountChange={onAmountChange} selectedAsset={selectedAsset} estimatedAmount={estimatedAmount} />
+      <AmountInput 
+        amount={amount} 
+        onAmountChange={onAmountChange} 
+        selectedAsset={selectedAsset} 
+        estimatedAmount={estimatedAmount}
+        selectedCurrency={selectedCurrency} // Pass down
+        onCurrencySelect={onCurrencySelect} // Pass down
+      />
       
-      {/* Selection cards with improved spacing throughout */}
       <div className="w-full space-y-3 mt-0 mobile-stacked-form">
-        {/* 4. Asset Selection Card */}
         <div className="flex flex-col">
           <label className="text-sm text-white mb-2">Select Asset</label>
           <div className="rounded-lg hover:shadow-sm transition-shadow h-[42px] flex items-center">
@@ -71,7 +72,6 @@ const AssetSelection = ({
           </div>
         </div>
         
-        {/* NetworkBadge with better spacing */}
         <NetworkBadge selectedAsset={selectedAsset} />
         
         <div className="flex flex-col">
@@ -88,7 +88,6 @@ const AssetSelection = ({
           </p>
         </div>
         
-        {/* Payment Method Card */}
         <PaymentMethod />
         
         <NearIntentsField depositAddress={nearIntentsDepositAddress} />

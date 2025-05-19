@@ -83,7 +83,6 @@ const AssetSelector = ({
             )}
           </div>
         </SelectValue>
-        {/* Removed the duplicate ChevronDown component that was here */}
       </SelectTrigger>
       <SelectContent
         className={cn(
