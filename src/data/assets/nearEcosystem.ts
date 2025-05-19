@@ -8,7 +8,7 @@ export const nearEcosystem = [
   {
     name: "Black Dragon",
     symbol: "BLACKDRAGON",
-    logoUrl: "public/lovable-uploads/2a3c01e1-3a77-414b-959d-e162d59ba6b5.png",
+    logoUrl: "lovable-uploads/2a3c01e1-3a77-414b-959d-e162d59ba6b5.png",
   },
   {
     name: "Shitzu",

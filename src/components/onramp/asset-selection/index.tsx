@@ -18,8 +18,8 @@ interface AssetSelectionProps {
   setOpen: (open: boolean) => void;
   walletAddress: string;
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  selectedCurrency?: string; // Added
-  onCurrencySelect?: (currency: string) => void; // Added
+  selectedCurrency?: string; 
+  onCurrencySelect?: (currency: string) => void; 
   walletAddressError?: boolean;
   nearIntentsDepositAddress: string | null;
 }
@@ -33,8 +33,8 @@ const AssetSelection = ({
   setOpen,
   walletAddress,
   onWalletAddressChange,
-  selectedCurrency = 'USD', // Added, with default
-  onCurrencySelect, // Added
+  selectedCurrency = 'USD',
+  onCurrencySelect, 
   walletAddressError = false,
   nearIntentsDepositAddress,
 }: AssetSelectionProps) => {

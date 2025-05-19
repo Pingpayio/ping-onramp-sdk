@@ -1,5 +1,6 @@
 import {
   AggregatedQuote,
+  AggregatedQuoteParams,
   createWithdrawIntentMessage,
   getNEP141StorageRequired,
   getTokenAccountIds,
@@ -41,6 +42,34 @@ export const findTokenFromList = (
   return undefined;
 };
 
+// Helper function to fetch and validate required tokens for the onramp process
+const getOnrampTokens = (
+  assetSymbol: string,
+  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]
+): { tokenIn: BaseTokenInfo; tokenOut: BaseTokenInfo; nearStorageTokenDef: BaseTokenInfo } | null => {
+  const tokenIn = findTokenFromList(assetSymbol, "base", tokenList);
+  const tokenOut = findTokenFromList(assetSymbol, "near", tokenList);
+  const nearStorageTokenDef = findTokenFromList("NEAR", "near", tokenList);
+
+  if (!tokenIn || !tokenOut || !nearStorageTokenDef) {
+    console.error("SDK: Critical onramp tokens not found in token list.", {
+      assetSymbol,
+      foundTokenIn: !!tokenIn,
+      foundTokenOut: !!tokenOut,
+      foundNearStorageToken: !!nearStorageTokenDef,
+    });
+    return null;
+  }
+  return { tokenIn, tokenOut, nearStorageTokenDef };
+};
+
+// Helper function to extract a reason string from an error object
+const getErrorReasonString = (errorValue: unknown, defaultMessage: string = 'Unknown error'): string => {
+  if (errorValue && typeof errorValue === 'object' && errorValue !== null && 'reason' in errorValue && typeof (errorValue as { reason: unknown }).reason === 'string') {
+    return (errorValue as { reason: string }).reason;
+  }
+  return defaultMessage;
+};
 
 interface ProcessNearIntentParams {
   callbackParams: Required<CallbackParams>;
@@ -72,17 +101,14 @@ export const processNearIntentWithdrawal = async ({
   }
 
   try {
-    const tokenIn = findTokenFromList(assetSymbol, "base", tokenList);
-    const tokenOut = findTokenFromList(assetSymbol, "near", tokenList);
-    const nearStorageTokenDef = findTokenFromList("NEAR", "near", tokenList);
+    const onrampTokens = getOnrampTokens(assetSymbol, tokenList);
 
-
-    if (!tokenIn || !tokenOut || !nearStorageTokenDef) {
-      updateErrorMessage("Token configuration error. Required tokens (USDC.base, USDC.near, NEAR.near) not found.");
+    if (!onrampTokens) {
+      updateErrorMessage("Token configuration error. Required tokens (e.g., USDC.base, USDC.near, NEAR.near) not found.");
       updateProgress('error');
-      console.error("SDK: TokenIn, TokenOut, or NearStorageTokenDef not found in masterTokenList", { tokenIn, tokenOut, nearStorageTokenDef });
       return;
     }
+    const { tokenIn, tokenOut, nearStorageTokenDef } = onrampTokens;
     
     const NEP141_STORAGE_TOKEN_ID = nearStorageTokenDef.defuseAssetId;
 
@@ -107,18 +133,13 @@ export const processNearIntentWithdrawal = async ({
       balances: { [tokenIn.defuseAssetId]: amountInBigInt },
       waitMs: 3000,
     };
-    // Using 'as any' for quoteInput due to potential subtle mismatches between the locally constructed object
-    // and the precise input type expected by the SDK's queryQuote function.
-    // BaseTokenInfo is used for tokens, but the overall structure or other properties might have
-    // stricter requirements not fully captured here without direct access to the SDK's internal QuoteInput type.
-    // TODO: Revisit this if SDK types are updated or a more precise local type can be defined.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const quoteResult: QuoteResult = await queryQuote(quoteInput as any);
+    
+    const quoteResult: QuoteResult = await queryQuote(quoteInput as AggregatedQuoteParams);
 
 
     if (quoteResult.tag === 'err') {
       console.error("SDK: Failed to get quote:", quoteResult.value);
-      const reason = (quoteResult.value && typeof quoteResult.value === 'object' && 'reason' in quoteResult.value && typeof quoteResult.value.reason === 'string') ? quoteResult.value.reason : 'Unknown error';
+      const reason = getErrorReasonString(quoteResult.value);
       updateErrorMessage(`Could not find a bridge route: ${reason}`);
       updateProgress('error');
       return;
@@ -132,7 +153,7 @@ export const processNearIntentWithdrawal = async ({
 
     const storageRequiredResult: Output = await getNEP141StorageRequired({ token: tokenOut, userAccountId: nearRecipient });
     if (storageRequiredResult.tag === 'err') {
-      const reason = (storageRequiredResult.value && typeof storageRequiredResult.value === 'object' && 'reason' in storageRequiredResult.value && typeof storageRequiredResult.value.reason === 'string') ? storageRequiredResult.value.reason : 'Unknown error';
+      const reason = getErrorReasonString(storageRequiredResult.value);
       updateErrorMessage(`Error checking storage requirements: ${reason}`);
       updateProgress('error');
       return;
@@ -154,7 +175,7 @@ export const processNearIntentWithdrawal = async ({
         { logBalanceSufficient: true }
       );
       if (storageQuoteResult.tag === 'err') {
-        const reason = (storageQuoteResult.value && typeof storageQuoteResult.value === 'object' && 'reason' in storageQuoteResult.value && typeof storageQuoteResult.value.reason === 'string') ? storageQuoteResult.value.reason : 'Unknown error';
+        const reason = getErrorReasonString(storageQuoteResult.value);
         updateErrorMessage(`Could not find a quote for storage deposit: ${reason}`);
         updateProgress('error');
         return;
@@ -217,7 +238,7 @@ export const processNearIntentWithdrawal = async ({
 
     if (publishResult.tag === 'err') {
       console.error("SDK: Failed to publish intent:", publishResult.value);
-      const reason = (publishResult.value && typeof publishResult.value === 'object' && 'reason' in publishResult.value) ? (publishResult.value as { reason: string }).reason : 'Unknown error';
+      const reason = getErrorReasonString(publishResult.value);
       updateErrorMessage(`Failed to publish transaction: ${reason}`);
       updateProgress('error');
       return;

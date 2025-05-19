@@ -79,7 +79,7 @@ export const useOnrampState = () => {
         setIntentProgressActual("form");
       }
     }
-  }, [evmAddress, intentProgressActual]); // Added intentProgressActual to deps as it's read in an if condition.
+  }, [evmAddress, intentProgressActual]);
 
   useEffect(() => {
     const params: CallbackParams = {
@@ -155,12 +155,8 @@ export const useOnrampState = () => {
     signMessageAsync,
     masterTokenList,
     setCurrentStep,
-    intentProgressActual, // Added as it's read in an if condition
-    currentStep, // Added as it's read in an if condition
-    // setIntentProgressActual, // Managed by other effects or actions
-    // setErrorMessage, // Managed by other effects or actions
-    // setNearIntentsDisplayInfo, // Managed by other effects or actions
-    // toast, // Stable
+    intentProgressActual, 
+    currentStep,
   ]);
 
 
@@ -230,7 +226,6 @@ export const useOnrampState = () => {
       recipient: nearRecipientAddress,
     });
     const redirectUrl = `${window.location.origin}${window.location.pathname}?${callbackUrlParams.toString()}`;
-
     try {
       const onrampProviderUrl = generateOnrampURL({
         asset: "USDC",
