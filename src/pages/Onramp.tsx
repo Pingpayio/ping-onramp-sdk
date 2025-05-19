@@ -8,41 +8,6 @@ import SidebarNav from '@/components/SidebarNav';
 import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 import { History } from 'lucide-react';
 
-// Sample history data with added network information
-const sampleHistory = [{
-  id: 1,
-  date: '2025-05-10',
-  asset: 'BTC',
-  network: 'Bitcoin Network',
-  amount: '0.015',
-  fiat: '$500',
-  status: 'Completed'
-}, {
-  id: 2,
-  date: '2025-05-05',
-  asset: 'ETH',
-  network: 'Ethereum Network',
-  amount: '0.35',
-  fiat: '$750',
-  status: 'Completed'
-}, {
-  id: 3,
-  date: '2025-04-25',
-  asset: 'NEAR',
-  network: 'NEAR Protocol',
-  amount: '125',
-  fiat: '$250',
-  status: 'Completed'
-}, {
-  id: 4,
-  date: '2025-04-18',
-  asset: 'USDC',
-  network: 'Ethereum Network',
-  amount: '500',
-  fiat: '$500',
-  status: 'Failed'
-}];
-
 const OnrampPage = () => {
   const isMobile = useIsMobile();
   const {
@@ -116,7 +81,7 @@ const OnrampPage = () => {
             </div>
 
             {/* Right container - maintains consistent size on desktop, full width on mobile */}
-            <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
+            {/* <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex flex-col w-full lg:w-[400px] lg:min-w-[400px] border border-white/[0.16]">
               <div className="flex items-center gap-2 mb-4">
                 <History className="h-5 w-5 text-white" />
                 <h3 className="text-xl font-medium text-white">Onramp History</h3>
@@ -158,7 +123,7 @@ const OnrampPage = () => {
               {sampleHistory.length === 0 && <div className="text-white/50 text-center py-8">
                   <p>No transaction history yet.</p>
                 </div>}
-            </div>
+            </div> */}
           </main>
         </div>
       </div>

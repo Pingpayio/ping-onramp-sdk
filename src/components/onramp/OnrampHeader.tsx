@@ -1,3 +1,4 @@
+import React from "react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Wallet } from "@coinbase/onchainkit/wallet";
 

@@ -1,14 +1,13 @@
 import React from "react";
-import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Onramp from "./pages/Onramp";
-import Transaction from "./pages/Transaction";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import MobileTopbar from "./components/MobileTopbar";
 import { WalletProvider } from "./hooks/use-wallet-context";
+import NotFound from "./pages/NotFound";
+import Onramp from "./pages/Onramp";
+import Transaction from "./pages/Transaction";
 
 const queryClient = new QueryClient();
 
@@ -16,8 +15,6 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <WalletProvider>
-        <Toaster />
-        <Sonner />
         <BrowserRouter>
           <MobileTopbar />
           <Routes>
@@ -27,6 +24,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
+        <Sonner />
       </WalletProvider>
     </TooltipProvider>
   </QueryClientProvider>

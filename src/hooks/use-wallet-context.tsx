@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import { toast } from "@/components/ui/use-toast";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
 import { base } from "wagmi/chains";
+import { toast } from "sonner";
 
 interface WalletContextType {
   isConnected: boolean;
@@ -48,9 +48,7 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
           setWalletAddress(mockAddress);
           setIsConnected(true);
 
-          // Use the standardized toast
-          toast({
-            title: "Wallet Connected",
+          toast("Wallet Connected", {
             description: "Your wallet has been connected successfully!",
           });
 
@@ -59,9 +57,8 @@ export const WalletProvider = ({ children }: { children: ReactNode }) => {
       });
     } catch (error) {
       console.error("Error connecting wallet:", error);
-      toast({
-        variant: "destructive",
-        title: "Connection Failed",
+      toast("Connection Failed", {
+        // variant: "destructive",
         description: "Failed to connect to wallet. Please try again.",
       });
     }
