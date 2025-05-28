@@ -1,80 +1,88 @@
 
 import React from 'react';
-import { useTransactionProgress, TransactionStage } from '@/hooks/use-transaction-progress';
 import { generateTxHash } from '@/lib/transaction-utils';
-import TransactionProgressBar from './transaction/TransactionProgressBar';
 import TransactionStageCard from './transaction/TransactionStageCard';
 import TransactionDetailsCard from './transaction/TransactionDetailsCard';
 import TransactionCompletionMessage from './transaction/TransactionCompletionMessage';
+import type { IntentProgress } from '@/types/onramp';
 
 interface TransactionProgressProps {
   asset: string | null;
   amount: string;
   walletAddress: string;
-  isSimulated?: boolean;
+
+  intentProgress?: IntentProgress;
+  error?: string | null;
+  displayInfo?: { message?: string; amountIn?: number; amountOut?: number; explorerUrl?: string; error?: string };
 }
 
 const TransactionProgress = ({
   asset,
   amount,
   walletAddress,
-  isSimulated = true
+  intentProgress = 'none',
+  error = null,
+  displayInfo = {},
 }: TransactionProgressProps) => {
-  const {
-    currentStage,
-    progress,
-    error
-  } = useTransactionProgress({ simulateProgress: isSimulated });
 
-  // Generate mock transaction hashes
-  const depositTxHash = generateTxHash('0x7a');
+  const depositTxHash = displayInfo?.explorerUrl || generateTxHash('0x7a');
   const swapTxHash = generateTxHash('0x8b');
-  const finalTxHash = generateTxHash('0x9c');
+  const finalTxHash = displayInfo?.explorerUrl || generateTxHash('0x9c');
 
-  // Check if transaction is completed
-  const isCompleted = currentStage === 'completed';
+  const isCompleted = intentProgress === 'done';
+  const isFailed = intentProgress === 'error';
 
   return (
     <div className="w-full space-y-3">
-      {/* Progress bar */}
-      <TransactionProgressBar progress={progress} />
-      
-      {/* Current stage card */}
-      <TransactionStageCard 
-        currentStage={currentStage}
+      <TransactionStageCard
+        intentProgress={intentProgress}
         onboardingTxHash={depositTxHash}
         swapTxHash={swapTxHash}
         finalTxHash={finalTxHash}
         asset={asset}
         amount={amount}
         walletAddress={walletAddress}
+        displayInfo={displayInfo}
+        error={error || displayInfo?.error}
       />
-      
-      {/* Completion message (shown when completed) */}
+
       {isCompleted && (
-        <TransactionCompletionMessage 
-          amount={amount} 
-          asset={asset} 
+        <TransactionCompletionMessage
+          amount={displayInfo?.amountOut ? displayInfo.amountOut.toString() : "processed amount"}
+          asset={asset}
           txHash={finalTxHash}
+          message={displayInfo?.message || "Transaction completed successfully!"}
         />
       )}
+      
+      {isFailed && (
+        <div className="bg-red-500/10 p-3 rounded-md text-center">
+          <p className="text-red-400 font-medium">Transaction Failed</p>
+          <p className="text-white/80 text-sm">{error || displayInfo?.error || "An unknown error occurred."}</p>
+        </div>
+      )}
 
-      {/* Transaction details */}
-      <TransactionDetailsCard 
-        amount={amount} 
-        asset={asset} 
+      <TransactionDetailsCard
+        amount={amount}
+        asset={asset}
         walletAddress={walletAddress}
         isCompleted={isCompleted}
+        displayInfo={displayInfo}
       />
-      
-      {/* Status message based on transaction stage */}
-      {currentStage !== 'completed' && currentStage !== 'failed' ? (
+
+      {!isCompleted && !isFailed && (
         <p className="text-center text-white/60 text-sm mt-2">
-          Please do not close this window while your transaction is being processed.
+          {displayInfo?.message || "Your transaction is being processed. Please do not close this window."}
         </p>
-      ) : currentStage === 'completed' && (
+      )}
+      {isCompleted && !displayInfo?.message && ( // Fallback completion message if not in displayInfo
         <p className="text-center text-white/60 text-sm mt-2">
-          Transaction complete, you can now close this window.
+          Transaction complete! You can now close this window.
+        </p>
+      )}
+       {isFailed && !error && !displayInfo?.error &&( // Fallback failure message
+        <p className="text-center text-white/60 text-sm mt-2">
+          The transaction could not be completed. Please check for more details or try again.
         </p>
       )}
     </div>

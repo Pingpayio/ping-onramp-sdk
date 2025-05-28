@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Button from './Button';
 import { Wallet, Copy, CheckCircle2 } from 'lucide-react';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 interface ConnectWalletProps {
   onConnect: (address: string) => void;

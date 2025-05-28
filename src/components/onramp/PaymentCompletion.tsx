@@ -3,7 +3,7 @@ import React from 'react';
 import { Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { mockPrices } from './asset-selection/PriceCalculator';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 interface PaymentCompletionProps {
   amount: string;
@@ -94,9 +94,7 @@ const PaymentCompletion = ({
   const handleBuyNow = (e: React.MouseEvent) => {
     e.preventDefault();
     
-    // Show processing toast
-    toast({
-      title: "Processing Payment",
+    toast("Processing Payment", {
       description: "Starting transaction process...",
     });
     

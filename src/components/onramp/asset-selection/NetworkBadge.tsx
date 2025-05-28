@@ -17,28 +17,6 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
   // Get available networks for the selected asset
   const getNetworkInfo = (asset: string) => {
     switch (asset) {
-      case 'BTC':
-        return { 
-          name: 'Bitcoin Network', 
-          networks: [
-            { 
-              id: 'bitcoin', 
-              name: 'Bitcoin Network',
-              logo: 'https://cryptologos.cc/logos/bitcoin-btc-logo.svg?v=029'
-            }
-          ] 
-        };
-      case 'ETH':
-        return { 
-          name: 'Ethereum Network', 
-          networks: [
-            { 
-              id: 'ethereum', 
-              name: 'Ethereum Network',
-              logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=029'
-            }
-          ] 
-        };
       case 'NEAR':
         return { 
           name: 'NEAR Protocol', 
@@ -46,35 +24,9 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
             { 
               id: 'near', 
               name: 'NEAR Protocol',
-              logo: 'https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029'
+              logo: '/cryptologos/near-protocol-near-logo.svg?v=029'
             }
           ] 
-        };
-      case 'USDC':
-        return { 
-          name: 'Multiple Networks', 
-          networks: [
-            { 
-              id: 'ethereum', 
-              name: 'Ethereum Network',
-              logo: 'https://cryptologos.cc/logos/ethereum-eth-logo.svg?v=029'
-            },
-            { 
-              id: 'polygon', 
-              name: 'Polygon Network',
-              logo: 'https://cryptologos.cc/logos/polygon-matic-logo.svg?v=029'
-            },
-            { 
-              id: 'solana', 
-              name: 'Solana Network',
-              logo: 'https://cryptologos.cc/logos/solana-sol-logo.svg?v=029'
-            },
-            { 
-              id: 'near', 
-              name: 'NEAR Protocol',
-              logo: 'https://cryptologos.cc/logos/near-protocol-near-logo.svg?v=029'
-            }
-          ]
         };
       default:
         return { 
@@ -90,11 +42,10 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
     }
   };
 
-  // Retrieve network information for the selected asset
-  const { networks } = getNetworkInfo(selectedAsset);
+  // Hardcode for intents
+  const { networks } = getNetworkInfo("NEAR");
   
-  // Use state to track the selected network
-  const [selectedNetwork, setSelectedNetwork] = useState(networks[0].id);
+  const selectedNetwork = networks[0].id;
 
   // Helper to get network display name from id
   const getNetworkDisplayName = (networkId: string) => {
@@ -113,7 +64,7 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
       <label className="text-sm text-white mb-1">Network</label>
       
       {networks.length > 1 ? (
-        <Select defaultValue={selectedNetwork} onValueChange={setSelectedNetwork}>
+        <Select defaultValue={selectedNetwork} disabled>
           <SelectTrigger 
             className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] 
             text-white/60 flex items-center px-3
@@ -170,9 +121,9 @@ const NetworkBadge = ({ selectedAsset }: NetworkBadgeProps) => {
         </div>
       )}
 
-      <p className="text-xs text-white/40 mt-1">
+      {/* <p className="text-xs text-white/40 mt-1">
         {selectedAsset} is available on {networks.length} network{networks.length > 1 ? 's' : ''}
-      </p>
+      </p> */}
     </div>
   );
 };

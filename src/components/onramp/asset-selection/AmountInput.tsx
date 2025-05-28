@@ -8,30 +8,34 @@ interface AmountInputProps {
   onAmountChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   selectedAsset: string | null;
   estimatedAmount: string;
+  selectedCurrency?: string;
+  onCurrencySelect?: (currency: string) => void;
 }
 
 const AmountInput = ({
   amount,
   onAmountChange,
   selectedAsset,
-  estimatedAmount
+  estimatedAmount,
+  selectedCurrency = 'USD',
+  onCurrencySelect,
 }: AmountInputProps) => {
   return (
     <div className="w-full mb-3">
-      {/* Adjusted font size and spacing for better proportions */}
       <div className="flex flex-row items-center justify-start py-2">
         <Input
           type="number"
           value={amount}
           onChange={onAmountChange}
-          min="10"
+          min="10" // This minimum might need to be dynamic based on currency or payment method
           className="text-3xl md:text-5xl font-bold border-none shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[160px] min-h-[45px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="0"
         />
-        <span className="text-3xl md:text-5xl text-white/40 font-normal -ml-1">USD</span>
+        <span className="text-3xl md:text-5xl text-white/40 font-normal -ml-1">
+          {selectedCurrency}
+        </span>
       </div>
       
-      {/* Estimated token amount with reduced spacing */}
       {selectedAsset && parseFloat(amount) > 0 && (
         <div className="flex items-start justify-start">
           <div className="flex items-center">

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import Button from '@/components/Button';
 import { ArrowLeft, Wallet, Home, ExternalLink } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useWallet } from '@/hooks/use-wallet-context';
+import { useAccount } from 'wagmi';
 
 interface OnrampNavigationProps {
   currentStep: number;
@@ -24,7 +24,7 @@ const OnrampNavigation = ({
   isProcessingTransaction = false
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
-  const { isConnected, connectWallet } = useWallet();
+  const { isConnected } = useAccount();
   
   // Function to determine button text based on current step and wallet connection
   const getButtonText = () => {
@@ -44,15 +44,7 @@ const OnrampNavigation = ({
     }
     return null;
   };
-  
-  // Handle button click based on wallet connection status
-  const handleButtonClick = async () => {
-    if (currentStep === 0 && !isConnected) {
-      await connectWallet();
-    } else {
-      handleContinue();
-    }
-  };
+
   
   // Open blockchain explorer in a new tab
   const openExplorer = () => {
@@ -99,7 +91,7 @@ const OnrampNavigation = ({
       
       <Button
         variant="outline"
-        onClick={handleButtonClick}
+        onClick={handleContinue}
         disabled={!isConnected && currentStep > 0} // Only disable for steps after first if not connected
         withArrow={isConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
         icon={getButtonIcon()}

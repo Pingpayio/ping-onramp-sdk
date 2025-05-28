@@ -1,128 +1,50 @@
 
 import { useState, useEffect } from 'react';
 
-export type TransactionStage = 'deposit' | 'querying' | 'signing' | 'sending' | 'payment' | 'swap' | 'completed' | 'failed';
+export type TransactionStage =
+  | 'confirming_evm_deposit'
+  | 'quoting_bridge_swap'
+  | 'awaiting_intent_signature'
+  | 'publishing_intent'
+  | 'awaiting_intent_settlement'
+  | 'intent_completed'
+  | 'intent_failed';
 
 interface UseTransactionProgressProps {
   initialStage?: TransactionStage;
-  simulateProgress?: boolean;
 }
 
 export const useTransactionProgress = ({
-  initialStage = 'deposit',
-  simulateProgress = true
+  initialStage = 'confirming_evm_deposit',
 }: UseTransactionProgressProps = {}) => {
   const [currentStage, setCurrentStage] = useState<TransactionStage>(initialStage);
   const [progress, setProgress] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
   
-  // Simulate transaction progress for demo purposes
-  useEffect(() => {
-    if (!simulateProgress) return;
-    
-    let timeoutId: NodeJS.Timeout;
-    
-    if (currentStage === 'deposit') {
-      // Start with 0% and animate to 20%
-      setProgress(0);
-      let currentProgress = 0;
-      
-      const incrementProgress = () => {
-        if (currentProgress < 20) {
-          currentProgress += 1; // Smaller increment for smoother animation
-          setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 150);
-        } else {
-          // Add a slight delay before changing stages for smoother transition
-          setTimeout(() => setCurrentStage('querying'), 300);
-        }
-      };
-      
-      timeoutId = setTimeout(incrementProgress, 500);
-    } else if (currentStage === 'querying') {
-      // Start at 20% and animate to 40%
-      let currentProgress = 20;
-      
-      const incrementProgress = () => {
-        if (currentProgress < 40) {
-          currentProgress += 1; // Smaller increment for smoother animation
-          setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 150);
-        } else {
-          setTimeout(() => setCurrentStage('signing'), 300);
-        }
-      };
-      
-      timeoutId = setTimeout(incrementProgress, 500);
-    } else if (currentStage === 'signing') {
-      // Start at 40% and animate to 60%
-      let currentProgress = 40;
-      
-      const incrementProgress = () => {
-        if (currentProgress < 60) {
-          currentProgress += 1; // Smaller increment for smoother animation
-          setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 150);
-        } else {
-          setTimeout(() => setCurrentStage('sending'), 300);
-        }
-      };
-      
-      timeoutId = setTimeout(incrementProgress, 500);
-    } else if (currentStage === 'sending') {
-      // Start at 60% and animate to 95%
-      let currentProgress = 60;
-      
-      const incrementProgress = () => {
-        if (currentProgress < 95) {
-          currentProgress += 1; // Smaller increment for smoother animation
-          setProgress(currentProgress);
-          timeoutId = setTimeout(incrementProgress, 150);
-        } else {
-          // Ensure we reach exactly 100% with a nice animation
-          setTimeout(() => {
-            setProgress(100);
-            setTimeout(() => setCurrentStage('completed'), 300);
-          }, 300);
-        }
-      };
-      
-      timeoutId = setTimeout(incrementProgress, 500);
-    }
-    
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-  }, [currentStage, simulateProgress]);
-  
   const setStage = (stage: TransactionStage) => {
     setCurrentStage(stage);
-    
-    // Update progress based on stage with a smooth transition
+    setError(null);
+
     switch (stage) {
-      case 'deposit':
-        setProgress(10);
+      case 'confirming_evm_deposit':
+        setProgress(10); // Waiting for funds from onramp provider
         break;
-      case 'querying':
-        setProgress(30);
+      case 'quoting_bridge_swap':
+        setProgress(30); // Querying for bridge/swap rates
         break;
-      case 'signing':
-        setProgress(50);
+      case 'awaiting_intent_signature':
+        setProgress(50); // Waiting for user to sign the intent
         break;
-      case 'sending':
-        setProgress(75);
+      case 'publishing_intent':
+        setProgress(70); // Publishing the signed intent
         break;
-      case 'payment':
-        setProgress(20);
+      case 'awaiting_intent_settlement':
+        setProgress(90); // Waiting for the intent to settle on NEAR
         break;
-      case 'swap':
-        setProgress(60);
-        break;
-      case 'completed':
+      case 'intent_completed':
         setProgress(100);
         break;
-      case 'failed':
-        setError('Transaction failed');
+      case 'intent_failed':
         break;
     }
   };

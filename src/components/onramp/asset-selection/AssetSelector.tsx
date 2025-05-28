@@ -53,6 +53,7 @@ const AssetSelector = ({
       onOpenChange={handleOpenChange}
       value={selectedAsset || ""}
       onValueChange={handleAssetSelect}
+      disabled
     >
       <SelectTrigger
         className={cn(
@@ -82,7 +83,6 @@ const AssetSelector = ({
             )}
           </div>
         </SelectValue>
-        {/* Removed the duplicate ChevronDown component that was here */}
       </SelectTrigger>
       <SelectContent
         className={cn(
