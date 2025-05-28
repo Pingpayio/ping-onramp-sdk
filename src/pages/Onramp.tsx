@@ -5,8 +5,8 @@ import OnrampHeader from '@/components/onramp/OnrampHeader';
 import OnrampStepContent from '@/components/onramp/OnrampStepContent';
 import { useOnrampState } from '@/hooks/use-onramp-state';
 import SidebarNav from '@/components/SidebarNav';
-import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
-import { History } from 'lucide-react';
+// import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
+// import { History } from 'lucide-react';
 
 const OnrampPage = () => {
   const isMobile = useIsMobile();
@@ -14,7 +14,6 @@ const OnrampPage = () => {
     currentStep,
     selectedAsset,
     open,
-    selectedOnramp,
     walletAddress,
     amount,
     selectedCurrency,
@@ -25,8 +24,8 @@ const OnrampPage = () => {
     intentProgress,
     errorMessage,
     nearIntentsDisplayInfo,
+    paymentMethod,
     handleAssetSelect,
-    handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
     handleCurrencySelect,
@@ -34,6 +33,7 @@ const OnrampPage = () => {
     handleBack,
     canContinue,
     setOpen,
+    handlePaymentMethod
   } = useOnrampState();
 
   return (
@@ -61,8 +61,6 @@ const OnrampPage = () => {
                 setOpen={setOpen}
                 walletAddress={walletAddress}
                 onWalletAddressChange={handleWalletAddressChange}
-                selectedOnramp={selectedOnramp}
-                onOnrampSelect={handleOnrampSelect}
                 handleBack={handleBack}
                 handleContinue={handleContinue}
                 canContinue={canContinue}
@@ -74,6 +72,8 @@ const OnrampPage = () => {
                 errorMessage={errorMessage}
                 nearIntentsDisplayInfo={nearIntentsDisplayInfo}
                 isWalletAddressValid={isWalletAddressValid}
+                paymentMethod={paymentMethod}
+                onPaymentMethodChange={handlePaymentMethod}
               />
             </div>
 

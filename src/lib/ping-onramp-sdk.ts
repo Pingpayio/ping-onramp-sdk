@@ -47,7 +47,7 @@ const getOnrampTokens = (
   assetSymbol: string,
   tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]
 ): { tokenIn: BaseTokenInfo; tokenOut: BaseTokenInfo; nearStorageTokenDef: BaseTokenInfo } | null => {
-  const tokenIn = findTokenFromList(assetSymbol, "base", tokenList);
+  const tokenIn = findTokenFromList(assetSymbol, "eth", tokenList);
   const tokenOut = findTokenFromList(assetSymbol, "near", tokenList);
   const nearStorageTokenDef = findTokenFromList("NEAR", "near", tokenList);
 

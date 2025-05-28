@@ -22,6 +22,8 @@ interface AssetSelectionProps {
   onCurrencySelect?: (currency: string) => void; 
   walletAddressError?: boolean;
   nearIntentsDepositAddress: string | null;
+  paymentMethod: string;
+  onPaymentMethodChange: (method: string) => void;
 }
 
 const AssetSelection = ({
@@ -37,6 +39,8 @@ const AssetSelection = ({
   onCurrencySelect, 
   walletAddressError = false,
   nearIntentsDepositAddress,
+  paymentMethod,
+  onPaymentMethodChange
 }: AssetSelectionProps) => {
   const [estimatedAmount, setEstimatedAmount] = useState<string>('0');
 
@@ -88,7 +92,7 @@ const AssetSelection = ({
           </p>
         </div>
         
-        <PaymentMethod />
+        <PaymentMethod selectedMethod={paymentMethod} onMethodSelect={onPaymentMethodChange} />
         
         <NearIntentsField depositAddress={nearIntentsDepositAddress} />
       </div>

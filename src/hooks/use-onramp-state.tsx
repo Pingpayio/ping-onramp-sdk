@@ -25,12 +25,12 @@ export const useOnrampState = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [selectedAsset, setSelectedAsset] = useState<string>("USDC");
   const [open, setOpen] = useState(false);
-  const [selectedOnramp, setSelectedOnramp] = useState<string | null>("Coinbase");
   const [fiatAmount, setFiatAmount] = useState<string>("10");
   const [nearRecipientAddress, setNearRecipientAddress] = useState<string>("");
   const [isWalletAddressValid, setIsWalletAddressValid] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<string>("USD");
   const [walletAddressError, setWalletAddressError] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState("card");
 
   const [nearIntentsDepositAddress, setNearIntentsDepositAddress] = useState<string | null>(null);
 
@@ -165,10 +165,6 @@ export const useOnrampState = () => {
     setOpen(false);
   };
 
-  const handleOnrampSelect = (provider: string) => {
-    setSelectedOnramp(provider);
-  };
-
   const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const addressInput = e.target.value;
     setNearRecipientAddress(addressInput);
@@ -190,6 +186,10 @@ export const useOnrampState = () => {
   const handleCurrencySelect = (currency: string) => {
     setSelectedCurrency(currency);
   };
+
+  const handlePaymentMethod = (method: string) => {
+    setPaymentMethod(method);
+  }
 
   const handleContinue = async () => {
     if (!isConnected || !evmAddress) {
@@ -235,6 +235,7 @@ export const useOnrampState = () => {
         partnerUserId: evmAddress,
         redirectUrl: redirectUrl,
         paymentCurrency: selectedCurrency,
+        paymentMethod: paymentMethod
       });
 
       if (onrampProviderUrl === "error:missing_app_id") {
@@ -311,7 +312,6 @@ export const useOnrampState = () => {
     selectedAsset,
     open,
     setOpen,
-    selectedOnramp,
     walletAddress: nearRecipientAddress,
     amount: fiatAmount,
     isWalletAddressValid,
@@ -320,10 +320,10 @@ export const useOnrampState = () => {
     walletAddressError,
     errorMessage,
     isLoading,
+    paymentMethod,
 
     // Event Handlers
     handleAssetSelect,
-    handleOnrampSelect,
     handleWalletAddressChange,
     handleAmountChange,
     handleCurrencySelect,
@@ -331,6 +331,7 @@ export const useOnrampState = () => {
     handleBack,
     canContinue: canContinueToOnramp,
     handleStepClick,
+    handlePaymentMethod,
 
     // NEAR Intents specific state
     nearIntentsDepositAddress,

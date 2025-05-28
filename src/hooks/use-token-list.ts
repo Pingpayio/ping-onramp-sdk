@@ -23,6 +23,17 @@ export function useTokenList(tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]) {
         symbol: "FMS",
         name: "FOMO SOLVER",
       },
+      {
+        defuseAssetId:
+          "nep141:eth-0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.omft.near",
+        address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+        decimals: 6,
+        icon: "https://s2.coinmarketcap.com/static/img/coins/128x128/3408.png",
+        chainName: "eth",
+        bridge: "poa",
+        symbol: "USDC",
+        name: "USD Coin",
+      },
     ];
   }
 

@@ -16,14 +16,14 @@ interface OnrampStepContentProps {
   setOpen: (open: boolean) => void;
   walletAddress: string;
   onWalletAddressChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  selectedOnramp: string | null;
-  onOnrampSelect: (provider: string) => void;
   handleBack: () => void;
   handleContinue: () => void;
   canContinue: () => boolean;
   selectedCurrency?: string;
   onCurrencySelect?: (currency: string) => void;
   walletAddressError?: boolean;
+  paymentMethod: string;
+  onPaymentMethodChange: (method: string) => void;
 
   nearIntentsDepositAddress: string | null;
   intentProgress?: IntentProgress;
@@ -43,8 +43,6 @@ const OnrampStepContent = ({
   setOpen,
   walletAddress,
   onWalletAddressChange,
-  selectedOnramp,
-  onOnrampSelect,
   handleBack,
   handleContinue,
   canContinue,
@@ -56,6 +54,8 @@ const OnrampStepContent = ({
   errorMessage,
   nearIntentsDisplayInfo,
   isWalletAddressValid,
+  paymentMethod,
+  onPaymentMethodChange
 }: OnrampStepContentProps) => {
   const isMobile = useIsMobile();
 
@@ -75,7 +75,9 @@ const OnrampStepContent = ({
             selectedCurrency={selectedCurrency}
             onCurrencySelect={onCurrencySelect}
             walletAddressError={walletAddressError}
-            nearIntentsDepositAddress={nearIntentsDepositAddress} // Pass down
+            nearIntentsDepositAddress={nearIntentsDepositAddress}
+            paymentMethod={paymentMethod}
+            onPaymentMethodChange={onPaymentMethodChange}
           />
         );
       case 1:
