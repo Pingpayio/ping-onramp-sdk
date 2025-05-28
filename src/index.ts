@@ -1,1 +1,5 @@
-console.log("Hello via Bun!");
+// src/index.ts
+
+export { PingpayOnramp } from './pingpay-onramp';
+export type { PingpayOnrampConfig, TargetAsset, OnrampResult } from './types';
+export { PingpayOnrampError } from './errors';

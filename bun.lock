@@ -3,6 +3,10 @@
   "workspaces": {
     "": {
       "name": "onramp-sdk",
+      "dependencies": {
+        "typed-channel": "^0.9.5",
+        "zod": "^3.25.32",
+      },
       "devDependencies": {
         "@types/bun": "latest",
       },
@@ -18,8 +22,12 @@
 
     "bun-types": ["bun-types@1.2.14", "", { "dependencies": { "@types/node": "*" } }, "sha512-Kuh4Ub28ucMRWeiUUWMHsT9Wcbr4H3kLIO72RZZElSDxSu7vpetRvxIUDUaW6QtaIeixIpm7OXtNnZPf82EzwA=="],
 
+    "typed-channel": ["typed-channel@0.9.5", "", {}, "sha512-taCiroVT//iljqH0ijhcyEMhG/1IgLt+FE/LKPku+oOmx1xtkAjZ8upc8KoZKezYe/sL7sMsuAC6EHnnaXt1DA=="],
+
     "typescript": ["typescript@5.8.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-p1diW6TqL9L07nNxvRMM7hMMw4c5XOo/1ibL4aAIGmSAt9slTE1Xgw5KWuof2uTOvCg9BY7ZRi+GaF+7sfgPeQ=="],
 
     "undici-types": ["undici-types@6.21.0", "", {}, "sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ=="],
+
+    "zod": ["zod@3.25.32", "", {}, "sha512-OSm2xTIRfW8CV5/QKgngwmQW/8aPfGdaQFlrGoErlgg/Epm7cjb6K6VEyExfe65a3VybUOnu381edLb0dfJl0g=="],
   }
 }

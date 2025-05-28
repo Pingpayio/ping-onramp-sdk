@@ -7,5 +7,9 @@
   },
   "peerDependencies": {
     "typescript": "^5"
+  },
+  "dependencies": {
+    "typed-channel": "^0.9.5",
+    "zod": "^3.25.32"
   }
 }
