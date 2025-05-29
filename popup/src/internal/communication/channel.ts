@@ -1,11 +1,9 @@
-// popup/src/internal/communication/channel.ts
-
 import { createTypedChannel } from "typed-channel";
-import { createPostMessageTransport } from "typed-channel"; // User updated this path
-import type { SdkToPopupMessages, PopupToSdkMessages, OnrampFlowStep } from "../../../src/internal/communication/messages"; // Import from shared messages
-import { atom, useAtom, useAtomValue } from 'jotai'; // useAtom is needed to set the atom
+import { createPostMessageTransport } from "typed-channel";
+import type { SdkToPopupMessages, PopupToSdkMessages } from "../../../../src/internal/communication/messages";
+import { atom, useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { onrampStepAtom } from '../../state/atoms'; // Adjusted path
+import { onrampStepAtom } from '../../state/atoms';
 
 // Jotai atom to hold the channel instance
 // Making it writable from this module
@@ -34,29 +32,13 @@ export function usePopupChannel() {
             return;
         }
 
-        const newChannel = createTypedChannel(createPostMessageTransport<SdkToPopupMessages, SdkToPopupMessages>(window.opener, {
-             // Optional: Add origin validation for security
-             targetOrigin: '*', // IMPORTANT: Replace '*' with the actual origin of the parent window
-             // validateMessage: (event) => { /* Add your validation logic here */ return true; }
-        }));
+        const transport = createPostMessageTransport<SdkToPopupMessages, SdkToPopupMessages>(window.opener);
+        const newChannel = createTypedChannel(transport);
 
         setChannel(newChannel); // Store the channel in Jotai using the setter
 
-        // Example: Listen for "initiate-onramp-flow" in App.tsx or a dedicated effect here
-        // newChannel.on('initiate-onramp-flow', (payload) => {
-        //   console.log('Received initiate-onramp-flow:', payload);
-        //   // Update Jotai atoms based on payload (target, initialData)
-        //   // setOnrampTargetAtom(payload.target);
-        //   // setInitialDataAtom(payload.initialData);
-        //   // setCurrentStep('form-entry'); // Or based on initialData
-        // });
-
-
         // Clean up the channel when the component unmounts or popup closes
         return () => {
-            if (newChannel) {
-                // newChannel.close(); // If typed-channel provides a close method
-            }
              setChannel(null); // Clear the atom
         };
     }, [setChannel, setCurrentStep]); // setChannel and setCurrentStep are stable

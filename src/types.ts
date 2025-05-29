@@ -1,11 +1,30 @@
 // src/types.ts
 
-import type { OnrampFlowStep, TargetAsset as ChannelTargetAsset, OnrampResult as ChannelOnrampResult } from './internal/communication/messages';
+import type {
+  OnrampFlowStep,
+  TargetAsset as ChannelTargetAsset,
+  OnrampResult as ChannelOnrampResult,
+  initiateOnrampFlowPayloadSchema,
+  formDataSubmittedPayloadSchema,
+  walletConnectedPayloadSchema,
+  transactionSignedPayloadSchema,
+  onrampInitiatedPayloadSchema,
+  processFailedPayloadSchema,
+  // Ensure all necessary Zod schemas from messages.ts are imported if used for inference
+} from './internal/communication/messages';
+import { z } from 'zod';
 
 /**
  * Configuration for the PingpayOnramp SDK.
  */
 export interface PingpayOnrampConfig {
+  /**
+   * API Key for the Pingpay Onramp service.
+   * This is optional for now, as its direct usage in the SDK isn't defined yet,
+   * but included for future compatibility and consistency with the reference SDK.
+   */
+  apiKey?: string;
+
   /**
    * The URL of the popup window to be opened.
    * Defaults to '/popup/index.html' if not provided.
@@ -14,13 +33,69 @@ export interface PingpayOnrampConfig {
   popupUrl?: string;
 
   /**
+   * The target asset and chain for the onramp process.
+   * This specifies what the user is trying to acquire.
+   */
+  targetAsset?: TargetAsset;
+
+  /**
+   * Optional callback invoked when the popup window signals it's ready.
+   */
+  onPopupReady?: () => void;
+
+  /**
+   * Optional callback invoked when the onramp flow is confirmed as started by the popup.
+   * @param data The initiation data including target and any initialData.
+   */
+  onFlowStarted?: (data: z.infer<typeof initiateOnrampFlowPayloadSchema>) => void;
+
+  /**
    * Optional callback function that is invoked whenever the onramp flow step changes.
    * @param step The current step in the onramp flow.
    * @param details Optional additional details about the current step.
    */
   onStepChange?: (step: OnrampFlowStep, details?: any) => void;
 
-  // Potentially other configuration options like API keys, default themes, etc.
+  /**
+   * Optional callback invoked when form data is submitted from the popup.
+   * @param payload The submitted form data payload.
+   */
+  onFormDataSubmitted?: (payload: z.infer<typeof formDataSubmittedPayloadSchema>) => void;
+
+  /**
+   * Optional callback invoked when a wallet is connected in the popup.
+   * @param walletInfo Information about the connected wallet.
+   */
+  onWalletConnected?: (walletInfo: z.infer<typeof walletConnectedPayloadSchema>) => void;
+
+  /**
+   * Optional callback invoked when a transaction is signed in the popup.
+   * @param txInfo Information about the signed transaction.
+   */
+  onTransactionSigned?: (txInfo: z.infer<typeof transactionSignedPayloadSchema>) => void;
+
+  /**
+   * Optional callback invoked when an external onramp service is initiated by the popup.
+   * @param serviceInfo Information about the initiated onramp service.
+   */
+  onOnrampInitiated?: (serviceInfo: z.infer<typeof onrampInitiatedPayloadSchema>) => void;
+
+  /**
+   * Optional callback invoked when the onramp process completes successfully.
+   * @param result The result of the onramp process.
+   */
+  onProcessComplete?: (result: ChannelOnrampResult) => void;
+
+  /**
+   * Optional callback invoked when the onramp process fails at any step.
+   * @param errorInfo Details about the failure.
+   */
+  onProcessFailed?: (errorInfo: z.infer<typeof processFailedPayloadSchema>) => void;
+
+  /**
+   * Optional callback invoked when the popup window is closed, either by the user or programmatically.
+   */
+  onPopupClose?: () => void;
 }
 
 /**

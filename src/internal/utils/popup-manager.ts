@@ -1,5 +1,3 @@
-// src/internal/utils/popup-manager.ts
-
 /**
  * Opens a new popup window.
  * @param url The URL to open in the popup.
