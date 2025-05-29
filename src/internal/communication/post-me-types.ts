@@ -33,5 +33,4 @@ export interface SdkListenerMethods {
 // Methods the Popup (Child) will expose, for the SDK (Parent) to call
 export interface PopupActionMethods {
   initiateOnrampInPopup: (payload: InitiateOnrampFlowPayload) => Promise<void>;
-  // sdkClosingPopup?: () => Promise<void>; // Optional: if SDK needs to explicitly tell popup it's closing via a call
 }

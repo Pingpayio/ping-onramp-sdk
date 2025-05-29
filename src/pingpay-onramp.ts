@@ -20,12 +20,10 @@ export class PingpayOnramp {
   private onrampPromise: { resolve: (result: OnrampResult) => void; reject: (error: PingpayOnrampError) => void } | null = null;
   private heartbeatInterval?: NodeJS.Timeout;
 
-  private readonly defaultPopupUrl = 'http://localhost:5173';
-  private popupUrlToUse: string;
+  private readonly popupUrl = 'http://localhost:5173';
 
   constructor(config: PingpayOnrampConfig) {
     this.config = config;
-    this.popupUrlToUse = config.popupUrl || this.defaultPopupUrl;
   }
 
   public async initiateOnramp(target: TargetAsset, initialData?: any): Promise<OnrampResult> {
@@ -37,8 +35,8 @@ export class PingpayOnramp {
     return new Promise((resolve, reject) => {
       this.onrampPromise = { resolve, reject };
       try {
-        console.log(`SDK: Opening popup at URL: ${this.popupUrlToUse}`);
-        this.popup = openPopup(this.popupUrlToUse, 'PingpayOnrampPopup', 500, 700);
+        console.log(`SDK: Opening popup at URL: ${this.popupUrl}`);
+        this.popup = openPopup(this.popupUrl, 'PingpayOnrampPopup', 500, 700);
         if (!this.popup) {
           throw new PingpayOnrampError('Failed to open popup window. Please check your browser settings.');
         }
@@ -46,7 +44,7 @@ export class PingpayOnramp {
         const messenger = new WindowMessenger({
           localWindow: window,
           remoteWindow: this.popup,
-          remoteOrigin: new URL(this.popupUrlToUse).origin
+          remoteOrigin: new URL(this.popupUrl).origin
         });
 
         const sdkListenerMethods: SdkListenerMethods = {
@@ -106,7 +104,6 @@ export class PingpayOnramp {
               this.onrampPromise.reject(new PingpayOnrampError(payload.error, payload.details, payload.step));
             }
             this.config.onProcessFailed?.(payload);
-            // this.cleanup(); // Removed to allow popup to display error
           },
           reportPopupClosedByUser: async () => {
             console.log('SDK: Popup closed by user.');

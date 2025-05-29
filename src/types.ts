@@ -22,18 +22,6 @@ export interface PingpayOnrampConfig {
   targetAsset?: TargetAsset;
 
   /**
-   * The URL of the popup window to be opened.
-   * If not provided, a default URL will be used.
-   */
-  popupUrl?: string;
-
-  /**
-   * Optional timeout in milliseconds for the popup handshake.
-   * Defaults to 5000ms if not provided.
-   */
-  popupTimeout?: number;
-
-  /**
    * Optional callback invoked when the popup window signals it's ready.
    */
   onPopupReady?: () => void;
@@ -95,12 +83,10 @@ export interface PingpayOnrampConfig {
 
 /**
  * Represents the target asset and chain for the onramp process.
- * Re-exported from internal messages for public SDK use.
  */
 export type TargetAsset = ChannelTargetAsset;
 
 /**
  * Represents the result of the onramp process.
- * Re-exported from internal messages for public SDK use.
  */
 export type OnrampResult = ChannelOnrampResult;

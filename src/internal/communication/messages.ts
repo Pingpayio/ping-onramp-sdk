@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// TODO: this should match Intents support
 const targetAssetSchema = z.object({
   chain: z.string(),
   asset: z.string(),
