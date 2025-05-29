@@ -28,6 +28,12 @@ export interface PingpayOnrampConfig {
   popupUrl?: string;
 
   /**
+   * Optional timeout in milliseconds for the popup handshake.
+   * Defaults to 5000ms if not provided.
+   */
+  popupTimeout?: number;
+
+  /**
    * Optional callback invoked when the popup window signals it's ready.
    */
   onPopupReady?: () => void;

@@ -1,17 +1,19 @@
 import { useEffect } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
-import { usePopupChannel } from './internal/communication/channel';
+import { usePopupConnection } from "./internal/communication/usePopupConnection"; // New hook
 
 import {
   useInitialData,
   useOnrampFlow,
   useOnrampProcessResult,
   useSetOnrampProcessResult,
-  useSetOnrampTarget,
-  useWallet
+  // useSetOnrampTarget, // This is now handled within usePopupConnection
+  // useWallet // Assuming walletStateValue is still needed, otherwise remove
+  useWallet, // Keep if walletStateValue is used directly in App.tsx
 } from "./state/hooks";
 
-import type { SdkToPopupMessages } from "../../src/internal/communication/messages";
+// SdkToPopupMessages might not be directly needed here if all comms go through post-me methods
+// import type { SdkToPopupMessages } from "../../src/internal/communication/messages";
 import type { OnrampURLParams as RampUtilParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
@@ -38,61 +40,34 @@ type InitialDataType = {
 type AppFormValues = FormEntryFormValues;
 
 function App() {
-  const { channel } = usePopupChannel(); // Use the typed-channel hook
+  const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
-  const setOnrampTarget = useSetOnrampTarget();
+  // setOnrampTarget is called within usePopupConnection's initiateOnrampInPopup
 
   const [walletStateValue] = useWallet();
   const [onrampProcessResultValue] = useOnrampProcessResult();
   const setOnrampProcessResultAtom = useSetOnrampProcessResult();
 
-  const [initialOnrampDataValueFromAtom, setInitialDataAtomFromUseInitialData] =
-    useInitialData();
+  const [initialOnrampDataValueFromAtom] = useInitialData(); // setInitialDataAtomFromUseInitialData is called in usePopupConnection
 
-  useEffect(() => {
-    if (channel) {
-      // Send popup-ready using typed-channel
-      // The payload for 'popup-ready' is an optional empty object as per src/internal/communication/messages.ts
-      channel.emit('popup-ready', undefined);
-      console.log('[App.tsx] Emitted popup-ready via typed-channel');
-
-      // Listen for initiate-onramp-flow using typed-channel
-      const cleanupInitiate = channel.on('initiate-onramp-flow', (payload: SdkToPopupMessages['initiate-onramp-flow']) => {
-        console.log('[App.tsx] Received initiate-onramp-flow from SDK via typed-channel:', payload);
-        if (payload) { // Payload is required for initiate-onramp-flow
-          setOnrampTarget(payload.target);
-          setInitialDataAtomFromUseInitialData(
-            payload.initialData as InitialDataType
-          );
-          goToStep("form-entry");
-          channel.emit('flow-started', payload); // Send flow-started back with the same payload
-        }
-      });
-
-      // Add other listeners as needed, e.g., for 'sdk-closed-popup'
-      // const cleanupSdkClosed = channel.on('sdk-closed-popup', () => {
-      //   console.log('[App.tsx] SDK indicated popup should close.');
-      //   window.close(); // Or other cleanup
-      // });
-
-      return () => {
-        cleanupInitiate(); // Cleanup listener
-        // cleanupSdkClosed();
-      };
-    }
-  }, [channel, goToStep, setOnrampTarget, setInitialDataAtomFromUseInitialData]);
+  // The useEffect for 'popup-ready' and 'initiate-onramp-flow' is now handled by usePopupConnection.
 
   const handleFormSubmit = async (data: AppFormValues) => {
-    if (!channel) {
-      console.error("[App.tsx] Channel not available for form submission.");
-      setFlowError("Communication channel not available.", "form-entry");
+    if (!connection) {
+      console.error("[App.tsx] Connection not available for form submission.");
+      setFlowError("Communication connection not available.", "form-entry");
       return;
     }
 
-    channel.emit("form-data-submitted", { formData: data });
+    connection
+      .remoteHandle()
+      .call("reportFormDataSubmitted", { formData: data })
+      .catch((e: unknown) =>
+        console.error("App.tsx: Error calling reportFormDataSubmitted", e)
+      );
 
     const typedInitialData =
-      initialOnrampDataValueFromAtom as InitialDataType | null;
+      initialOnrampDataValueFromAtom as InitialDataType | null; // This atom is set by usePopupConnection
 
     const partnerUserId =
       walletStateValue?.address ||
@@ -109,7 +84,15 @@ function App() {
       const errorMsg =
         "Missing critical information: EVM wallet, deposit address, or Coinbase App ID.";
       setFlowError(errorMsg, "form-entry");
-      channel.emit("process-failed", { error: errorMsg, step: "form-entry" });
+      connection
+        .remoteHandle()
+        .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
+        .catch((e: unknown) =>
+          console.error(
+            "App.tsx: Error calling reportProcessFailed for missing info",
+            e
+          )
+        );
       return;
     }
 
@@ -135,20 +118,33 @@ function App() {
 
       if (coinbaseOnrampURL.startsWith("error:")) {
         setFlowError(coinbaseOnrampURL, "initiating-onramp-service");
-        channel.emit("process-failed", {
+        connection
+          .remoteHandle()
+          .call("reportProcessFailed", {
             error: coinbaseOnrampURL,
             step: "initiating-onramp-service",
-          });
+          })
+          .catch((e: unknown) =>
+            console.error(
+              "App.tsx: Error calling reportProcessFailed for Coinbase URL error",
+              e
+            )
+          );
         return;
       }
 
-      channel.emit("onramp-initiated", {
+      connection
+        .remoteHandle()
+        .call("reportOnrampInitiated", {
           serviceName: "Coinbase Onramp",
           details: { url: coinbaseOnrampURL },
-        });
+        })
+        .catch((e: unknown) =>
+          console.error("App.tsx: Error calling reportOnrampInitiated", e)
+        );
 
       console.log("Redirecting to Coinbase Onramp:", coinbaseOnrampURL);
-      // window.top.location.href = coinbaseOnrampURL; // This redirection needs careful review
+      // window.top.location.href = coinbaseOnrampURL;
 
       goToStep("processing-transaction");
     } catch (e: unknown) {
@@ -157,7 +153,18 @@ function App() {
         errorMsg || "Failed to initiate onramp.",
         "initiating-onramp-service"
       );
-      channel.emit("process-failed", { error: errorMsg, step: "initiating-onramp-service" });
+      connection
+        ?.remoteHandle()
+        .call("reportProcessFailed", {
+          error: errorMsg,
+          step: "initiating-onramp-service",
+        })
+        .catch((err: unknown) =>
+          console.error(
+            "App.tsx: Error calling reportProcessFailed for general catch block",
+            err
+          )
+        );
     }
   };
 
@@ -175,15 +182,31 @@ function App() {
             data: { transactionId, service: "Coinbase Onramp" },
           };
           setOnrampProcessResultAtom(resultPayload);
-          if (channel) {
-            channel.emit("process-complete", { result: resultPayload });
+          if (connection) {
+            connection
+              .remoteHandle()
+              .call("reportProcessComplete", { result: resultPayload })
+              .catch((e: unknown) =>
+                console.error("App.tsx: Error calling reportProcessComplete", e)
+              );
           }
           goToStep("complete");
         } else if (status === "failure") {
           const errorMsg = urlParams.get("error") || "Onramp failed.";
           setFlowError(errorMsg, "processing-transaction");
-          if (channel) {
-            channel.emit("process-failed", { error: errorMsg, step: "processing-transaction" });
+          if (connection) {
+            connection
+              .remoteHandle()
+              .call("reportProcessFailed", {
+                error: errorMsg,
+                step: "processing-transaction",
+              })
+              .catch((e: unknown) =>
+                console.error(
+                  "App.tsx: Error calling reportProcessFailed for callback failure",
+                  e
+                )
+              );
           }
         }
         // window.history.replaceState({}, document.title, window.location.pathname.split('?')[0]);
@@ -191,13 +214,22 @@ function App() {
     };
 
     handleCallback();
-  }, [channel, goToStep, setFlowError, setOnrampProcessResultAtom]);
+  }, [connection, goToStep, setFlowError, setOnrampProcessResultAtom]);
 
   useEffect(() => {
-    if (channel) {
-      channel.emit("step-changed", { step });
+    if (connection) {
+      connection
+        .remoteHandle()
+        .call("reportStepChanged", { step })
+        .catch((e: unknown) =>
+          console.error("App.tsx: Error calling reportStepChanged", e)
+        );
     }
-  }, [channel, step]);
+  }, [connection, step]);
+
+  // The beforeunload listener is now primarily managed within usePopupConnection.
+  // If additional App-specific logic is needed on unload, it could be added here,
+  // but ensure it doesn't conflict with the one in the hook.
 
   const renderStepContent = () => {
     switch (step) {

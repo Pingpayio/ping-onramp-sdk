@@ -1,9 +1,9 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { Wallet } from '@coinbase/onchainkit/wallet';
-import { useAccount } from 'wagmi'; // useAccount is imported from wagmi
+import { useAccount } from 'wagmi';
 import { useSetAtom } from 'jotai';
-import { walletStateAtom } from '../../state/atoms'; // Adjust path as needed
+import { walletStateAtom } from '../../state/atoms';
 
 // Define form values type - should match the one in App.tsx or be imported
 export type FormValues = {
