@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "post-me": "^0.4.5",
-    "typed-channel": "^0.9.5",
     "zod": "^3.25.32"
   },
   "main": "./dist/index.cjs",
