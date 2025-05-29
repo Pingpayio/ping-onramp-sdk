@@ -149,7 +149,7 @@ export type GetDepositAddressResponse = JSONRPCResponse<{
  */
 export async function generateNearIntentsDepositAddress(
   evmAddress: string,
-  chainName: SupportedChainName = "base" // Defaulting to "base"
+  chainName: SupportedChainName = "base"
 ): Promise<{ address: string, network: string }> {
   const chain = assetNetworkAdapter[chainName];
   if (!chain) {

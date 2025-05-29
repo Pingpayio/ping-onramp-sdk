@@ -110,31 +110,29 @@ function App() {
       return;
     }
 
-    // Now that we have the generatedNearIntentsDepositAddress, proceed with Onramp URL
     try {
-      // Construct callback URL with intent parameters
       const callbackUrlParams = new URLSearchParams({
         type: "intents",
         action: "withdraw",
-        network: "near", // Hardcoded as per legacy
-        asset: "USDC", // Hardcoded as per legacy, ensure form uses this or is adaptable
+        network: "near", 
+        asset: "USDC",
         amount: data.amount,
-        // Ensure 'nearWalletAddress' is part of AppFormValues and collected in FormEntryView
         recipient: data.nearWalletAddress || "",
       });
+
       const redirectUrl = `${
         window.location.origin
       }/onramp-callback?${callbackUrlParams.toString()}`;
 
       const depositAddressForCoinbase =
         generatedNearIntentsDepositAddress.address;
-      const depositNetworkForCoinbase =
-        generatedNearIntentsDepositAddress.network; // This should be "base"
+      const depositNetworkForCoinbase = "base";
+        // generatedNearIntentsDepositAddress.network;
 
       const onrampParams: OnrampURLParams = {
-        asset: data.selectedAsset, // This should be USDC for the intent flow
+        asset: data.selectedAsset,
         amount: data.amount,
-        network: depositNetworkForCoinbase, // Should be "base"
+        network: depositNetworkForCoinbase,
         address: depositAddressForCoinbase,
         partnerUserId: partnerUserId,
         redirectUrl: redirectUrl,
@@ -143,10 +141,12 @@ function App() {
         enableGuestCheckout: true,
       };
 
+
       let coinbaseOnrampURL: string;
 
       try {
         coinbaseOnrampURL = generateOnrampURL(onrampParams);
+        console.log("onramp", coinbaseOnrampURL)
       } catch (e: unknown) {
         if (e instanceof Error) {
           setFlowError(e.message, "initiating-onramp-service");

@@ -238,6 +238,8 @@ export const useOnrampState = () => {
         paymentMethod: paymentMethod
       });
 
+      
+
       if (onrampProviderUrl === "error:missing_app_id") {
         toast("Configuration Error", { description: "Coinbase App ID is missing." });
         setIntentProgressActual("error");
