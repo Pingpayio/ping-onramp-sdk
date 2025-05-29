@@ -1,5 +1,9 @@
 import React from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
+import { Wallet } from '@coinbase/onchainkit/wallet';
+import { useAccount } from 'wagmi'; // useAccount is imported from wagmi
+import { useSetAtom } from 'jotai';
+import { walletStateAtom } from '../../state/atoms'; // Adjust path as needed
 
 // Define form values type - should match the one in App.tsx or be imported
 export type FormValues = {
@@ -16,11 +20,40 @@ interface FormEntryViewProps {
 const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
   const methods = useForm<FormValues>();
   const { handleSubmit, register } = methods;
+  const { address, chainId, isConnected } = useAccount();
+  const setWalletState = useSetAtom(walletStateAtom);
+
+  React.useEffect(() => {
+    if (isConnected && address) {
+      setWalletState({
+        address,
+        chainId: chainId?.toString(), // chainId can be undefined if not available
+        // walletName could be added here if available from useAccount or another source
+      });
+    } else {
+      // Set to null or an empty state if that's how disconnection is represented
+      // For WalletState | null, setting to null is appropriate
+      setWalletState(null); 
+    }
+  }, [address, chainId, isConnected, setWalletState]);
 
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
         <h2 className="text-xl font-semibold text-gray-100">Onramp Details</h2>
+        
+        <div className="my-4 p-3 border border-gray-700 rounded-lg bg-gray-800 shadow-md">
+          <h3 className="text-lg font-medium text-gray-200 mb-2">Connect Your Wallet</h3>
+          <div className="flex justify-center">
+            <Wallet />
+          </div>
+          {isConnected && address && (
+            <div className="mt-3 text-center text-sm text-green-400">
+              Connected: {address.substring(0, 6)}...{address.substring(address.length - 4)}
+            </div>
+          )}
+        </div>
+
         <div>
           <label htmlFor="amount" className="block text-sm font-medium text-gray-300">Amount</label>
           <input 
