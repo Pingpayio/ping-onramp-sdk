@@ -2,11 +2,14 @@ import { useEffect } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
+import { useSignMessage } from "wagmi";
 import {
   useOnrampFlow,
-  useOnrampProcessResult,
-  useSetOnrampProcessResult,
-  useWallet,
+  useOnrampResult,
+  useSetNearIntentsDisplayInfo,
+  useSetOnrampResult,
+  useSetProcessingSubStep,
+  useWalletState,
 } from "./state/hooks";
 
 import { generateNearIntentsDepositAddress } from "./utils/near-intents";
@@ -18,31 +21,27 @@ import PopupLayout from "./components/layout/popup-layout";
 import CompletionView from "./components/steps/completion-view";
 import ConnectingWalletView from "./components/steps/connecting-wallet-view";
 import ErrorView from "./components/steps/error-view";
-import type { FormValues as FormEntryFormValues } from "./components/steps/form-entry-view";
+import type { FormValues } from "./components/steps/form-entry-view";
 import FormEntryView from "./components/steps/form-entry-view";
 import InitiatingOnrampView from "./components/steps/initiating-onramp-view";
 import LoadingView from "./components/steps/loading-view";
 import ProcessingTransactionView from "./components/steps/processing-transaction-view";
 import SigningTransactionView from "./components/steps/signing-transaction-view";
 
-export type InitialDataType = {
-  nearIntentsDepositAddress?: string;
-  partnerWalletAddress?: string;
-  coinbaseAppId?: string;
-  [key: string]: unknown;
-};
-
-type AppFormValues = FormEntryFormValues;
-
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
 
-  const [walletStateValue] = useWallet();
-  const [onrampProcessResultValue] = useOnrampProcessResult();
-  const setOnrampProcessResultAtom = useSetOnrampProcessResult();
+  const [walletStateValue] = useWalletState();
+  const [onrampResultValue] = useOnrampResult();
+  const setOnrampResultAtom = useSetOnrampResult();
 
-  const handleFormSubmit = async (data: AppFormValues) => {
+  // Hooks for the new intent processing flow
+  const setProcessingSubStep = useSetProcessingSubStep();
+  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
+  const { signMessageAsync, error: signMessageError } = useSignMessage();
+
+  const handleFormSubmit = async (data: FormValues) => {
     if (!connection) {
       console.error("[App.tsx] Connection not available for form submission.");
       setFlowError("Communication connection not available.", "form-entry");
@@ -113,17 +112,29 @@ function App() {
 
     // Now that we have the generatedNearIntentsDepositAddress, proceed with Onramp URL
     try {
-      const redirectUrl = window.location.origin + "/onramp-callback";
+      // Construct callback URL with intent parameters
+      const callbackUrlParams = new URLSearchParams({
+        type: "intents",
+        action: "withdraw",
+        network: "near", // Hardcoded as per legacy
+        asset: "USDC", // Hardcoded as per legacy, ensure form uses this or is adaptable
+        amount: data.amount,
+        // Ensure 'nearWalletAddress' is part of AppFormValues and collected in FormEntryView
+        recipient: data.nearWalletAddress || "",
+      });
+      const redirectUrl = `${
+        window.location.origin
+      }/onramp-callback?${callbackUrlParams.toString()}`;
 
       const depositAddressForCoinbase =
         generatedNearIntentsDepositAddress.address;
       const depositNetworkForCoinbase =
-        generatedNearIntentsDepositAddress.network;
+        generatedNearIntentsDepositAddress.network; // This should be "base"
 
       const onrampParams: OnrampURLParams = {
-        asset: data.selectedAsset,
+        asset: data.selectedAsset, // This should be USDC for the intent flow
         amount: data.amount,
-        network: depositNetworkForCoinbase,
+        network: depositNetworkForCoinbase, // Should be "base"
         address: depositAddressForCoinbase,
         partnerUserId: partnerUserId,
         redirectUrl: redirectUrl,
@@ -201,32 +212,152 @@ function App() {
   useEffect(() => {
     const handleCallback = () => {
       const urlParams = new URLSearchParams(window.location.search);
-      const status = urlParams.get("status");
-      const transactionId = urlParams.get("transactionId");
+      const type = urlParams.get("type");
+      const action = urlParams.get("action");
+      // ... other params for intent flow
+      const asset = urlParams.get("asset");
+      const amount = urlParams.get("amount");
+      const recipient = urlParams.get("recipient");
+      const network = urlParams.get("network");
 
       if (window.location.pathname === "/onramp-callback") {
-        if (status === "success" && transactionId) {
-          const resultPayload: OnrampResult = {
-            success: true,
-            message: "Onramp successful",
-            data: { transactionId, service: "Coinbase Onramp" },
+        // Check for NEAR Intent withdrawal callback
+        if (
+          type === "intents" &&
+          action === "withdraw" &&
+          network === "near" && // from URL
+          asset === "USDC" && // from URL, should match hardcoded
+          amount &&
+          recipient &&
+          walletStateValue?.address && // EVM address
+          connection // Ensure connection is available for signMessage
+        ) {
+          goToStep("processing-transaction"); // Or a more specific step like "processing-bridge"
+          setProcessingSubStep("depositing"); // Initial sub-step
+
+          const requiredCallbackParams: Required<
+            import("./types/onramp").CallbackParams
+          > = {
+            type,
+            action,
+            network,
+            asset,
+            amount,
+            recipient,
           };
-          setOnrampProcessResultAtom(resultPayload);
-          if (connection) {
+
+          const handleSignMessage = async (args: {
+            message: string;
+          }): Promise<`0x${string}`> => {
+            if (!walletStateValue?.address) {
+              const errMsg = "EVM address not available for signing.";
+              setFlowError(errMsg, "processing-transaction");
+              setProcessingSubStep("error");
+              throw new Error(errMsg);
+            }
+            if (!connection) {
+              const errMsg = "Connection not available for signing.";
+              setFlowError(errMsg, "processing-transaction");
+              setProcessingSubStep("error");
+              throw new Error(errMsg);
+            }
+            // Sign message directly using wagmi's useSignMessage
+            if (!signMessageAsync) {
+              const errMsg =
+                "signMessageAsync is not available. Ensure WalletProvider is set up correctly.";
+              setFlowError(errMsg, "processing-transaction");
+              setProcessingSubStep("error");
+              throw new Error(errMsg);
+            }
+            try {
+              // The account should be implicitly handled by wagmi if connected
+              const signature = await signMessageAsync({
+                message: args.message,
+              });
+              return signature;
+            } catch (signError: unknown) {
+              console.error("App.tsx: Error signing message", signError);
+              const errMsg =
+                signMessageError?.message ||
+                (signError instanceof Error
+                  ? signError.message
+                  : "Failed to sign message.");
+              setFlowError(errMsg, "processing-transaction");
+              setProcessingSubStep("error");
+              throw new Error(errMsg);
+            }
+          };
+
+          // Dynamically import processNearIntentWithdrawal to avoid circular dependencies if any
+          import("./utils/intents-withdraw")
+            .then((module) => {
+              module.processNearIntentWithdrawal({
+                callbackParams: requiredCallbackParams,
+                userEvmAddress: walletStateValue.address!,
+                signMessageAsync: handleSignMessage,
+                updateProgress: (
+                  newSubStep: import("./types/onramp").IntentProgress
+                ) => {
+                  setProcessingSubStep(newSubStep);
+                  if (newSubStep === "done") goToStep("complete");
+                  if (newSubStep === "error")
+                    setFlowError(
+                      "Bridge processing error.",
+                      "processing-transaction"
+                    );
+                },
+                updateErrorMessage: (msg: string | null) =>
+                  setFlowError(
+                    msg || "Unknown bridge error",
+                    "processing-transaction"
+                  ),
+                updateDisplayInfo: setNearIntentsDisplayInfo,
+              });
+            })
+            .catch((e: Error) => {
+              console.error("Failed to load intents-withdraw module", e);
+              setFlowError(
+                "Internal error processing withdrawal.",
+                "processing-transaction"
+              );
+            });
+
+          // Clean up URL params
+          const newUrl = new URL(window.location.href);
+          newUrl.searchParams.delete("type");
+          newUrl.searchParams.delete("action");
+          newUrl.searchParams.delete("network");
+          newUrl.searchParams.delete("asset");
+          newUrl.searchParams.delete("amount");
+          newUrl.searchParams.delete("recipient");
+          window.history.replaceState(
+            {},
+            document.title,
+            newUrl.pathname + newUrl.search
+          );
+        } else {
+          // Handle original Coinbase Onramp callback if not an intent
+          const status = urlParams.get("status");
+          const transactionId = urlParams.get("transactionId");
+          if (status === "success" && transactionId) {
+            const resultPayload: OnrampResult = {
+              success: true,
+              message: "Onramp successful",
+              data: { transactionId, service: "Coinbase Onramp" }, // Assuming this is still Coinbase
+            };
+            setOnrampResultAtom(resultPayload);
             connection
-              .remoteHandle()
+              ?.remoteHandle()
               .call("reportProcessComplete", { result: resultPayload })
               .catch((e: unknown) =>
                 console.error("App.tsx: Error calling reportProcessComplete", e)
               );
-          }
-          goToStep("complete");
-        } else if (status === "failure") {
-          const errorMsg = urlParams.get("error") || "Onramp failed.";
-          setFlowError(errorMsg, "processing-transaction");
-          if (connection) {
+            goToStep("complete");
+          } else if (status === "failure") {
+            const errorMsg = urlParams.get("error") || "Onramp failed.";
+            setFlowError(errorMsg, "processing-transaction");
             connection
-              .remoteHandle()
+              ?.remoteHandle()
               .call("reportProcessFailed", {
                 error: errorMsg,
                 step: "processing-transaction",
@@ -239,12 +370,19 @@ function App() {
               );
           }
         }
-        // window.history.replaceState({}, document.title, window.location.pathname.split('?')[0]);
       }
     };
 
     handleCallback();
-  }, [connection, goToStep, setFlowError, setOnrampProcessResultAtom]);
+  }, [
+    connection,
+    goToStep,
+    setFlowError,
+    setOnrampResultAtom,
+    walletStateValue,
+    setProcessingSubStep,
+    setNearIntentsDisplayInfo,
+  ]);
 
   useEffect(() => {
     if (connection) {
@@ -256,10 +394,6 @@ function App() {
         );
     }
   }, [connection, step]);
-
-  // The beforeunload listener is now primarily managed within usePopupConnection.
-  // If additional App-specific logic is needed on unload, it could be added here,
-  // but ensure it doesn't conflict with the one in the hook.
 
   const renderStepContent = () => {
     switch (step) {
@@ -276,7 +410,7 @@ function App() {
       case "processing-transaction":
         return <ProcessingTransactionView />;
       case "complete":
-        return <CompletionView result={onrampProcessResultValue} />;
+        return <CompletionView result={onrampResultValue} />;
       case "error":
         return (
           <ErrorView error={error} onRetry={() => goToStep("form-entry")} />

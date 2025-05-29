@@ -6,7 +6,7 @@ import type {
   PopupActionMethods,
   SdkListenerMethods
 } from '../../../../src/internal/communication/post-me-types';
-import { useInitialData, useOnrampFlow, useSetOnrampTarget } from '../../state/hooks';
+import { useOnrampFlow, useSetOnrampTarget } from '../../state/hooks';
 
 const popupConnectionAtomInternal = atom<Connection<PopupActionMethods, SdkListenerMethods> | null>(null);
 export const popupConnectionAtom = atom((get) => get(popupConnectionAtomInternal));
@@ -20,7 +20,6 @@ export function usePopupConnection() {
 
   const { goToStep, setFlowError } = useOnrampFlow();
   const setOnrampTarget = useSetOnrampTarget();
-  const [, setInitialData] = useInitialData();
 
   useEffect(() => {
     if (!window.opener) {
@@ -34,7 +33,6 @@ export function usePopupConnection() {
         console.log('[Popup] Received initiateOnrampInPopup from SDK:', payload);
         if (payload) {
           setOnrampTarget(payload.target);
-          setInitialData(payload.initialData);
           goToStep("form-entry");
 
           connection?.remoteHandle().call('reportFlowStarted', payload)

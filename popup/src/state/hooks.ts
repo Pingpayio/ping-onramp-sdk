@@ -1,91 +1,64 @@
-import { useAtom } from 'jotai';
-import { useCallback } from 'react';
+import { useAtom, useSetAtom } from "jotai";
+import type { OnrampFlowStep } from "../../../src/internal/communication/messages";
+import type { IntentProgress, NearIntentsDisplayInfo } from "../types/onramp";
 import {
-  onrampStepAtom,
-  onrampErrorAtom,
-  onrampTargetAtom,
-  initialDataAtom,
   formDataAtom,
-  walletStateAtom,
-  signedTransactionAtom,
+  nearIntentsDisplayInfoAtom,
+  onrampErrorAtom,
   onrampResultAtom,
-} from './atoms';
-import type { OnrampFlowStep, OnrampResult } from '../../../src/internal/communication/messages';
-import type { WalletConnectionResult, TransactionSignResult } from '../services/types';
+  onrampStepAtom,
+  onrampTargetAtom,
+  processingSubStepAtom,
+  signedTransactionAtom,
+  walletStateAtom,
+} from "./atoms";
 
-export function useOnrampFlow() {
+export const useOnrampFlow = () => {
   const [step, setStep] = useAtom(onrampStepAtom);
   const [error, setError] = useAtom(onrampErrorAtom);
 
-  const goToStep = useCallback((newStep: OnrampFlowStep) => {
+  const goToStep = (newStep: OnrampFlowStep) => {
     setStep(newStep);
-    setError(null); // Clear errors when changing steps
-  }, [setStep, setError]);
+    setError(null);
+  };
 
-  const setFlowError = useCallback((errorMessage: string, currentStep?: OnrampFlowStep) => {
+  const setFlowError = (errorMessage: string, errorStep?: OnrampFlowStep) => {
     setError(errorMessage);
-    setStep(currentStep || 'error'); // Go to error step or stay on current step with error
-  }, [setStep, setError]);
+    if (errorStep) {
+      setStep(errorStep);
+    } else {
+      setStep("error");
+    }
+  };
 
   return { step, goToStep, error, setFlowError };
-}
+};
 
-// Hook for managing onramp target data
-export function useOnrampTarget() {
-  return useAtom(onrampTargetAtom);
-}
-export function useSetOnrampTarget() {
-    const [, setTarget] = useAtom(onrampTargetAtom);
-    return setTarget;
-}
-
-
-// Hook for managing initial data passed from SDK
-export function useInitialData() {
-  return useAtom(initialDataAtom);
-}
-export function useSetInitialData() {
-    const [, setInitial] = useAtom(initialDataAtom);
-    return setInitial;
-}
-
-// Hook for managing form data
-export function useFormData() {
-  return useAtom(formDataAtom);
-}
-export function useSetFormData() {
-    const [, setForm] = useAtom(formDataAtom);
-    return setForm;
-}
-
-// Hook for managing connected wallet state
-export function useWallet() {
-  return useAtom(walletStateAtom);
-}
-export function useSetWallet() {
-    const [, setWallet] = useAtom(walletStateAtom);
-    return (walletInfo: WalletConnectionResult | null) => setWallet(walletInfo);
-}
-
-// Hook for managing signed transaction data
-export function useSignedTransaction() {
-  return useAtom(signedTransactionAtom);
-}
-export function useSetSignedTransaction() {
-    const [, setTx] = useAtom(signedTransactionAtom);
-    return (txInfo: TransactionSignResult | null) => setTx(txInfo);
-}
+export const useOnrampTarget = () => useAtom(onrampTargetAtom);
+export const useSetOnrampTarget = () => useSetAtom(onrampTargetAtom);
+export const useFormData = () => useAtom(formDataAtom);
+export const useWalletState = () => useAtom(walletStateAtom);
+export const useSetWalletState = () => useSetAtom(walletStateAtom);
+export const useSignedTransaction = () => useAtom(signedTransactionAtom);
+export const useOnrampResult = () => useAtom(onrampResultAtom);
+export const useSetOnrampResult = () => useSetAtom(onrampResultAtom);
 
 
-// Hook for managing the final onramp result
-export function useOnrampProcessResult() {
-  return useAtom(onrampResultAtom);
-}
-export function useSetOnrampProcessResult() {
-    const [, setResult] = useAtom(onrampResultAtom);
-    return (result: OnrampResult | null) => setResult(result);
-}
+export const useProcessingSubStep = (): [
+  IntentProgress,
+  (update: IntentProgress | ((prev: IntentProgress) => IntentProgress)) => void
+] => useAtom(processingSubStepAtom);
 
-// Add more custom hooks as needed to interact with your Jotai state.
-// For example, a hook to get and set the current onramp service being used,
-// or hooks for loading states of specific operations.
+export const useSetProcessingSubStep = (): (
+  update: IntentProgress | ((prev: IntentProgress) => IntentProgress)
+) => void => useSetAtom(processingSubStepAtom);
+
+
+export const useNearIntentsDisplayInfo = (): [
+  NearIntentsDisplayInfo,
+  (update: NearIntentsDisplayInfo | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo)) => void
+] => useAtom(nearIntentsDisplayInfoAtom);
+
+export const useSetNearIntentsDisplayInfo = (): (
+  update: NearIntentsDisplayInfo | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo)
+) => void => useSetAtom(nearIntentsDisplayInfoAtom);

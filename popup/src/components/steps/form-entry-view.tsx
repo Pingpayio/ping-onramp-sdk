@@ -10,6 +10,7 @@ export type FormValues = {
   selectedAsset: string; 
   selectedCurrency: string; 
   paymentMethod: string; 
+  nearWalletAddress?: string;
 };
 
 interface FormEntryViewProps {
