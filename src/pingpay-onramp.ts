@@ -1,24 +1,15 @@
-
-import { z } from 'zod';
+// @ts-expect-error post-me typings are weird
+import { Connection, ParentHandshake, WindowMessenger } from 'post-me';
 import { PingpayOnrampError } from './errors';
-import { ParentHandshake, WindowMessenger, Connection } from 'post-me';
 import type {
-  SdkListenerMethods,
-  PopupActionMethods,
-  InitiateOnrampFlowPayload // Assuming this is the correct type for {target, initialData}
-} from './internal/communication/post-me-types';
-import type {
-  OnrampFlowStep,
   OnrampResult,
-  TargetAsset,
-  // Keep Zod schemas if they are used for validation elsewhere, or for deriving payload types in post-me-types
-  formDataSubmittedPayloadSchema,
-  initiateOnrampFlowPayloadSchema,
-  onrampInitiatedPayloadSchema,
-  processFailedPayloadSchema,
-  transactionSignedPayloadSchema,
-  walletConnectedPayloadSchema
+  TargetAsset
 } from './internal/communication/messages';
+import type {
+  InitiateOnrampFlowPayload,
+  PopupActionMethods,
+  SdkListenerMethods
+} from './internal/communication/post-me-types';
 import { closePopup, openPopup } from './internal/utils/popup-manager';
 import type { PingpayOnrampConfig } from './types';
 
@@ -115,7 +106,7 @@ export class PingpayOnramp {
               this.onrampPromise.reject(new PingpayOnrampError(payload.error, payload.details, payload.step));
             }
             this.config.onProcessFailed?.(payload);
-            this.cleanup();
+            // this.cleanup(); // Removed to allow popup to display error
           },
           reportPopupClosedByUser: async () => {
             console.log('SDK: Popup closed by user.');
@@ -151,11 +142,13 @@ export class PingpayOnramp {
     this.heartbeatInterval = setInterval(() => {
       if (this.popup?.closed) {
         console.log('SDK: Heartbeat detected popup closed.');
-        // If connection is already cleaned up or was never established, and promise still exists
-        if (this.onrampPromise && !this.postMeConnection?.isConnected()) {
+        if (this.onrampPromise) { // If the main onramp promise is still active (i.e., not nulled by a prior cleanup)
+             // Reject the promise as the popup closed unexpectedly.
+             // Attempting to reject an already settled promise is a no-op.
              this.onrampPromise.reject(new PingpayOnrampError('Popup closed before completion.'));
         }
-        // Cleanup will handle emitting onPopupClose and closing connection if it's still alive.
+        // Always call cleanup if the popup is found closed by the heartbeat.
+        // This will null out onrampPromise, close any active postMeConnection, etc.
         this.cleanup();
       }
     }, 1000);

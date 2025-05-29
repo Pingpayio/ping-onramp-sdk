@@ -1,22 +1,19 @@
 import { useEffect } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
-import { usePopupConnection } from "./internal/communication/usePopupConnection"; // New hook
+import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
 import {
   useInitialData,
   useOnrampFlow,
   useOnrampProcessResult,
   useSetOnrampProcessResult,
-  // useSetOnrampTarget, // This is now handled within usePopupConnection
-  // useWallet // Assuming walletStateValue is still needed, otherwise remove
-  useWallet, // Keep if walletStateValue is used directly in App.tsx
+  useWallet,
 } from "./state/hooks";
 
-// SdkToPopupMessages might not be directly needed here if all comms go through post-me methods
-// import type { SdkToPopupMessages } from "../../src/internal/communication/messages";
 import type { OnrampURLParams as RampUtilParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
+import ErrorBoundary from "./components/ErrorBoundary";
 import PopupLayout from "./components/layout/popup-layout";
 import CompletionView from "./components/steps/completion-view";
 import ConnectingWalletView from "./components/steps/connecting-wallet-view";
@@ -42,15 +39,12 @@ type AppFormValues = FormEntryFormValues;
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
-  // setOnrampTarget is called within usePopupConnection's initiateOnrampInPopup
 
   const [walletStateValue] = useWallet();
   const [onrampProcessResultValue] = useOnrampProcessResult();
   const setOnrampProcessResultAtom = useSetOnrampProcessResult();
 
-  const [initialOnrampDataValueFromAtom] = useInitialData(); // setInitialDataAtomFromUseInitialData is called in usePopupConnection
-
-  // The useEffect for 'popup-ready' and 'initiate-onramp-flow' is now handled by usePopupConnection.
+  const [initialOnrampDataValueFromAtom] = useInitialData();
 
   const handleFormSubmit = async (data: AppFormValues) => {
     if (!connection) {
@@ -67,7 +61,7 @@ function App() {
       );
 
     const typedInitialData =
-      initialOnrampDataValueFromAtom as InitialDataType | null; // This atom is set by usePopupConnection
+      initialOnrampDataValueFromAtom as InitialDataType | null;
 
     const partnerUserId =
       walletStateValue?.address ||
@@ -83,7 +77,6 @@ function App() {
     if (!partnerUserId || !nearIntentsDepositAddress || !coinbaseAppId) {
       const errorMsg =
         "Missing critical information: EVM wallet, deposit address, or Coinbase App ID.";
-      setFlowError(errorMsg, "form-entry");
       connection
         .remoteHandle()
         .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
@@ -93,6 +86,7 @@ function App() {
             e
           )
         );
+      goToStep("error");
       return;
     }
 
@@ -261,7 +255,7 @@ function App() {
 
   return (
     <PopupLayout title={`Onramp - Step: ${step.replace(/-/g, " ")}`}>
-      {renderStepContent()}
+      <ErrorBoundary>{renderStepContent()}</ErrorBoundary>
     </PopupLayout>
   );
 }
