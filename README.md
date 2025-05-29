@@ -1,6 +1,4 @@
-# Pingpay Onramp SDK
-
-The Pingpay Onramp SDK allows you to easily integrate a seamless fiat-to-crypto onramp experience directly into your web application. It uses NEAR Intents to unlock onramp to any network.
+<img width="565" alt="Screenshot 2025-05-29 at 1 52 36 PM" src="https://github.com/user-attachments/assets/c8a9caf3-2e20-4057-a2a1-b22c8e84473e" />
 
 ## Usage
 
