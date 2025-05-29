@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import type { ErrorInfo, ReactNode } from 'react';
-import ErrorView from './steps/error-view'; // Assuming ErrorView is in steps
+import type { ErrorInfo, ReactNode } from "react";
+import { Component } from "react";
+import ErrorView from "./steps/error-view"; // Assuming ErrorView is in steps
 
 interface Props {
   children: ReactNode;
@@ -30,7 +30,11 @@ class ErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       // You can render any custom fallback UI
-      return <ErrorView error={this.state.error?.message || 'An unexpected error occurred.'} />;
+      return (
+        <ErrorView
+          error={this.state.error?.message || "An unexpected error occurred."}
+        />
+      );
     }
 
     return this.props.children;

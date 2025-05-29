@@ -11,14 +11,21 @@
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.38.13",
+    "@radix-ui/react-label": "^2.1.7",
+    "@radix-ui/react-select": "^2.2.5",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tailwindcss/vite": "^4.1.8",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "fastintear": "^0.1.5",
     "jotai": "^2.12.5",
+    "lucide-react": "^0.511.0",
     "near-intents-sdk": "^1.0.0-beta.126",
     "post-me": "^0.4.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-hook-form": "^7.56.4",
+    "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
@@ -30,6 +37,7 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.19",
     "globals": "^16.0.0",
+    "tw-animate-css": "^1.3.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.30.1",
     "vite": "^6.3.5"

@@ -1,4 +1,5 @@
 import { atom, useAtom, useAtomValue } from 'jotai';
+// @ts-expect-error post-me typings are weird
 import { ChildHandshake, Connection, WindowMessenger } from 'post-me';
 import { useEffect } from 'react';
 import type {

@@ -1,5 +1,5 @@
-import React, { type ReactNode } from "react";
 import { OnchainKitProvider } from "@coinbase/onchainkit";
+import { type ReactNode } from "react";
 import { base } from "wagmi/chains";
 import { CDP_PROJECT_ID, ONCHAINKIT_API_KEY, PROJECT_NAME } from "../config";
 
