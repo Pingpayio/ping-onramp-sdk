@@ -1,5 +1,6 @@
-import React from 'react';
+import React from "react";
+import LoadingSpinner from "../loading-spinner";
 
-const LoadingView: React.FC = () => <div className="p-4 text-center">Loading...</div>;
+const LoadingView: React.FC = () => <LoadingSpinner />;
 
 export default LoadingView;

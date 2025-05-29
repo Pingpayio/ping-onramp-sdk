@@ -12,6 +12,7 @@ import {
 
 import type { OnrampURLParams as RampUtilParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
+import { generateNearIntentsDepositAddress } from "./utils/near-intents";
 
 import ErrorBoundary from "./components/ErrorBoundary";
 import PopupLayout from "./components/layout/popup-layout";
@@ -63,49 +64,76 @@ function App() {
     const typedInitialData =
       initialOnrampDataValueFromAtom as InitialDataType | null;
 
-    const partnerUserId =
-      walletStateValue?.address ||
-      (typedInitialData?.partnerWalletAddress as string | undefined) ||
-      "0xPartnerWalletPlaceholder";
-    const nearIntentsDepositAddress =
-      (typedInitialData?.nearIntentsDepositAddress as string | undefined) ||
-      "nearIntentsDepositPlaceholder.base";
+    // Get user's EVM address (partnerUserId)
+    const partnerUserId = walletStateValue?.address; 
+
+    // Get Coinbase App ID
     const coinbaseAppId = typedInitialData?.coinbaseAppId
       ? String(typedInitialData.coinbaseAppId)
       : undefined;
 
-    if (!partnerUserId || !nearIntentsDepositAddress || !coinbaseAppId) {
-      const errorMsg =
-        "Missing critical information: EVM wallet, deposit address, or Coinbase App ID.";
+    // Validate essential preliminary data (EVM address, App ID)
+    if (!partnerUserId) {
+      const errorMsg = "EVM wallet address not available. Please connect your wallet.";
+      setFlowError(errorMsg, "form-entry");
       connection
         .remoteHandle()
         .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
-        .catch((e: unknown) =>
-          console.error(
-            "App.tsx: Error calling reportProcessFailed for missing info",
-            e
-          )
-        );
-      goToStep("error");
+        .catch((e: unknown) => console.error("App.tsx: Error reporting missing EVM address", e));
       return;
     }
 
-    goToStep("initiating-onramp-service");
+    if (!coinbaseAppId) {
+      const errorMsg = "Coinbase App ID is missing. Configuration error.";
+      setFlowError(errorMsg, "form-entry");
+      connection
+        .remoteHandle()
+        .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
+        .catch((e: unknown) => console.error("App.tsx: Error reporting missing App ID", e));
+      return;
+    }
 
+    goToStep("initiating-onramp-service"); // Indicate process is starting
+
+    let generatedNearIntentsDepositAddress: string;
+    try {
+      // Generate NEAR Intents deposit address. Defaulting to "base" chain.
+      generatedNearIntentsDepositAddress = await generateNearIntentsDepositAddress(partnerUserId);
+    } catch (genError) {
+      console.error("App.tsx: Failed to generate NEAR Intents deposit address:", genError);
+      const errorMsg = genError instanceof Error ? genError.message : "Failed to prepare deposit address.";
+      setFlowError(errorMsg, "initiating-onramp-service"); 
+      connection
+        .remoteHandle()
+        .call("reportProcessFailed", { error: errorMsg, step: "initiating-onramp-service" })
+        .catch((e: unknown) => console.error("App.tsx: Error reporting deposit address generation failure", e));
+      return;
+    }
+
+    // Now that we have the generatedNearIntentsDepositAddress, proceed with Onramp URL
     try {
       const redirectUrl = window.location.origin + "/onramp-callback";
+
+      // Ensure generatedNearIntentsDepositAddress is valid (e.g. "address.network")
+      const addressParts = generatedNearIntentsDepositAddress.split(".");
+      if (addressParts.length < 2) {
+          console.error("Generated deposit address is not in the expected 'address.network' format:", generatedNearIntentsDepositAddress);
+          throw new Error("Generated deposit address is malformed.");
+      }
+      const depositAddressForCoinbase = addressParts[0]; // The actual address part
+      const depositNetworkForCoinbase = addressParts[1]; // The network part, e.g., "base"
 
       const onrampParams: AppOnrampURLParams = {
         appId: coinbaseAppId,
         asset: data.selectedAsset,
         amount: data.amount,
-        network: nearIntentsDepositAddress.split(".")[1] || "base",
-        address: nearIntentsDepositAddress.split(".")[0],
-        partnerUserId: partnerUserId,
+        network: depositNetworkForCoinbase, 
+        address: depositAddressForCoinbase, 
+        partnerUserId: partnerUserId, 
         redirectUrl: redirectUrl,
         paymentCurrency: data.selectedCurrency,
         paymentMethod: data.paymentMethod.toUpperCase(),
-        enableGuestCheckout: true,
+        enableGuestCheckout: true, 
       };
 
       const coinbaseOnrampURL = generateOnrampURL(onrampParams);
@@ -131,14 +159,19 @@ function App() {
         .remoteHandle()
         .call("reportOnrampInitiated", {
           serviceName: "Coinbase Onramp",
-          details: { url: coinbaseOnrampURL },
+          details: { url: coinbaseOnrampURL, depositAddress: generatedNearIntentsDepositAddress },
         })
         .catch((e: unknown) =>
           console.error("App.tsx: Error calling reportOnrampInitiated", e)
         );
 
       console.log("Redirecting to Coinbase Onramp:", coinbaseOnrampURL);
-      // window.top.location.href = coinbaseOnrampURL;
+      if (window.top) {
+        window.top.location.href = coinbaseOnrampURL;
+      } else {
+        // Fallback if window.top is not available (e.g. if not in an iframe, though less likely for a popup)
+        window.location.href = coinbaseOnrampURL;
+      }
 
       goToStep("processing-transaction");
     } catch (e: unknown) {

@@ -5,7 +5,6 @@ import { useAccount } from 'wagmi';
 import { useSetAtom } from 'jotai';
 import { walletStateAtom } from '../../state/atoms';
 
-// Define form values type - should match the one in App.tsx or be imported
 export type FormValues = {
   amount: string;
   selectedAsset: string; 
