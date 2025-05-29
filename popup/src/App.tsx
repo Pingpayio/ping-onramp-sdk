@@ -132,23 +132,26 @@ function App() {
         enableGuestCheckout: true,
       };
 
-      const coinbaseOnrampURL = generateOnrampURL(onrampParams);
+      let coinbaseOnrampURL: string;
 
-      if (coinbaseOnrampURL.startsWith("error:")) {
-        setFlowError(coinbaseOnrampURL, "initiating-onramp-service");
-        connection
-          .remoteHandle()
-          .call("reportProcessFailed", {
-            error: coinbaseOnrampURL,
-            step: "initiating-onramp-service",
-          })
-          .catch((e: unknown) =>
-            console.error(
-              "App.tsx: Error calling reportProcessFailed for Coinbase URL error",
-              e
-            )
-          );
-
+      try {
+        coinbaseOnrampURL = generateOnrampURL(onrampParams);
+      } catch (e: unknown) {
+        if (e instanceof Error) {
+          setFlowError(e.message, "initiating-onramp-service");
+          connection
+            .remoteHandle()
+            .call("reportProcessFailed", {
+              error: e.message,
+              step: "initiating-onramp-service",
+            })
+            .catch((e: unknown) =>
+              console.error(
+                "App.tsx: Error calling reportProcessFailed for Coinbase URL error",
+                e
+              )
+            );
+        }
         return;
       }
 
