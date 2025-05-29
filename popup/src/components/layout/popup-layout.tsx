@@ -1,4 +1,3 @@
-// popup/src/components/layout/popup-layout.tsx
 
 import React from 'react';
 

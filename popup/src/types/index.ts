@@ -5,20 +5,13 @@
 
 // Re-exporting shared types for convenience within the popup app
 export type {
-  OnrampFlowStep,
-  TargetAsset,
-  OnrampResult,
-  // You can re-export other specific message payload types if needed frequently
-  // SdkToPopupMessages,
-  // PopupToSdkMessages,
+  OnrampFlowStep, OnrampResult, TargetAsset
 } from '../../../src/internal/communication/messages';
 
 // Re-exporting service-level types
 export type {
-  WalletConnectionResult,
-  TransactionSignResult,
   InitiateOnrampParams,
-  OnrampInitiationResult,
+  OnrampInitiationResult, TransactionSignResult, WalletConnectionResult
 } from '../services/types';
 
 
@@ -33,8 +26,8 @@ export type {
 // or types for specific UI component props that are complex and reused.
 
 export interface YourSpecificFormData {
-    // Define fields for your onramp form
-    amount: number;
-    fiatCurrency: string;
-    // ... other fields like email, name, etc.
+  // Define fields for your onramp form
+  amount: number;
+  fiatCurrency: string;
+  // ... other fields like email, name, etc.
 }

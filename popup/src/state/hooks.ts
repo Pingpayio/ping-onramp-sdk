@@ -1,5 +1,3 @@
-// popup/src/state/hooks.ts
-
 import { useAtom } from 'jotai';
 import {
   onrampStepAtom,
@@ -11,7 +9,7 @@ import {
   signedTransactionAtom,
   onrampResultAtom,
 } from './atoms';
-import type { OnrampFlowStep, TargetAsset, OnrampResult } from '../../../src/internal/communication/messages';
+import type { OnrampFlowStep, OnrampResult } from '../../../src/internal/communication/messages';
 import type { WalletConnectionResult, TransactionSignResult } from '../services/types';
 
 // Example hook to manage the onramp step

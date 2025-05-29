@@ -1,5 +1,3 @@
-// src/types.ts
-
 import type {
   OnrampFlowStep,
   TargetAsset as ChannelTargetAsset,
@@ -10,7 +8,6 @@ import type {
   transactionSignedPayloadSchema,
   onrampInitiatedPayloadSchema,
   processFailedPayloadSchema,
-  // Ensure all necessary Zod schemas from messages.ts are imported if used for inference
 } from './internal/communication/messages';
 import { z } from 'zod';
 
@@ -18,20 +15,6 @@ import { z } from 'zod';
  * Configuration for the PingpayOnramp SDK.
  */
 export interface PingpayOnrampConfig {
-  /**
-   * API Key for the Pingpay Onramp service.
-   * This is optional for now, as its direct usage in the SDK isn't defined yet,
-   * but included for future compatibility and consistency with the reference SDK.
-   */
-  apiKey?: string;
-
-  /**
-   * The URL of the popup window to be opened.
-   * Defaults to '/popup/index.html' if not provided.
-   * This allows hosting the popup on a different domain or path.
-   */
-  popupUrl?: string;
-
   /**
    * The target asset and chain for the onramp process.
    * This specifies what the user is trying to acquire.

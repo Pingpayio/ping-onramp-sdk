@@ -1,14 +1,10 @@
-// src/internal/communication/channel.ts
+import type { TypedChannel } from 'typed-channel';
+import { createPostMessageTransport, createTypedChannel } from "typed-channel";
+import type { PopupToSdkMessages, SdkToPopupMessages } from "./messages";
 
-import { createTypedChannel } from "typed-channel";
-import { createPostMessageTransport } from "typed-channel";
-import type { SdkToPopupMessages, PopupToSdkMessages } from "./messages";
-import type { TypedChannel } from 'typed-channel'; // Import TypedChannel for explicit return type
-
-// Function to create and return the typed channel for a given popup window
+// creates typed channel to popup
 export function createSdkChannel(
-  popupWindow: Window,
-  targetOrigin: string
+  popupWindow: Window
 ): TypedChannel<PopupToSdkMessages, SdkToPopupMessages> {
   if (!popupWindow) {
     throw new Error("Popup window instance is required to create a channel.");

@@ -1,5 +1,3 @@
-// src/errors.ts
-
 export class PingpayOnrampError extends Error {
   public details?: any;
   public step?: string;

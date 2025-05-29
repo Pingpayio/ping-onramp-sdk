@@ -24,31 +24,15 @@ export class PingpayOnramp {
   private popupReadyPromise: Promise<void> | null = null;
   private resolvePopupReady: (() => void) | null = null;
 
-  constructor(config: PingpayOnrampConfig) {
-    this.config = {
-      popupUrl: '/popup/index.html', // Default popup URL
-      ...config,
-    };
-    // apiKey is now part of this.config
+  private readonly popupUrl = 'http://localhost:5173';
 
+  constructor(config: PingpayOnrampConfig) {
+    this.config = config;
     this.popupReadyPromise = new Promise<void>((resolve) => {
-        this.resolvePopupReady = resolve;
+      this.resolvePopupReady = resolve;
     });
   }
 
-  private getPopupOrigin(): string {
-    try {
-      if (!this.config.popupUrl) {
-        throw new Error('popupUrl is not configured.');
-      }
-      return new URL(this.config.popupUrl, window.location.origin).origin;
-    } catch (e) {
-      console.error("Invalid popupUrl:", this.config.popupUrl, e);
-      // Fallback or re-throw, depending on desired strictness.
-      
-      throw new PingpayOnrampError('Invalid popupUrl configured.', { popupUrl: this.config.popupUrl });
-    }
-  }
 
   public async initiateOnramp(target: TargetAsset, initialData?: any): Promise<OnrampResult> {
     if (this.popup && !this.popup.closed) {
@@ -58,23 +42,21 @@ export class PingpayOnramp {
 
     // Reset popupReadyPromise for this new initiation attempt
     this.popupReadyPromise = new Promise<void>((resolve) => {
-        this.resolvePopupReady = resolve;
+      this.resolvePopupReady = resolve;
     });
 
     return new Promise((resolve, reject) => {
       this.onrampPromise = { resolve, reject };
       try {
-        const popupUrl = this.config.popupUrl || '/popup/index.html';
-        this.popup = openPopup(popupUrl, 'PingpayOnrampPopup', 500, 700);
+        this.popup = openPopup(this.popupUrl, 'PingpayOnrampPopup', 500, 700);
         if (!this.popup) {
           throw new PingpayOnrampError('Failed to open popup window. Please check your browser settings.');
         }
 
-        this.channel = createSdkChannel(this.popup, this.getPopupOrigin());
+        this.channel = createSdkChannel(this.popup);
         this.setupChannelListeners();
 
         // Wait for popup to be ready before sending initial message
-        // This is now handled by the 'popup-ready' listener which resolves popupReadyPromise
         this.popupReadyPromise?.then(() => {
           if (this.channel && this.popup && !this.popup.closed) {
             this.channel.emit('initiate-onramp-flow', { target, initialData });
@@ -84,12 +66,11 @@ export class PingpayOnramp {
             this.cleanup();
           }
         }).catch(error => {
-            if (this.onrampPromise) {
-                this.onrampPromise.reject(new PingpayOnrampError('Error during popup readiness wait.', error));
-                this.cleanup();
-            }
+          if (this.onrampPromise) {
+            this.onrampPromise.reject(new PingpayOnrampError('Error during popup readiness wait.', error));
+            this.cleanup();
+          }
         });
-
 
         // Monitor popup closure
         const checkPopupClosed = setInterval(() => {
@@ -184,28 +165,27 @@ export class PingpayOnramp {
     if (this.popup && !this.popup.closed) {
       closePopup(this.popup);
     }
-    this.config.onPopupClose?.(); // Call onPopupClose whenever cleanup is invoked
+    this.config.onPopupClose?.();
     this.popup = null;
-    // this.channel?.close(); // TypedChannel instances do not have a .close() method.
     this.channel = null;
     this.onrampPromise = null;
     // Reset popupReadyPromise for subsequent calls to initiateOnramp
     this.popupReadyPromise = new Promise<void>((resolve) => {
-        this.resolvePopupReady = resolve;
+      this.resolvePopupReady = resolve;
     });
   }
 
   public close(): void {
     // This method is intended for the SDK consumer to programmatically close the onramp.
     if (this.channel && this.popup && !this.popup.closed) {
-        try {
-            // Attempt to inform the popup it's being closed by the SDK.
-            // This is distinct from the popup closing itself.
-            // We might need a specific message like 'sdk-closing-popup' if the popup needs to react.
-            
-        } catch (e) {
-            // Ignore errors if channel is already closed or popup is gone
-        }
+      try {
+        // Attempt to inform the popup it's being closed by the SDK.
+        // This is distinct from the popup closing itself.
+        // We might need a specific message like 'sdk-closing-popup' if the popup needs to react.
+
+      } catch (e) {
+        // Ignore errors if channel is already closed or popup is gone
+      }
     }
     this.cleanup(); // This will close the popup and call onPopupClose.
   }

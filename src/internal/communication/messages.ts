@@ -1,8 +1,6 @@
-// src/internal/communication/messages.ts
+import { z } from 'zod';
 
-import { z } from 'zod'; // Using Zod for potential runtime validation
-
-// Define Zod schemas for messages (optional but recommended)
+// TODO: this should match Intents support
 const targetAssetSchema = z.object({
   chain: z.string(),
   asset: z.string(),
@@ -10,11 +8,11 @@ const targetAssetSchema = z.object({
 
 const initiateOnrampFlowPayloadSchema = z.object({
   target: targetAssetSchema,
-  initialData: z.any().optional(), // Use z.any() or a more specific schema if possible
+  initialData: z.any().optional(),
 });
 
 const formDataSubmittedPayloadSchema = z.object({
-  formData: z.any(), // Define a more specific schema for your form data
+  formData: z.any(),
 });
 
 const walletConnectedPayloadSchema = z.object({
@@ -51,7 +49,6 @@ const processFailedPayloadSchema = z.object({
   step: z.string().optional(), // Corresponds to OnrampFlowStep
 });
 
-// Define possible steps in the onramp flow (as a Zod enum or TypeScript union)
 export const onrampFlowStepSchema = z.enum([
   "loading",
   "form-entry",
@@ -62,6 +59,7 @@ export const onrampFlowStepSchema = z.enum([
   "complete",
   "error",
 ]);
+
 export type OnrampFlowStep = z.infer<typeof onrampFlowStepSchema>;
 
 // Messages sent from the SDK to the Popup
@@ -83,9 +81,8 @@ export type PopupToSdkMessages = {
   "popup-closed-by-user": undefined;
 };
 
-// Optional: Export schemas for runtime validation if needed
 export {
-  targetAssetSchema, // Added export for TargetAsset
+  targetAssetSchema,
   initiateOnrampFlowPayloadSchema,
   formDataSubmittedPayloadSchema,
   walletConnectedPayloadSchema,
@@ -96,6 +93,5 @@ export {
   processFailedPayloadSchema,
 };
 
-// Added TargetAsset and OnrampResult types for use in SDK and Popup state
 export type TargetAsset = z.infer<typeof targetAssetSchema>;
 export type OnrampResult = z.infer<typeof onrampResultSchema>;

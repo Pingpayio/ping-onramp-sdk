@@ -1,5 +1,3 @@
-// popup/src/utils/url-parser.ts
-
 /**
  * Parses query parameters from the current URL's search string.
  * @returns A URLSearchParams object containing the query parameters.
