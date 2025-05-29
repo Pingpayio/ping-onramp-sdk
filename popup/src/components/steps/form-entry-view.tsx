@@ -30,7 +30,7 @@ interface FormEntryViewProps {
 
 const FormEntryView: React.FC<FormEntryViewProps> = ({
   onSubmit,
-  generatedEvmAddress,
+  // generatedEvmAddress,
 }) => {
   const methods = useForm<FormValues>({
     mode: "onChange",

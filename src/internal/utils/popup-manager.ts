@@ -7,6 +7,10 @@
  * @returns The Window object for the opened popup, or null if it failed.
  */
 export function openPopup(url: string, windowName: string, width: number, height: number): Window | null {
+  const sdkHostOrigin = window.location.origin;
+  const popupUrl = new URL(url);
+  popupUrl.searchParams.set('ping_sdk_opener_origin', sdkHostOrigin);
+
   const top = (window.screen.height - height) / 2 + window.screenY;
   const left = (window.screen.width - width) / 2 + window.screenX;
 
@@ -23,7 +27,7 @@ export function openPopup(url: string, windowName: string, width: number, height
     'menubar=no',
   ].join(',');
 
-  const newWindow = window.open(url, windowName, features);
+  const newWindow = window.open(popupUrl.toString(), windowName, features);
 
   if (newWindow) {
     newWindow.focus();

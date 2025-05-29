@@ -20,10 +20,15 @@ export class PingpayOnramp {
   private onrampPromise: { resolve: (result: OnrampResult) => void; reject: (error: PingpayOnrampError) => void } | null = null;
   private heartbeatInterval?: NodeJS.Timeout;
 
-  private readonly popupUrl = 'http://localhost:5173';
+  private popupUrl: string;
 
   constructor(config: PingpayOnrampConfig) {
     this.config = config;
+
+    // Check for local development environment variable
+    // Ensure process.env is available or handle appropriately for different environments
+    const isLocalEnv = typeof process !== 'undefined' && process.env && process.env.PINGPAY_SDK_LOCAL === 'true';
+    this.popupUrl = isLocalEnv ? 'http://localhost:5173' : 'https://onramp.pingpay.io';
   }
 
   public async initiateOnramp(target: TargetAsset, initialData?: any): Promise<OnrampResult> {

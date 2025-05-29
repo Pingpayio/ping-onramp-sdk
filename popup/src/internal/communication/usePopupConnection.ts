@@ -48,33 +48,72 @@ export function usePopupConnection() {
       },
     };
 
-    // Determine the SDK's origin. For development, this might be a fixed localhost URL.
-    // For production, this MUST be the actual origin of the parent window hosting the SDK.
-    // A placeholder '*' is insecure for production.
-    let sdkOrigin = '*'; // Default for flexibility in local dev if ports change
+    let sdkOrigin: string;
+
     if (process.env.NODE_ENV === 'development') {
-      // Attempt to get opener's origin if possible, otherwise use a common dev default
       try {
-        if (window.opener && new URL(window.opener.location.href).origin) {
+        if (window.opener && window.opener.location && typeof window.opener.location.origin === 'string' && window.opener.location.origin !== 'null') {
           sdkOrigin = new URL(window.opener.location.href).origin;
+          console.log(`Popup (Dev): Using opener's origin for WindowMessenger: ${sdkOrigin}`);
         } else {
-          // Fallback for local dev if opener origin isn't readily available or is file://
-          // This might need to be configurable if SDK example runs on different port
-          console.warn("Popup: Could not determine opener's origin dynamically in dev. Falling back to localhost:5174 or similar if your example runs there. Ensure this matches SDK host.");
+          sdkOrigin = '*'; // Fallback for development
+          console.warn("Popup (Dev): Could not reliably determine opener's origin or it was 'null'. Falling back to '*' for WindowMessenger. This is acceptable for some dev scenarios but ensure SDK host matches if issues arise.");
         }
       } catch (e) {
-        console.warn("Popup: Error determining opener's origin. Using wildcard. THIS IS INSECURE FOR PRODUCTION.", e);
+        sdkOrigin = '*'; // Fallback for development
+        console.warn("Popup (Dev): Error determining opener's origin. Using '*' for WindowMessenger.", e);
       }
-    } else {
-      // In PRODUCTION, this origin MUST be set to the specific, trusted origin of your SDK host.
-      // sdkOrigin = 'https://your-sdk-host.com'; // Example
-      console.error("Popup: CRITICAL - remoteOrigin for WindowMessenger is not set for production. Using wildcard is insecure.");
-    }
-    // If popup is served from a different port (e.g. 5173) and SDK example from another (e.g. 5174 for examples/dist)
-    // you might need to explicitly set the SDK's origin if document.referrer is not reliable or applicable.
-    // For now, using '*' with a strong recommendation to configure it properly.
-    // A more robust way for dev might be to pass it via query param from SDK if origins differ.
+    } else { // NODE_ENV === 'production'
+      // In PRODUCTION, the SDK (opener) MUST provide its origin via the 'ping_sdk_opener_origin' query parameter.
+      // The popup (e.g., https://onramp.pingpay.io) verifies this against the actual opener's origin.
+      const queryParams = new URLSearchParams(window.location.search);
+      const expectedOpenerOrigin = queryParams.get('ping_sdk_opener_origin');
+      let actualOpenerOrigin: string | undefined;
 
+      // The check for `!window.opener` is at the top of the useEffect.
+      // If we reach here, `window.opener` exists.
+      // We still need to safely access its origin.
+      if (window.opener && window.opener.location && typeof window.opener.location.origin === 'string' && window.opener.location.origin !== 'null') {
+         try {
+            actualOpenerOrigin = new URL(window.opener.location.href).origin;
+         } catch (e) {
+            console.error("Popup (Prod): Error parsing window.opener.location.href.origin. This is unexpected if opener.location.origin was valid.", e);
+            // actualOpenerOrigin remains undefined, will be caught by subsequent checks.
+         }
+      }
+
+      if (!expectedOpenerOrigin) {
+        console.error("Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' query parameter is missing. Cannot securely initialize communication with SDK.");
+        setFlowError("Configuration error: SDK identification parameter missing.", "loading");
+        // Abort connection setup by returning from useEffect
+        return;
+      }
+
+      if (!actualOpenerOrigin) {
+        // This means window.opener existed, but its origin was 'null', non-existent, or failed to parse.
+        console.error("Popup (Prod): CRITICAL - Cannot determine actual opener's origin (it might be 'null' or inaccessible). SDK communication cannot be securely established.");
+        setFlowError("Security error: Cannot verify SDK host origin.", "loading");
+        return;
+      }
+
+      if (expectedOpenerOrigin !== actualOpenerOrigin) {
+        console.error(`Popup (Prod): CRITICAL - SDK origin mismatch. Expected (from query param): '${expectedOpenerOrigin}', Actual (from window.opener): '${actualOpenerOrigin}'. This could indicate a misconfiguration or a security attempt.`);
+        setFlowError("Security error: SDK origin mismatch.", "loading");
+        return;
+      }
+
+      // If all checks pass, use the verified origin.
+      sdkOrigin = actualOpenerOrigin; // which is === expectedOpenerOrigin
+      console.log(`Popup (Prod): Secure SDK origin verified for WindowMessenger: ${sdkOrigin}`);
+    }
+
+    // Final safeguard: if sdkOrigin somehow ended up as '*' in production, abort.
+    // The logic above with early returns should prevent this, but this is a defense-in-depth check.
+    if (sdkOrigin === '*' && process.env.NODE_ENV === 'production') {
+        console.error("Popup (Prod): CRITICAL - sdkOrigin resolved to '*' despite checks. This is an insecure state. Aborting connection.");
+        setFlowError("Security misconfiguration: Wildcard origin detected in production.", "loading");
+        return;
+    }
 
     const messenger = new WindowMessenger({
       localWindow: window,
