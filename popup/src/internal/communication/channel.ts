@@ -32,12 +32,26 @@ export function usePopupChannel() {
             return;
         }
 
-        const transport = createPostMessageTransport<SdkToPopupMessages, SdkToPopupMessages>(window.opener);
-        const newChannel = createTypedChannel(transport);
+        console.log("[Popup Channel] Attempting to create transport with window.opener:", window.opener);
+        try {
+            const transport = createPostMessageTransport<SdkToPopupMessages, SdkToPopupMessages>(window.opener);
+            console.log("[Popup Channel] Transport created successfully:", transport);
+            
+            // Temporarily comment out the next lines to isolate the error source
+            // const newChannel = createTypedChannel(transport);
+            // console.log("[Popup Channel] Channel created successfully:", newChannel);
+            // setChannel(newChannel); 
 
-        setChannel(newChannel); // Store the channel in Jotai using the setter
+            // For now, to prevent further errors if transport is the issue, let's set a dummy channel or null
+            setChannel(null); 
+
+        } catch (e) {
+            console.error("[Popup Channel] Error during transport or channel creation:", e);
+            setCurrentStep("error");
+        }
 
         // Clean up the channel when the component unmounts or popup closes
+        // This cleanup might need adjustment based on whether newChannel was set
         return () => {
              setChannel(null); // Clear the atom
         };

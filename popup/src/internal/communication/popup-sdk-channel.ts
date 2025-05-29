@@ -35,10 +35,11 @@ export function listenToSdkMessages(callback: (message: SdkToPopupMessage) => vo
     // if (event.origin !== sdkOrigin && sdkOrigin !== '*') return;
 
     const message = event.data as SdkToPopupMessage;
-    // Add more robust message validation if necessary
-    if (message && message.type && message.type === 'initiate-onramp-flow') { // Example check
+    if (message && message.type && (message.type === 'initiate-onramp-flow' /* add other SdkToPopup message types here */)) { 
       console.log('POPUP Received from SDK:', message);
       callback(message);
+    } else if (message && message.type) {
+      console.log('POPUP Received unknown/unhandled message type from SDK or other source:', message.type);
     }
   };
 

@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
-import {
-  listenToSdkMessages,
-  sendMessageToSdk,
-} from "./internal/communication/popup-sdk-channel";
+import { usePopupChannel } from './internal/communication/channel';
+
 import {
   useInitialData,
   useOnrampFlow,
@@ -13,10 +11,7 @@ import {
   useWallet
 } from "./state/hooks";
 
-import type {
-  PopupToSdkMessage,
-  SdkToPopupMessage,
-} from "./internal/communication/popup-sdk-channel";
+import type { SdkToPopupMessages } from "../../src/internal/communication/messages";
 import type { OnrampURLParams as RampUtilParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
@@ -24,7 +19,7 @@ import PopupLayout from "./components/layout/popup-layout";
 import CompletionView from "./components/steps/completion-view";
 import ConnectingWalletView from "./components/steps/connecting-wallet-view";
 import ErrorView from "./components/steps/error-view";
-import type { FormValues as FormEntryFormValues } from "./components/steps/form-entry-view"; // Type-only import
+import type { FormValues as FormEntryFormValues } from "./components/steps/form-entry-view";
 import FormEntryView from "./components/steps/form-entry-view";
 import InitiatingOnrampView from "./components/steps/initiating-onramp-view";
 import LoadingView from "./components/steps/loading-view";
@@ -43,6 +38,7 @@ type InitialDataType = {
 type AppFormValues = FormEntryFormValues;
 
 function App() {
+  const { channel } = usePopupChannel(); // Use the typed-channel hook
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
   const setOnrampTarget = useSetOnrampTarget();
 
@@ -54,34 +50,46 @@ function App() {
     useInitialData();
 
   useEffect(() => {
-    sendMessageToSdk({
-      type: "popup-ready",
-      payload: undefined,
-    } as PopupToSdkMessage<"popup-ready">);
+    if (channel) {
+      // Send popup-ready using typed-channel
+      // The payload for 'popup-ready' is an optional empty object as per src/internal/communication/messages.ts
+      channel.emit('popup-ready', undefined);
+      console.log('[App.tsx] Emitted popup-ready via typed-channel');
 
-    const cleanup = listenToSdkMessages((message: SdkToPopupMessage) => {
-      if (message.type === "initiate-onramp-flow" && message.payload) {
-        setOnrampTarget(message.payload.target);
-        setInitialDataAtomFromUseInitialData(
-          message.payload.initialData as InitialDataType
-        );
+      // Listen for initiate-onramp-flow using typed-channel
+      const cleanupInitiate = channel.on('initiate-onramp-flow', (payload: SdkToPopupMessages['initiate-onramp-flow']) => {
+        console.log('[App.tsx] Received initiate-onramp-flow from SDK via typed-channel:', payload);
+        if (payload) { // Payload is required for initiate-onramp-flow
+          setOnrampTarget(payload.target);
+          setInitialDataAtomFromUseInitialData(
+            payload.initialData as InitialDataType
+          );
+          goToStep("form-entry");
+          channel.emit('flow-started', payload); // Send flow-started back with the same payload
+        }
+      });
 
-        goToStep("form-entry");
-        sendMessageToSdk({
-          type: "flow-started",
-          payload: message.payload,
-        } as PopupToSdkMessage<"flow-started">);
-      }
-    });
+      // Add other listeners as needed, e.g., for 'sdk-closed-popup'
+      // const cleanupSdkClosed = channel.on('sdk-closed-popup', () => {
+      //   console.log('[App.tsx] SDK indicated popup should close.');
+      //   window.close(); // Or other cleanup
+      // });
 
-    return cleanup;
-  }, [goToStep, setOnrampTarget, setInitialDataAtomFromUseInitialData]);
+      return () => {
+        cleanupInitiate(); // Cleanup listener
+        // cleanupSdkClosed();
+      };
+    }
+  }, [channel, goToStep, setOnrampTarget, setInitialDataAtomFromUseInitialData]);
 
   const handleFormSubmit = async (data: AppFormValues) => {
-    sendMessageToSdk({
-      type: "form-data-submitted",
-      payload: { formData: data },
-    } as PopupToSdkMessage<"form-data-submitted">);
+    if (!channel) {
+      console.error("[App.tsx] Channel not available for form submission.");
+      setFlowError("Communication channel not available.", "form-entry");
+      return;
+    }
+
+    channel.emit("form-data-submitted", { formData: data });
 
     const typedInitialData =
       initialOnrampDataValueFromAtom as InitialDataType | null;
@@ -101,10 +109,7 @@ function App() {
       const errorMsg =
         "Missing critical information: EVM wallet, deposit address, or Coinbase App ID.";
       setFlowError(errorMsg, "form-entry");
-      sendMessageToSdk({
-        type: "process-failed",
-        payload: { error: errorMsg, step: "form-entry" },
-      } as PopupToSdkMessage<"process-failed">);
+      channel.emit("process-failed", { error: errorMsg, step: "form-entry" });
       return;
     }
 
@@ -130,26 +135,20 @@ function App() {
 
       if (coinbaseOnrampURL.startsWith("error:")) {
         setFlowError(coinbaseOnrampURL, "initiating-onramp-service");
-        sendMessageToSdk({
-          type: "process-failed",
-          payload: {
+        channel.emit("process-failed", {
             error: coinbaseOnrampURL,
             step: "initiating-onramp-service",
-          },
-        } as PopupToSdkMessage<"process-failed">);
+          });
         return;
       }
 
-      sendMessageToSdk({
-        type: "onramp-initiated",
-        payload: {
+      channel.emit("onramp-initiated", {
           serviceName: "Coinbase Onramp",
           details: { url: coinbaseOnrampURL },
-        },
-      } as PopupToSdkMessage<"onramp-initiated">);
+        });
 
       console.log("Redirecting to Coinbase Onramp:", coinbaseOnrampURL);
-      // window.top.location.href = coinbaseOnrampURL;
+      // window.top.location.href = coinbaseOnrampURL; // This redirection needs careful review
 
       goToStep("processing-transaction");
     } catch (e: unknown) {
@@ -158,10 +157,7 @@ function App() {
         errorMsg || "Failed to initiate onramp.",
         "initiating-onramp-service"
       );
-      sendMessageToSdk({
-        type: "process-failed",
-        payload: { error: errorMsg, step: "initiating-onramp-service" },
-      } as PopupToSdkMessage<"process-failed">);
+      channel.emit("process-failed", { error: errorMsg, step: "initiating-onramp-service" });
     }
   };
 
@@ -179,31 +175,31 @@ function App() {
             data: { transactionId, service: "Coinbase Onramp" },
           };
           setOnrampProcessResultAtom(resultPayload);
-          sendMessageToSdk({
-            type: "process-complete",
-            payload: { result: resultPayload },
-          } as PopupToSdkMessage<"process-complete">);
+          if (channel) {
+            channel.emit("process-complete", { result: resultPayload });
+          }
           goToStep("complete");
         } else if (status === "failure") {
           const errorMsg = urlParams.get("error") || "Onramp failed.";
           setFlowError(errorMsg, "processing-transaction");
-          sendMessageToSdk({
-            type: "process-failed",
-            payload: { error: errorMsg, step: "processing-transaction" },
-          } as PopupToSdkMessage<"process-failed">);
+          if (channel) {
+            channel.emit("process-failed", { error: errorMsg, step: "processing-transaction" });
+          }
         }
         // window.history.replaceState({}, document.title, window.location.pathname.split('?')[0]);
       }
     };
 
     handleCallback();
-  }, [goToStep, setFlowError, setOnrampProcessResultAtom]);
+  }, [channel, goToStep, setFlowError, setOnrampProcessResultAtom]);
+
+  useEffect(() => {
+    if (channel) {
+      channel.emit("step-changed", { step });
+    }
+  }, [channel, step]);
 
   const renderStepContent = () => {
-    sendMessageToSdk({
-      type: "step-changed",
-      payload: { step },
-    } as PopupToSdkMessage<"step-changed">);
     switch (step) {
       case "loading":
         return <LoadingView />;

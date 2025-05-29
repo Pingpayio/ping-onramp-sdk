@@ -24,10 +24,12 @@ export class PingpayOnramp {
   private popupReadyPromise: Promise<void> | null = null;
   private resolvePopupReady: (() => void) | null = null;
 
-  private readonly popupUrl = 'http://localhost:5173';
+  private readonly defaultPopupUrl = 'http://localhost:5173';
+  private popupUrlToUse: string;
 
   constructor(config: PingpayOnrampConfig) {
     this.config = config;
+    this.popupUrlToUse = config.popupUrl || this.defaultPopupUrl;
     this.popupReadyPromise = new Promise<void>((resolve) => {
       this.resolvePopupReady = resolve;
     });
@@ -48,7 +50,8 @@ export class PingpayOnramp {
     return new Promise((resolve, reject) => {
       this.onrampPromise = { resolve, reject };
       try {
-        this.popup = openPopup(this.popupUrl, 'PingpayOnrampPopup', 500, 700);
+        console.log(`SDK: Opening popup at URL: ${this.popupUrlToUse}`);
+        this.popup = openPopup(this.popupUrlToUse, 'PingpayOnrampPopup', 500, 700);
         if (!this.popup) {
           throw new PingpayOnrampError('Failed to open popup window. Please check your browser settings.');
         }
@@ -56,17 +59,32 @@ export class PingpayOnramp {
         this.channel = createSdkChannel(this.popup);
         this.setupChannelListeners();
 
+        // Capture the current popup and channel context for this specific onramp attempt.
+        // This helps prevent issues if cleanup() nullifies this.popup and this.channel
+        // before this .then() callback executes.
+        const currentPopupContext = this.popup;
+        const currentChannelContext = this.channel;
+
         // Wait for popup to be ready before sending initial message
         this.popupReadyPromise?.then(() => {
-          if (this.channel && this.popup && !this.popup.closed) {
-            this.channel.emit('initiate-onramp-flow', { target, initialData });
+          if (currentChannelContext && currentPopupContext && !currentPopupContext.closed) {
+            console.log('SDK: Popup ready, attempting to send initiate-onramp-flow', { target, initialData });
+            currentChannelContext.emit('initiate-onramp-flow', { target, initialData });
+            console.log('SDK: initiate-onramp-flow message emitted.');
           } else if (this.onrampPromise) {
-            // If channel or popup became invalid before sending, reject.
+            console.error('SDK: Cannot send initiate-onramp-flow. Conditions not met or popup closed.', {
+              hasChannel: !!currentChannelContext,
+              hasPopup: !!currentPopupContext,
+              isPopupClosed: currentPopupContext ? currentPopupContext.closed : 'N/A (popup context was null)',
+              isThisChannelNull: this.channel === null,
+              isThisPopupNull: this.popup === null,
+            });
             this.onrampPromise.reject(new PingpayOnrampError('Popup closed or channel unavailable before flow initiation.'));
             this.cleanup();
           }
         }).catch(error => {
           if (this.onrampPromise) {
+            console.error('SDK: Error during popup readiness wait.', error);
             this.onrampPromise.reject(new PingpayOnrampError('Error during popup readiness wait.', error));
             this.cleanup();
           }
@@ -98,6 +116,8 @@ export class PingpayOnramp {
 
   private setupChannelListeners(): void {
     if (!this.channel) return;
+
+    console.log(`SDK: Setting up channel listeners.`);
 
     this.channel.on('popup-ready', () => {
       console.log('SDK: Popup is ready.');

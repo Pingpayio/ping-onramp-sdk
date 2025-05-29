@@ -22,6 +22,12 @@ export interface PingpayOnrampConfig {
   targetAsset?: TargetAsset;
 
   /**
+   * The URL of the popup window to be opened.
+   * If not provided, a default URL will be used.
+   */
+  popupUrl?: string;
+
+  /**
    * Optional callback invoked when the popup window signals it's ready.
    */
   onPopupReady?: () => void;

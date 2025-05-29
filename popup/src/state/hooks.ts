@@ -1,4 +1,5 @@
 import { useAtom } from 'jotai';
+import { useCallback } from 'react';
 import {
   onrampStepAtom,
   onrampErrorAtom,
@@ -12,20 +13,19 @@ import {
 import type { OnrampFlowStep, OnrampResult } from '../../../src/internal/communication/messages';
 import type { WalletConnectionResult, TransactionSignResult } from '../services/types';
 
-// Example hook to manage the onramp step
 export function useOnrampFlow() {
   const [step, setStep] = useAtom(onrampStepAtom);
   const [error, setError] = useAtom(onrampErrorAtom);
 
-  const goToStep = (newStep: OnrampFlowStep) => {
+  const goToStep = useCallback((newStep: OnrampFlowStep) => {
     setStep(newStep);
     setError(null); // Clear errors when changing steps
-  };
+  }, [setStep, setError]);
 
-  const setFlowError = (errorMessage: string, currentStep?: OnrampFlowStep) => {
+  const setFlowError = useCallback((errorMessage: string, currentStep?: OnrampFlowStep) => {
     setError(errorMessage);
     setStep(currentStep || 'error'); // Go to error step or stay on current step with error
-  };
+  }, [setStep, setError]);
 
   return { step, goToStep, error, setFlowError };
 }
@@ -57,7 +57,6 @@ export function useSetFormData() {
     const [, setForm] = useAtom(formDataAtom);
     return setForm;
 }
-
 
 // Hook for managing connected wallet state
 export function useWallet() {
