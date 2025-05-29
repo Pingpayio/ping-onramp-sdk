@@ -25,19 +25,21 @@ export type FormValues = {
 
 interface FormEntryViewProps {
   onSubmit: (data: FormValues) => void;
+  generatedEvmAddress?: string; // To display the generated EVM address
 }
 
-const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
-  const methods = useForm<FormValues>({
-    defaultValues: {
-      amount: "",
-      selectedAsset: "USDC",
-      selectedCurrency: "USD",
-      paymentMethod: "card", // Default payment method
-      nearWalletAddress: "",
-    },
-  });
-  const { handleSubmit, register, control, watch } = methods; // Added control and watch
+const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAddress }) => {
+          const methods = useForm<FormValues>({
+            mode: 'onChange', // Ensure form validity is updated on change
+            defaultValues: {
+              amount: "",
+              selectedAsset: "USDC",
+              selectedCurrency: "USD",
+              paymentMethod: "card", // Default payment method
+              nearWalletAddress: "", // This will be for the user's NEAR wallet input
+            },
+          });
+          const { handleSubmit, register, control, watch, formState: { isValid } } = methods; // Added formState: { isValid }
   const { address, chainId, isConnected } = useAccount();
   const setWalletState = useSetAtom(walletStateAtom);
 
@@ -164,33 +166,53 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           <input type="hidden" {...register("selectedCurrency")} value="USD" />
         </div>
         
-        {/* NEAR Recipient Address (EVM Deposit Address) */}
+        {/* EVM Deposit Address Display */}
         <div className="flex flex-col">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2 mb-1">
                 <div className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden relative">
                 <img
-                    src="/near-intents-logo.png"
-                    alt="NEAR Intents"
+                    src="/near-intents-logo.png" // Corrected path to available logo
+                    alt="EVM Deposit Address Icon"
                     className="w-full h-full object-contain"
                 />
                 </div>
-                <label className="text-sm text-white">EVM Deposit Address (for USDC)</label>
+                <Label className="text-sm text-white">EVM Deposit Address (for USDC)</Label>
             </div>
-            <Input
-                type="text"
-                id="nearWalletAddress"
-                {...register("nearWalletAddress")}
-                className="mt-1 block w-full p-2 border border-gray-600 rounded bg-gray-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="e.g. yourwallet.near or awaiting generation..."
-            />
-             {/* <span className="text-xs text-[#AF9EF9] font-normal h-4">
-                {methods.watch("nearWalletAddress") || <span className="text-white/70">Awaiting deposit address generation...</span>}
-            </span> */}
+            <div className="mt-1 block w-full p-2.5 border border-gray-600 rounded bg-gray-800 text-white/80 text-sm min-h-[42px] flex items-center">
+              {generatedEvmAddress ? (
+                <span className="truncate">{generatedEvmAddress}</span>
+              ) : (
+                <span className="text-white/50">Awaiting generation...</span>
+              )}
+            </div>
             <p className="text-xs text-white/50 mt-1 px-1">
                 This is the temporary EVM address where you'll send USDC. It will then be bridged to your NEAR address.
             </p>
         </div>
 
+        {/* NEAR Wallet Address Input */}
+        <div>
+          <Label
+            htmlFor="nearWalletAddress"
+            className="block text-sm font-medium text-white mb-1"
+          >
+            Your NEAR Wallet Address
+          </Label>
+          <Input
+            type="text"
+            id="nearWalletAddress"
+            {...register("nearWalletAddress", {
+              required: "NEAR Wallet Address is required",
+            })}
+            className="mt-1 block w-full p-2 border border-gray-600 rounded bg-gray-700 text-white placeholder-gray-400 focus:ring-blue-500 focus:border-blue-500"
+            placeholder="e.g., yourwallet.near"
+          />
+          {methods.formState.errors.nearWalletAddress && (
+            <p className="text-red-400 text-xs mt-1">
+              {methods.formState.errors.nearWalletAddress.message}
+            </p>
+          )}
+        </div>
 
         {/* Payment Method Dropdown */}
         <div>
@@ -233,12 +255,13 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           )}
         </div>
 
-        <Button
-          type="submit"
-          className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150"
-        >
-          Continue
-        </Button>
+                <Button
+                  type="submit"
+                  className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition ease-in-out duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={!isValid} // Disable button if form is not valid
+                >
+                  Continue
+                </Button>
       </form>
     </FormProvider>
   );

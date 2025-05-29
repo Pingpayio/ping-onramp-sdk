@@ -3,67 +3,142 @@
 
 @custom-variant dark (&:is(.dark *));
 
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@layer base {
+  :root {
+    --background: 0 0% 7%; /* #121212 */
+    --foreground: 222.2 84% 4.9%;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+    --card: 0 0% 7%; /* #121212 */
+    --card-foreground: 222.2 84% 4.9%;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+    --popover: 0 0% 7%; /* #121212 */
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 255 57% 61%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 255 57% 61%;
+    --accent-border: 262 88% 77%; /* #AF9EF9 */
+    --hover-bg: 0 0% 100% / 0.05; /* white/5 */
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 0 0% 7%; /* #121212 */
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 255 57% 61%;
+    
+    /* Define mobile topbar height for consistent spacing */
+    --topbar-height: 64px;
+
+    /* Original popup/src/index.css variables that were not in legacy, kept for compatibility if needed */
+    /* color-scheme: light dark; /* Handled by Tailwind's dark mode strategy */
+    /* color: rgba(255, 255, 255, 0.87); /* Covered by --foreground */
+    /* background-color: #242424; /* Covered by --background */
+
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    
+    /* Chart variables from original popup/src/index.css, might be needed if charts are used */
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+  }
+
+  .dark {
+    --background: 0 0% 7%; /* #121212 */
+    --foreground: 210 40% 98%;
+
+    --card: 0 0% 7%; /* #121212 */
+    --card-foreground: 210 40% 98%;
+
+    --popover: 0 0% 7%; /* #121212 */
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 255 57% 61%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 255 57% 61%;
+    --accent-border: 262 88% 77%; /* #AF9EF9 */
+    --hover-bg: 0 0% 100% / 0.05; /* white/5 */
+    
+    --sidebar-background: 0 0% 7%; /* #121212 */
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 255 57% 61%;
+
+    /* Chart variables from original popup/src/index.css .dark scope */
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+  }
 }
 
+@layer base {
+  * {
+    @apply border-border; /* Uses legacy --border variable now */
+  }
+
+  body {
+    @apply bg-background text-foreground; /* Uses legacy --background and --foreground */
+    font-family: 'Inter', sans-serif; /* Use Inter font from legacy */
+    margin: 0; /* from original popup/src/index.css */
+    min-width: 320px; /* from original popup/src/index.css */
+    min-height: 100vh; /* from original popup/src/index.css */
+  }
+}
+
+/* Original general styles from popup/src/index.css - review if still needed or covered by legacy */
 a {
   font-weight: 500;
-  color: #646cff;
+  /* color: #646cff; /* Color will be inherited or set by components */
   text-decoration: inherit;
 }
-a:hover {
+/* a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-}
+} */
 
 h1 {
   font-size: 3.2em;
@@ -71,25 +146,26 @@ h1 {
 }
 
 button {
-  border-radius: 8px;
+  border-radius: 8px; /* Or use var(--radius) */
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  /* background-color: #1a1a1a; /* Covered by component styles or Tailwind utilities */
   cursor: pointer;
   transition: border-color 0.25s;
 }
-button:hover {
+/* button:hover {
   border-color: #646cff;
-}
+} */
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 4px auto -webkit-focus-ring-color; /* Consider using var(--ring) */
 }
 
-@media (prefers-color-scheme: light) {
+/* Light mode specific styles from original popup/src/index.css - legacy handles this with :root and .dark */
+/* @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
@@ -100,8 +176,395 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+} */
+
+/* Copied from _legacy/src/styles/animations.css */
+.card-gradient-hover {
+  @apply relative overflow-hidden transition-all duration-300;
 }
 
+.card-gradient-hover::before {
+  content: "";
+  background-image: linear-gradient(135deg, #745DDC 0%, #9257ff 100%);
+  @apply absolute inset-0 rounded-lg z-0 opacity-0 transition-opacity duration-300;
+}
+
+.card-gradient-hover:hover::before {
+  @apply opacity-100;
+}
+
+/* Add active state for mobile */
+@media (max-width: 767px) {
+  .card-gradient-hover:active::before {
+    @apply opacity-100;
+  }
+}
+
+.glow-border {
+  @apply relative rounded-lg;
+}
+
+.glow-border::after {
+  content: "";
+  background-image: linear-gradient(135deg, #745DDC 0%, #9257ff 100%);
+  @apply absolute -inset-[1px] rounded-lg blur-sm opacity-50 z-0 transition-opacity duration-300;
+}
+
+.ping-shadow {
+  box-shadow: 0 0 25px rgba(116, 93, 220, 0.15);
+}
+
+/* Animation for error indicators */
+.animate-pulse-slow {
+  animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Copied from _legacy/src/styles/components.css */
+/* Add z-index management for dropdowns and popovers */
+.radix-dropdown,
+.radix-popover,
+.radix-select {
+  z-index: 50;
+}
+
+/* Mobile menu drawer should be below the header but above content */
+.mobile-menu-drawer {
+  z-index: 40;
+}
+
+/* Fixed mobile header should be on top */
+.mobile-topbar {
+  z-index: 50;
+}
+
+/* Ensure dropdowns are fully visible */
+[data-radix-popper-content-wrapper] {
+  max-height: 80vh !important;
+  overflow-y: auto !important;
+  z-index: 999 !important;
+}
+
+/* Ensure consistent dropdown/popover width */
+[data-radix-select-content] {
+  width: var(--radix-select-trigger-width) !important;
+  min-width: var(--radix-select-trigger-width) !important;
+}
+
+[data-radix-popover-content] {
+  width: var(--radix-popover-trigger-width) !important;
+  min-width: var(--radix-popover-trigger-width) !important;
+  max-width: var(--radix-popover-trigger-width) !important;
+}
+
+/* Ensure mobile popovers are properly positioned */
+@media (max-width: 767px) {
+  .popover-mobile-full {
+    width: calc(100vw - 32px) !important;
+    max-width: calc(100vw - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+  }
+}
+
+/* Half-screen desktop optimizations */
+@media (min-width: 768px) and (max-width: 1279px) {
+  /* Ensure popovers don't exceed viewport */
+  [data-radix-popper-content-wrapper] {
+    max-width: 100% !important;
+  }
+  
+  /* Make tables horizontally scrollable */
+  .table-responsive {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Adjust card layouts for narrower screens */
+  .card-flex-column {
+    flex-direction: column !important;
+  }
+}
+
+/* Copied from _legacy/src/styles/mobile/base.css */
+@media (max-width: 767px) {
+  body {
+    padding-top: 0; /* Remove default padding */
+    @apply overflow-x-hidden;
+  }
+  
+  /* Improve touch targets for mobile */
+  button, a, [role="button"] {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  input, select, textarea {
+    @apply text-base py-3 min-h-[44px];
+  }
+  
+  /* Prevent double scrollbars */
+  .overflow-y-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Properly space content below the fixed mobile topbar */
+  .pt-topbar {
+    padding-top: 54px; /* Updated to match topbar height */
+  }
+}
+
+/* Copied from _legacy/src/styles/mobile/popovers.css */
+@media (max-width: 767px) {
+  /* Fix popovers and dropdowns on mobile - less restrictive positioning */
+  .popover-content, .dropdown-content {
+    max-width: calc(100vw - 24px) !important;
+  }
+  
+  /* Improve dropdown positioning without overriding Radix UI positioning logic */
+  [data-radix-popper-content-wrapper] {
+    /* Remove conflicting transform properties and fixed positioning */
+    z-index: 999 !important; /* Ensure dropdowns appear above other content */
+    max-width: 100% !important;
+  }
+  
+  /* Ensure consistent spacing between trigger and dropdown */
+  [data-radix-popover-content] {
+    margin-top: 5px !important;
+  }
+  
+  [data-radix-select-content] {
+    margin-top: 5px !important;
+  }
+  
+  /* Ensure dropdown lists always appear below their triggers */
+  [role="listbox"],
+  [role="menu"] {
+    top: 100% !important;
+    bottom: auto !important;
+  }
+}
+
+/* Half-screen desktop optimization - new breakpoint */
+@media (min-width: 768px) and (max-width: 1279px) {
+  /* Make sure dropdowns appear in correct position */
+  [data-radix-popper-content-wrapper] {
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
+  }
+  
+  /* Ensure consistent dropdown widths */
+  [data-radix-popover-content],
+  [data-radix-select-content] {
+    width: var(--radix-popover-trigger-width, 100%) !important;
+    min-width: var(--radix-popover-trigger-width, 100%) !important;
+    max-width: var(--radix-popover-trigger-width, 100%) !important;
+  }
+}
+
+/* Copied from _legacy/src/styles/mobile/menu.css */
+@media (max-width: 767px) {
+  /* Mobile menu styles */
+  [data-radix-dialog-content] {
+    z-index: 50 !important;
+  }
+  
+  /* Ensure sheet content is always on top */
+  [data-radix-dialog-overlay] {
+    z-index: 40 !important;
+    background-color: rgba(0, 0, 0, 0.7) !important;
+  }
+  
+  /* Style for menu properly aligned with topbar */
+  [data-radix-dialog-content][data-side="right"] {
+    height: calc(100vh - 54px) !important;
+    top: 54px !important; 
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+    border: none !important; /* Remove all borders */
+    background-color: #121212 !important; /* Set explicit background color */
+  }
+  
+  /* Adjust header height in mobile menu */
+  .mobile-menu {
+    @apply pt-[54px];
+  }
+  
+  /* Ensure menu items have proper contrast */
+  .mobile-menu-item {
+    @apply min-h-[44px] flex items-center py-3 px-4;
+  }
+  
+  /* Active menu item styling */
+  .mobile-menu-item-active {
+    @apply bg-[#AF9EF9] text-black rounded-lg;
+  }
+  
+  /* Ensure sheet animations work properly - slide from right animation */
+  [data-state=open].sheet-content {
+    animation: slide-in-from-right 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    border: none !important; /* Remove all borders */
+  }
+  
+  [data-state=closed].sheet-content {
+    animation: slide-out-to-right 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  
+  /* Improved menu icon hover and active states */
+  .menu-icon {
+    color: #FFFFFF; /* Default white color */
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .menu-icon:hover,
+  .menu-icon:active {
+    color: #AF9EF9 !important;
+  }
+  
+  /* Fix hover effect for both hamburger and X icons */
+  .p-2.ml-2 button {
+    transition: color 0.2s ease-in-out;
+  }
+  
+  .p-2.ml-2 button:hover svg,
+  .p-2.ml-2 button:active svg,
+  .p-2.ml-2 button:focus svg {
+    color: #AF9EF9 !important;
+  }
+  
+  /* X icon specific styles - ensure white by default, purple on hover */
+  button[aria-expanded="true"] svg {
+    color: #FFFFFF; /* Default white color for X icon */
+  }
+  
+  button[aria-expanded="true"]:hover svg,
+  button[aria-expanded="true"]:active svg {
+    color: #AF9EF9 !important;
+  }
+  
+  /* Remove default close button from sheet */
+  [data-radix-dialog-content] [data-radix-dialog-close] {
+    display: none !important;
+  }
+  
+  @keyframes slide-in-from-right {
+    from {
+      transform: translateX(100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes slide-out-to-right {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* Copied from _legacy/src/styles/mobile/layout.css */
+@media (max-width: 767px) {
+  /* Improve modal positioning on mobile */
+  [role="dialog"] {
+    max-height: 90vh;
+    margin-top: 5vh;
+  }
+
+  /* Style for the connect wallet button on mobile */
+  .wallet-button-mobile {
+    @apply py-2.5 px-5 text-sm min-h-[40px];
+  }
+  
+  /* Improve onramp page layout for mobile */
+  .onramp-container {
+    flex-direction: column !important;
+  }
+  
+  /* Center align mobile content */
+  .mobile-centered {
+    @apply flex items-center justify-center;
+  }
+  
+  /* Adjust form spacing on mobile */
+  .mobile-stacked-form > * {
+    @apply mb-4 w-full;
+  }
+}
+
+/* Half-screen desktop optimization - new breakpoint */
+@media (min-width: 768px) and (max-width: 1279px) {
+  /* Optimize layout for half-screen desktop views */
+  .half-screen-optimize {
+    flex-direction: column !important;
+  }
+  
+  /* Reduce side padding for content containers */
+  .content-container {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+  
+  /* Ensure table containers allow horizontal scrolling */
+  .table-container {
+    @apply w-full overflow-x-auto;
+  }
+}
+
+/* Copied from _legacy/src/styles/mobile/extra-small.css */
+@media (max-width: 374px) {
+  .text-xs {
+    font-size: 0.7rem;
+  }
+  
+  .text-sm {
+    font-size: 0.8rem;
+  }
+  
+  .p-4 {
+    padding: 0.75rem;
+  }
+  
+  .px-4 {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Make buttons more compact on very small screens */
+  .btn-sm, button.text-xs {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  /* Reduce container padding */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+  
+  /* Improve dropdown positioning on small screens */
+  [data-radix-popper-content-wrapper] {
+    max-width: 100% !important;
+    width: var(--radix-select-trigger-width) !important;
+    left: 0 !important;
+  }
+}
+
+/* @theme inline from original popup/src/index.css - this defines aliases for the CSS vars */
+/* It should come after all variable definitions to ensure it uses the final values */
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -140,45 +603,16 @@ button:focus-visible {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
+/* @layer base from original popup/src/index.css - for * and body, ensure these are what we want */
+/* The body font-family is already set above. The * rule for border-border is also set. */
+/* This specific block might be redundant now or could be merged more cleanly. */
+/* For now, keeping it as it was, but it applies border-border and outline-ring/50 to * */
+/* and bg-background, text-foreground to body, which are already applied. */
 @layer base {
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border outline-ring/50; /* outline-ring/50 is new from original popup css */
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground; /* Already applied */
   }
 }
