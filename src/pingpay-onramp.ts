@@ -114,7 +114,7 @@ export class PingpayOnramp {
           },
         };
 
-        ParentHandshake<SdkListenerMethods, PopupActionMethods>(messenger, sdkListenerMethods, this.config.popupTimeout || 5000)
+        ParentHandshake<SdkListenerMethods, PopupActionMethods>(messenger, sdkListenerMethods, 5000)
           .then((connection: Connection<SdkListenerMethods, PopupActionMethods>) => {
             this.postMeConnection = connection;
             console.log('SDK: post-me ParentHandshake successful.');

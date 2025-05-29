@@ -422,7 +422,7 @@ function App() {
   };
 
   return (
-    <PopupLayout title={`Onramp - Step: ${step.replace(/-/g, " ")}`}>
+    <PopupLayout>
       {renderStepContent()}
     </PopupLayout>
   );

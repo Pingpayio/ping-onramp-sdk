@@ -28,23 +28,34 @@ interface FormEntryViewProps {
   generatedEvmAddress?: string;
 }
 
-const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAddress }) => {
-          const methods = useForm<FormValues>({
-            mode: 'onChange',
-            defaultValues: {
-              amount: "",
-              selectedAsset: "USDC",
-              selectedCurrency: "USD", // Will be part of amount display, not separate field
-              paymentMethod: "card",
-              nearWalletAddress: "",
-            },
-          });
-          const { handleSubmit, register, control, watch, formState: { isValid, errors } } = methods;
+const FormEntryView: React.FC<FormEntryViewProps> = ({
+  onSubmit,
+  generatedEvmAddress,
+}) => {
+  const methods = useForm<FormValues>({
+    mode: "onChange",
+    defaultValues: {
+      amount: "",
+      selectedAsset: "USDC",
+      selectedCurrency: "USD", // Will be part of amount display, not separate field
+      paymentMethod: "card",
+      nearWalletAddress: "",
+    },
+  });
+  const {
+    handleSubmit,
+    register,
+    control,
+    watch,
+    formState: { isValid, errors },
+  } = methods;
   const { address, chainId, isConnected } = useAccount();
   const setWalletState = useSetAtom(walletStateAtom);
 
   // For payment method subtext
-  const [currentPaymentMethod, setCurrentPaymentMethod] = useState(methods.getValues("paymentMethod"));
+  const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
+    methods.getValues("paymentMethod")
+  );
   const paymentMethodWatcher = watch("paymentMethod");
 
   React.useEffect(() => {
@@ -80,15 +91,20 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAdd
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="bg-white/5 rounded-xl shadow-sm p-4 border border-white/[0.16] space-y-3">
-        <h2 className="text-xl font-medium text-white mb-4">Buy USDC</h2>
-
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white/5 rounded-xl shadow-sm p-4 border border-white/[0.16] space-y-3"
+      >
         {/* Connect Wallet Section - simplified */}
-        <div className="flex justify-center"> {/* Removed border and specific bg */}
+        <div className="flex justify-center">
+          {" "}
+          {/* Removed border and specific bg */}
           <Wallet />
         </div>
         {isConnected && address && (
-          <div className="mt-1 text-center text-xs text-green-400"> {/* Adjusted margin and text size */}
+          <div className="mt-1 text-center text-xs text-green-400">
+            {" "}
+            {/* Adjusted margin and text size */}
             Connected: {address.substring(0, 6)}...
             {address.substring(address.length - 4)}
           </div>
@@ -108,17 +124,16 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAdd
               placeholder="0"
             />
             <span className="text-5xl md:text-6xl text-white/40 font-normal -ml-1">
-              {methods.getValues("selectedCurrency")} {/* Display selected currency */}
+              {methods.getValues("selectedCurrency")}{" "}
+              {/* Display selected currency */}
             </span>
           </div>
           {errors.amount && (
-            <p className="text-red-400 text-xs mt-1">
-              {errors.amount.message}
-            </p>
+            <p className="text-red-400 text-xs mt-1">{errors.amount.message}</p>
           )}
           {/* Hidden input to keep "USD" in form data - already part of defaultValues */}
         </div>
-        
+
         {/* Asset Display (Disabled USDC) */}
         <div>
           <Label
@@ -150,39 +165,17 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAdd
           <div className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between hover:border-[#AF9EF9]/70">
             <div className="flex items-center">
               <div className="h-5 w-5 rounded-full mr-2 overflow-hidden flex items-center justify-center">
-                <img 
+                <img
                   src="/near-protocol-near-logo.svg" // Path relative to popup/public
-                  alt="NEAR Protocol" 
-                  className="h-4 w-4 object-contain" 
+                  alt="NEAR Protocol"
+                  className="h-4 w-4 object-contain"
                 />
               </div>
-              <span className="text-sm font-normal text-white/60">NEAR Protocol</span>
+              <span className="text-sm font-normal text-white/60">
+                NEAR Protocol
+              </span>
             </div>
           </div>
-        </div>
-        
-        {/* EVM Deposit Address Display */}
-        <div className="flex flex-col">
-            <div className="flex items-center gap-2 mb-1">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden relative">
-                <img
-                    src="/near-intents-logo.png" 
-                    alt="EVM Deposit Address Icon"
-                    className="w-full h-full object-contain"
-                />
-                </div>
-                <Label className="text-sm text-white">EVM Deposit Address (for USDC)</Label>
-            </div>
-            <div className="mt-1 min-h-[auto] p-0 border-none bg-transparent text-xs text-[#AF9EF9] font-normal">
-              {generatedEvmAddress ? (
-                <span className="truncate">{generatedEvmAddress}</span>
-              ) : (
-                <span className="text-white/70">Awaiting generation...</span>
-              )}
-            </div>
-            <p className="text-xs text-white/50 mt-1 px-1">
-                This is the temporary EVM address where you'll send USDC. It will then be bridged to your NEAR address.
-            </p>
         </div>
 
         {/* NEAR Wallet Address Input */}
@@ -207,7 +200,9 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAdd
               {errors.nearWalletAddress.message}
             </p>
           )}
-          <p className="text-xs text-white/50 mt-1 px-1">Funds will be on-ramped and then bridged to this NEAR address.</p>
+          <p className="text-xs text-white/50 mt-1 px-1">
+            Funds will be on-ramped and then bridged to this NEAR address.
+          </p>
         </div>
 
         {/* Payment Method Dropdown */}
@@ -231,12 +226,32 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAdd
                 defaultValue={field.value}
               >
                 <SelectTrigger className="w-full rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[42px] text-white/60 flex items-center px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70">
-                  <SelectValue placeholder="Select payment method" className="font-normal text-white/60" />
+                  <SelectValue
+                    placeholder="Select payment method"
+                    className="font-normal text-white/60"
+                  />
                 </SelectTrigger>
-                <SelectContent className="bg-[#303030] border-[#AF9EF9] text-white/60 w-full"> {/* Added w-full to SelectContent */}
-                  <SelectItem value="card" className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5">Debit or Credit Card</SelectItem>
-                  <SelectItem value="ach" className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5">Bank Transfer (ACH)</SelectItem>
-                  <SelectItem value="apple" className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5">Apple Pay</SelectItem>
+                <SelectContent className="bg-[#303030] border-[#AF9EF9] text-white/60 w-full">
+                  {" "}
+                  {/* Added w-full to SelectContent */}
+                  <SelectItem
+                    value="card"
+                    className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5"
+                  >
+                    Debit or Credit Card
+                  </SelectItem>
+                  <SelectItem
+                    value="ach"
+                    className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5"
+                  >
+                    Bank Transfer (ACH)
+                  </SelectItem>
+                  <SelectItem
+                    value="apple"
+                    className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5"
+                  >
+                    Apple Pay
+                  </SelectItem>
                 </SelectContent>
               </Select>
             )}
@@ -250,6 +265,33 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit, generatedEvmAdd
             </p>
           )}
         </div>
+
+        {/* EVM Deposit Address Display */}
+        {/* <div className="flex flex-col">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden relative">
+              <img
+                src="/near-intents-logo.png"
+                alt="EVM Deposit Address Icon"
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <Label className="text-sm text-white">
+              EVM Deposit Address (for USDC)
+            </Label>
+          </div>
+          <div className="mt-1 min-h-[auto] p-0 border-none bg-transparent text-xs text-[#AF9EF9] font-normal">
+            {generatedEvmAddress ? (
+              <span className="truncate">{generatedEvmAddress}</span>
+            ) : (
+              <span className="text-white/70">Awaiting generation...</span>
+            )}
+          </div>
+          <p className="text-xs text-white/50 mt-1 px-1">
+            This is the temporary EVM address where you'll send USDC. It will
+            then be bridged to your NEAR address.
+          </p>
+        </div> */}
 
         <Button
           type="submit"

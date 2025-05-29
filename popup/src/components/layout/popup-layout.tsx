@@ -6,15 +6,10 @@ interface PopupLayoutProps {
   title?: string;
 }
 
-const PopupLayout: React.FC<PopupLayoutProps> = ({ children, title = "Pingpay Onramp" }) => {
+const PopupLayout: React.FC<PopupLayoutProps> = ({ children }) => {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-ping-900 text-white p-4 sm:p-6 md:p-8">
-      <div className="w-full max-w-md bg-gray-800 shadow-xl rounded-lg p-6">
-        <header className="mb-6 text-center">
-          {/* You can add a logo here if desired */}
-          {/* <img src="/logo.png" alt="Pingpay Logo" className="h-10 mx-auto mb-2" /> */}
-          <h1 className="text-2xl font-semibold">{title}</h1>
-        </header>
+    <div className="flex flex-col items-center justify-start min-h-screen bg-[#121212] text-white">
+      <div className="w-full shadow-xl p-6">
         <main>
           {children}
         </main>
