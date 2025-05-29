@@ -10,7 +10,7 @@ export default defineConfig({
     //   // This alias allows importing the SDK source directly during development.
     //   // Adjust if your SDK's entry point or structure changes.
     //   // Assumes this vite.config.ts is in 'examples/' and src is '../src/'
-    //   '@pingpayio/onramp-sdk': '../src/index.ts',
+    //   '@pingpay/onramp-sdk': '../src/index.ts',
     // },
   },
 });

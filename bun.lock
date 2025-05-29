@@ -2,7 +2,7 @@
   "lockfileVersion": 1,
   "workspaces": {
     "": {
-      "name": "@pingpayio/onramp-sdk",
+      "name": "@pingpay/onramp-sdk",
       "dependencies": {
         "post-me": "^0.4.5",
         "typed-channel": "^0.9.5",
@@ -26,7 +26,7 @@
       },
     },
     "popup": {
-      "name": "@pingpayio/onramp-popup",
+      "name": "@pingpay/onramp-popup",
       "version": "0.0.0",
       "dependencies": {
         "@coinbase/onchainkit": "^0.38.13",
@@ -271,7 +271,7 @@
 
     "@phosphor-icons/react": ["@phosphor-icons/react@2.1.10", "", { "peerDependencies": { "react": ">= 16.8", "react-dom": ">= 16.8" } }, "sha512-vt8Tvq8GLjheAZZYa+YG/pW7HDbov8El/MANW8pOAz4eGxrwhnbfrQZq0Cp4q8zBEu8NIhHdnr+r8thnfRSNYA=="],
 
-    "@pingpayio/onramp-popup": ["@pingpayio/onramp-popup@workspace:popup"],
+    "@pingpay/onramp-popup": ["@pingpay/onramp-popup@workspace:popup"],
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 
