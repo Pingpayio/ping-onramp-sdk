@@ -16,7 +16,6 @@ import { generateNearIntentsDepositAddress } from "./utils/near-intents";
 import type { OnrampURLParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
-import ErrorBoundary from "./components/ErrorBoundary";
 import PopupLayout from "./components/layout/popup-layout";
 import CompletionView from "./components/steps/completion-view";
 import ConnectingWalletView from "./components/steps/connecting-wallet-view";
@@ -114,7 +113,7 @@ function App() {
       const callbackUrlParams = new URLSearchParams({
         type: "intents",
         action: "withdraw",
-        network: "near", 
+        network: "near",
         asset: "USDC",
         amount: data.amount,
         recipient: data.nearWalletAddress || "",
@@ -127,7 +126,7 @@ function App() {
       const depositAddressForCoinbase =
         generatedNearIntentsDepositAddress.address;
       const depositNetworkForCoinbase = "base";
-        // generatedNearIntentsDepositAddress.network;
+      // generatedNearIntentsDepositAddress.network;
 
       const onrampParams: OnrampURLParams = {
         asset: data.selectedAsset,
@@ -141,12 +140,11 @@ function App() {
         enableGuestCheckout: true,
       };
 
-
       let coinbaseOnrampURL: string;
 
       try {
         coinbaseOnrampURL = generateOnrampURL(onrampParams);
-        console.log("onramp", coinbaseOnrampURL)
+        console.log("onramp", coinbaseOnrampURL);
       } catch (e: unknown) {
         if (e instanceof Error) {
           setFlowError(e.message, "initiating-onramp-service");
@@ -425,7 +423,7 @@ function App() {
 
   return (
     <PopupLayout title={`Onramp - Step: ${step.replace(/-/g, " ")}`}>
-      <ErrorBoundary>{renderStepContent()}</ErrorBoundary>
+      {renderStepContent()}
     </PopupLayout>
   );
 }

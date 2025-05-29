@@ -8,7 +8,7 @@ interface PopupLayoutProps {
 
 const PopupLayout: React.FC<PopupLayoutProps> = ({ children, title = "Pingpay Onramp" }) => {
   return (
-    <div className="flex flex-col items-center justify-start min-h-screen bg-gray-900 text-white p-4 sm:p-6 md:p-8">
+    <div className="flex flex-col items-center justify-start min-h-screen bg-ping-900 text-white p-4 sm:p-6 md:p-8">
       <div className="w-full max-w-md bg-gray-800 shadow-xl rounded-lg p-6">
         <header className="mb-6 text-center">
           {/* You can add a logo here if desired */}
