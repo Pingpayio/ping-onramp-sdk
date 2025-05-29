@@ -65,46 +65,18 @@ export function usePopupConnection() {
       }
     } else { // NODE_ENV === 'production'
       // In PRODUCTION, the SDK (opener) MUST provide its origin via the 'ping_sdk_opener_origin' query parameter.
-      // The popup (e.g., https://onramp.pingpay.io) verifies this against the actual opener's origin.
+      // The popup (e.g., https://onramp.pingpay.io) will use this as the expected remoteOrigin for post-me.
       const queryParams = new URLSearchParams(window.location.search);
       const expectedOpenerOrigin = queryParams.get('ping_sdk_opener_origin');
-      let actualOpenerOrigin: string | undefined;
-
-      // The check for `!window.opener` is at the top of the useEffect.
-      // If we reach here, `window.opener` exists.
-      // We still need to safely access its origin.
-      if (window.opener && window.opener.location && typeof window.opener.location.origin === 'string' && window.opener.location.origin !== 'null') {
-         try {
-            actualOpenerOrigin = new URL(window.opener.location.href).origin;
-         } catch (e) {
-            console.error("Popup (Prod): Error parsing window.opener.location.href.origin. This is unexpected if opener.location.origin was valid.", e);
-            // actualOpenerOrigin remains undefined, will be caught by subsequent checks.
-         }
-      }
 
       if (!expectedOpenerOrigin) {
         console.error("Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' query parameter is missing. Cannot securely initialize communication with SDK.");
         setFlowError("Configuration error: SDK identification parameter missing.", "loading");
-        // Abort connection setup by returning from useEffect
-        return;
+        return; // Abort connection setup
       }
 
-      if (!actualOpenerOrigin) {
-        // This means window.opener existed, but its origin was 'null', non-existent, or failed to parse.
-        console.error("Popup (Prod): CRITICAL - Cannot determine actual opener's origin (it might be 'null' or inaccessible). SDK communication cannot be securely established.");
-        setFlowError("Security error: Cannot verify SDK host origin.", "loading");
-        return;
-      }
-
-      if (expectedOpenerOrigin !== actualOpenerOrigin) {
-        console.error(`Popup (Prod): CRITICAL - SDK origin mismatch. Expected (from query param): '${expectedOpenerOrigin}', Actual (from window.opener): '${actualOpenerOrigin}'. This could indicate a misconfiguration or a security attempt.`);
-        setFlowError("Security error: SDK origin mismatch.", "loading");
-        return;
-      }
-
-      // If all checks pass, use the verified origin.
-      sdkOrigin = actualOpenerOrigin; // which is === expectedOpenerOrigin
-      console.log(`Popup (Prod): Secure SDK origin verified for WindowMessenger: ${sdkOrigin}`);
+      sdkOrigin = expectedOpenerOrigin;
+      console.log(`Popup (Prod): Using expected SDK origin for WindowMessenger: ${sdkOrigin}. Post-me will validate event.origin against this.`);
     }
 
     // Final safeguard: if sdkOrigin somehow ended up as '*' in production, abort.
