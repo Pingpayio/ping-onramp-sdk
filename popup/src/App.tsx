@@ -3,16 +3,15 @@ import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
 import {
-  useInitialData,
   useOnrampFlow,
   useOnrampProcessResult,
   useSetOnrampProcessResult,
   useWallet,
 } from "./state/hooks";
 
-import type { OnrampURLParams as RampUtilParams } from "./utils/rampUtils";
-import { generateOnrampURL } from "./utils/rampUtils";
 import { generateNearIntentsDepositAddress } from "./utils/near-intents";
+import type { OnrampURLParams } from "./utils/rampUtils";
+import { generateOnrampURL } from "./utils/rampUtils";
 
 import ErrorBoundary from "./components/ErrorBoundary";
 import PopupLayout from "./components/layout/popup-layout";
@@ -26,9 +25,7 @@ import LoadingView from "./components/steps/loading-view";
 import ProcessingTransactionView from "./components/steps/processing-transaction-view";
 import SigningTransactionView from "./components/steps/signing-transaction-view";
 
-type AppOnrampURLParams = RampUtilParams;
-
-type InitialDataType = {
+export type InitialDataType = {
   nearIntentsDepositAddress?: string;
   partnerWalletAddress?: string;
   coinbaseAppId?: string;
@@ -45,8 +42,6 @@ function App() {
   const [onrampProcessResultValue] = useOnrampProcessResult();
   const setOnrampProcessResultAtom = useSetOnrampProcessResult();
 
-  const [initialOnrampDataValueFromAtom] = useInitialData();
-
   const handleFormSubmit = async (data: AppFormValues) => {
     if (!connection) {
       console.error("[App.tsx] Connection not available for form submission.");
@@ -61,52 +56,58 @@ function App() {
         console.error("App.tsx: Error calling reportFormDataSubmitted", e)
       );
 
-    const typedInitialData =
-      initialOnrampDataValueFromAtom as InitialDataType | null;
-
     // Get user's EVM address (partnerUserId)
-    const partnerUserId = walletStateValue?.address; 
-
-    // Get Coinbase App ID
-    const coinbaseAppId = typedInitialData?.coinbaseAppId
-      ? String(typedInitialData.coinbaseAppId)
-      : undefined;
+    const partnerUserId = walletStateValue?.address;
 
     // Validate essential preliminary data (EVM address, App ID)
     if (!partnerUserId) {
-      const errorMsg = "EVM wallet address not available. Please connect your wallet.";
+      const errorMsg =
+        "EVM wallet address not available. Please connect your wallet.";
       setFlowError(errorMsg, "form-entry");
       connection
         .remoteHandle()
         .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
-        .catch((e: unknown) => console.error("App.tsx: Error reporting missing EVM address", e));
-      return;
-    }
+        .catch((e: unknown) =>
+          console.error("App.tsx: Error reporting missing EVM address", e)
+        );
 
-    if (!coinbaseAppId) {
-      const errorMsg = "Coinbase App ID is missing. Configuration error.";
-      setFlowError(errorMsg, "form-entry");
-      connection
-        .remoteHandle()
-        .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
-        .catch((e: unknown) => console.error("App.tsx: Error reporting missing App ID", e));
       return;
     }
 
     goToStep("initiating-onramp-service"); // Indicate process is starting
 
-    let generatedNearIntentsDepositAddress: string;
+    let generatedNearIntentsDepositAddress: {
+      address: string;
+      network: string;
+    };
     try {
       // Generate NEAR Intents deposit address. Defaulting to "base" chain.
-      generatedNearIntentsDepositAddress = await generateNearIntentsDepositAddress(partnerUserId);
+      generatedNearIntentsDepositAddress =
+        await generateNearIntentsDepositAddress(partnerUserId);
+      console.log("generated, ", generatedNearIntentsDepositAddress);
     } catch (genError) {
-      console.error("App.tsx: Failed to generate NEAR Intents deposit address:", genError);
-      const errorMsg = genError instanceof Error ? genError.message : "Failed to prepare deposit address.";
-      setFlowError(errorMsg, "initiating-onramp-service"); 
+      console.error(
+        "App.tsx: Failed to generate NEAR Intents deposit address:",
+        genError
+      );
+      const errorMsg =
+        genError instanceof Error
+          ? genError.message
+          : "Failed to prepare deposit address.";
+      setFlowError(errorMsg, "initiating-onramp-service");
       connection
         .remoteHandle()
-        .call("reportProcessFailed", { error: errorMsg, step: "initiating-onramp-service" })
-        .catch((e: unknown) => console.error("App.tsx: Error reporting deposit address generation failure", e));
+        .call("reportProcessFailed", {
+          error: errorMsg,
+          step: "initiating-onramp-service",
+        })
+        .catch((e: unknown) =>
+          console.error(
+            "App.tsx: Error reporting deposit address generation failure",
+            e
+          )
+        );
+
       return;
     }
 
@@ -114,26 +115,21 @@ function App() {
     try {
       const redirectUrl = window.location.origin + "/onramp-callback";
 
-      // Ensure generatedNearIntentsDepositAddress is valid (e.g. "address.network")
-      const addressParts = generatedNearIntentsDepositAddress.split(".");
-      if (addressParts.length < 2) {
-          console.error("Generated deposit address is not in the expected 'address.network' format:", generatedNearIntentsDepositAddress);
-          throw new Error("Generated deposit address is malformed.");
-      }
-      const depositAddressForCoinbase = addressParts[0]; // The actual address part
-      const depositNetworkForCoinbase = addressParts[1]; // The network part, e.g., "base"
+      const depositAddressForCoinbase =
+        generatedNearIntentsDepositAddress.address;
+      const depositNetworkForCoinbase =
+        generatedNearIntentsDepositAddress.network;
 
-      const onrampParams: AppOnrampURLParams = {
-        appId: coinbaseAppId,
+      const onrampParams: OnrampURLParams = {
         asset: data.selectedAsset,
         amount: data.amount,
-        network: depositNetworkForCoinbase, 
-        address: depositAddressForCoinbase, 
-        partnerUserId: partnerUserId, 
+        network: depositNetworkForCoinbase,
+        address: depositAddressForCoinbase,
+        partnerUserId: partnerUserId,
         redirectUrl: redirectUrl,
         paymentCurrency: data.selectedCurrency,
         paymentMethod: data.paymentMethod.toUpperCase(),
-        enableGuestCheckout: true, 
+        enableGuestCheckout: true,
       };
 
       const coinbaseOnrampURL = generateOnrampURL(onrampParams);
@@ -152,6 +148,7 @@ function App() {
               e
             )
           );
+
         return;
       }
 
@@ -159,7 +156,10 @@ function App() {
         .remoteHandle()
         .call("reportOnrampInitiated", {
           serviceName: "Coinbase Onramp",
-          details: { url: coinbaseOnrampURL, depositAddress: generatedNearIntentsDepositAddress },
+          details: {
+            url: coinbaseOnrampURL,
+            depositAddress: generatedNearIntentsDepositAddress,
+          },
         })
         .catch((e: unknown) =>
           console.error("App.tsx: Error calling reportOnrampInitiated", e)

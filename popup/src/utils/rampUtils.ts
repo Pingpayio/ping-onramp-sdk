@@ -1,3 +1,5 @@
+import { CDP_PROJECT_ID } from "../config";
+
 /**
  * Utility functions for Coinbase Onramp URL generation
  */
@@ -12,14 +14,7 @@ export interface OnrampURLParams {
   paymentMethod?: string;
   enableGuestCheckout?: boolean;
   sessionId?: string; // Added from reference
-  // Add appId as a parameter for flexibility in popup context
-  appId: string;
 }
-
-// Coinbase Developer Platform Project ID / App ID
-// In a real popup, this might be passed from the SDK or configured differently.
-const DEFAULT_CDP_APP_ID = "YOUR_COINBASE_APP_ID_HERE"; // Replace with actual App ID or make it a parameter
-
 /**
  * Generates a Coinbase Onramp URL with the provided parameters,
  * aligning with the reference implementation.
@@ -36,10 +31,9 @@ export function generateOnrampURL(params: OnrampURLParams): string {
     paymentMethod,  
     enableGuestCheckout,
     sessionId,
-    appId, // Use the passed appId
   } = params;
 
-  const cdpAppIdToUse = appId || DEFAULT_CDP_APP_ID;
+  const cdpAppIdToUse = CDP_PROJECT_ID;
 
   if (!cdpAppIdToUse || cdpAppIdToUse === "YOUR_COINBASE_APP_ID_HERE") {
     console.error("Coinbase App ID is not set or is a placeholder.");

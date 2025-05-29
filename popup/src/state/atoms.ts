@@ -13,7 +13,8 @@ import { atom } from 'jotai';
 // So, from popup/src/state/atoms.ts, the path to src/internal/communication/messages.ts should be:
 // ../../src/internal/communication/messages
 // Correcting the import path based on the shared nature of messages.ts
-import type { OnrampFlowStep, TargetAsset, OnrampResult } from '../../../src/internal/communication/messages';
+import type { OnrampFlowStep, OnrampResult, TargetAsset } from '../../../src/internal/communication/messages';
+import type { InitialDataType } from '../App';
 
 // Atoms for managing the overall onramp flow state
 export const onrampStepAtom = atom<OnrampFlowStep>('loading');
@@ -21,7 +22,7 @@ export const onrampErrorAtom = atom<string | null>(null); // For displaying gene
 
 // Atoms for data collected during the flow
 export const onrampTargetAtom = atom<TargetAsset | null>(null); // The target chain and asset from the SDK
-export const initialDataAtom = atom<any | null>(null); // Any initial data from the SDK
+export const initialDataAtom = atom<InitialDataType | null>(null); // Any initial data from the SDK
 export const formDataAtom = atom<any | null>(null); // Data from the form step
 export const walletStateAtom = atom<{ address: string; chainId?: string; walletName?: string } | null>(null); // Connected wallet info
 export const signedTransactionAtom = atom<{ signature: string; publicKey: string; transactionHash?: string; walletName?: string } | null>(null); // Signed transaction data

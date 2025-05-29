@@ -150,7 +150,7 @@ export type GetDepositAddressResponse = JSONRPCResponse<{
 export async function generateNearIntentsDepositAddress(
   evmAddress: string,
   chainName: SupportedChainName = "base" // Defaulting to "base"
-): Promise<string> {
+): Promise<{ address: string, network: string }> {
   const chain = assetNetworkAdapter[chainName];
   if (!chain) {
     const errorMessage = `Unsupported chain for deposit address generation: ${chainName}`;
@@ -163,7 +163,7 @@ export async function generateNearIntentsDepositAddress(
 
   try {
     const depositAddr = await generateDepositAddress(intentsUserId, chain);
-    return depositAddr; // This should be in "address.network" format, e.g., "0x123...abc.base"
+    return { address: depositAddr, network: chain };
   } catch (error) {
     console.error("Failed to generate NEAR Intents deposit address in SDK:", error);
     // Re-throw or throw a custom error to be handled by the caller
