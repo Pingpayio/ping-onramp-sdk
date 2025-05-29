@@ -1,4 +1,5 @@
-import { PingpayOnramp } from '../../dist/index.js';
+// import { PingpayOnramp } from '../../dist/index.js';
+import { PingpayOnramp } from '@pingpay/onramp-sdk';
 
 const openOnrampButton = document.getElementById('openOnrampButton');
 
@@ -8,11 +9,6 @@ if (openOnrampButton) {
       // Replace 'YOUR_API_KEY_HERE' with an actual API key if needed for testing.
       const targetAssetDetails = { chain: 'NEAR', asset: 'USDC' }; // Define target asset
       const onramp = new PingpayOnramp({
-        popupUrl: 'http://localhost:5173/',
-        // targetAsset can optionally be in config if it's a default,
-        // but initiateOnramp will take the specific target for a flow.
-        // For this example, we'll pass it directly to initiateOnramp.
-        // Optional: Add event handlers here
         onPopupReady: () => console.log('Example: Popup is ready'),
         onProcessComplete: (result) => console.log('Example: Process complete', result),
         onProcessFailed: (errorInfo) => console.error('Example: Process failed', errorInfo),
