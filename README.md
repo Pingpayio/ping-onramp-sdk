@@ -1,5 +1,8 @@
 <img width="565" alt="Screenshot 2025-05-29 at 1 52 36 PM" src="https://github.com/user-attachments/assets/c8a9caf3-2e20-4057-a2a1-b22c8e84473e" />
 
+
+Enable users to purchase NEAR Intents supported currencies with fiat, directly within your application.
+
 ## Usage
 
 ### Installation
