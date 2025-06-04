@@ -146,8 +146,17 @@ To install dependencies:
 bun install
 ```
 
-To run (example, adjust as per your project's actual run script for the SDK examples or tests):
+To run the dev server:
 
 ```bash
-bun run index.ts 
+bun run dev
+
+// "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\"",
 ```
+
+This will watch for changes to the onramp SDK ([./src](./src)), start the Vite dev server for the popup app ([./popup](./popup)), and run the example app ([./examples](./examples/)) with a button that uses the SDK to open the popup.
+
+* `localhost:5173`: dev server for the popup
+* `localhost:3000`: example app to open popup
+
+NOTE: always access the popup through clicking via the example app (localhost:3000)

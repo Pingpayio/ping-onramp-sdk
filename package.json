@@ -10,10 +10,10 @@
     "build": "bun run build:sdk && bun run build:popup",
     "build:sdk": "tsup src/index.ts --format esm,cjs --dts --clean",
     "watch:sdk": "bun run build:sdk --watch",
-    "dev:popup": "cd popup && bun run dev",
     "build:popup": "cd popup && bun run build",
-    "dev:examples": "cd examples && bun run dev",
     "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\"",
+    "dev:popup": "cd popup && bun run dev",
+    "dev:examples": "cd examples && bun run dev",
     "test": "bunx playwright test"
   },
   "devDependencies": {
