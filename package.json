@@ -11,12 +11,15 @@
     "watch:sdk": "bun run build:sdk --watch",
     "dev:popup": "cd popup && bun run dev",
     "dev:examples": "cd examples && bun run dev",
-    "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\""
+    "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\"",
+    "test": "bunx --bun playwright test"
   },
   "devDependencies": {
+    "@playwright/test": "^1.52.0",
     "@types/bun": "latest",
-    "tsup": "^8.0.2",
-    "concurrently": "^8.2.2"
+    "@types/node": "^22.15.29",
+    "concurrently": "^8.2.2",
+    "tsup": "^8.0.2"
   },
   "peerDependencies": {
     "typescript": "^5"
