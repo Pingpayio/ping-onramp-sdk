@@ -27,11 +27,7 @@ test.describe('Popup functionality', () => {
     const popupPage = await popupPromise;
 
     // Validate the popup URL
-    // The comment in the original test file suggests 'http://localhost:5173'.
-    // We'll use a regex to match the origin, as the full URL might have a path/query params.
     await expect(popupPage.url()).toMatch(/^http:\/\/localhost:5173/);
-    // If the port or host is dynamic, this assertion would need to be more flexible,
-    // possibly by fetching the expected URL from the SDK's configuration if exposed.
 
     // Verify that the 'onPopupReady' console message was received on the main page
     // Use expect.poll to wait for the asynchronous event flag to be true.
@@ -42,9 +38,6 @@ test.describe('Popup functionality', () => {
       timeout: 5000, // Maximum time to wait for the condition in milliseconds
     });
 
-    // At this point, the popup is open, URL is validated, and onPopupReady event is confirmed.
-    
-    // Clean up: Close the popup window
     await popupPage.close();
   });
 });

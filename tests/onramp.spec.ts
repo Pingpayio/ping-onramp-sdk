@@ -31,6 +31,10 @@ test.describe('Onramp functionality', () => {
     });
   });
 
+  test.afterEach(() => {
+    popupPage.close();
+  })
+
   test('should fill and submit a form on the onramp popup', async () => {
     // Ensure popupPage is available
     expect(popupPage, 'Popup page should be defined').toBeDefined();
