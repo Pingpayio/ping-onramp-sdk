@@ -212,7 +212,6 @@ function App() {
       const urlParams = new URLSearchParams(window.location.search);
       const type = urlParams.get("type");
       const action = urlParams.get("action");
-      // ... other params for intent flow
       const asset = urlParams.get("asset");
       const amount = urlParams.get("amount");
       const recipient = urlParams.get("recipient");
