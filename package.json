@@ -7,12 +7,14 @@
     "examples"
   ],
   "scripts": {
+    "build": "bun run build:sdk && bun run build:popup",
     "build:sdk": "tsup src/index.ts --format esm,cjs --dts --clean",
     "watch:sdk": "bun run build:sdk --watch",
     "dev:popup": "cd popup && bun run dev",
+    "build:popup": "cd popup && bun run build",
     "dev:examples": "cd examples && bun run dev",
     "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\"",
-    "test": "bunx --bun playwright test"
+    "test": "bunx playwright test"
   },
   "devDependencies": {
     "@playwright/test": "^1.52.0",
@@ -25,6 +27,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "dotenv": "^16.5.0",
     "post-me": "^0.4.5",
     "zod": "^3.25.32"
   },
@@ -40,5 +43,6 @@
   },
   "files": [
     "dist"
-  ]
+  ],
+  "packageManager": "yarn@4.9.1+sha512.f95ce356460e05be48d66401c1ae64ef84d163dd689964962c6888a9810865e39097a5e9de748876c2e0bf89b232d583c33982773e9903ae7a76257270986538"
 }
