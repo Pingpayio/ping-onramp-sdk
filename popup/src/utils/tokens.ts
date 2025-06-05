@@ -1,4 +1,4 @@
-import type { BaseTokenInfo, UnifiedTokenInfo } from "near-intents-sdk";
+import type { BaseTokenInfo, UnifiedTokenInfo } from "@defuse-protocol/defuse-sdk";
 
 type TokenWithTags =
   | (BaseTokenInfo & { tags?: string[] })
