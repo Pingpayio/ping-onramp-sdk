@@ -1,16 +1,30 @@
 import { defineConfig } from "vite";
+import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  plugins: [nodePolyfills({
+    globals: {
+      Buffer: true,
+      global: true,
+      process: true
+    },
+    protocolImports: true,
+  }),],
   server: {
     port: 3000, // Example port, can be changed
   },
   resolve: {
-    // alias: {
-    //   // This alias allows importing the SDK source directly during development.
-    //   // Adjust if your SDK's entry point or structure changes.
-    //   // Assumes this vite.config.ts is in 'examples/' and src is '../src/'
-    //   '@pingpay/onramp-sdk': '../src/index.ts',
-    // },
+    alias: {
+      '@pingpay/onramp-sdk': '../src/index.ts',
+    },
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      // Node.js global to browser globalThis
+      define: {
+        global: 'globalThis'
+      },
+    }
   },
 });
