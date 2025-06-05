@@ -1,7 +1,7 @@
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
-import { useAccount } from "wagmi";
+import { useAccount, useDisconnect } from "wagmi";
 import { walletStateAtom } from "../../state/atoms";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -24,11 +24,13 @@ export type FormValues = {
 
 interface FormEntryViewProps {
   onSubmit: (data: FormValues) => void;
+  onDisconnect: () => void;
   generatedEvmAddress?: string;
 }
 
 const FormEntryView: React.FC<FormEntryViewProps> = ({
   onSubmit,
+  onDisconnect,
   // generatedEvmAddress,
 }) => {
   const methods = useForm<FormValues>({
@@ -49,6 +51,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
     formState: { isValid, errors },
   } = methods;
   const { address, chainId, isConnected } = useAccount();
+  const { disconnect } = useDisconnect();
   const setWalletState = useSetAtom(walletStateAtom);
 
   // For payment method subtext
@@ -293,6 +296,19 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
         >
           Continue
         </Button>
+
+        {isConnected && (
+          <Button
+            type="button"
+            onClick={() => {
+              disconnect();
+              onDisconnect();
+            }}
+            className="w-full mt-2 rounded-full border border-white/20 bg-transparent text-white/60 hover:bg-white/10 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
+          >
+            Disconnect Wallet
+          </Button>
+        )}
       </form>
     </FormProvider>
   );

@@ -48,6 +48,10 @@ function App() {
     }
   };
 
+  const handleDisconnect = () => {
+    goToStep("connect-wallet");
+  };
+
   const handleFormSubmit = async (data: FormValues) => {
     if (!connection) {
       console.error("[App.tsx] Connection not available for form submission.");
@@ -410,7 +414,12 @@ function App() {
       case "connect-wallet":
         return <ConnectWalletView onConnected={handleWalletConnected} />;
       case "form-entry":
-        return <FormEntryView onSubmit={handleFormSubmit} />;
+        return (
+          <FormEntryView
+            onSubmit={handleFormSubmit}
+            onDisconnect={handleDisconnect}
+          />
+        );
       case "connecting-wallet":
         return <ConnectingWalletView />;
       case "initiating-onramp-service":
