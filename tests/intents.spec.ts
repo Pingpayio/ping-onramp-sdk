@@ -11,7 +11,8 @@ const MOCK_EVM_ADDRESS = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
 const MOCK_NEAR_ADDRESS = 'test.near';
 const MOCK_AMOUNT = '100';
 
-// Wagmi test config with mock connector
+test.describe('NEAR Intents Withdrawal Flow', () => {
+  // Wagmi test config with mock connector
 const mockConfig = createConfig({
   chains: [mainnet],
   connectors: [
@@ -27,7 +28,6 @@ const mockConfig = createConfig({
   }
 });
 
-test.describe('NEAR Intents Withdrawal Flow', () => {
   test('should handle intent withdrawal callback and navigate to processing step', async ({ page }) => {
     // 1. Setup mock wallet connection and config
     await page.addInitScript(() => {

@@ -26,8 +26,8 @@ export interface NearIntentsDisplayInfo {
   explorerUrl?: string;
 }
 
-// Re-exporting from near-intents-sdk for convenience if needed elsewhere,
+// Re-exporting from @defuse-protocol/defuse-sdk for convenience if needed elsewhere,
 // or they can be imported directly from the SDK.
 // For now, let's assume direct import from SDK where needed to keep this file focused.
-// import type { BaseTokenInfo, UnifiedTokenInfo } from "near-intents-sdk";
+// import type { BaseTokenInfo, UnifiedTokenInfo } from "@defuse-protocol/defuse-sdk";
 // export type { BaseTokenInfo, UnifiedTokenInfo };
