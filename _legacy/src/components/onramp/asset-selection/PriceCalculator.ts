@@ -1,4 +1,3 @@
-
 // Mock prices for demonstration purposes - in a real app, these would come from an API
 const mockPrices: Record<string, number> = {
   USDT: 1,
@@ -6,7 +5,7 @@ const mockPrices: Record<string, number> = {
   DAI: 1,
   BTC: 65000,
   ETH: 3500,
-  NEAR: 2.51,  // Updated NEAR price from 8.12 to 2.51
+  NEAR: 2.51, // Updated NEAR price from 8.12 to 2.51
   SOL: 145,
   AVAX: 35,
   DOT: 8.5,
@@ -14,11 +13,14 @@ const mockPrices: Record<string, number> = {
   // Add more tokens as needed
 };
 
-export function calculateEstimatedAmount(selectedAsset: string | null, amount: string): string {
+export function calculateEstimatedAmount(
+  selectedAsset: string | null,
+  amount: string,
+): string {
   if (selectedAsset && amount && !isNaN(parseFloat(amount))) {
     const assetPrice = mockPrices[selectedAsset] || 1;
     const estimatedTokens = parseFloat(amount) / assetPrice;
-    
+
     // Format based on value - show more decimal places for higher value tokens
     if (assetPrice >= 1000) {
       return estimatedTokens.toFixed(5);
@@ -28,7 +30,7 @@ export function calculateEstimatedAmount(selectedAsset: string | null, amount: s
       return estimatedTokens.toFixed(2);
     }
   }
-  return '0';
+  return "0";
 }
 
 export { mockPrices };

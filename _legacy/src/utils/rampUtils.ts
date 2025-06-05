@@ -17,7 +17,9 @@ interface OnrampURLParams {
 // Coinbase Developer Platform Project ID / App ID
 const CDP_APP_ID = import.meta.env.VITE_PUBLIC_CDP_PROJECT_ID!;
 if (!CDP_APP_ID) {
-  console.error("VITE_PUBLIC_CDP_PROJECT_ID is not set in environment variables.");
+  console.error(
+    "VITE_PUBLIC_CDP_PROJECT_ID is not set in environment variables.",
+  );
 }
 
 /**
@@ -33,9 +35,9 @@ export function generateOnrampURL(params: OnrampURLParams): string {
     partnerUserId,
     redirectUrl,
     paymentCurrency,
-    paymentMethod,  
+    paymentMethod,
     enableGuestCheckout,
-    sessionId,      
+    sessionId,
   } = params;
 
   if (!CDP_APP_ID) {
@@ -57,21 +59,21 @@ export function generateOnrampURL(params: OnrampURLParams): string {
   addressesObj[address] = [network];
   queryParams.append("addresses", JSON.stringify(addressesObj));
 
-  if (asset) { 
+  if (asset) {
     queryParams.append("assets", JSON.stringify([asset]));
     queryParams.append("defaultAsset", asset);
   }
 
-  if (network) { 
+  if (network) {
     queryParams.append("defaultNetwork", network);
   }
 
-  if (paymentMethod) { 
+  if (paymentMethod) {
     const formattedPaymentMethod = paymentMethod.toUpperCase();
     queryParams.append("defaultPaymentMethod", formattedPaymentMethod);
   }
 
-  if (numericAmount > 0) { 
+  if (numericAmount > 0) {
     queryParams.append("presetFiatAmount", numericAmount.toString());
   }
 

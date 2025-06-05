@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 
 export function useFlatTokenList(
-  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]
+  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[],
 ) {
   const searchParams = useSearchParams();
   const flatListIsEnabled = !!searchParams["flatTokenList"];
@@ -16,7 +16,7 @@ export function useFlatTokenList(
     if (flatListIsEnabled) {
       return tokenList
         .flatMap((token) =>
-          isBaseToken(token) ? [token] : token.groupedTokens
+          isBaseToken(token) ? [token] : token.groupedTokens,
         )
         .map((token) => ({
           ...token,

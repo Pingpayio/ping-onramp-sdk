@@ -1,4 +1,3 @@
-
 #root {
   margin: 0 auto;
   text-align: center;
@@ -42,7 +41,8 @@
 }
 
 /* Make sure body and html have full height */
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   overflow-x: hidden;
@@ -53,7 +53,7 @@ html, body {
   body {
     padding-top: 54px; /* Updated to match new mobile topbar height */
   }
-  
+
   /* Improve scrolling on mobile */
   .overflow-hidden {
     overflow: visible;
@@ -64,9 +64,9 @@ html, body {
   main {
     overflow-x: hidden;
   }
-  
+
   /* Ensure tap targets are at least 44x44px on mobile */
-  button, 
+  button,
   [role="button"],
   input[type="submit"],
   input[type="reset"],
@@ -77,9 +77,9 @@ html, body {
     min-height: 44px;
     min-width: 44px;
   }
-  
+
   /* Improve form element touch targets */
-  input, 
+  input,
   select,
   textarea {
     font-size: 16px; /* Prevents iOS zoom on focus */
@@ -94,11 +94,11 @@ html, body {
     padding-right: 0.75rem;
     max-width: 100%;
   }
-  
+
   .half-screen-flex-column {
     flex-direction: column !important;
   }
-  
+
   /* Make transaction history tables horizontally scrollable */
   .transaction-table {
     overflow-x: auto;
@@ -126,12 +126,12 @@ html, body {
   .card-gradient-hover:active::before {
     @apply opacity-100;
   }
-  
+
   /* Prevent content from being hidden under fixed elements */
   .has-fixed-header {
     padding-top: 54px;
   }
-  
+
   /* Make popover menus full width on mobile */
   .popover-fullwidth [data-radix-popper-content-wrapper] {
     width: calc(100% - 32px) !important;

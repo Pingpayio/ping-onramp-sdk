@@ -1,15 +1,19 @@
-import { test, expect } from '@playwright/test';
-import type { Page } from '@playwright/test';
-import { mock } from '@wagmi/connectors';
-import { createConfig, http } from '@wagmi/core';
-import { mainnet } from '@wagmi/core/chains';
-import type { CallbackParams, IntentProgress, NearIntentsDisplayInfo } from '../popup/src/types/onramp';
+import { test, expect } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { mock } from "@wagmi/connectors";
+import { createConfig, http } from "@wagmi/core";
+import { mainnet } from "@wagmi/core/chains";
+import type {
+  CallbackParams,
+  IntentProgress,
+  NearIntentsDisplayInfo,
+} from "../popup/src/types/onramp";
 
 // Constants for the test
-const POPUP_BASE_URL = 'http://localhost:5173';
-const MOCK_EVM_ADDRESS = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266';
-const MOCK_NEAR_ADDRESS = 'test.near';
-const MOCK_AMOUNT = '100';
+const POPUP_BASE_URL = "http://localhost:5173";
+const MOCK_EVM_ADDRESS = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266";
+const MOCK_NEAR_ADDRESS = "test.near";
+const MOCK_AMOUNT = "100";
 
 // Wagmi test config with mock connector
 const mockConfig = createConfig({
@@ -18,50 +22,57 @@ const mockConfig = createConfig({
     mock({
       accounts: [MOCK_EVM_ADDRESS],
       features: {
-        reconnect: true
-      }
-    })
+        reconnect: true,
+      },
+    }),
   ],
   transports: {
-    [mainnet.id]: http()
-  }
+    [mainnet.id]: http(),
+  },
 });
 
-test.describe('NEAR Intents Withdrawal Flow', () => {
-  test('should handle intent withdrawal callback and navigate to processing step', async ({ page }) => {
+test.describe("NEAR Intents Withdrawal Flow", () => {
+  test("should handle intent withdrawal callback and navigate to processing step", async ({
+    page,
+  }) => {
     // 1. Setup mock wallet connection and config
     await page.addInitScript(() => {
       // Expose mockConfig to window for wagmi initialization
       (window as any).__WAGMI_CONFIG__ = mockConfig;
 
       // Mock near-intents functions
-      (window as any).generateNearIntentsDepositAddress = async (evmAddress: string) => {
+      (window as any).generateNearIntentsDepositAddress = async (
+        evmAddress: string,
+      ) => {
         return {
-          address: '0xMockDepositAddress',
-          network: 'base'
+          address: "0xMockDepositAddress",
+          network: "base",
         };
       };
 
-      (window as any).generateDepositAddress = async () => '0xMockDepositAddress';
+      (window as any).generateDepositAddress = async () =>
+        "0xMockDepositAddress";
       (window as any).getSupportedTokens = async () => ({
-        tokens: [{
-          defuse_asset_identifier: 'usdc.base',
-          decimals: 6,
-          asset_name: 'USDC',
-          near_token_id: 'usdc.near',
-          min_deposit_amount: '1000000',
-          min_withdrawal_amount: '1000000',
-          withdrawal_fee: '100000'
-        }]
+        tokens: [
+          {
+            defuse_asset_identifier: "usdc.base",
+            decimals: 6,
+            asset_name: "USDC",
+            near_token_id: "usdc.near",
+            min_deposit_amount: "1000000",
+            min_withdrawal_amount: "1000000",
+            withdrawal_fee: "100000",
+          },
+        ],
       });
-      
+
       // Mock the processNearIntentWithdrawal function
       (window as any).processNearIntentWithdrawal = async ({
         callbackParams,
         userEvmAddress,
         signMessageAsync,
         updateProgress,
-        updateDisplayInfo
+        updateDisplayInfo,
       }: {
         callbackParams: Required<CallbackParams>;
         userEvmAddress: string;
@@ -70,33 +81,35 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
         updateDisplayInfo: (info: NearIntentsDisplayInfo) => void;
       }) => {
         // Simulate the withdrawal process steps with display info updates
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateProgress('depositing');
-        updateDisplayInfo({ message: 'Waiting for deposit confirmation...' });
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateProgress('querying');
-        updateDisplayInfo({ message: 'Querying bridge rates...' });
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateProgress('signing');
-        updateDisplayInfo({ message: 'Please sign the transaction...' });
-        
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        updateProgress("depositing");
+        updateDisplayInfo({ message: "Waiting for deposit confirmation..." });
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        updateProgress("querying");
+        updateDisplayInfo({ message: "Querying bridge rates..." });
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        updateProgress("signing");
+        updateDisplayInfo({ message: "Please sign the transaction..." });
+
         // Simulate signing
-        const signature = await signMessageAsync({ message: 'Mock withdrawal message' });
-        console.log('Signed with:', signature);
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateProgress('withdrawing');
-        updateDisplayInfo({ message: 'Processing withdrawal...' });
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        updateProgress('done');
+        const signature = await signMessageAsync({
+          message: "Mock withdrawal message",
+        });
+        console.log("Signed with:", signature);
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        updateProgress("withdrawing");
+        updateDisplayInfo({ message: "Processing withdrawal..." });
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        updateProgress("done");
         updateDisplayInfo({
-          message: 'Transaction complete!',
+          message: "Transaction complete!",
           amountIn: parseFloat(callbackParams.amount),
           amountOut: parseFloat(callbackParams.amount),
-          explorerUrl: 'https://nearblocks.io/txns/mock-hash'
+          explorerUrl: "https://nearblocks.io/txns/mock-hash",
         });
       };
 
@@ -104,30 +117,38 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
       (window as any).ethereum = {
         isMetaMask: true,
         signMessageCalls: [],
-        request: async ({ method, params }: { method: string; params?: any[] }) => {
+        request: async ({
+          method,
+          params,
+        }: {
+          method: string;
+          params?: any[];
+        }) => {
           switch (method) {
-            case 'eth_requestAccounts':
-            case 'eth_accounts':
+            case "eth_requestAccounts":
+            case "eth_accounts":
               return [MOCK_EVM_ADDRESS];
-            case 'eth_chainId':
-              return '0x1'; // Mainnet
-            case 'personal_sign':
+            case "eth_chainId":
+              return "0x1"; // Mainnet
+            case "personal_sign":
               // Track the sign message call
-              (window as any).ethereum.signMessageCalls.push({ message: params?.[0] });
+              (window as any).ethereum.signMessageCalls.push({
+                message: params?.[0],
+              });
               // Return a mock signature (65 bytes)
-              return '0x' + '1'.repeat(130);
+              return "0x" + "1".repeat(130);
             default:
               return null;
           }
         },
         on: (event: string, callback: Function) => {
           // Track event listeners if needed
-          console.log('Ethereum event registered:', event);
+          console.log("Ethereum event registered:", event);
         },
         removeListener: () => {},
-        chainId: '0x1',
-        networkVersion: '1',
-        selectedAddress: MOCK_EVM_ADDRESS
+        chainId: "0x1",
+        networkVersion: "1",
+        selectedAddress: MOCK_EVM_ADDRESS,
       };
 
       // Mock post-me connection with expected method handling
@@ -136,64 +157,62 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
           call: (methodName: string, params: any) => {
             console.log(`Mock Parent.call: ${methodName}`, params);
             switch (methodName) {
-              case 'reportFormDataSubmitted':
+              case "reportFormDataSubmitted":
                 return Promise.resolve();
-              case 'reportOnrampInitiated':
+              case "reportOnrampInitiated":
                 return Promise.resolve();
-              case 'reportStepChanged':
+              case "reportStepChanged":
                 return Promise.resolve();
-              case 'reportProcessComplete':
+              case "reportProcessComplete":
                 return Promise.resolve({ success: true });
-              case 'reportProcessFailed':
-                console.error('Process failed:', params.error);
+              case "reportProcessFailed":
+                console.error("Process failed:", params.error);
                 return Promise.resolve();
               default:
-                console.warn('Unexpected method call:', methodName);
+                console.warn("Unexpected method call:", methodName);
                 return Promise.resolve();
             }
-          }
-        })
+          },
+        }),
       };
-
     });
 
     // 2. Navigate to popup and wait for wallet connection
     await page.goto(POPUP_BASE_URL);
-    
+
     // Wait for wallet connection to be established
-    await page.waitForSelector('text=Connected:', { timeout: 10000 });
-    
+    await page.waitForSelector("text=Connected:", { timeout: 10000 });
+
     // Wait for form elements to be visible and enabled
-    await page.waitForSelector('#amount:not([disabled])');
-    await page.waitForSelector('#nearWalletAddress:not([disabled])');
+    await page.waitForSelector("#amount:not([disabled])");
+    await page.waitForSelector("#nearWalletAddress:not([disabled])");
 
     // 3. Fill the form
-    await page.fill('#amount', MOCK_AMOUNT);
-    await page.fill('#nearWalletAddress', MOCK_NEAR_ADDRESS);
+    await page.fill("#amount", MOCK_AMOUNT);
+    await page.fill("#nearWalletAddress", MOCK_NEAR_ADDRESS);
 
     // Payment method is already defaulted to 'card'
     // USDC is already selected and disabled
 
     // 4. Intercept navigation to Coinbase URL and simulate callback instead
-    await page.route('**', async (route) => {
+    await page.route("**", async (route) => {
       const url = route.request().url();
-      if (url.includes('pay.coinbase.com')) {
+      if (url.includes("pay.coinbase.com")) {
         // Instead of going to Coinbase, we'll simulate coming back with our callback
         const callbackUrlParams = new URLSearchParams({
-          type: 'intents',
-          action: 'withdraw',
-          network: 'near',
-          asset: 'USDC',
+          type: "intents",
+          action: "withdraw",
+          network: "near",
+          asset: "USDC",
           amount: MOCK_AMOUNT,
           recipient: MOCK_NEAR_ADDRESS,
         });
 
         const callbackUrl = `${POPUP_BASE_URL}/onramp-callback?${callbackUrlParams.toString()}`;
-        
-        
+
         // Navigate to our simulated callback URL
         await page.goto(callbackUrl);
-        
+
         // Abort the original navigation to Coinbase
         await route.abort();
       } else {
@@ -207,61 +226,51 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
     // 6. Verify navigation to processing step and handle signing
     // Wait for the processing transaction view to be visible
     await expect(
-      page.locator('[data-testid="processing-transaction-view"]')
+      page.locator('[data-testid="processing-transaction-view"]'),
     ).toBeVisible({ timeout: 15000 });
 
     // Verify each step in the withdrawal process
     await expect(
-      page.locator('[data-testid="processing-substep-depositing"]')
+      page.locator('[data-testid="processing-substep-depositing"]'),
+    ).toBeVisible({ timeout: 5000 });
+    await expect(page.locator("text=Depositing funds")).toBeVisible();
+
+    await expect(
+      page.locator('[data-testid="processing-substep-querying"]'),
     ).toBeVisible({ timeout: 5000 });
     await expect(
-      page.locator('text=Depositing funds')
+      page.locator("text=Querying transaction status"),
     ).toBeVisible();
 
     await expect(
-      page.locator('[data-testid="processing-substep-querying"]')
+      page.locator('[data-testid="processing-substep-signing"]'),
     ).toBeVisible({ timeout: 5000 });
-    await expect(
-      page.locator('text=Querying transaction status')
-    ).toBeVisible();
-
-    await expect(
-      page.locator('[data-testid="processing-substep-signing"]')
-    ).toBeVisible({ timeout: 5000 });
-    await expect(
-      page.locator('text=Waiting for signature')
-    ).toBeVisible();
+    await expect(page.locator("text=Waiting for signature")).toBeVisible();
 
     // Verify that signing was requested and handled
     const signMessageLogs = await page.evaluate(() => {
       return (window as any).ethereum.signMessageCalls || [];
     });
     expect(signMessageLogs.length).toBeGreaterThan(0);
-    
+
     // Verify the first sign message call contains expected data
     const firstSignMessage = signMessageLogs[0];
     expect(firstSignMessage).toBeDefined();
-    expect(typeof firstSignMessage.message).toBe('string');
+    expect(typeof firstSignMessage.message).toBe("string");
 
     await expect(
-      page.locator('[data-testid="processing-substep-withdrawing"]')
+      page.locator('[data-testid="processing-substep-withdrawing"]'),
     ).toBeVisible({ timeout: 5000 });
-    await expect(
-      page.locator('text=Processing withdrawal')
-    ).toBeVisible();
-    
+    await expect(page.locator("text=Processing withdrawal")).toBeVisible();
+
     // Wait for completion
     await expect(
-      page.locator('[data-testid="processing-substep-done"]')
+      page.locator('[data-testid="processing-substep-done"]'),
     ).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=Transaction complete")).toBeVisible();
+    await expect(page.locator(`text=${MOCK_AMOUNT} USDC`)).toBeVisible();
     await expect(
-      page.locator('text=Transaction complete')
-    ).toBeVisible();
-    await expect(
-      page.locator(`text=${MOCK_AMOUNT} USDC`)
-    ).toBeVisible();
-    await expect(
-      page.locator('a[href*="nearblocks.io/txns/mock-hash"]')
+      page.locator('a[href*="nearblocks.io/txns/mock-hash"]'),
     ).toBeVisible();
   });
 });

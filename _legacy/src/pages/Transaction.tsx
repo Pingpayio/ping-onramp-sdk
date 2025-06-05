@@ -47,7 +47,7 @@ const Transaction = () => {
 
   // Map transaction stage to status
   const getStatusFromStage = (
-    stage: TransactionStage
+    stage: TransactionStage,
   ): "pending" | "completed" | "failed" => {
     switch (stage) {
       case "completed":

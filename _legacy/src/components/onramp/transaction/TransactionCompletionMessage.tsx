@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { ExternalLink } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React from "react";
+import { ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface TransactionCompletionMessageProps {
   amount: string;
@@ -10,17 +9,15 @@ interface TransactionCompletionMessageProps {
   message?: string;
 }
 
-const TransactionCompletionMessage: React.FC<TransactionCompletionMessageProps> = ({
-  amount,
-  asset,
-  txHash,
-  message
-}) => {
-  const defaultMessage = `Successfully processed ${amount} ${asset || 'asset'}.`;
+const TransactionCompletionMessage: React.FC<
+  TransactionCompletionMessageProps
+> = ({ amount, asset, txHash, message }) => {
+  const defaultMessage = `Successfully processed ${amount} ${asset || "asset"}.`;
   const displayMessage = message || defaultMessage;
 
   // Basic check if txHash is a URL
-  const isTxHashUrl = txHash && (txHash.startsWith('http://') || txHash.startsWith('https://'));
+  const isTxHashUrl =
+    txHash && (txHash.startsWith("http://") || txHash.startsWith("https://"));
 
   return (
     <div className="bg-green-500/10 p-4 rounded-lg text-center border border-green-500/30">
@@ -35,7 +32,8 @@ const TransactionCompletionMessage: React.FC<TransactionCompletionMessageProps> 
               asChild
             >
               <a href={txHash} target="_blank" rel="noopener noreferrer">
-                View Transaction on Explorer <ExternalLink size={14} className="ml-1 inline-block" />
+                View Transaction on Explorer{" "}
+                <ExternalLink size={14} className="ml-1 inline-block" />
               </a>
             </Button>
           ) : (

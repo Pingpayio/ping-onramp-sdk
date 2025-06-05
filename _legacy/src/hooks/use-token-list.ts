@@ -42,7 +42,7 @@ export function useTokenList(tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]) {
 
 function compareTokens(
   a: BaseTokenInfo | UnifiedTokenInfo,
-  b: BaseTokenInfo | UnifiedTokenInfo
+  b: BaseTokenInfo | UnifiedTokenInfo,
 ): number {
   const aTags = (a as { tags?: string[] }).tags || [];
   const bTags = (b as { tags?: string[] }).tags || [];
@@ -76,7 +76,7 @@ function getMarketCapOrder(tags: string[]): number | undefined {
 }
 
 function sortTokensByMarketCap(
-  tokens: (BaseTokenInfo | UnifiedTokenInfo)[]
+  tokens: (BaseTokenInfo | UnifiedTokenInfo)[],
 ): (BaseTokenInfo | UnifiedTokenInfo)[] {
   return Array.from(tokens).sort(compareTokens);
 }

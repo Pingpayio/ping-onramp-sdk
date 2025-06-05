@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import React from "react";
+import { Card, CardContent } from "@/components/ui/card";
 
 interface TransactionDetailsCardProps {
   amount?: string;
@@ -11,7 +10,7 @@ interface TransactionDetailsCardProps {
 const TransactionDetailsCard: React.FC<TransactionDetailsCardProps> = ({
   amount,
   asset,
-  walletAddress
+  walletAddress,
 }) => {
   return (
     <Card className="bg-white/5 border border-white/10">

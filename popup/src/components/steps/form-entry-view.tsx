@@ -54,7 +54,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
 
   // For payment method subtext
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    methods.getValues("paymentMethod")
+    methods.getValues("paymentMethod"),
   );
   const paymentMethodWatcher = watch("paymentMethod");
 
@@ -95,12 +95,6 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white/5 rounded-xl shadow-sm p-4 border border-white/[0.16] space-y-3"
       >
-        {/* Connect Wallet Section - simplified */}
-        <div className="flex justify-center">
-          {" "}
-          {/* Removed border and specific bg */}
-          <Wallet />
-        </div>
         {isConnected && address && (
           <div className="mt-1 text-center text-xs text-green-400">
             {" "}

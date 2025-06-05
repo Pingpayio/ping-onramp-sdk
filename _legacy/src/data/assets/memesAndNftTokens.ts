@@ -1,4 +1,3 @@
-
 export const memesAndNftTokens = [
   {
     name: "Shiba Inu",
@@ -38,7 +37,8 @@ export const memesAndNftTokens = [
   {
     name: "Basic Attention Token",
     symbol: "BAT",
-    logoUrl: "https://cryptologos.cc/logos/basic-attention-token-bat-logo.svg?v=029",
+    logoUrl:
+      "https://cryptologos.cc/logos/basic-attention-token-bat-logo.svg?v=029",
   },
   {
     name: "Litecoin",

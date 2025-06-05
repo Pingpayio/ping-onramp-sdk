@@ -1,4 +1,3 @@
-
 export const stablecoins = [
   {
     name: "Tether USD",
@@ -13,7 +12,8 @@ export const stablecoins = [
   {
     name: "DAI",
     symbol: "DAI",
-    logoUrl: "https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.svg?v=029",
+    logoUrl:
+      "https://cryptologos.cc/logos/multi-collateral-dai-dai-logo.svg?v=029",
   },
   {
     name: "Frax",
@@ -33,4 +33,4 @@ export const stablecoins = [
 ];
 
 // Export the symbol list for easy checking if a coin is a stablecoin
-export const stablecoinSymbols = stablecoins.map(coin => coin.symbol);
+export const stablecoinSymbols = stablecoins.map((coin) => coin.symbol);

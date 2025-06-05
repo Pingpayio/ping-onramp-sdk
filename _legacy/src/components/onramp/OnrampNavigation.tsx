@@ -1,10 +1,9 @@
-
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Button from '@/components/Button';
-import { ArrowLeft, Wallet, Home, ExternalLink } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { useAccount } from 'wagmi';
+import React from "react";
+import { Link } from "react-router-dom";
+import Button from "@/components/Button";
+import { ArrowLeft, Wallet, Home, ExternalLink } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { useAccount } from "wagmi";
 
 interface OnrampNavigationProps {
   currentStep: number;
@@ -21,11 +20,11 @@ const OnrampNavigation = ({
   handleBack,
   handleContinue,
   canContinue,
-  isProcessingTransaction = false
+  isProcessingTransaction = false,
 }: OnrampNavigationProps) => {
   const isMobile = useIsMobile();
   const { isConnected } = useAccount();
-  
+
   // Function to determine button text based on current step and wallet connection
   const getButtonText = () => {
     if (currentStep === 0) {
@@ -45,12 +44,11 @@ const OnrampNavigation = ({
     return null;
   };
 
-  
   // Open blockchain explorer in a new tab
   const openExplorer = () => {
-    window.open('https://explorer.near.org', '_blank');
+    window.open("https://explorer.near.org", "_blank");
   };
-  
+
   // Don't show navigation buttons during transaction processing
   if (isProcessingTransaction) {
     return (
@@ -64,10 +62,10 @@ const OnrampNavigation = ({
             {isMobile ? "Home" : "Return Home"}
           </Button>
         </Link>
-        
-        <Button 
-          variant="outline" 
-          onClick={openExplorer} 
+
+        <Button
+          variant="outline"
+          onClick={openExplorer}
           icon={<ExternalLink className="h-4 w-4" />}
           className="rounded-full w-full bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 border-none text-xs md:text-sm px-2 md:px-4"
         >
@@ -76,9 +74,11 @@ const OnrampNavigation = ({
       </div>
     );
   }
-  
+
   return (
-    <div className={`flex ${currentStep === 0 ? 'justify-center' : 'justify-between'}`}>
+    <div
+      className={`flex ${currentStep === 0 ? "justify-center" : "justify-between"}`}
+    >
       {currentStep > 0 ? (
         <Button
           variant="outline"
@@ -88,14 +88,14 @@ const OnrampNavigation = ({
           Back
         </Button>
       ) : null}
-      
+
       <Button
         variant="outline"
         onClick={handleContinue}
         disabled={!isConnected && currentStep > 0} // Only disable for steps after first if not connected
         withArrow={isConnected || currentStep > 0} // Only show arrow if wallet is connected or not on first step
         icon={getButtonIcon()}
-        className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${currentStep === 0 ? 'w-full' : isMobile ? 'w-1/2' : ''}`}
+        className={`rounded-full flex items-center gap-2 border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 ${currentStep === 0 ? "w-full" : isMobile ? "w-1/2" : ""}`}
       >
         {getButtonText()}
       </Button>

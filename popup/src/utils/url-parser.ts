@@ -46,7 +46,7 @@ export function clearUrlQueryParams(paramsToRemove: string[]): void {
   const currentUrl = new URL(window.location.href);
   let updated = false;
 
-  paramsToRemove.forEach(param => {
+  paramsToRemove.forEach((param) => {
     if (currentUrl.searchParams.has(param)) {
       currentUrl.searchParams.delete(param);
       updated = true;
@@ -69,7 +69,7 @@ export function clearUrlHashParams(paramsToRemove: string[]): void {
   const params = new URLSearchParams(currentHash);
   let updated = false;
 
-  paramsToRemove.forEach(param => {
+  paramsToRemove.forEach((param) => {
     if (params.has(param)) {
       params.delete(param);
       updated = true;
@@ -78,7 +78,11 @@ export function clearUrlHashParams(paramsToRemove: string[]): void {
 
   if (updated) {
     const newHash = params.toString();
-    window.history.replaceState({}, document.title, `${window.location.pathname}${window.location.search}${newHash ? '#' + newHash : ''}`);
+    window.history.replaceState(
+      {},
+      document.title,
+      `${window.location.pathname}${window.location.search}${newHash ? "#" + newHash : ""}`,
+    );
   }
 }
 

@@ -1,6 +1,5 @@
-
-import React from 'react';
-import ConnectWallet from '@/components/ConnectWallet';
+import React from "react";
+import ConnectWallet from "@/components/ConnectWallet";
 
 interface WalletConnectionStepProps {
   onConnect: (address: string) => void;
@@ -13,7 +12,7 @@ const WalletConnectionStep = ({ onConnect }: WalletConnectionStepProps) => {
       <p className="text-muted-foreground mb-6">
         Connect your wallet to receive your purchased assets
       </p>
-      
+
       <ConnectWallet onConnect={onConnect} />
     </div>
   );

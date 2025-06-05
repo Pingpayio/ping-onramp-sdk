@@ -1,5 +1,4 @@
-
-import React from 'react';
+import React from "react";
 
 interface CompletionMessageProps {
   amount?: string;
@@ -10,12 +9,12 @@ interface CompletionMessageProps {
 const CompletionMessage: React.FC<CompletionMessageProps> = ({
   amount,
   asset,
-  stage
+  stage,
 }) => {
-  if (stage !== 'completed') {
+  if (stage !== "completed") {
     return null;
   }
-  
+
   return (
     <div className="text-center py-4">
       <h3 className="text-2xl font-semibold text-white mb-1">

@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from "react";
+import { cn } from "@/lib/utils";
 
 interface CryptoAssetProps {
   name: string;
@@ -16,18 +15,22 @@ const CryptoAsset = ({
   symbol,
   logoUrl,
   isSelected = false,
-  onClick
+  onClick,
 }: CryptoAssetProps) => {
   return (
-    <div 
+    <div
       className={cn(
         "flex items-center p-2 cursor-pointer transition-all duration-200",
-        isSelected ? "bg-accent" : "hover:bg-accent/50"
+        isSelected ? "bg-accent" : "hover:bg-accent/50",
       )}
       onClick={onClick}
     >
       <div className="h-8 w-8 mr-3 flex-shrink-0">
-        <img src={logoUrl} alt={name} className="h-full w-full object-contain" />
+        <img
+          src={logoUrl}
+          alt={name}
+          className="h-full w-full object-contain"
+        />
       </div>
       <div className="flex flex-col">
         <span className="font-medium">{name}</span>

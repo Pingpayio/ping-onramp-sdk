@@ -1,4 +1,3 @@
-
 export const nearEcosystem = [
   {
     name: "NEAR Protocol",

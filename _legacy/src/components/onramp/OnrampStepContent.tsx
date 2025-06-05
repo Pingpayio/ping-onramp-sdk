@@ -1,9 +1,9 @@
-import React from 'react';
-import AssetSelection from '@/components/onramp/asset-selection';
-import TransactionProgress from '@/components/onramp/TransactionProgress';
-import OnrampNavigation from '@/components/onramp/OnrampNavigation';
-import { useIsMobile } from '@/hooks/use-mobile';
-import type { IntentProgress } from '@/types/onramp';
+import React from "react";
+import AssetSelection from "@/components/onramp/asset-selection";
+import TransactionProgress from "@/components/onramp/TransactionProgress";
+import OnrampNavigation from "@/components/onramp/OnrampNavigation";
+import { useIsMobile } from "@/hooks/use-mobile";
+import type { IntentProgress } from "@/types/onramp";
 
 interface OnrampStepContentProps {
   currentStep: number;
@@ -28,7 +28,13 @@ interface OnrampStepContentProps {
   nearIntentsDepositAddress: string | null;
   intentProgress?: IntentProgress;
   errorMessage?: string | null;
-  nearIntentsDisplayInfo?: { message?: string; amountIn?: number; amountOut?: number; explorerUrl?: string; error?: string };
+  nearIntentsDisplayInfo?: {
+    message?: string;
+    amountIn?: number;
+    amountOut?: number;
+    explorerUrl?: string;
+    error?: string;
+  };
   isWalletAddressValid?: boolean;
 }
 
@@ -46,7 +52,7 @@ const OnrampStepContent = ({
   handleBack,
   handleContinue,
   canContinue,
-  selectedCurrency = 'USD',
+  selectedCurrency = "USD",
   onCurrencySelect,
   walletAddressError = false,
   nearIntentsDepositAddress,
@@ -55,7 +61,7 @@ const OnrampStepContent = ({
   nearIntentsDisplayInfo,
   isWalletAddressValid,
   paymentMethod,
-  onPaymentMethodChange
+  onPaymentMethodChange,
 }: OnrampStepContentProps) => {
   const isMobile = useIsMobile();
 
@@ -82,12 +88,15 @@ const OnrampStepContent = ({
         );
       case 1:
         // TransactionProgress will now use intent-specific props
-        return <div className="flex flex-col items-center h-full">
+        return (
+          <div className="flex flex-col items-center h-full">
             {/* Title section */}
             <div className="flex items-center gap-2 mb-4 w-full">
-              <h2 className="text-lg md:text-xl font-medium text-white">Processing NEAR Intent</h2>
+              <h2 className="text-lg md:text-xl font-medium text-white">
+                Processing NEAR Intent
+              </h2>
             </div>
-            
+
             <TransactionProgress
               asset={selectedAsset}
               amount={amount}
@@ -96,19 +105,24 @@ const OnrampStepContent = ({
               error={errorMessage}
               displayInfo={nearIntentsDisplayInfo}
             />
-          </div>;
+          </div>
+        );
       default:
         return null;
     }
   };
 
-  const isCurrentlyProcessing = currentStep === 1 && intentProgress && !['form', 'none', 'done', 'error'].includes(intentProgress);
+  const isCurrentlyProcessing =
+    currentStep === 1 &&
+    intentProgress &&
+    !["form", "none", "done", "error"].includes(intentProgress);
 
-  return <div className="flex flex-col h-full">
+  return (
+    <div className="flex flex-col h-full">
       <div className="flex-grow overflow-y-auto pb-1">
         {renderCurrentStep()}
       </div>
-      
+
       <div className="mt-auto pt-4">
         <OnrampNavigation
           currentStep={currentStep}
@@ -119,6 +133,7 @@ const OnrampStepContent = ({
           isProcessingTransaction={isCurrentlyProcessing}
         />
       </div>
-    </div>;
+    </div>
+  );
 };
 export default OnrampStepContent;

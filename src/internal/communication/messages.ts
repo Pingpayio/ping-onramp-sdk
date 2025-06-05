@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const targetAssetSchema = z.object({
   chain: z.string(),
@@ -33,9 +33,9 @@ const onrampInitiatedPayloadSchema = z.object({
 });
 
 const onrampResultSchema = z.object({
-    success: z.boolean(),
-    message: z.string(),
-    data: z.any().optional(),
+  success: z.boolean(),
+  message: z.string(),
+  data: z.any().optional(),
 });
 
 const processCompletePayloadSchema = z.object({
@@ -50,6 +50,7 @@ const processFailedPayloadSchema = z.object({
 
 export const onrampFlowStepSchema = z.enum([
   "loading",
+  "connect-wallet",
   "form-entry",
   "connecting-wallet",
   "initiating-onramp-service",

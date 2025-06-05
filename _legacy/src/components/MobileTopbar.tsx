@@ -139,7 +139,7 @@ const MobileTopbar = () => {
                               "flex items-center py-3 px-4 rounded-lg min-h-[44px]",
                               location.pathname === item.path
                                 ? "bg-[#AF9EF9] text-black"
-                                : "text-white hover:bg-[#1A1326]"
+                                : "text-white hover:bg-[#1A1326]",
                             )}
                             onClick={() => setIsMenuOpen(false)}
                           >

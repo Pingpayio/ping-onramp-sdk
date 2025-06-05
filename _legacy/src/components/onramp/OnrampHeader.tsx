@@ -3,7 +3,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { Wallet } from "@coinbase/onchainkit/wallet";
 
 const OnrampHeader = () => {
-  const isMobile  = useIsMobile();
+  const isMobile = useIsMobile();
 
   if (isMobile) {
     return null;

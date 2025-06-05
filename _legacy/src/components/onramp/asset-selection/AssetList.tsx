@@ -1,8 +1,7 @@
-
-import React, { useMemo } from 'react';
-import { Search } from 'lucide-react';
-import { assets, stablecoinSymbols } from '@/data/assets';
-import { useIsMobile } from '@/hooks/use-mobile';
+import React, { useMemo } from "react";
+import { Search } from "lucide-react";
+import { assets, stablecoinSymbols } from "@/data/assets";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface AssetListProps {
   searchQuery: string;
@@ -15,7 +14,7 @@ const AssetList = ({
   searchQuery,
   setSearchQuery,
   onAssetSelect,
-  selectedAsset
+  selectedAsset,
 }: AssetListProps) => {
   const isMobile = useIsMobile();
 
@@ -23,19 +22,19 @@ const AssetList = ({
   const sortedAssets = useMemo(() => {
     return [...assets].sort((a, b) => {
       // Put NEAR tokens at the very top
-      const aIsNear = a.symbol === 'NEAR';
-      const bIsNear = b.symbol === 'NEAR';
-      
+      const aIsNear = a.symbol === "NEAR";
+      const bIsNear = b.symbol === "NEAR";
+
       if (aIsNear && !bIsNear) return -1;
       if (!aIsNear && bIsNear) return 1;
-      
+
       // Put stablecoins next
       const aIsStable = stablecoinSymbols.includes(a.symbol);
       const bIsStable = stablecoinSymbols.includes(b.symbol);
-      
+
       if (aIsStable && !bIsStable) return -1;
       if (!aIsStable && bIsStable) return 1;
-      
+
       // Then sort alphabetically by name
       return a.name.localeCompare(b.name);
     });
@@ -44,17 +43,18 @@ const AssetList = ({
   // Filter assets based on search query
   const filteredAssets = useMemo(() => {
     if (!searchQuery) return sortedAssets;
-    
+
     const query = searchQuery.toLowerCase();
-    return sortedAssets.filter(asset => 
-      asset.name.toLowerCase().includes(query) || 
-      asset.symbol.toLowerCase().includes(query)
+    return sortedAssets.filter(
+      (asset) =>
+        asset.name.toLowerCase().includes(query) ||
+        asset.symbol.toLowerCase().includes(query),
     );
   }, [searchQuery, sortedAssets]);
 
   const getAssetLogoUrl = (symbol: string) => {
-    const asset = assets.find(a => a.symbol === symbol);
-    return asset ? asset.logoUrl : '';
+    const asset = assets.find((a) => a.symbol === symbol);
+    return asset ? asset.logoUrl : "";
   };
 
   return (
@@ -69,9 +69,13 @@ const AssetList = ({
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
-      <div className={`${isMobile ? 'max-h-[50vh]' : 'max-h-[300px]'} overflow-auto`}>
+      <div
+        className={`${isMobile ? "max-h-[50vh]" : "max-h-[300px]"} overflow-auto`}
+      >
         {filteredAssets.length === 0 && (
-          <div className="text-white/60 text-sm py-6 text-center">No asset found.</div>
+          <div className="text-white/60 text-sm py-6 text-center">
+            No asset found.
+          </div>
         )}
         <div className="py-1">
           {filteredAssets.map((asset) => (
@@ -79,9 +83,9 @@ const AssetList = ({
               key={asset.symbol}
               onClick={() => onAssetSelect(asset.symbol)}
               className={`cursor-pointer transition-colors py-3 px-2 ${
-                asset.symbol === selectedAsset 
-                  ? 'bg-white/5 text-white' 
-                  : 'text-white/60 hover:text-white hover:bg-white/5'
+                asset.symbol === selectedAsset
+                  ? "bg-white/5 text-white"
+                  : "text-white/60 hover:text-white hover:bg-white/5"
               }`}
             >
               <div className="flex items-center w-full">

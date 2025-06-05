@@ -1,14 +1,13 @@
-
-import React from 'react';
-import { type TransactionStage } from '@/hooks/use-transaction-progress';
-import StatusProgressBar from './transaction/StatusProgressBar';
-import StatusCard from './transaction/StatusCard';
-import TransactionDetailsCard from './transaction/TransactionDetailsCard';
-import CompletionMessage from './transaction/CompletionMessage';
-import { useIsMobile } from '@/hooks/use-mobile';
+import React from "react";
+import { type TransactionStage } from "@/hooks/use-transaction-progress";
+import StatusProgressBar from "./transaction/StatusProgressBar";
+import StatusCard from "./transaction/StatusCard";
+import TransactionDetailsCard from "./transaction/TransactionDetailsCard";
+import CompletionMessage from "./transaction/CompletionMessage";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface TransactionStatusProps {
-  status: 'pending' | 'completed' | 'failed';
+  status: "pending" | "completed" | "failed";
   title: string;
   description: string;
   txHash?: string;
@@ -26,23 +25,25 @@ const TransactionStatus = ({
   title,
   description,
   txHash,
-  stage = 'deposit',
+  stage = "deposit",
   progress = 0,
   onboardingTxHash,
   swapTxHash,
   amount,
   asset,
-  walletAddress
+  walletAddress,
 }: TransactionStatusProps) => {
   const isMobile = useIsMobile();
 
   return (
-    <div className={`flex flex-col space-y-4 w-full mx-auto ${isMobile ? 'max-w-full' : 'max-w-md'}`}>
+    <div
+      className={`flex flex-col space-y-4 w-full mx-auto ${isMobile ? "max-w-full" : "max-w-md"}`}
+    >
       {/* Progress bar */}
       <StatusProgressBar progress={progress} />
-      
+
       {/* Current stage card */}
-      <StatusCard 
+      <StatusCard
         status={status}
         title={title}
         description={description}
@@ -53,19 +54,15 @@ const TransactionStatus = ({
       />
 
       {/* Transaction details card - always visible */}
-      <TransactionDetailsCard 
+      <TransactionDetailsCard
         amount={amount}
         asset={asset}
         walletAddress={walletAddress}
       />
 
       {/* Completion message - only shown when completed */}
-      {stage === 'completed' && (
-        <CompletionMessage 
-          amount={amount}
-          asset={asset}
-          stage={stage}
-        />
+      {stage === "completed" && (
+        <CompletionMessage amount={amount} asset={asset} stage={stage} />
       )}
     </div>
   );

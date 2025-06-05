@@ -1,4 +1,3 @@
-
 export const layer1Tokens = [
   {
     name: "Avalanche",

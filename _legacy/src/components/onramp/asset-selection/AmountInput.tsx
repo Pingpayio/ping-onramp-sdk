@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { Input } from '@/components/ui/input';
-import { ArrowUpDown } from 'lucide-react';
+import React from "react";
+import { Input } from "@/components/ui/input";
+import { ArrowUpDown } from "lucide-react";
 
 interface AmountInputProps {
   amount: string;
@@ -17,7 +16,7 @@ const AmountInput = ({
   onAmountChange,
   selectedAsset,
   estimatedAmount,
-  selectedCurrency = 'USD',
+  selectedCurrency = "USD",
   onCurrencySelect,
 }: AmountInputProps) => {
   return (
@@ -35,7 +34,7 @@ const AmountInput = ({
           {selectedCurrency}
         </span>
       </div>
-      
+
       {selectedAsset && parseFloat(amount) > 0 && (
         <div className="flex items-start justify-start">
           <div className="flex items-center">

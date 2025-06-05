@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import Button from '@/components/Button';
-import { ArrowRight, CreditCard, Wallet } from 'lucide-react';
+import React from "react";
+import { Link } from "react-router-dom";
+import Button from "@/components/Button";
+import { ArrowRight, CreditCard, Wallet } from "lucide-react";
 
 const Index = () => {
   return (
@@ -9,16 +9,26 @@ const Index = () => {
       <div className="container max-w-6xl mx-auto px-4 py-12">
         <header className="flex justify-between items-center mb-16">
           <div className="flex items-center">
-            <img 
-              src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
-              alt="Ping Logo" 
-              className="h-10 mr-2" 
+            <img
+              src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png"
+              alt="Ping Logo"
+              className="h-10 mr-2"
             />
             <span className="text-xl font-bold tracking-tight">Pingpay</span>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/docs" className="text-muted-foreground hover:text-foreground">Docs</Link>
-            <Link to="/start" className="text-muted-foreground hover:text-foreground">Get Started</Link>
+            <Link
+              to="/docs"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Docs
+            </Link>
+            <Link
+              to="/start"
+              className="text-muted-foreground hover:text-foreground"
+            >
+              Get Started
+            </Link>
             <Link to="/onramp">
               <Button variant="gradient">Launch App</Button>
             </Link>
@@ -29,10 +39,12 @@ const Index = () => {
           <div className="flex flex-col md:flex-row items-center justify-between gap-12 mb-20">
             <div className="max-w-xl">
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
-                The simplest way to onramp to <span className="text-ping-600">NEAR</span>
+                The simplest way to onramp to{" "}
+                <span className="text-ping-600">NEAR</span>
               </h1>
               <p className="text-xl text-muted-foreground mb-8">
-                Seamlessly convert fiat to NEAR and other supported assets with minimal steps and maximum efficiency.
+                Seamlessly convert fiat to NEAR and other supported assets with
+                minimal steps and maximum efficiency.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link to="/onramp">
@@ -69,7 +81,9 @@ const Index = () => {
                     <p className="text-sm text-muted-foreground">NEAR</p>
                   </div>
                 </div>
-                <Button variant="gradient" className="w-full">Buy NEAR Now</Button>
+                <Button variant="gradient" className="w-full">
+                  Buy NEAR Now
+                </Button>
               </div>
             </div>
           </div>
@@ -82,21 +96,30 @@ const Index = () => {
                   <span className="font-bold text-ping-600">1</span>
                 </div>
                 <h3 className="font-medium text-lg mb-2">Select Your Asset</h3>
-                <p className="text-muted-foreground">Choose NEAR or any other supported asset you want to purchase.</p>
+                <p className="text-muted-foreground">
+                  Choose NEAR or any other supported asset you want to purchase.
+                </p>
               </div>
               <div className="bg-white p-6 rounded-lg border shadow-sm">
                 <div className="bg-ping-100 h-12 w-12 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <span className="font-bold text-ping-600">2</span>
                 </div>
                 <h3 className="font-medium text-lg mb-2">Pay with Fiat</h3>
-                <p className="text-muted-foreground">Use your credit/debit card via our trusted onramp partners.</p>
+                <p className="text-muted-foreground">
+                  Use your credit/debit card via our trusted onramp partners.
+                </p>
               </div>
               <div className="bg-white p-6 rounded-lg border shadow-sm">
                 <div className="bg-ping-100 h-12 w-12 rounded-full flex items-center justify-center mb-4 mx-auto">
                   <span className="font-bold text-ping-600">3</span>
                 </div>
-                <h3 className="font-medium text-lg mb-2">Receive Your Assets</h3>
-                <p className="text-muted-foreground">Your assets will be automatically sent to your connected wallet.</p>
+                <h3 className="font-medium text-lg mb-2">
+                  Receive Your Assets
+                </h3>
+                <p className="text-muted-foreground">
+                  Your assets will be automatically sent to your connected
+                  wallet.
+                </p>
               </div>
             </div>
           </div>
@@ -104,11 +127,15 @@ const Index = () => {
           <div className="bg-white border rounded-xl p-8 mb-16">
             <div className="text-center mb-8">
               <h2 className="text-3xl font-bold mb-2">For Developers</h2>
-              <p className="text-muted-foreground">Integrate Pingpay into your application with just a few lines of code.</p>
+              <p className="text-muted-foreground">
+                Integrate Pingpay into your application with just a few lines of
+                code.
+              </p>
             </div>
             <div className="bg-gray-900 text-gray-100 p-4 rounded-lg mb-6 overflow-auto">
               <pre className="text-sm">
-                <code>{`
+                <code>
+                  {`
 import { PingpayWidget } from '@pingpay/widget';
 
 const App = () => {
@@ -134,10 +161,18 @@ const App = () => {
             <h2 className="text-3xl font-bold mb-6">Supported Partners</h2>
             <div className="flex flex-wrap justify-center gap-8 items-center opacity-70">
               <div className="h-12">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Coinbase.svg" alt="Coinbase" className="h-full" />
+                <img
+                  src="https://upload.wikimedia.org/wikipedia/commons/1/1a/Coinbase.svg"
+                  alt="Coinbase"
+                  className="h-full"
+                />
               </div>
               <div className="h-8">
-                <img src="https://near.org/wp-content/uploads/2021/09/brand-near-logo.svg" alt="NEAR" className="h-full" />
+                <img
+                  src="https://near.org/wp-content/uploads/2021/09/brand-near-logo.svg"
+                  alt="NEAR"
+                  className="h-full"
+                />
               </div>
               <div className="h-8 text-xl font-bold">MoonPay</div>
               <div className="h-8 text-xl font-bold">Transak</div>
@@ -148,21 +183,43 @@ const App = () => {
         <footer className="mt-20 py-8 border-t">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="flex items-center mb-4 md:mb-0">
-              <img 
-                src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png" 
-                alt="Ping Logo" 
-                className="h-8 mr-2" 
+              <img
+                src="/lovable-uploads/a984f844-0031-4fc1-8792-d810f6bbd335.png"
+                alt="Ping Logo"
+                className="h-8 mr-2"
               />
               <span className="text-lg font-bold tracking-tight">Pingpay</span>
             </div>
             <div className="flex flex-wrap gap-4 justify-center">
-              <Link to="/about" className="text-muted-foreground hover:text-foreground">About</Link>
-              <Link to="/docs" className="text-muted-foreground hover:text-foreground">Documentation</Link>
-              <Link to="/terms" className="text-muted-foreground hover:text-foreground">Terms</Link>
-              <Link to="/privacy" className="text-muted-foreground hover:text-foreground">Privacy</Link>
+              <Link
+                to="/about"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                About
+              </Link>
+              <Link
+                to="/docs"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Documentation
+              </Link>
+              <Link
+                to="/terms"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Terms
+              </Link>
+              <Link
+                to="/privacy"
+                className="text-muted-foreground hover:text-foreground"
+              >
+                Privacy
+              </Link>
             </div>
             <div className="mt-4 md:mt-0">
-              <p className="text-sm text-muted-foreground">© 2025 Pingpay. All rights reserved.</p>
+              <p className="text-sm text-muted-foreground">
+                © 2025 Pingpay. All rights reserved.
+              </p>
             </div>
           </div>
         </footer>

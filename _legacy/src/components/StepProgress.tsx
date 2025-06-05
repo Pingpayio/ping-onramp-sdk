@@ -1,7 +1,6 @@
-
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { Check } from 'lucide-react';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
 
 interface StepProgressProps {
   steps: string[];
@@ -10,11 +9,11 @@ interface StepProgressProps {
   allowNavigation?: boolean;
 }
 
-const StepProgress = ({ 
-  steps, 
-  currentStep, 
-  onStepClick, 
-  allowNavigation = false 
+const StepProgress = ({
+  steps,
+  currentStep,
+  onStepClick,
+  allowNavigation = false,
 }: StepProgressProps) => {
   const handleStepClick = (index: number) => {
     if (allowNavigation && onStepClick) {
@@ -27,21 +26,21 @@ const StepProgress = ({
       <div className="flex justify-between items-center">
         {steps.map((step, index) => (
           <React.Fragment key={index}>
-            <div 
+            <div
               className={cn(
                 "flex flex-col items-center relative",
-                allowNavigation && "cursor-pointer"
+                allowNavigation && "cursor-pointer",
               )}
               onClick={() => handleStepClick(index)}
             >
-              <div 
+              <div
                 className={cn(
                   "h-8 w-8 rounded-full flex items-center justify-center font-medium text-xs mb-2 transition-all",
-                  index < currentStep 
-                    ? "bg-ping-600 text-white" 
-                    : index === currentStep 
-                    ? "border-2 border-ping-600 text-ping-600" 
-                    : "border-2 border-white/20 text-white/40"
+                  index < currentStep
+                    ? "bg-ping-600 text-white"
+                    : index === currentStep
+                      ? "border-2 border-ping-600 text-ping-600"
+                      : "border-2 border-white/20 text-white/40",
                 )}
               >
                 {index < currentStep ? (
@@ -50,20 +49,20 @@ const StepProgress = ({
                   index + 1
                 )}
               </div>
-              <span 
+              <span
                 className={cn(
                   "text-xs font-medium text-center",
-                  index <= currentStep ? "text-white/90" : "text-white/40"
+                  index <= currentStep ? "text-white/90" : "text-white/40",
                 )}
               >
                 {step}
               </span>
             </div>
             {index < steps.length - 1 && (
-              <div 
+              <div
                 className={cn(
-                  "h-[2px] flex-1 mx-2", 
-                  index < currentStep ? "bg-ping-600" : "bg-white/20"
+                  "h-[2px] flex-1 mx-2",
+                  index < currentStep ? "bg-ping-600" : "bg-white/20",
                 )}
               />
             )}

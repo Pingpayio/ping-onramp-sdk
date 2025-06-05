@@ -949,10 +949,11 @@ export const LIST_TOKENS: TokenWithTags[] = [
 export const findTokenFromList = (
   symbol: string,
   chainName: string,
-  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]
+  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[],
 ): BaseTokenInfo | undefined => {
   for (const item of tokenList) {
-    if ('chainName' in item && 'address' in item) { // Heuristic to check if it's BaseTokenInfo
+    if ("chainName" in item && "address" in item) {
+      // Heuristic to check if it's BaseTokenInfo
       const baseToken = item as BaseTokenInfo;
       if (baseToken.symbol === symbol && baseToken.chainName === chainName) {
         return baseToken;
@@ -961,7 +962,7 @@ export const findTokenFromList = (
       // It's a UnifiedTokenInfo, check its groupedTokens
       const unifiedToken = item as UnifiedTokenInfo;
       const foundInGroup = unifiedToken.groupedTokens.find(
-        (bt) => bt.symbol === symbol && bt.chainName === chainName
+        (bt) => bt.symbol === symbol && bt.chainName === chainName,
       );
       if (foundInGroup) {
         return foundInGroup;
@@ -978,11 +979,19 @@ export const getOnrampTokens = (
   targetChainName: string, // e.g., "near"
   storageTokenSymbol: string, // e.g., "NEAR"
   storageTokenChainName: string, // e.g., "near"
-  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[]
-): { tokenIn: BaseTokenInfo; tokenOut: BaseTokenInfo; nearStorageTokenDef: BaseTokenInfo } | null => {
+  tokenList: (BaseTokenInfo | UnifiedTokenInfo)[],
+): {
+  tokenIn: BaseTokenInfo;
+  tokenOut: BaseTokenInfo;
+  nearStorageTokenDef: BaseTokenInfo;
+} | null => {
   const tokenIn = findTokenFromList(assetSymbol, depositChainName, tokenList);
   const tokenOut = findTokenFromList(assetSymbol, targetChainName, tokenList);
-  const nearStorageTokenDef = findTokenFromList(storageTokenSymbol, storageTokenChainName, tokenList);
+  const nearStorageTokenDef = findTokenFromList(
+    storageTokenSymbol,
+    storageTokenChainName,
+    tokenList,
+  );
 
   if (!tokenIn || !tokenOut || !nearStorageTokenDef) {
     console.error("SDK: Critical onramp tokens not found in token list.", {

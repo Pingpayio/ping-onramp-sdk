@@ -16,10 +16,7 @@ import { generateOnrampURL } from "@/utils/rampUtils";
 import type { IntentProgress, CallbackParams } from "@/types/onramp";
 
 export const useOnrampState = () => {
-  const {
-    isConnected,
-    address: evmAddress,
-  } = useAccount();
+  const { isConnected, address: evmAddress } = useAccount();
   const { signMessageAsync } = useSignMessage();
 
   const [currentStep, setCurrentStep] = useState(0);
@@ -32,9 +29,12 @@ export const useOnrampState = () => {
   const [walletAddressError, setWalletAddressError] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("card");
 
-  const [nearIntentsDepositAddress, setNearIntentsDepositAddress] = useState<string | null>(null);
+  const [nearIntentsDepositAddress, setNearIntentsDepositAddress] = useState<
+    string | null
+  >(null);
 
-  const [intentProgressActual, setIntentProgressActual] = useState<IntentProgress>("form");
+  const [intentProgressActual, setIntentProgressActual] =
+    useState<IntentProgress>("form");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [nearIntentsDisplayInfo, setNearIntentsDisplayInfo] = useState<{
     message?: string;
@@ -55,27 +55,41 @@ export const useOnrampState = () => {
           setIntentProgressActual("generating_url");
           const chain = assetNetworkAdapter["base" as SupportedChainName];
           if (!chain) {
-            console.error("Unsupported chain for deposit address generation: base");
+            console.error(
+              "Unsupported chain for deposit address generation: base",
+            );
             setErrorMessage("Internal config error: Unsupported EVM chain.");
             setIntentProgressActual("error");
             return;
           }
           const intentsUserId = evmAddress.toLowerCase() as IntentsUserId;
-          const depositAddr = await generateDepositAddress(intentsUserId, chain);
+          const depositAddr = await generateDepositAddress(
+            intentsUserId,
+            chain,
+          );
           setNearIntentsDepositAddress(depositAddr);
           if (intentProgressActual === "generating_url") {
             setIntentProgressActual("form");
           }
         } catch (err) {
-          console.error("Failed to generate NEAR Intents deposit address:", err);
-          setErrorMessage("Failed to prepare for NEAR transaction. Please try again.");
+          console.error(
+            "Failed to generate NEAR Intents deposit address:",
+            err,
+          );
+          setErrorMessage(
+            "Failed to prepare for NEAR transaction. Please try again.",
+          );
           setIntentProgressActual("error");
         }
       };
       fetchDepositAddress();
     } else {
       setNearIntentsDepositAddress(null);
-      if (intentProgressActual !== "form" && intentProgressActual !== "none" && currentStep === 0) {
+      if (
+        intentProgressActual !== "form" &&
+        intentProgressActual !== "none" &&
+        currentStep === 0
+      ) {
         setIntentProgressActual("form");
       }
     }
@@ -83,19 +97,19 @@ export const useOnrampState = () => {
 
   useEffect(() => {
     const params: CallbackParams = {
-      type: searchParams.get('type') ?? undefined,
-      action: searchParams.get('action') ?? undefined,
-      network: searchParams.get('network') ?? undefined,
-      asset: searchParams.get('asset') ?? undefined,
-      amount: searchParams.get('amount') ?? undefined,
-      recipient: searchParams.get('recipient') ?? undefined,
+      type: searchParams.get("type") ?? undefined,
+      action: searchParams.get("action") ?? undefined,
+      network: searchParams.get("network") ?? undefined,
+      asset: searchParams.get("asset") ?? undefined,
+      amount: searchParams.get("amount") ?? undefined,
+      recipient: searchParams.get("recipient") ?? undefined,
     };
 
     if (
-      params.type === 'intents' &&
-      params.action === 'withdraw' &&
-      params.network === 'near' &&
-      params.asset === 'USDC' &&
+      params.type === "intents" &&
+      params.action === "withdraw" &&
+      params.network === "near" &&
+      params.asset === "USDC" &&
       params.amount &&
       params.recipient &&
       evmAddress &&
@@ -114,7 +128,9 @@ export const useOnrampState = () => {
         recipient: params.recipient,
       };
 
-      const handleSignMessage = async (args: { message: string }): Promise<`0x${string}`> => {
+      const handleSignMessage = async (args: {
+        message: string;
+      }): Promise<`0x${string}`> => {
         if (!evmAddress) {
           const errMsg = "EVM address not available for signing.";
           setErrorMessage(errMsg);
@@ -136,17 +152,17 @@ export const useOnrampState = () => {
       });
 
       const newSearchParams = new URLSearchParams(searchParams);
-      newSearchParams.delete('type');
-      newSearchParams.delete('action');
-      newSearchParams.delete('network');
-      newSearchParams.delete('asset');
-      newSearchParams.delete('amount');
-      newSearchParams.delete('recipient');
+      newSearchParams.delete("type");
+      newSearchParams.delete("action");
+      newSearchParams.delete("network");
+      newSearchParams.delete("asset");
+      newSearchParams.delete("amount");
+      newSearchParams.delete("recipient");
       setSearchParams(newSearchParams, { replace: true });
     } else if (!params.type && !params.action) {
-        if (currentStep === 0 && intentProgressActual !== "error") {
-             setIntentProgressActual("form");
-        }
+      if (currentStep === 0 && intentProgressActual !== "error") {
+        setIntentProgressActual("form");
+      }
     }
   }, [
     searchParams,
@@ -155,17 +171,18 @@ export const useOnrampState = () => {
     signMessageAsync,
     masterTokenList,
     setCurrentStep,
-    intentProgressActual, 
+    intentProgressActual,
     currentStep,
   ]);
-
 
   const handleAssetSelect = (symbol: string) => {
     setSelectedAsset(symbol);
     setOpen(false);
   };
 
-  const handleWalletAddressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleWalletAddressChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const addressInput = e.target.value;
     setNearRecipientAddress(addressInput);
     const isValidNear =
@@ -189,20 +206,27 @@ export const useOnrampState = () => {
 
   const handlePaymentMethod = (method: string) => {
     setPaymentMethod(method);
-  }
+  };
 
   const handleContinue = async () => {
     if (!isConnected || !evmAddress) {
-      toast("Wallet Not Connected", { description: "Please connect your EVM wallet to continue." });
+      toast("Wallet Not Connected", {
+        description: "Please connect your EVM wallet to continue.",
+      });
       return;
     }
     if (!nearRecipientAddress.trim() || !isWalletAddressValid) {
       setWalletAddressError(true);
-      toast("Invalid NEAR Address", { description: "Please enter a valid NEAR recipient address." });
+      toast("Invalid NEAR Address", {
+        description: "Please enter a valid NEAR recipient address.",
+      });
       return;
     }
     if (!nearIntentsDepositAddress) {
-      toast("Processing Error", { description: "Deposit address not ready. Please wait or reconnect wallet." });
+      toast("Processing Error", {
+        description:
+          "Deposit address not ready. Please wait or reconnect wallet.",
+      });
       setIntentProgressActual("error");
       setErrorMessage("Deposit address generation failed or pending.");
       return;
@@ -235,27 +259,35 @@ export const useOnrampState = () => {
         partnerUserId: evmAddress,
         redirectUrl: redirectUrl,
         paymentCurrency: selectedCurrency,
-        paymentMethod: paymentMethod
+        paymentMethod: paymentMethod,
       });
 
-      
-
       if (onrampProviderUrl === "error:missing_app_id") {
-        toast("Configuration Error", { description: "Coinbase App ID is missing." });
+        toast("Configuration Error", {
+          description: "Coinbase App ID is missing.",
+        });
         setIntentProgressActual("error");
         setErrorMessage("Coinbase integration is not configured correctly.");
         return;
       }
 
       setIntentProgressActual("redirecting_coinbase");
-      toast("Redirecting to Coinbase", { description: "You will be redirected to complete your purchase." });
+      toast("Redirecting to Coinbase", {
+        description: "You will be redirected to complete your purchase.",
+      });
       console.log("Redirecting to Coinbase Onramp:", onrampProviderUrl);
       window.location.href = onrampProviderUrl;
     } catch (error) {
       console.error("Failed to generate Coinbase Onramp URL:", error);
-      toast("Error", { description: "Could not prepare redirection to Coinbase." });
+      toast("Error", {
+        description: "Could not prepare redirection to Coinbase.",
+      });
       setIntentProgressActual("error");
-      setErrorMessage(error instanceof Error ? error.message : "Failed to generate Coinbase URL.");
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Failed to generate Coinbase URL.",
+      );
     }
   };
 
@@ -268,8 +300,8 @@ export const useOnrampState = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1);
     }
-    if (currentStep -1 === 0) {
-        setIntentProgressActual("form");
+    if (currentStep - 1 === 0) {
+      setIntentProgressActual("form");
     }
   };
 
@@ -289,25 +321,28 @@ export const useOnrampState = () => {
 
   const handleStepClick = (stepIndex: number) => {
     if (stepIndex === 0 && currentStep === 1) {
-        if (!["signing", "withdrawing"].includes(intentProgressActual)) {
-            setCurrentStep(0);
-            setIntentProgressActual("form");
-            setErrorMessage(null);
-            setNearIntentsDisplayInfo({});
-        }
-        return;
+      if (!["signing", "withdrawing"].includes(intentProgressActual)) {
+        setCurrentStep(0);
+        setIntentProgressActual("form");
+        setErrorMessage(null);
+        setNearIntentsDisplayInfo({});
+      }
+      return;
     }
     if (stepIndex > currentStep && !canContinueToOnramp()) {
-        return;
+      return;
     }
     if (stepIndex <= currentStep) {
-         setCurrentStep(stepIndex);
-         if(stepIndex === 0) setIntentProgressActual("form");
+      setCurrentStep(stepIndex);
+      if (stepIndex === 0) setIntentProgressActual("form");
     }
   };
-  
-  const isLoading = intentProgressActual !== "form" && intentProgressActual !== "done" && intentProgressActual !== "error" && intentProgressActual !== "none";
 
+  const isLoading =
+    intentProgressActual !== "form" &&
+    intentProgressActual !== "done" &&
+    intentProgressActual !== "error" &&
+    intentProgressActual !== "none";
 
   return {
     currentStep,

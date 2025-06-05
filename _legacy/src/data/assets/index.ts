@@ -1,10 +1,9 @@
-
-import { stablecoins, stablecoinSymbols } from './stablecoins';
-import { majorCoins } from './majorCoins';
-import { defiTokens } from './defiTokens';
-import { layer1Tokens } from './layer1Tokens';
-import { memesAndNftTokens } from './memesAndNftTokens';
-import { nearEcosystem } from './nearEcosystem';
+import { stablecoins, stablecoinSymbols } from "./stablecoins";
+import { majorCoins } from "./majorCoins";
+import { defiTokens } from "./defiTokens";
+import { layer1Tokens } from "./layer1Tokens";
+import { memesAndNftTokens } from "./memesAndNftTokens";
+import { nearEcosystem } from "./nearEcosystem";
 
 // Combine all assets into a single array
 export const assets = [

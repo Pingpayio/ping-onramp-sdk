@@ -1,10 +1,9 @@
-
-import React from 'react';
-import { useIsMobile } from '@/hooks/use-mobile';
-import OnrampHeader from '@/components/onramp/OnrampHeader';
-import OnrampStepContent from '@/components/onramp/OnrampStepContent';
-import { useOnrampState } from '@/hooks/use-onramp-state';
-import SidebarNav from '@/components/SidebarNav';
+import React from "react";
+import { useIsMobile } from "@/hooks/use-mobile";
+import OnrampHeader from "@/components/onramp/OnrampHeader";
+import OnrampStepContent from "@/components/onramp/OnrampStepContent";
+import { useOnrampState } from "@/hooks/use-onramp-state";
+import SidebarNav from "@/components/SidebarNav";
 // import { Table, TableHeader, TableRow, TableHead, TableBody, TableCell } from '@/components/ui/table';
 // import { History } from 'lucide-react';
 
@@ -33,7 +32,7 @@ const OnrampPage = () => {
     handleBack,
     canContinue,
     setOpen,
-    handlePaymentMethod
+    handlePaymentMethod,
   } = useOnrampState();
 
   return (
@@ -42,21 +41,27 @@ const OnrampPage = () => {
       <div className="hidden md:block">
         <SidebarNav />
       </div>
-      
-      <div className={`flex-1 ${isMobile ? 'ml-0 pt-[54px]' : 'md:ml-[256px]'}`}>
-        <div className={`px-4 pt-2 md:px-[56px] md:py-[40px] flex flex-col h-full`}>
+
+      <div
+        className={`flex-1 ${isMobile ? "ml-0 pt-[54px]" : "md:ml-[256px]"}`}
+      >
+        <div
+          className={`px-4 pt-2 md:px-[56px] md:py-[40px] flex flex-col h-full`}
+        >
           <OnrampHeader />
 
-          <main className={`flex-1 flex ${isMobile || window.innerWidth < 1280 ? 'flex-col' : 'lg:flex-row'} gap-4 md:gap-6 mt-4 ${isMobile ? 'pb-4' : ''} half-screen-optimize`}>
+          <main
+            className={`flex-1 flex ${isMobile || window.innerWidth < 1280 ? "flex-col" : "lg:flex-row"} gap-4 md:gap-6 mt-4 ${isMobile ? "pb-4" : ""} half-screen-optimize`}
+          >
             {/* Left container - maintains consistent size across steps on desktop, full width on mobile */}
             <div className="bg-white/5 rounded-xl shadow-sm p-4 md:p-6 flex-1 flex flex-col w-full lg:max-w-[640px] lg:min-w-[640px] border border-white/[0.16]">
-              <OnrampStepContent 
-                currentStep={currentStep} 
-                steps={steps} 
-                selectedAsset={selectedAsset} 
-                amount={amount} 
-                onAssetSelect={handleAssetSelect} 
-                onAmountChange={handleAmountChange} 
+              <OnrampStepContent
+                currentStep={currentStep}
+                steps={steps}
+                selectedAsset={selectedAsset}
+                amount={amount}
+                onAssetSelect={handleAssetSelect}
+                onAmountChange={handleAmountChange}
                 open={open}
                 setOpen={setOpen}
                 walletAddress={walletAddress}

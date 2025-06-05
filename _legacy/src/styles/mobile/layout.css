@@ -1,4 +1,3 @@
-
 /* Mobile layout-specific styles */
 @media (max-width: 767px) {
   /* Improve modal positioning on mobile */
@@ -11,17 +10,17 @@
   .wallet-button-mobile {
     @apply py-2.5 px-5 text-sm min-h-[40px];
   }
-  
+
   /* Improve onramp page layout for mobile */
   .onramp-container {
     @apply flex-col !important;
   }
-  
+
   /* Center align mobile content */
   .mobile-centered {
     @apply flex items-center justify-center;
   }
-  
+
   /* Adjust form spacing on mobile */
   .mobile-stacked-form > * {
     @apply mb-4 w-full;
@@ -34,12 +33,12 @@
   .half-screen-optimize {
     @apply flex-col !important;
   }
-  
+
   /* Reduce side padding for content containers */
   .content-container {
     @apply px-4 !important;
   }
-  
+
   /* Ensure table containers allow horizontal scrolling */
   .table-container {
     @apply w-full overflow-x-auto;

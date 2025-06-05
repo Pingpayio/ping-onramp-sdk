@@ -1,4 +1,4 @@
-import { jsonRPCRequest, type JSONRPCRequest, type RequestConfig } from "./rpc"
+import { jsonRPCRequest, type JSONRPCRequest, type RequestConfig } from "./rpc";
 
 export type SupportedChainName =
   | "eth"
@@ -20,9 +20,9 @@ export type SupportedChainName =
   | "berachain"
   | "tron"
   | "polygon"
-  | "bsc"
+  | "bsc";
 
-export type IntentsUserId = string & { __brand: "IntentsUserId" }
+export type IntentsUserId = string & { __brand: "IntentsUserId" };
 /**
  * Values are PoA Bridge specific
  */
@@ -51,7 +51,6 @@ enum BlockchainEnum {
   AURORA = "eth:1313161554",
 }
 
-
 export const assetNetworkAdapter: Record<SupportedChainName, BlockchainEnum> = {
   near: BlockchainEnum.NEAR,
   eth: BlockchainEnum.ETHEREUM,
@@ -73,7 +72,7 @@ export const assetNetworkAdapter: Record<SupportedChainName, BlockchainEnum> = {
   coineasy: BlockchainEnum.COINEASY,
   polygon: BlockchainEnum.POLYGON,
   bsc: BlockchainEnum.BSC,
-}
+};
 
 export const reverseAssetNetworkAdapter: Record<
   BlockchainEnum,
@@ -99,46 +98,46 @@ export const reverseAssetNetworkAdapter: Record<
   [BlockchainEnum.COINEASY]: "coineasy",
   [BlockchainEnum.POLYGON]: "polygon",
   [BlockchainEnum.BSC]: "bsc",
-}
+};
 
 export type JSONRPCResponse<Result> = {
-  id: string
-  jsonrpc: "2.0"
-  result: Result
-}
+  id: string;
+  jsonrpc: "2.0";
+  result: Result;
+};
 
 export type GetSupportedTokensRequest = JSONRPCRequest<
   "supported_tokens",
   {
-    chains?: string[]
+    chains?: string[];
   }
->
+>;
 
 export type GetSupportedTokensResponse = JSONRPCResponse<{
   tokens: {
-    defuse_asset_identifier: string
-    decimals: number
-    asset_name: string
-    near_token_id: string
-    min_deposit_amount: string
-    min_withdrawal_amount: string
-    withdrawal_fee: string
-  }[]
-}>
+    defuse_asset_identifier: string;
+    decimals: number;
+    asset_name: string;
+    near_token_id: string;
+    min_deposit_amount: string;
+    min_withdrawal_amount: string;
+    withdrawal_fee: string;
+  }[];
+}>;
 
 export type GetDepositAddressRequest = JSONRPCRequest<
   "deposit_address",
   {
-    account_id: string
+    account_id: string;
     /** Chain is joined blockchain and network (e.g. eth:8453) */
-    chain: string
+    chain: string;
   }
->
+>;
 
 export type GetDepositAddressResponse = JSONRPCResponse<{
-  address: string
-  chain: string
-}>
+  address: string;
+  chain: string;
+}>;
 
 /**
  * Generates a NEAR Intents deposit address for a given EVM user.
@@ -149,14 +148,16 @@ export type GetDepositAddressResponse = JSONRPCResponse<{
  */
 export async function generateNearIntentsDepositAddress(
   evmAddress: string,
-  chainName: SupportedChainName = "base"
-): Promise<{ address: string, network: string }> {
+  chainName: SupportedChainName = "base",
+): Promise<{ address: string; network: string }> {
   const chain = assetNetworkAdapter[chainName];
   if (!chain) {
     const errorMessage = `Unsupported chain for deposit address generation: ${chainName}`;
     console.error(errorMessage);
     // It's generally better to throw an error that can be caught and handled by the caller
-    throw new Error(`Internal config error: Unsupported EVM chain for intents: ${chainName}.`);
+    throw new Error(
+      `Internal config error: Unsupported EVM chain for intents: ${chainName}.`,
+    );
   }
   // Ensure evmAddress is lowercase as IntentsUserId expects it.
   const intentsUserId = evmAddress.toLowerCase() as IntentsUserId;
@@ -165,9 +166,16 @@ export async function generateNearIntentsDepositAddress(
     const depositAddr = await generateDepositAddress(intentsUserId, chain);
     return { address: depositAddr, network: chain };
   } catch (error) {
-    console.error("Failed to generate NEAR Intents deposit address in SDK:", error);
+    console.error(
+      "Failed to generate NEAR Intents deposit address in SDK:",
+      error,
+    );
     // Re-throw or throw a custom error to be handled by the caller
-    throw new Error(error instanceof Error ? error.message : "Failed to generate deposit address via SDK.");
+    throw new Error(
+      error instanceof Error
+        ? error.message
+        : "Failed to generate deposit address via SDK.",
+    );
   }
 }
 
@@ -180,51 +188,51 @@ export async function generateNearIntentsDepositAddress(
  */
 export async function generateDepositAddress(
   userAddress: IntentsUserId,
-  chain: BlockchainEnum
+  chain: BlockchainEnum,
 ): Promise<string> {
   try {
     const supportedTokens = await getSupportedTokens({
       chains: [chain],
-    })
+    });
 
     if (supportedTokens.tokens.length === 0) {
-      throw new Error("No supported tokens found")
+      throw new Error("No supported tokens found");
     }
 
     const generatedDepositAddress = await getDepositAddress({
       account_id: userAddress,
       chain,
-    })
+    });
 
-    return generatedDepositAddress.address
+    return generatedDepositAddress.address;
   } catch (error) {
     console.error(
-      new Error("Error generating deposit address", { cause: error })
-    )
-    throw error
+      new Error("Error generating deposit address", { cause: error }),
+    );
+    throw error;
   }
 }
 
 export async function getSupportedTokens(
   params: GetSupportedTokensRequest["params"][0],
-  config: RequestConfig = {}
+  config: RequestConfig = {},
 ): Promise<GetSupportedTokensResponse["result"]> {
   const result = await jsonRPCRequest<GetSupportedTokensRequest>(
     "supported_tokens",
     params,
-    config
-  )
+    config,
+  );
   return result as GetSupportedTokensResponse["result"];
 }
 
 export async function getDepositAddress(
   params: GetDepositAddressRequest["params"][0],
-  config: RequestConfig = {}
+  config: RequestConfig = {},
 ): Promise<GetDepositAddressResponse["result"]> {
   const result = await jsonRPCRequest<GetDepositAddressRequest>(
     "deposit_address",
     params,
-    config
-  )
-  return result as GetDepositAddressResponse["result"]
+    config,
+  );
+  return result as GetDepositAddressResponse["result"];
 }

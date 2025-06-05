@@ -1,6 +1,5 @@
-
-import React from 'react';
-import { calculateEstimatedAmount } from '@/components/onramp/asset-selection/PriceCalculator';
+import React from "react";
+import { calculateEstimatedAmount } from "@/components/onramp/asset-selection/PriceCalculator";
 
 interface TransactionSummaryProps {
   amount: string;
@@ -11,7 +10,7 @@ interface TransactionSummaryProps {
 const TransactionSummary = ({
   amount,
   selectedAsset,
-  walletAddress
+  walletAddress,
 }: TransactionSummaryProps) => {
   // Get estimated amount of tokens using the existing PriceCalculator
   const estimatedAmount = calculateEstimatedAmount(selectedAsset, amount);
@@ -28,12 +27,18 @@ const TransactionSummary = ({
         <span>{selectedAsset}</span>
       </div>
       <div className="flex justify-between mb-2">
-        <span className="text-muted-foreground">Estimated {selectedAsset}:</span>
-        <span>{estimatedAmount} {selectedAsset}</span>
+        <span className="text-muted-foreground">
+          Estimated {selectedAsset}:
+        </span>
+        <span>
+          {estimatedAmount} {selectedAsset}
+        </span>
       </div>
       <div className="flex justify-between">
         <span className="text-muted-foreground">Recipient:</span>
-        <span className="text-sm truncate max-w-[200px] md:max-w-[300px]">{walletAddress}</span>
+        <span className="text-sm truncate max-w-[200px] md:max-w-[300px]">
+          {walletAddress}
+        </span>
       </div>
     </div>
   );

@@ -1,8 +1,7 @@
-
-import React, { useState } from 'react';
-import Button from './Button';
-import { Wallet, Copy, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
+import React, { useState } from "react";
+import Button from "./Button";
+import { Wallet, Copy, CheckCircle2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface ConnectWalletProps {
   onConnect: (address: string) => void;
@@ -18,15 +17,16 @@ const ConnectWallet = ({ onConnect }: ConnectWalletProps) => {
     try {
       // Simulate wallet connection
       setTimeout(() => {
-        const mockAddress = "0x" + Math.random().toString(16).slice(2, 12) + "...";
+        const mockAddress =
+          "0x" + Math.random().toString(16).slice(2, 12) + "...";
         setAddress(mockAddress);
         setIsConnected(true);
         onConnect(mockAddress);
-        
+
         // Use standardized toast
         toast({
-          title: "Wallet Connected", 
-          description: "Your wallet has been connected successfully!"
+          title: "Wallet Connected",
+          description: "Your wallet has been connected successfully!",
         });
       }, 1000);
     } catch (error) {
@@ -38,10 +38,10 @@ const ConnectWallet = ({ onConnect }: ConnectWalletProps) => {
     navigator.clipboard.writeText(address);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    
+
     toast({
       title: "Address Copied",
-      description: "Wallet address copied to clipboard"
+      description: "Wallet address copied to clipboard",
     });
   };
 
@@ -57,9 +57,9 @@ const ConnectWallet = ({ onConnect }: ConnectWalletProps) => {
           <p className="text-muted-foreground mb-4">
             Connect your wallet to receive your purchased assets.
           </p>
-          <Button 
-            variant="gradient" 
-            size="md" 
+          <Button
+            variant="gradient"
+            size="md"
             className="w-full"
             onClick={connectWallet}
           >
@@ -70,7 +70,7 @@ const ConnectWallet = ({ onConnect }: ConnectWalletProps) => {
         <div>
           <div className="p-3 rounded-md bg-ping-50 flex items-center justify-between mb-4">
             <span className="font-medium">{address}</span>
-            <button 
+            <button
               onClick={copyAddress}
               className="text-ping-600 hover:text-ping-700"
             >
