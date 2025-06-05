@@ -374,7 +374,15 @@ function App() {
     walletStateValue,
     setProcessingSubStep,
     setNearIntentsDisplayInfo,
+    signMessageAsync, 
+    signMessageError,
   ]);
+
+  useEffect(() => {
+    if (walletStateValue?.address && step === "connect-wallet") {
+      goToStep("form-entry");
+    }
+  }, [walletStateValue, step, goToStep]);
 
   useEffect(() => {
     if (connection) {
