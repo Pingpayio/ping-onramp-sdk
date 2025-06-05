@@ -28,6 +28,8 @@ const mockConfig = createConfig({
   }
 });
 
+
+test.describe('NEAR Intents Withdrawal Flow', () => {
   test('should handle intent withdrawal callback and navigate to processing step', async ({ page }) => {
     // 1. Setup mock wallet connection and config
     await page.addInitScript(() => {
