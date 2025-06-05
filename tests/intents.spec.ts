@@ -55,7 +55,6 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
           withdrawal_fee: '100000'
         }]
       });
-
       // Mock the processNearIntentWithdrawal function
       (window as any).processNearIntentWithdrawal = async ({
         callbackParams,
@@ -237,7 +236,6 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
       return (window as any).ethereum.signMessageCalls || [];
     });
     expect(signMessageLogs.length).toBeGreaterThan(0);
-
     // Verify the first sign message call contains expected data
     const firstSignMessage = signMessageLogs[0];
     expect(firstSignMessage).toBeDefined();
@@ -249,7 +247,6 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
     await expect(
       page.locator('text=Processing withdrawal')
     ).toBeVisible();
-
     // Wait for completion
     await expect(
       page.locator('[data-testid="processing-substep-done"]')
