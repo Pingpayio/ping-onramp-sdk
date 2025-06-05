@@ -43,22 +43,26 @@ export const useSignedTransaction = () => useAtom(signedTransactionAtom);
 export const useOnrampResult = () => useAtom(onrampResultAtom);
 export const useSetOnrampResult = () => useSetAtom(onrampResultAtom);
 
-
 export const useProcessingSubStep = (): [
   IntentProgress,
-  (update: IntentProgress | ((prev: IntentProgress) => IntentProgress)) => void
+  (update: IntentProgress | ((prev: IntentProgress) => IntentProgress)) => void,
 ] => useAtom(processingSubStepAtom);
 
-export const useSetProcessingSubStep = (): (
-  update: IntentProgress | ((prev: IntentProgress) => IntentProgress)
-) => void => useSetAtom(processingSubStepAtom);
-
+export const useSetProcessingSubStep = (): ((
+  update: IntentProgress | ((prev: IntentProgress) => IntentProgress),
+) => void) => useSetAtom(processingSubStepAtom);
 
 export const useNearIntentsDisplayInfo = (): [
   NearIntentsDisplayInfo,
-  (update: NearIntentsDisplayInfo | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo)) => void
+  (
+    update:
+      | NearIntentsDisplayInfo
+      | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo),
+  ) => void,
 ] => useAtom(nearIntentsDisplayInfoAtom);
 
-export const useSetNearIntentsDisplayInfo = (): (
-  update: NearIntentsDisplayInfo | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo)
-) => void => useSetAtom(nearIntentsDisplayInfoAtom);
+export const useSetNearIntentsDisplayInfo = (): ((
+  update:
+    | NearIntentsDisplayInfo
+    | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo),
+) => void) => useSetAtom(nearIntentsDisplayInfoAtom);

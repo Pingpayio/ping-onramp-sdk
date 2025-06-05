@@ -1,17 +1,20 @@
 // popup/src/components/loading-spinner.tsx
 
-import React from 'react';
+import React from "react";
 
 interface LoadingSpinnerProps {
-  size?: 'small' | 'medium' | 'large';
+  size?: "small" | "medium" | "large";
   message?: string;
 }
 
-const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = 'medium', message }) => {
+const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
+  size = "medium",
+  message,
+}) => {
   const sizeClasses = {
-    small: 'h-6 w-6 border-2',
-    medium: 'h-10 w-10 border-4',
-    large: 'h-16 w-16 border-4',
+    small: "h-6 w-6 border-2",
+    medium: "h-10 w-10 border-4",
+    large: "h-16 w-16 border-4",
   };
 
   return (

@@ -4,7 +4,7 @@ export class PingpayOnrampError extends Error {
 
   constructor(message: string, details?: any, step?: string) {
     super(message);
-    this.name = 'PingpayOnrampError';
+    this.name = "PingpayOnrampError";
     this.details = details;
     this.step = step;
 

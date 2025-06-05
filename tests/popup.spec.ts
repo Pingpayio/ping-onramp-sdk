@@ -2,26 +2,28 @@
 
 import test, { expect } from "@playwright/test";
 
-test.describe('Popup functionality', () => {
+test.describe("Popup functionality", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('http://localhost:3000'); // (examples)
+    await page.goto("http://localhost:3000"); // (examples)
   });
 
-  test('should open popup, validate URL, and confirm onPopupReady event', async ({ page }) => {
+  test("should open popup, validate URL, and confirm onPopupReady event", async ({
+    page,
+  }) => {
     // Listen for the 'onPopupReady' console message from the main page
     let popupReadyMessageReceived = false;
-    page.on('console', (msg) => {
-      if (msg.text() === 'Example: Popup is ready') {
+    page.on("console", (msg) => {
+      if (msg.text() === "Example: Popup is ready") {
         popupReadyMessageReceived = true;
       }
     });
 
     // Start waiting for the popup window BEFORE clicking the button
-    const popupPromise = page.waitForEvent('popup');
+    const popupPromise = page.waitForEvent("popup");
 
     // Click the button that should open the onramp popup
     // This ID comes from examples/src/main.ts
-    await page.click('#openOnrampButton');
+    await page.click("#openOnrampButton");
 
     // Wait for the popup window to open and get its page object
     const popupPage = await popupPromise;

@@ -27,7 +27,7 @@ export function generateOnrampURL(params: OnrampURLParams): string {
     partnerUserId,
     redirectUrl,
     paymentCurrency,
-    paymentMethod,  
+    paymentMethod,
     enableGuestCheckout,
     sessionId,
   } = params;
@@ -51,22 +51,21 @@ export function generateOnrampURL(params: OnrampURLParams): string {
   addressesObj[address] = [network];
   queryParams.append("addresses", JSON.stringify(addressesObj));
 
-
-  if (asset) { 
+  if (asset) {
     queryParams.append("assets", JSON.stringify([asset]));
     queryParams.append("defaultAsset", asset.toUpperCase());
   }
 
-  if (network) { 
+  if (network) {
     queryParams.append("defaultNetwork", network.toUpperCase());
   }
 
-  if (paymentMethod) { 
+  if (paymentMethod) {
     const formattedPaymentMethod = paymentMethod.toUpperCase();
     queryParams.append("defaultPaymentMethod", formattedPaymentMethod);
   }
 
-  if (numericAmount > 0) { 
+  if (numericAmount > 0) {
     queryParams.append("presetFiatAmount", numericAmount.toString());
   }
 

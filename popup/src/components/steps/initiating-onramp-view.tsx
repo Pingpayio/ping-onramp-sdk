@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const InitiatingOnrampView: React.FC = () => (
   <div className="p-4 text-center">
