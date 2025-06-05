@@ -393,6 +393,10 @@ function App() {
       if (step === "connect-wallet" || step === "loading") {
         goToStep("form-entry");
       }
+    } else {
+      if (step === "form-entry") {
+        goToStep("connect-wallet");
+      }
     }
   }, [walletStateValue, step, goToStep]);
 
