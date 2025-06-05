@@ -1,4 +1,3 @@
-import { Wallet } from "@coinbase/onchainkit/wallet";
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
@@ -54,7 +53,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
 
   // For payment method subtext
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    methods.getValues("paymentMethod"),
+    methods.getValues("paymentMethod")
   );
   const paymentMethodWatcher = watch("paymentMethod");
 
