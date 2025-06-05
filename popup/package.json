@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.38.13",
+    "@defuse-protocol/defuse-sdk": "1.0.0-beta.149",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.5",
     "@radix-ui/react-slot": "^1.2.3",
@@ -27,7 +28,8 @@
     "react-hook-form": "^7.56.4",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.8",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vite-plugin-node-polyfills": "^0.23.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
