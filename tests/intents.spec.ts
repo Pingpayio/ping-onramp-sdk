@@ -1,5 +1,4 @@
-import { test, expect } from '@playwright/test';
-import type { Page } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { mock } from '@wagmi/connectors';
 import { createConfig, http } from '@wagmi/core';
 import { mainnet } from '@wagmi/core/chains';
@@ -13,26 +12,28 @@ const MOCK_AMOUNT = '100';
 
 test.describe('NEAR Intents Withdrawal Flow', () => {
   // Wagmi test config with mock connector
-const mockConfig = createConfig({
-  chains: [mainnet],
-  connectors: [
-    mock({
-      accounts: [MOCK_EVM_ADDRESS],
-      features: {
-        reconnect: true
-      }
-    })
-  ],
-  transports: {
-    [mainnet.id]: http()
-  }
-});
+  const mockConfig = createConfig({
+    chains: [mainnet],
+    connectors: [
+      mock({
+        accounts: [MOCK_EVM_ADDRESS],
+        features: {
+          reconnect: true
+        }
+      })
+    ],
+    transports: {
+      [mainnet.id]: http()
+    }
+  });
 
   test('should handle intent withdrawal callback and navigate to processing step', async ({ page }) => {
     // 1. Setup mock wallet connection and config
-    await page.addInitScript(() => {
-      // Expose mockConfig to window for wagmi initialization
-      (window as any).__WAGMI_CONFIG__ = mockConfig;
+    const initScriptArgs = { 
+      evmAddress: MOCK_EVM_ADDRESS
+    };
+
+    await page.addInitScript((args) => {
 
       // Mock near-intents functions
       (window as any).generateNearIntentsDepositAddress = async (evmAddress: string) => {
@@ -54,7 +55,7 @@ const mockConfig = createConfig({
           withdrawal_fee: '100000'
         }]
       });
-      
+
       // Mock the processNearIntentWithdrawal function
       (window as any).processNearIntentWithdrawal = async ({
         callbackParams,
@@ -73,23 +74,23 @@ const mockConfig = createConfig({
         await new Promise(resolve => setTimeout(resolve, 1000));
         updateProgress('depositing');
         updateDisplayInfo({ message: 'Waiting for deposit confirmation...' });
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
         updateProgress('querying');
         updateDisplayInfo({ message: 'Querying bridge rates...' });
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
         updateProgress('signing');
         updateDisplayInfo({ message: 'Please sign the transaction...' });
-        
+
         // Simulate signing
         const signature = await signMessageAsync({ message: 'Mock withdrawal message' });
         console.log('Signed with:', signature);
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
         updateProgress('withdrawing');
         updateDisplayInfo({ message: 'Processing withdrawal...' });
-        
+
         await new Promise(resolve => setTimeout(resolve, 1000));
         updateProgress('done');
         updateDisplayInfo({
@@ -108,7 +109,7 @@ const mockConfig = createConfig({
           switch (method) {
             case 'eth_requestAccounts':
             case 'eth_accounts':
-              return [MOCK_EVM_ADDRESS];
+              return [args.evmAddress];
             case 'eth_chainId':
               return '0x1'; // Mainnet
             case 'personal_sign':
@@ -124,10 +125,10 @@ const mockConfig = createConfig({
           // Track event listeners if needed
           console.log('Ethereum event registered:', event);
         },
-        removeListener: () => {},
+        removeListener: () => { },
         chainId: '0x1',
         networkVersion: '1',
-        selectedAddress: MOCK_EVM_ADDRESS
+        selectedAddress: args.evmAddress
       };
 
       // Mock post-me connection with expected method handling
@@ -154,15 +155,14 @@ const mockConfig = createConfig({
           }
         })
       };
-
-    });
+    }, initScriptArgs);
 
     // 2. Navigate to popup and wait for wallet connection
     await page.goto(POPUP_BASE_URL);
-    
+
     // Wait for wallet connection to be established
     await page.waitForSelector('text=Connected:', { timeout: 10000 });
-    
+
     // Wait for form elements to be visible and enabled
     await page.waitForSelector('#amount:not([disabled])');
     await page.waitForSelector('#nearWalletAddress:not([disabled])');
@@ -189,11 +189,11 @@ const mockConfig = createConfig({
         });
 
         const callbackUrl = `${POPUP_BASE_URL}/onramp-callback?${callbackUrlParams.toString()}`;
-        
-        
+
+
         // Navigate to our simulated callback URL
         await page.goto(callbackUrl);
-        
+
         // Abort the original navigation to Coinbase
         await route.abort();
       } else {
@@ -237,7 +237,7 @@ const mockConfig = createConfig({
       return (window as any).ethereum.signMessageCalls || [];
     });
     expect(signMessageLogs.length).toBeGreaterThan(0);
-    
+
     // Verify the first sign message call contains expected data
     const firstSignMessage = signMessageLogs[0];
     expect(firstSignMessage).toBeDefined();
@@ -249,7 +249,7 @@ const mockConfig = createConfig({
     await expect(
       page.locator('text=Processing withdrawal')
     ).toBeVisible();
-    
+
     // Wait for completion
     await expect(
       page.locator('[data-testid="processing-substep-done"]')
