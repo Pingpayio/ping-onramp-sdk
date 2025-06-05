@@ -34,6 +34,8 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
     };
 
     await page.addInitScript((args) => {
+      // Set flag to skip post-me handshake for tests
+      (window as any).VITE_SKIP_POSTME_HANDSHAKE = true;
 
       // Mock near-intents functions
       (window as any).generateNearIntentsDepositAddress = async (

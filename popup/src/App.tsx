@@ -389,16 +389,40 @@ function App() {
   ]);
 
   useEffect(() => {
-    if (walletStateValue?.address) {
-      if (step === "connect-wallet" || step === "loading") {
-        goToStep("form-entry");
-      }
-    } else {
-      if (step === "form-entry") {
-        goToStep("connect-wallet");
-      }
+    const isWalletConnected = !!(
+      walletStateValue && walletStateValue.address
+    );
+
+    switch (step) {
+      case "loading":
+        if (isWalletConnected) {
+          // wallet is connected, go to form-entry
+          goToStep("form-entry");
+        } else {
+          // If still 'loading' and wallet is not connected (walletStateValue is null),
+          // show 'connect-wallet'.
+          goToStep("connect-wallet");
+        }
+        break;
+
+      case "connect-wallet":
+        if (isWalletConnected) {
+          // Wallet successfully connected (either automatically or via user action on this screen)
+          goToStep("form-entry");
+        }
+        // If not connected, remain in "connect-wallet" for user interaction.
+        break;
+
+      case "form-entry":
+        if (!isWalletConnected) {
+          // If wallet disconnects while on the form, go back to "connect-wallet".
+          goToStep("connect-wallet");
+        }
+        break;
+      default:
+        break;
     }
-  }, [walletStateValue, step, goToStep]);
+  }, [walletStateValue, step, goToStep, setFlowError]);
 
   useEffect(() => {
     if (connection) {

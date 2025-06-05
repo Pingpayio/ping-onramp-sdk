@@ -31,6 +31,59 @@ export function usePopupConnection() {
   const [, setConnection] = useAtom(setPopupConnectionAtom);
   const connection = useAtomValue(popupConnectionAtom);
 
+  // Check for skip handshake environment variable (Vite env or global window var for tests)
+  if (
+    import.meta.env.VITE_SKIP_POSTME_HANDSHAKE === 'true' ||
+    (window as any).VITE_SKIP_POSTME_HANDSHAKE === true
+  ) {
+    console.warn(
+      "[usePopupConnection] Skipping post-me handshake and using mock connection due to VITE_SKIP_POSTME_HANDSHAKE flag.",
+    );
+    // Define a mock connection that aligns with the SdkListenerMethods structure
+    // This mock should be sufficient for tests that don't rely on actual parent communication
+    const mockConnection = {
+      remoteHandle: () => ({
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        call: (methodName: string, params?: any) => {
+          console.log(
+            `[MockConnection] Called ${methodName} with params:`,
+            params,
+          );
+          // Return resolved promises for common calls to avoid breaking tests
+          if (
+            [
+              "reportPopupReady",
+              "reportFlowStarted",
+              "reportStepChanged",
+              "reportFormDataSubmitted",
+              "reportOnrampInitiated",
+              "reportProcessComplete",
+              "reportProcessFailed",
+              "reportPopupClosedByUser",
+            ].includes(methodName)
+          ) {
+            return Promise.resolve();
+          }
+          return Promise.resolve({}); // Default mock response
+        },
+      }),
+      close: () => {
+        console.log("[MockConnection] close() called");
+      },
+      localHandle: () => ({
+        // Mock local methods if needed, though typically not called by the SDK in this manner
+      }),
+      closed: false, // Or true, depending on what's more appropriate for tests
+      connected: true,
+    } as unknown as Connection<PopupActionMethods, SdkListenerMethods>; // Cast to the expected type
+
+    useEffect(() => {
+      setConnection(mockConnection);
+    }, [setConnection]);
+
+    return { connection: mockConnection };
+  }
+
   const { goToStep, setFlowError } = useOnrampFlow();
   const setOnrampTarget = useSetOnrampTarget();
 
