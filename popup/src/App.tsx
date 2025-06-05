@@ -42,6 +42,12 @@ function App() {
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
   const { signMessageAsync, error: signMessageError } = useSignMessage();
 
+  const handleWalletConnected = () => {
+    if (step === "connect-wallet" || step === "loading") {
+      goToStep("form-entry");
+    }
+  };
+
   const handleFormSubmit = async (data: FormValues) => {
     if (!connection) {
       console.error("[App.tsx] Connection not available for form submission.");
@@ -374,13 +380,15 @@ function App() {
     walletStateValue,
     setProcessingSubStep,
     setNearIntentsDisplayInfo,
-    signMessageAsync, 
+    signMessageAsync,
     signMessageError,
   ]);
 
   useEffect(() => {
-    if (walletStateValue?.address && step === "connect-wallet") {
-      goToStep("form-entry");
+    if (walletStateValue?.address) {
+      if (step === "connect-wallet" || step === "loading") {
+        goToStep("form-entry");
+      }
     }
   }, [walletStateValue, step, goToStep]);
 
@@ -400,7 +408,7 @@ function App() {
       case "loading":
         return <LoadingView />;
       case "connect-wallet":
-        return <ConnectWalletView />;
+        return <ConnectWalletView onConnected={handleWalletConnected} />;
       case "form-entry":
         return <FormEntryView onSubmit={handleFormSubmit} />;
       case "connecting-wallet":
