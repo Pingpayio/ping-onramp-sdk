@@ -16,7 +16,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@pingpay/onramp-sdk': '../src/index.ts',
+      '@pingpay/onramp-sdk': '../dist/index.ts',
     },
   },
   optimizeDeps: {

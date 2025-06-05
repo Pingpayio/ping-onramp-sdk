@@ -1,5 +1,5 @@
-// import { PingpayOnramp } from '../../dist/index.js'; // don't commit this to main
-import { PingpayOnramp } from '@pingpay/onramp-sdk';
+import { PingpayOnramp } from '../../dist/index.js'; // don't commit this to main
+// import { PingpayOnramp } from '@pingpay/onramp-sdk';
 
 const openOnrampButton = document.getElementById("openOnrampButton");
 
