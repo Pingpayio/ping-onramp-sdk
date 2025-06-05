@@ -15,6 +15,7 @@ import {
 import { generateNearIntentsDepositAddress } from "./utils/near-intents";
 import type { OnrampURLParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
+import { processNearIntentWithdrawal } from "./utils/intents-withdraw";
 
 import PopupLayout from "./components/layout/popup-layout";
 import CompletionView from "./components/steps/completion-view";
@@ -212,7 +213,6 @@ function App() {
       const urlParams = new URLSearchParams(window.location.search);
       const type = urlParams.get("type");
       const action = urlParams.get("action");
-      // ... other params for intent flow
       const asset = urlParams.get("asset");
       const amount = urlParams.get("amount");
       const recipient = urlParams.get("recipient");
@@ -286,10 +286,8 @@ function App() {
             }
           };
 
-          // Dynamically import processNearIntentWithdrawal to avoid circular dependencies if any
-          import("./utils/intents-withdraw")
-            .then((module) => {
-              module.processNearIntentWithdrawal({
+          // Process the NEAR intent withdrawal
+          processNearIntentWithdrawal({
                 callbackParams: requiredCallbackParams,
                 userEvmAddress: walletStateValue.address!,
                 signMessageAsync: handleSignMessage,
@@ -311,14 +309,6 @@ function App() {
                   ),
                 updateDisplayInfo: setNearIntentsDisplayInfo,
               });
-            })
-            .catch((e: Error) => {
-              console.error("Failed to load intents-withdraw module", e);
-              setFlowError(
-                "Internal error processing withdrawal.",
-                "processing-transaction"
-              );
-            });
 
           // Clean up URL params
           const newUrl = new URL(window.location.href);

@@ -22,6 +22,11 @@ export interface PingpayOnrampConfig {
   targetAsset?: TargetAsset;
 
   /**
+   * URL to render in popup, helpful for local dev + testing
+   */
+  popupUrl?: string;
+
+  /**
    * Optional callback invoked when the popup window signals it's ready.
    */
   onPopupReady?: () => void;

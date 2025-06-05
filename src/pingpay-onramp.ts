@@ -25,10 +25,7 @@ export class PingpayOnramp {
   constructor(config: PingpayOnrampConfig) {
     this.config = config;
 
-    // Check for local development environment variable
-    // Ensure process.env is available or handle appropriately for different environments
-    const isLocalEnv = typeof process !== 'undefined' && process.env && process.env.PINGPAY_SDK_LOCAL === 'true';
-    this.popupUrl = isLocalEnv ? 'http://localhost:5173' : 'https://onramp.pingpay.io';
+    this.popupUrl = config.popupUrl ?? 'https://onramp.pingpay.io';
   }
 
   public async initiateOnramp(target: TargetAsset, initialData?: any): Promise<OnrampResult> {
