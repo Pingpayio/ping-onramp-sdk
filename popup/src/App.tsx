@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
-import DevControls from "./components/dev/DevControls";
 
 import { useSignMessage } from "wagmi";
 import {
