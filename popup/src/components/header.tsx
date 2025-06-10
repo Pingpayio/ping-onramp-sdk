@@ -1,10 +1,8 @@
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
-import { FormProvider, useForm, Controller } from "react-hook-form";
 import { useAccount, useDisconnect } from "wagmi";
 import { walletStateAtom } from "@/state/atoms";
 import { Button } from "../components/ui/button";
-import { ChevronDown, ChevronDownIcon } from "lucide-react";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

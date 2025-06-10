@@ -118,6 +118,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
                 alt="USD Currency Logo"
                 width={"20px"}
                 height={"20px"}
+                className="rounded-full"
               />
 
               <span className=" text-white font-normal">
@@ -161,6 +162,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
                   alt="USD Currency Logo"
                   width={"20px"}
                   height={"20px"}
+                  className="rounded-full"
                 />
 
                 <span className=" text-white font-normal">NEAR</span>
@@ -190,7 +192,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
             <img
               src="/near-logo-green.png"
               alt="NEAR Protocol Logo"
-              className="w-4 h-4"
+              className="w-4 h-4 rounded-full"
             />
             <span>NEAR</span>
             <svg

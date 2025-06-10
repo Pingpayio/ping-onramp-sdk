@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
+import DevControls from "./components/dev/DevControls";
 
 import { useSignMessage } from "wagmi";
 import {
@@ -33,6 +34,38 @@ import type { CallbackParams, IntentProgress } from "./types/onramp";
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
+
+  // Dev mode for testing components
+  const [isDevMode, setIsDevMode] = useState(false);
+
+  // Check for dev mode in URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const devMode = urlParams.get("devMode") === "true";
+    const devStep = urlParams.get("step");
+
+    setIsDevMode(devMode);
+
+    // If in dev mode and a step is specified, override the current step
+    if (devMode && devStep) {
+      // Check if the step is valid
+      const validSteps = [
+        "loading",
+        "connect-wallet",
+        "form-entry",
+        "connecting-wallet",
+        "initiating-onramp-service",
+        "signing-transaction",
+        "processing-transaction",
+        "complete",
+        "error",
+      ];
+
+      if (validSteps.includes(devStep)) {
+        goToStep(devStep as any);
+      }
+    }
+  }, [goToStep]);
 
   const [walletStateValue] = useWalletState();
   const [onrampResultValue] = useOnrampResult();
@@ -465,7 +498,12 @@ function App() {
     }
   };
 
-  return <PopupLayout>{renderStepContent()}</PopupLayout>;
+  return (
+    <PopupLayout>
+      {renderStepContent()}
+      {isDevMode}
+    </PopupLayout>
+  );
 }
 
 export default App;
