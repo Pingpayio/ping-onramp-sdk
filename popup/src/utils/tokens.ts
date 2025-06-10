@@ -1,4 +1,7 @@
-import type { BaseTokenInfo, UnifiedTokenInfo } from "@defuse-protocol/defuse-sdk/dist/types";
+import type {
+  BaseTokenInfo,
+  UnifiedTokenInfo,
+} from "@defuse-protocol/defuse-sdk/dist/types";
 
 type TokenWithTags =
   | (BaseTokenInfo & { tags?: string[] })
