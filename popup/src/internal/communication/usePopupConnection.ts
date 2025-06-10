@@ -33,7 +33,7 @@ export function usePopupConnection() {
 
   // Check for skip handshake environment variable (Vite env or global window var for tests)
   if (
-    import.meta.env.VITE_SKIP_POSTME_HANDSHAKE === 'true' ||
+    import.meta.env.VITE_SKIP_POSTME_HANDSHAKE === "true" ||
     (window as any).VITE_SKIP_POSTME_HANDSHAKE === true
   ) {
     console.warn(

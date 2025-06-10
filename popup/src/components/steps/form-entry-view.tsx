@@ -1,7 +1,7 @@
 import { useSetAtom } from "jotai";
 import React, { useState } from "react";
 import { FormProvider, useForm, Controller } from "react-hook-form";
-import { useAccount, useDisconnect } from "wagmi";
+import { useAccount } from "wagmi";
 import { walletStateAtom } from "../../state/atoms";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -13,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import Header from "../header";
 
 export type FormValues = {
   amount: string;
@@ -30,7 +31,6 @@ interface FormEntryViewProps {
 
 const FormEntryView: React.FC<FormEntryViewProps> = ({
   onSubmit,
-  onDisconnect,
   // generatedEvmAddress,
 }) => {
   const methods = useForm<FormValues>({
@@ -51,13 +51,13 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
     formState: { isValid, errors },
   } = methods;
   const { address, chainId, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
   const setWalletState = useSetAtom(walletStateAtom);
 
   // For payment method subtext
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    methods.getValues("paymentMethod")
+    methods.getValues("paymentMethod"),
   );
+
   const paymentMethodWatcher = watch("paymentMethod");
 
   React.useEffect(() => {
@@ -95,20 +95,13 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white/5 rounded-xl shadow-sm p-4 border border-white/[0.16] space-y-3"
+        className=" rounded-xl shadow-sm p-4 border-white/[0.16] space-y-3"
       >
-        {isConnected && address && (
-          <div className="mt-1 text-center text-xs text-green-400">
-            {" "}
-            {/* Adjusted margin and text size */}
-            Connected: {address.substring(0, 6)}...
-            {address.substring(address.length - 4)}
-          </div>
-        )}
-
+        <Header />
         {/* Amount Input */}
-        <div className="w-full mb-3">
-          <div className="flex flex-row items-center justify-start py-2">
+        <div className="w-full p-4 border gap-2 flex flex-col border-white/[0.18] rounded-[8px] bg-white/5">
+          <p>Your Deposit</p>
+          <div className="flex flex-row items-center justify-between ">
             <Input
               type="number"
               id="amount"
@@ -116,71 +109,115 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
                 required: "Amount is required",
                 min: { value: 0.01, message: "Amount must be positive" },
               })}
-              className="text-5xl md:text-6xl font-bold border-none shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] min-h-[60px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className=" font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
             />
-            <span className="text-5xl md:text-6xl text-white/40 font-normal -ml-1">
-              {methods.getValues("selectedCurrency")}{" "}
-              {/* Display selected currency */}
-            </span>
+            <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center  rounded-full bg-white/[0.08] hover:bg-white/5">
+              <img
+                src="/usd.svg"
+                alt="USD Currency Logo"
+                width={"20px"}
+                height={"20px"}
+              />
+
+              <span className=" text-white font-normal">
+                {methods.getValues("selectedCurrency")}{" "}
+              </span>
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="11"
+                  height="6"
+                  viewBox="0 0 11 6"
+                  fill="none"
+                >
+                  <path
+                    d="M1.89917 1L5.89917 5L9.89917 1"
+                    stroke="white"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+            </div>
           </div>
           {errors.amount && (
             <p className="text-red-400 text-xs mt-1">{errors.amount.message}</p>
           )}
           {/* Hidden input to keep "USD" in form data - already part of defaultValues */}
         </div>
+        {/* Amount Input */}
+        <div className="w-full border gap-2 flex flex-col border-white/[0.18] rounded-[8px] bg-white/5">
+          <div className="w-full p-4 gap-2 flex flex-col ">
+            <p>You Receive</p>
+            <div className="flex flex-row items-center justify-between ">
+              <p className=" font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                100
+              </p>
+              <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center  rounded-full bg-white/[0.08] hover:bg-white/5">
+                <img
+                  src="/near-logo-green.png"
+                  alt="USD Currency Logo"
+                  width={"20px"}
+                  height={"20px"}
+                />
 
-        {/* Asset Display (Disabled USDC) */}
-        <div>
-          <Label
-            htmlFor="selectedAsset"
-            className="block text-sm text-white mb-1"
-          >
-            Select Asset
-          </Label>
-          <div className="w-full justify-between bg-white/[0.08] hover:bg-white/5 border border-[rgba(255,255,255,0.18)] h-[42px] text-left px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 touch-feedback flex items-center rounded-md">
-            <div className="flex items-center">
-              <div className="bg-secondary rounded-full p-1.5 mr-2">
-                <div className="w-3.5 h-3.5 rounded-full overflow-hidden flex items-center justify-center">
-                  <img
-                    src="/usd-coin-usdc-logo.svg" // Assuming this path is correct in popup/public
-                    alt="USDC"
-                    className="w-full h-full object-cover"
-                  />
+                <span className=" text-white font-normal">NEAR</span>
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="11"
+                    height="6"
+                    viewBox="0 0 11 6"
+                    fill="none"
+                  >
+                    <path
+                      d="M1.89917 1L5.89917 5L9.89917 1"
+                      stroke="white"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
                 </div>
               </div>
-              <span className="font-normal text-white/60 text-sm">USDC</span>
             </div>
           </div>
-          <input type="hidden" {...register("selectedAsset")} value="USDC" />
-        </div>
-
-        {/* Network Display (New Field) */}
-        <div className="flex flex-col">
-          <Label className="text-sm text-white mb-1">Network</Label>
-          <div className="rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[40px] flex items-center px-3 text-white justify-between hover:border-[#AF9EF9]/70">
-            <div className="flex items-center">
-              <div className="h-5 w-5 rounded-full mr-2 overflow-hidden flex items-center justify-center">
-                <img
-                  src="/near-protocol-near-logo.svg" // Path relative to popup/public
-                  alt="NEAR Protocol"
-                  className="h-4 w-4 object-contain"
-                />
-              </div>
-              <span className="text-sm font-normal text-white/60">
-                NEAR Protocol
-              </span>
-            </div>
+          <div className="h-[2px] -mt-1 -mb-2 w-full bg-white/5" />
+          <div className="w-full py-2 gap-1 px-4 flex shrink-0 items-center justify-end text-[#FFFFFF99] text-xs">
+            <p>Network:</p>
+            <img
+              src="/near-logo-green.png"
+              alt="NEAR Protocol Logo"
+              className="w-4 h-4"
+            />
+            <span>NEAR</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="11"
+              height="6"
+              viewBox="0 0 11 6"
+              fill="none"
+            >
+              <path
+                d="M1.89917 1L5.89917 5L9.89917 1"
+                stroke="white"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
           </div>
         </div>
 
         {/* NEAR Wallet Address Input */}
-        <div>
+        <div className="flex flex-col gap-1">
           <Label
             htmlFor="nearWalletAddress"
             className="block text-sm text-white mb-1"
           >
-            NEAR Recipient Address (e.g., alice.near)
+            Recipient Wallet Address
           </Label>
           <Input
             type="text"
@@ -188,8 +225,8 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
             {...register("nearWalletAddress", {
               required: "NEAR Wallet Address is required",
             })}
-            className="mt-1 block w-full p-2 rounded-lg bg-white/[0.08] border border-[rgba(255,255,255,0.18)] h-[42px] text-white/60 placeholder:text-white/60 focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 placeholder:text-sm placeholder:font-normal"
-            placeholder="e.g., yourwallet.near"
+            className=" block w-full p-4 rounded-lg h-[54px] bg-white/[0.08] border border-[rgba(255,255,255,0.18)]   focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 placeholder:text-base placeholder:font-base"
+            placeholder="Enter Recipient Address"
           />
           {errors.nearWalletAddress && (
             <p className="text-red-400 text-xs mt-1">
@@ -197,17 +234,17 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
             </p>
           )}
           <p className="text-xs text-white/50 mt-1 px-1">
-            Funds will be on-ramped and then bridged to this NEAR address.
+            Funds will be on-ramped and then bridged to this address.
           </p>
         </div>
 
         {/* Payment Method Dropdown */}
-        <div>
+        <div className="flex flex-col gap-1 z-50">
           <Label
             htmlFor="paymentMethod"
             className="block text-sm text-white mb-2"
           >
-            Payment Method
+            Pay Using
           </Label>
           <Controller
             name="paymentMethod"
@@ -221,7 +258,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
                 }}
                 defaultValue={field.value}
               >
-                <SelectTrigger className="w-full rounded-lg hover:shadow-sm transition-shadow bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[42px] text-white/60 flex items-center px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70">
+                <SelectTrigger className="w-full rounded-lg hover:shadow-sm transition-shadow z-50 bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[42px] text-white flex items-center px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70">
                   <SelectValue
                     placeholder="Select payment method"
                     className="font-normal text-white/60"
@@ -262,53 +299,13 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
           )}
         </div>
 
-        {/* EVM Deposit Address Display */}
-        {/* <div className="flex flex-col">
-          <div className="flex items-center gap-2 mb-1">
-            <div className="w-5 h-5 rounded-full flex items-center justify-center overflow-hidden relative">
-              <img
-                src="/near-intents-logo.png"
-                alt="EVM Deposit Address Icon"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <Label className="text-sm text-white">
-              EVM Deposit Address (for USDC)
-            </Label>
-          </div>
-          <div className="mt-1 min-h-[auto] p-0 border-none bg-transparent text-xs text-[#AF9EF9] font-normal">
-            {generatedEvmAddress ? (
-              <span className="truncate">{generatedEvmAddress}</span>
-            ) : (
-              <span className="text-white/70">Awaiting generation...</span>
-            )}
-          </div>
-          <p className="text-xs text-white/50 mt-1 px-1">
-            This is the temporary EVM address where you'll send USDC. It will
-            then be bridged to your NEAR address.
-          </p>
-        </div> */}
-
         <Button
           type="submit"
-          className="w-full rounded-full border-none bg-[#AB9FF2] text-[#3D315E] hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
+          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
           disabled={!isValid}
         >
-          Continue
+          Buy NEAR
         </Button>
-
-        {isConnected && (
-          <Button
-            type="button"
-            onClick={() => {
-              disconnect();
-              onDisconnect();
-            }}
-            className="w-full mt-2 rounded-full border border-white/20 bg-transparent text-white/60 hover:bg-white/10 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
-          >
-            Disconnect Wallet
-          </Button>
-        )}
       </form>
     </FormProvider>
   );
