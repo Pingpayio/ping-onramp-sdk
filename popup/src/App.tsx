@@ -18,16 +18,12 @@ import type { OnrampURLParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
 import PopupLayout from "./components/layout/popup-layout";
-import CompletionView from "./components/steps/completion-view";
 import ConnectWalletView from "./components/steps/connect-wallet-view";
 import ConnectingWalletView from "./components/steps/connecting-wallet-view";
 import ErrorView from "./components/steps/error-view";
 import type { FormValues } from "./components/steps/form-entry-view";
 import FormEntryView from "./components/steps/form-entry-view";
-import InitiatingOnrampView from "./components/steps/initiating-onramp-view";
 import LoadingView from "./components/steps/loading-view";
-import ProcessingTransactionView from "./components/steps/processing-transaction-view";
-import SigningTransactionView from "./components/steps/signing-transaction-view";
 import type { CallbackParams, IntentProgress } from "./types/onramp";
 import { ProcessingOnramp } from "./components/processsing-onramp";
 
@@ -97,7 +93,7 @@ function App() {
       .remoteHandle()
       .call("reportFormDataSubmitted", { formData: data })
       .catch((e: unknown) =>
-        console.error("App.tsx: Error calling reportFormDataSubmitted", e),
+        console.error("App.tsx: Error calling reportFormDataSubmitted", e)
       );
 
     // Get user's EVM address (partnerUserId)
@@ -112,7 +108,7 @@ function App() {
         .remoteHandle()
         .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
         .catch((e: unknown) =>
-          console.error("App.tsx: Error reporting missing EVM address", e),
+          console.error("App.tsx: Error reporting missing EVM address", e)
         );
 
       return;
@@ -132,7 +128,7 @@ function App() {
     } catch (genError) {
       console.error(
         "App.tsx: Failed to generate NEAR Intents deposit address:",
-        genError,
+        genError
       );
       const errorMsg =
         genError instanceof Error
@@ -148,8 +144,8 @@ function App() {
         .catch((e: unknown) =>
           console.error(
             "App.tsx: Error reporting deposit address generation failure",
-            e,
-          ),
+            e
+          )
         );
 
       return;
@@ -203,8 +199,8 @@ function App() {
             .catch((e: unknown) =>
               console.error(
                 "App.tsx: Error calling reportProcessFailed for Coinbase URL error",
-                e,
-              ),
+                e
+              )
             );
         }
         return;
@@ -220,7 +216,7 @@ function App() {
           },
         })
         .catch((e: unknown) =>
-          console.error("App.tsx: Error calling reportOnrampInitiated", e),
+          console.error("App.tsx: Error calling reportOnrampInitiated", e)
         );
 
       console.log("Redirecting to Coinbase Onramp:", coinbaseOnrampURL);
@@ -236,7 +232,7 @@ function App() {
       const errorMsg = e instanceof Error ? e.message : String(e);
       setFlowError(
         errorMsg || "Failed to initiate onramp.",
-        "initiating-onramp-service",
+        "initiating-onramp-service"
       );
       connection
         ?.remoteHandle()
@@ -247,8 +243,8 @@ function App() {
         .catch((err: unknown) =>
           console.error(
             "App.tsx: Error calling reportProcessFailed for general catch block",
-            err,
-          ),
+            err
+          )
         );
     }
   };
@@ -340,13 +336,13 @@ function App() {
               if (newSubStep === "error")
                 setFlowError(
                   "Bridge processing error.",
-                  "processing-transaction",
+                  "processing-transaction"
                 );
             },
             updateErrorMessage: (msg: string | null) =>
               setFlowError(
                 msg || "Unknown bridge error",
-                "processing-transaction",
+                "processing-transaction"
               ),
             updateDisplayInfo: setNearIntentsDisplayInfo,
           });
@@ -362,7 +358,7 @@ function App() {
           window.history.replaceState(
             {},
             document.title,
-            newUrl.pathname + newUrl.search,
+            newUrl.pathname + newUrl.search
           );
         } else {
           // Handle original Coinbase Onramp callback if not an intent
@@ -379,10 +375,7 @@ function App() {
               ?.remoteHandle()
               .call("reportProcessComplete", { result: resultPayload })
               .catch((e: unknown) =>
-                console.error(
-                  "App.tsx: Error calling reportProcessComplete",
-                  e,
-                ),
+                console.error("App.tsx: Error calling reportProcessComplete", e)
               );
             goToStep("complete");
           } else if (status === "failure") {
@@ -397,8 +390,8 @@ function App() {
               .catch((e: unknown) =>
                 console.error(
                   "App.tsx: Error calling reportProcessFailed for callback failure",
-                  e,
-                ),
+                  e
+                )
               );
           }
         }
@@ -458,7 +451,7 @@ function App() {
         .remoteHandle()
         .call("reportStepChanged", { step })
         .catch((e: unknown) =>
-          console.error("App.tsx: Error calling reportStepChanged", e),
+          console.error("App.tsx: Error calling reportStepChanged", e)
         );
     }
   }, [connection, step]);

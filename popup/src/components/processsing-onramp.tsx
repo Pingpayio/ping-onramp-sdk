@@ -21,7 +21,7 @@ export interface ProcessingOnrampProps {
 
 export function ProcessingOnramp({
   step,
-  result,
+  //   result,
   stepBoxes,
   details,
 }: ProcessingOnrampProps) {
