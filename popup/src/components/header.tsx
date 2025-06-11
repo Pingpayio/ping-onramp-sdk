@@ -29,7 +29,10 @@ export default function Header({ title }: { title: string }) {
           <Logo />
         </a>
         <h3 className=" font-bold text-[24px]">{title}</h3>
-        <div onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <div
+          className="cursor-pointer z-50"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -48,7 +51,7 @@ export default function Header({ title }: { title: string }) {
       </header>
 
       {isMenuOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-md bg-gray-800 shadow-lg z-10">
+        <div className="absolute z-50 right-0 top-full mt-2 w-48 rounded-md bg-gray-800 shadow-lg">
           <div className="py-1">
             {isConnected && (
               <Button
