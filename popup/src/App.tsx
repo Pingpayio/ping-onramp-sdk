@@ -29,6 +29,7 @@ import LoadingView from "./components/steps/loading-view";
 import ProcessingTransactionView from "./components/steps/processing-transaction-view";
 import SigningTransactionView from "./components/steps/signing-transaction-view";
 import type { CallbackParams, IntentProgress } from "./types/onramp";
+import { ProcessingOnramp } from "./components/processsing-onramp";
 
 function App() {
   const { connection } = usePopupConnection();
@@ -478,13 +479,13 @@ function App() {
       case "connecting-wallet":
         return <ConnectingWalletView />;
       case "initiating-onramp-service":
-        return <InitiatingOnrampView />;
+        return <ProcessingOnramp step={0} />;
       case "signing-transaction":
-        return <SigningTransactionView />;
+        return <ProcessingOnramp step={1} />;
       case "processing-transaction":
-        return <ProcessingTransactionView />;
+        return <ProcessingOnramp step={2} />;
       case "complete":
-        return <CompletionView result={onrampResultValue} />;
+        return <ProcessingOnramp step={3} result={onrampResultValue} />;
       case "error":
         return (
           <ErrorView error={error} onRetry={() => goToStep("form-entry")} />

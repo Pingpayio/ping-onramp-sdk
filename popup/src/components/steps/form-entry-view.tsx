@@ -57,6 +57,7 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
     methods.getValues("paymentMethod"),
   );
+  const [isAmountFocused, setIsAmountFocused] = useState(false);
 
   const paymentMethodWatcher = watch("paymentMethod");
 
@@ -95,11 +96,15 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className=" rounded-xl shadow-sm p-4 border-white/[0.16] space-y-3"
+        className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
       >
-        <Header />
+        <Header title="Buy Assets" />
         {/* Amount Input */}
-        <div className="w-full p-4 border gap-2 flex flex-col border-white/[0.18] rounded-[8px] bg-white/5">
+        <div
+          className={`w-full p-4 border gap-2 flex flex-col hover:border-[#AF9EF9] ${
+            isAmountFocused ? "border-[#AF9EF9]" : "border-white/[0.18]"
+          } rounded-[8px] bg-white/5`}
+        >
           <p>Your Deposit</p>
           <div className="flex flex-row items-center justify-between ">
             <Input
@@ -109,6 +114,8 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
                 required: "Amount is required",
                 min: { value: 0.01, message: "Amount must be positive" },
               })}
+              onFocus={() => setIsAmountFocused(true)}
+              onBlur={() => setIsAmountFocused(false)}
               className=" font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
             />

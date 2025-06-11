@@ -4,7 +4,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import { walletStateAtom } from "@/state/atoms";
 import { Button } from "../components/ui/button";
 
-export default function Header() {
+export default function Header({ title }: { title: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { address, chainId, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
@@ -23,10 +23,10 @@ export default function Header() {
     }
   }, [address, chainId, isConnected, setWalletState]);
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <header className="flex items-center justify-between">
         <Logo />
-        <h3 className=" font-bold text-[24px]">Buy Assets</h3>
+        <h3 className=" font-bold text-[24px]">{title}</h3>
         <div onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
