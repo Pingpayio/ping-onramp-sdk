@@ -25,7 +25,9 @@ export default function Header({ title }: { title: string }) {
   return (
     <div className="relative w-full">
       <header className="flex items-center justify-between">
-        <Logo />
+        <a href="https://pingpay.io" target="_blank">
+          <Logo />
+        </a>
         <h3 className=" font-bold text-[24px]">{title}</h3>
         <div onClick={() => setIsMenuOpen(!isMenuOpen)}>
           <svg

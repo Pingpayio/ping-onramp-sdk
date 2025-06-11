@@ -12,7 +12,9 @@ const PopupLayout: React.FC<PopupLayoutProps> = ({ children }) => {
         <main className="flex-1 overflow-auto">{children}</main>
         <footer className="text-center text-xs text-white flex gap-1 items-end justify-center py-2">
           <p>Powered by</p>
-          <img src="/ping-pay-logo-light.svg" className="" />
+          <a href="https://pingpay.io" target="_blank">
+            <img src="/ping-pay-logo-light.svg" className="" />
+          </a>
         </footer>
       </div>
     </div>
