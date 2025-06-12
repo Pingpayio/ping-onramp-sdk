@@ -6,6 +6,7 @@ import {
   onrampTargetAtom,
   walletStateAtom,
 } from "../../state/atoms";
+import { useCoinbaseConfig } from "../../hooks/useCoinbaseConfig";
 import {
   requestSwapQuote,
   find1ClickAsset,
@@ -43,12 +44,11 @@ interface FormEntryViewProps {
 }
 
 const FALLBACK_TARGET_ASSET: TargetAsset = {
-  chain: "NEAR",
+  chain: "near",
   asset: "wNEAR",
 };
 
-const COINBASE_DEPOSIT_NETWORK = "base"; // As seen in App.tsx
-const ONE_CLICK_REFERRAL_ID = "pingpay.near"; // As seen in App.tsx
+const ONE_CLICK_REFERRAL_ID = "pingpay.near"; 
 
 // Simple debounce utility
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,10 +83,10 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     mode: "onChange",
     defaultValues: {
       amount: "",
-      selectedAsset: "USDC", // Asset to buy on Coinbase
+      selectedAsset: "USDC", 
       selectedCurrency: "USD",
       paymentMethod: "card",
-      nearWalletAddress: "", // Will be validated as required
+      nearWalletAddress: "", 
     },
   });
   const {
@@ -99,13 +99,18 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
   } = methods;
   const { address, chainId, isConnected } = useAccount();
   const setWalletState = useSetAtom(walletStateAtom);
+  
   const depositAmountWatcher = watch("amount");
+  const selectedAssetWatcher = watch("selectedAsset"); 
+
+  const { optimalCoinbaseOption, isInitialConfigLoading } = useCoinbaseConfig({ 
+    selectedAsset: selectedAssetWatcher || getValues("selectedAsset")
+  });
 
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
     methods.getValues("paymentMethod")
   );
   const [isAmountFocused, setIsAmountFocused] = useState(false);
-
   const paymentMethodWatcher = watch("paymentMethod");
 
   React.useEffect(() => {
@@ -129,12 +134,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     if (isConnected && address) {
       setWalletState({
         address,
-        chainId: chainId?.toString(), // chainId can be undefined if not available
-        // walletName could be added here if available from useAccount or another source
+        chainId: chainId?.toString(),
       });
     } else {
-      // Set to null or an empty state if that's how disconnection is represented
-      // For WalletState | null, setting to null is appropriate
       setWalletState(null);
     }
   }, [address, chainId, isConnected, setWalletState]);
@@ -150,7 +152,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
 
       setIsQuoteLoading(true);
       setQuoteError(null);
-      setEstimatedReceiveAmount("..."); // Placeholder for loading
+      setEstimatedReceiveAmount("..."); 
 
       try {
         let currentSupportedTokens = allSupportedTokens;
@@ -165,10 +167,13 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
 
         const formSnapshot = getValues();
 
+        const coinbaseNetworkForQuote = optimalCoinbaseOption?.network || "base"; 
+        const assetToBuyOnCoinbaseForQuote = optimalCoinbaseOption?.asset || formSnapshot.selectedAsset; 
+
         const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
           currentSupportedTokens,
-          formSnapshot.selectedAsset,
-          COINBASE_DEPOSIT_NETWORK,
+          assetToBuyOnCoinbaseForQuote,
+          coinbaseNetworkForQuote
         );
 
         const destinationAsset1Click: OneClickToken | undefined =
@@ -211,9 +216,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           depositType: "ORIGIN_CHAIN",
           recipientType: "DESTINATION_CHAIN",
           swapType: "EXACT_INPUT",
-          slippageTolerance: 100, // 1%
+          slippageTolerance: 100, 
           deadline: quoteDeadline,
-          dry: true, // CRITICAL: For preview only
+          dry: true, 
           referral: ONE_CLICK_REFERRAL_ID,
         };
 
@@ -223,7 +228,6 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           const truncatedAmount = Math.floor(rawAmount * 100) / 100;
           setEstimatedReceiveAmount(truncatedAmount.toFixed(2));
         } else {
-          // Fallback if parsing fails, though amountOutFormatted should be a number string
           setEstimatedReceiveAmount(quoteResponse.quote.amountOutFormatted);
         }
         setQuoteError(null);
@@ -236,12 +240,12 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         setIsQuoteLoading(false);
       }
     },
-    [allSupportedTokens, currentOnrampTarget, address, getValues, setAllSupportedTokens],
+    [allSupportedTokens, currentOnrampTarget, address, getValues, setAllSupportedTokens, optimalCoinbaseOption], 
   );
 
   const debouncedFetchQuotePreview = useCallback(
     debounce(fetchQuotePreview, 750),
-    [fetchQuotePreview],
+    [fetchQuotePreview], 
   );
 
   useEffect(() => {
@@ -277,6 +281,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
       >
         <Header title="Buy Assets" />
+        {isInitialConfigLoading && (
+          <div className="text-center text-sm text-white/70 p-2">Loading regional settings...</div>
+        )}
         {/* Amount Input */}
         <div
           className={`w-full p-4 border gap-2 flex flex-col hover:border-[#AF9EF9] ${
@@ -309,31 +316,13 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
               <span className=" text-white font-normal">
                 {methods.getValues("selectedCurrency")}{" "}
               </span>
-              {/* <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="11"
-                  height="6"
-                  viewBox="0 0 11 6"
-                  fill="none"
-                >
-                  <path
-                    d="M1.89917 1L5.89917 5L9.89917 1"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div> */}
             </div>
           </div>
           {errors.amount && (
             <p className="text-red-400 text-xs mt-1">{errors.amount.message}</p>
           )}
-          {/* Hidden input to keep "USD" in form data - already part of defaultValues */}
         </div>
-        {/* Amount Input */}
+        {/* You Receive (Estimated) */}
         <div className="w-full border gap-2 flex flex-col border-white/[0.18] rounded-[8px] bg-white/5">
           <div className="w-full p-4 gap-2 flex flex-col ">
             <p>You Receive (Estimated)</p>
@@ -361,27 +350,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
                   height={"20px"}
                   className="rounded-full"
                 />
-
                 <span className=" text-white font-normal">
                   {currentOnrampTarget.asset}
                 </span>
-                {/* <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="11"
-                    height="6"
-                    viewBox="0 0 11 6"
-                    fill="none"
-                  >
-                    <path
-                      d="M1.89917 1L5.89917 5L9.89917 1"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div> */}
               </div>
             </div>
           </div>
@@ -398,21 +369,6 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
               className="w-4 h-4 rounded-full"
             />
             <span>{currentOnrampTarget.chain}</span>
-            {/* <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="11"
-              height="6"
-              viewBox="0 0 11 6"
-              fill="none"
-            >
-              <path
-                d="M1.89917 1L5.89917 5L9.89917 1"
-                stroke="white"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg> */}
           </div>
         </div>
 
@@ -470,8 +426,6 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
                   />
                 </SelectTrigger>
                 <SelectContent className="bg-[#303030] border-[#AF9EF9] text-white/60 w-full">
-                  {" "}
-                  {/* Added w-full to SelectContent */}
                   <SelectItem
                     value="card"
                     className="text-white/60 text-sm font-normal hover:text-white hover:bg-white/5"
@@ -507,7 +461,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         <Button
           type="submit"
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
-          disabled={!isValid}
+          disabled={!isValid || isInitialConfigLoading}
         >
           Buy {currentOnrampTarget.asset}
         </Button>

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
+import { useAtomValue } from "jotai"; 
 import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
+import { optimalCoinbaseOptionAtom } from "./state/atoms"; 
 
 import {
   useOneClickSupportedTokens,
@@ -36,12 +38,13 @@ import { FormEntryView } from "./components/steps/form-entry-view";
 import { LoadingView } from "./components/steps/loading-view";
 import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
 
-const COINBASE_DEPOSIT_NETWORK = "base";
+// const COINBASE_DEPOSIT_NETWORK = "base"; // This is now dynamic
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
+  const optimalCoinbaseOption = useAtomValue(optimalCoinbaseOptionAtom); 
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -58,7 +61,7 @@ function App() {
         "error",
       ];
       if (validSteps.includes(devStep)) {
-        goToStep(devStep as any);
+        goToStep(devStep as any); // Consider using a type assertion or type guard for devStep
       }
     }
   }, [goToStep]);
@@ -66,16 +69,13 @@ function App() {
   const [walletStateValue] = useWalletState();
   const [onrampResultValue] = useOnrampResult();
   const setOnrampResultAtom = useSetOnrampResult();
-  const [onrampTargetValue] = useOnrampTarget(); // Get the target asset
+  const [onrampTargetValue] = useOnrampTarget(); 
 
-  // 1Click specific state setters/getters
   const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
   const [oneClickSupportedTokens] = useOneClickSupportedTokens();
   const setOneClickFullQuoteResponse = useSetOneClickFullQuoteResponse();
   const setOneClickStatus = useSetOneClickStatus();
-
-  // Hooks that might be repurposed or removed if not directly applicable to 1Click UI updates
-  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo(); // For displaying amounts, etc.
+  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
 
   const handleWalletConnected = () => {
     if (step === "connect-wallet" || step === "loading") {
@@ -110,9 +110,24 @@ function App() {
     }
 
     goToStep("initiating-onramp-service");
-    setNearIntentsDisplayInfo({ message: "Fetching token data..." });
+    setNearIntentsDisplayInfo({ message: "Processing your request..." });
 
     try {
+      const fallbackNetwork = "base"; // Fallback if no optimal option
+      const fallbackAsset = data.selectedAsset;
+      const fallbackCurrency = data.selectedCurrency;
+      const fallbackPaymentMethod = data.paymentMethod.toUpperCase();
+
+      const depositNetworkForCoinbase = optimalCoinbaseOption?.network || fallbackNetwork; 
+      const assetToBuyOnCoinbase = optimalCoinbaseOption?.asset || fallbackAsset;
+      const paymentCurrencyForCoinbase = optimalCoinbaseOption?.currency || fallbackCurrency;
+      const paymentMethodForCoinbase = (optimalCoinbaseOption?.paymentMethodId || data.paymentMethod).toUpperCase();
+
+
+      console.log("App.tsx - Using Optimal Coinbase Option:", optimalCoinbaseOption);
+      console.log("App.tsx - Effective Network:", depositNetworkForCoinbase, "Asset:", assetToBuyOnCoinbase);
+      
+      setNearIntentsDisplayInfo({ message: "Fetching token data..." });
       let currentSupportedTokens = oneClickSupportedTokens;
       if (!currentSupportedTokens) {
         currentSupportedTokens = await fetch1ClickSupportedTokens();
@@ -123,14 +138,14 @@ function App() {
 
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
-        data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        COINBASE_DEPOSIT_NETWORK // e.g., "base"
+        assetToBuyOnCoinbase,       
+        depositNetworkForCoinbase   
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
-        onrampTargetValue.asset, // e.g., "USDC" - final asset on target chain
-        onrampTargetValue.chain // e.g., "NEAR"
+        onrampTargetValue.asset, 
+        onrampTargetValue.chain 
       );
 
       if (!originAsset1Click || !destinationAsset1Click) {
@@ -141,27 +156,23 @@ function App() {
         return;
       }
 
-      // Convert fiat amount to smallest unit of origin asset
-      // This assumes data.selectedAsset (e.g. USDC) has a known price relative to data.selectedCurrency (e.g. USD)
-      // For simplicity, if selectedAsset is USDC and currency is USD, amount is 1:1
-      // A proper price feed or conversion logic would be needed for other assets/currencies
       const amountInSmallestUnit = BigInt(
         Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals)
       ).toString();
 
-      const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 minutes from now
+      const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); 
 
       const quoteParams: QuoteRequestParams = {
         originAsset: originAsset1Click.assetId,
         destinationAsset: destinationAsset1Click.assetId,
         amount: amountInSmallestUnit,
-        recipient: data.nearWalletAddress, // Final recipient on NEAR
+        recipient: data.nearWalletAddress, 
         refundTo: userEvmAddress,
         refundType: "ORIGIN_CHAIN",
         depositType: "ORIGIN_CHAIN",
-        recipientType: "DESTINATION_CHAIN", // As we are sending to a NEAR chain address
+        recipientType: "DESTINATION_CHAIN", 
         swapType: "EXACT_INPUT",
-        slippageTolerance: 100, // 1%
+        slippageTolerance: 100, 
         deadline: quoteDeadline,
         dry: false,
         referral: ONE_CLICK_REFERRAL_ID,
@@ -171,13 +182,13 @@ function App() {
       const quoteResponse = await requestSwapQuote(quoteParams);
       setOneClickFullQuoteResponse(quoteResponse);
 
-      const depositAddressForCoinbase = quoteResponse.quote.depositAddress;
-      const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK
+      const depositAddressFor1Click = quoteResponse.quote.depositAddress;
+      const finalDepositNetworkForCoinbase = originAsset1Click.blockchain; 
 
       const callbackUrlParams = new URLSearchParams({
         type: "intents",
         action: "withdraw",
-        oneClickDepositAddress: depositAddressForCoinbase,
+        oneClickDepositAddress: depositAddressFor1Click,
         targetNetwork: onrampTargetValue.chain,
         targetAssetSymbol: onrampTargetValue.asset,
         fiatAmount: data.amount,
@@ -189,14 +200,14 @@ function App() {
       }/onramp-callback?${callbackUrlParams.toString()}`;
 
       const onrampParamsForCoinbase: OnrampURLParams = {
-        asset: data.selectedAsset, // Asset Coinbase user buys (e.g. USDC)
+        asset: assetToBuyOnCoinbase,          
         amount: data.amount,
-        network: depositNetworkForCoinbase, // Network Coinbase deposits to (e.g. base)
-        address: depositAddressForCoinbase, // 1Click's deposit address
+        network: finalDepositNetworkForCoinbase, 
+        address: depositAddressFor1Click,     
         partnerUserId: userEvmAddress,
         redirectUrl: redirectUrl,
-        paymentCurrency: data.selectedCurrency,
-        paymentMethod: data.paymentMethod.toUpperCase(),
+        paymentCurrency: paymentCurrencyForCoinbase, 
+        paymentMethod: paymentMethodForCoinbase,   
         enableGuestCheckout: true,
       };
 
@@ -206,9 +217,9 @@ function App() {
         serviceName: "Coinbase Onramp (via 1Click)",
         details: {
           url: coinbaseOnrampURL,
-          depositAddress: {
-            address: depositAddressForCoinbase,
-            network: depositNetworkForCoinbase,
+          depositAddress: { 
+            address: depositAddressFor1Click,
+            network: finalDepositNetworkForCoinbase, 
           },
           quote: quoteResponse,
         },
@@ -222,7 +233,6 @@ function App() {
       } else {
         window.location.href = coinbaseOnrampURL;
       }
-      // No goToStep here, as redirect happens. Callback will handle next steps.
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       setFlowError(
@@ -237,7 +247,7 @@ function App() {
   };
 
   useEffect(() => {
-    const POLLING_INTERVAL = 5000; // 5 seconds
+    const POLLING_INTERVAL = 5000; 
     let pollingTimer: NodeJS.Timeout | undefined;
 
     const pollStatus = async (depositAddress: string) => {
@@ -285,7 +295,6 @@ function App() {
           case "PENDING_DEPOSIT":
           case "KNOWN_DEPOSIT_TX":
           case "PROCESSING":
-            // Continue polling
             pollingTimer = setTimeout(
               () => pollStatus(depositAddress),
               POLLING_INTERVAL
@@ -307,11 +316,10 @@ function App() {
           }. Retrying...`,
           "processing-transaction"
         );
-        // Retry polling after a delay
         pollingTimer = setTimeout(
           () => pollStatus(depositAddress),
           POLLING_INTERVAL * 2
-        ); // Longer delay on error
+        ); 
       }
     };
 
@@ -323,7 +331,6 @@ function App() {
       const coinbaseTransactionId = urlParams.get("transactionId");
 
       if (window.location.pathname === "/onramp-callback") {
-        // Clean up URL params first
         const newUrl = new URL(window.location.href);
         urlParams.forEach((_, key) => newUrl.searchParams.delete(key));
         window.history.replaceState(
@@ -348,7 +355,6 @@ function App() {
               setNearIntentsDisplayInfo({
                 message: "Deposit submitted. Polling for swap status...",
               });
-              // Start polling
               pollStatus(oneClickDepositAddress);
             } catch (submitError) {
               setFlowError(
@@ -367,11 +373,6 @@ function App() {
               step: "processing-transaction",
             });
           } else {
-            // Coinbase callback might not have status=success, or missing txId.
-            // This could happen if user closes Coinbase popup early.
-            // We might still try to poll if we have a depositAddress,
-            // assuming funds *might* have been sent.
-            // Or, treat as an error/uncertain state.
             console.warn(
               "Coinbase callback status not 'success' or transactionId missing, but 1Click deposit address present.",
               { coinbaseStatus, coinbaseTransactionId }
@@ -379,13 +380,9 @@ function App() {
             setNearIntentsDisplayInfo({
               message: "Verifying deposit status with 1Click...",
             });
-            // Attempt to poll anyway, 1Click might have detected the deposit via other means
-            // or it might timeout if no deposit is found.
             pollStatus(oneClickDepositAddress);
           }
         } else {
-          // Fallback for original non-1Click Coinbase callback if any old links are hit
-          // This part can be removed if only 1Click flow is active
           if (coinbaseStatus === "success" && coinbaseTransactionId) {
             const resultPayload: OnrampResult = {
               success: true,
@@ -430,30 +427,27 @@ function App() {
     switch (step) {
       case "loading":
         if (isWalletConnected) {
-          // wallet is connected, go to form-entry
           goToStep("form-entry");
         } else {
-          // If still 'loading' and wallet is not connected (walletStateValue is null),
-          // show 'connect-wallet'.
           goToStep("connect-wallet");
         }
         break;
-
       case "connect-wallet":
         if (isWalletConnected) {
-          // Wallet successfully connected (either automatically or via user action on this screen)
           goToStep("form-entry");
         }
-        // If not connected, remain in "connect-wallet" for user interaction.
         break;
-
       case "form-entry":
         if (!isWalletConnected) {
-          // If wallet disconnects while on the form, go back to "connect-wallet".
           goToStep("connect-wallet");
         }
         break;
       default:
+        // This default case handles any 'step' values not explicitly cased above.
+        // If 'step' can only be one of the known string literals, this might be unreachable.
+        // However, if 'step' type is 'string', this is a valid safeguard.
+        // const exhaustiveCheck: never = step; // This line causes error if step is not 'never' here
+        // setFlowError(`Unknown step: ${step}`); // Using step directly
         break;
     }
   }, [walletStateValue, step, goToStep, setFlowError]);
@@ -484,7 +478,7 @@ function App() {
         );
       case "initiating-onramp-service":
         return <ProcessingOnramp step={0} />;
-      case "signing-transaction":
+      case "signing-transaction": // This step was not in the original devMode check, but is a logical step
         return <ProcessingOnramp step={1} />;
       case "processing-transaction":
         return <ProcessingOnramp step={2} />;
@@ -495,9 +489,14 @@ function App() {
           <ErrorView error={error} onRetry={() => goToStep("form-entry")} />
         );
       default: {
-        const exhaustiveCheck: never = step;
-        setFlowError(`Unknown step: ${exhaustiveCheck}`);
-        return <ErrorView error={`Unknown step: ${exhaustiveCheck}`} />;
+        // To satisfy exhaustive check if 'step' is a union of known strings,
+        // ensure all known steps are handled or 'step' type allows for unknown values.
+        // If 'step' is 'string', this default is fine.
+        // For a strict union, this might indicate an unhandled step.
+        // const exhaustiveCheck: never = step; // This line will error if step is not narrowed to never
+        console.warn(`Unknown step encountered in renderStepContent: ${step}`);
+        setFlowError(`Unknown step: ${step}`);
+        return <ErrorView error={`Unknown step: ${step}`} onRetry={() => goToStep("form-entry")} />;
       }
     }
   };

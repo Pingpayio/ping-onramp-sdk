@@ -1,61 +1,59 @@
 import { atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
-import type {
-  OnrampFlowStep,
-  OnrampResult,
-  TargetAsset,
-} from "../../../src/internal/communication/messages";
-import type { FormValues } from "../components/steps/form-entry-view";
-import type {
-  OneClickToken,
-  QuoteResponseData,
-  StatusResponseData,
-} from "../lib/one-click-api";
-import type { IntentProgress, NearIntentsDisplayInfo } from "../types/onramp";
+import type { OnrampResult, TargetAsset } from "../../../src/internal/communication/messages";
+import type { QuoteResponseData, OneClickToken } from "../lib/one-click-api";
+import type { UserLocation, CoinbaseOptimalOption } from '../utils/onrampConfigUtils';
+import type { OnrampConfigResponseData } from '@coinbase/onchainkit/fund';
 
-// Atoms for managing the overall onramp flow state
-export const onrampStepAtom = atom<OnrampFlowStep>("loading");
-export const onrampErrorAtom = atom<string | null>(null);
+// Local type definitions as fallbacks if not exported from one-click-api
+// Based on usage in App.tsx and FormEntryView.tsx
+export interface WalletState {
+  address?: string | null;
+  chainId?: string | null;
+  walletName?: string | null;
+}
 
-// Atoms for data collected during the flow
-export const onrampTargetAtom = atomWithStorage<TargetAsset | null>(
-  "onrampTarget", // sessionStorage key
-  null,
-);
-export const formDataAtom = atom<FormValues | null>(null);
+export interface SwapQuote { // Part of SwapStatusResponse and QuoteResponseData
+    amountInFormatted: string;
+    amountOutFormatted: string;
+    // Add other relevant fields from the actual quote structure
+}
 
-export const walletStateAtom = atomWithStorage<{
-  address: string;
-  chainId?: string;
-  walletName?: string;
-} | null>(
-  "walletState", // sessionStorage key
-  null,
-); // Connected wallet info
+export interface SwapDetails { // Part of SwapStatusResponse
+    destinationChainTxHashes?: { hash: string; explorerUrl: string }[];
+    // Add other relevant fields
+}
 
-export const signedTransactionAtom = atom<{
-  signature: string;
-  publicKey: string;
-  transactionHash?: string;
-  walletName?: string;
+export interface SwapStatusResponse { // Fallback definition
+    status: string;
+    quoteResponse: { quote: SwapQuote }; // Assuming QuoteResponseData has a quote object
+    swapDetails?: SwapDetails;
+    // Add other fields based on actual structure from getSwapStatus
+}
+
+
+// Existing atoms
+export const onrampFlowStepAtom = atom<string>("loading"); // e.g., loading, connect-wallet, form-entry, etc.
+export const onrampFlowErrorAtom = atom<{ message: string; step?: string } | null>(null);
+export const walletStateAtom = atom<WalletState | null>(null); // Uses local WalletState
+export const onrampResultAtom = atom<OnrampResult | null>(null);
+export const onrampTargetAtom = atom<TargetAsset | null>(null);
+
+// Atoms for 1Click specific data
+export const oneClickSupportedTokensAtom = atom<OneClickToken[] | null>(null);
+export const oneClickFullQuoteResponseAtom = atom<QuoteResponseData | null>(null); // Changed to QuoteResponseData
+export const oneClickStatusAtom = atom<SwapStatusResponse | null>(null); // Uses local SwapStatusResponse
+
+// Atoms for UI display related to NEAR Intents (can be repurposed)
+export const nearIntentsDisplayInfoAtom = atom<{
+  message?: string;
+  amountIn?: number;
+  amountOut?: number;
+  explorerUrl?: string;
 } | null>(null);
 
-// Atom for the final result to send back to the SDK
-export const onrampResultAtom = atom<OnrampResult | null>(null); // Transient
 
-// Atom for detailed sub-steps during the withdrawal process
-export const processingSubStepAtom = atom<IntentProgress>("none"); // Transient UI state
-
-// Atom for UI display information related to the NEAR intent process
-export const nearIntentsDisplayInfoAtom = atom<NearIntentsDisplayInfo>({}); // Transient UI state
-
-// Atoms for 1Click API flow
-export const oneClickSupportedTokensAtom = atomWithStorage<
-  OneClickToken[] | null
->("oneClickSupportedTokens", null);
-
-export const oneClickFullQuoteResponseAtom =
-  atomWithStorage<QuoteResponseData | null>("oneClickFullQuote", null);
-
-// oneClickStatusAtom is dynamic and fetched after redirect, so no need to persist the status itself.
-export const oneClickStatusAtom = atom<StatusResponseData | null>(null);
+// New atoms for Coinbase dynamic configuration
+export const userLocationAtom = atom<UserLocation | null>(null);
+export const coinbaseOnrampConfigAtom = atom<OnrampConfigResponseData | null>(null);
+export const optimalCoinbaseOptionAtom = atom<CoinbaseOptimalOption | null>(null);
+export const coinbaseConfigLoadingAtom = atom<boolean>(false);
