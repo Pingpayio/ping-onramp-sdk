@@ -45,19 +45,17 @@ function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
 
-  const [isDevMode, setIsDevMode] = useState(false);
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const devMode = urlParams.get("devMode") === "true";
     const devStep = urlParams.get("step");
-    setIsDevMode(devMode);
     if (devMode && devStep) {
       const validSteps = [
         "loading",
         "connect-wallet",
         "form-entry",
-        "initiating-onramp-service", // Covers 1Click quote + Coinbase redirect
-        "processing-transaction", // Covers 1Click deposit submit + polling
+        "initiating-onramp-service",
+        "processing-transaction",
         "complete",
         "error",
       ];
