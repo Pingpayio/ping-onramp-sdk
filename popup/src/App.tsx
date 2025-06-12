@@ -1,65 +1,62 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
-import { useSignMessage } from "wagmi";
 import {
+  useOneClickSupportedTokens,
   useOnrampFlow,
   useOnrampResult,
+  useOnrampTarget,
   useSetNearIntentsDisplayInfo,
+  useSetOneClickFullQuoteResponse,
+  useSetOneClickStatus,
+  useSetOneClickSupportedTokens,
   useSetOnrampResult,
-  useSetProcessingSubStep,
   useWalletState,
 } from "./state/hooks";
 
-import { processNearIntentWithdrawal } from "./utils/intents-withdraw";
-import { generateNearIntentsDepositAddress } from "./utils/near-intents";
+import {
+  fetch1ClickSupportedTokens,
+  find1ClickAsset,
+  getSwapStatus,
+  requestSwapQuote,
+  submitDepositTransaction,
+  type OneClickToken,
+  type QuoteRequestParams,
+} from "./lib/one-click-api";
+
 import type { OnrampURLParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
 import PopupLayout from "./components/layout/popup-layout";
-import CompletionView from "./components/steps/completion-view";
-import ConnectWalletView from "./components/steps/connect-wallet-view";
-import ConnectingWalletView from "./components/steps/connecting-wallet-view";
-import ErrorView from "./components/steps/error-view";
+import { ConnectWalletView } from "./components/steps/connect-wallet-view";
+import { ErrorView } from "./components/steps/error-view";
 import type { FormValues } from "./components/steps/form-entry-view";
-import FormEntryView from "./components/steps/form-entry-view";
-import InitiatingOnrampView from "./components/steps/initiating-onramp-view";
-import LoadingView from "./components/steps/loading-view";
-import ProcessingTransactionView from "./components/steps/processing-transaction-view";
-import SigningTransactionView from "./components/steps/signing-transaction-view";
-import type { CallbackParams, IntentProgress } from "./types/onramp";
+import { FormEntryView } from "./components/steps/form-entry-view";
+import { LoadingView } from "./components/steps/loading-view";
+import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
+
+const COINBASE_DEPOSIT_NETWORK = "base";
+const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
 
-  // Dev mode for testing components
-  const [isDevMode, setIsDevMode] = useState(false);
-
-  // Check for dev mode in URL parameters
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const devMode = urlParams.get("devMode") === "true";
     const devStep = urlParams.get("step");
-
-    setIsDevMode(devMode);
-
-    // If in dev mode and a step is specified, override the current step
     if (devMode && devStep) {
-      // Check if the step is valid
       const validSteps = [
         "loading",
         "connect-wallet",
         "form-entry",
-        "connecting-wallet",
         "initiating-onramp-service",
-        "signing-transaction",
         "processing-transaction",
         "complete",
         "error",
       ];
-
       if (validSteps.includes(devStep)) {
         goToStep(devStep as any);
       }
@@ -69,11 +66,16 @@ function App() {
   const [walletStateValue] = useWalletState();
   const [onrampResultValue] = useOnrampResult();
   const setOnrampResultAtom = useSetOnrampResult();
+  const [onrampTargetValue] = useOnrampTarget(); // Get the target asset
 
-  // Hooks for the new intent processing flow
-  const setProcessingSubStep = useSetProcessingSubStep();
-  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
-  const { signMessageAsync, error: signMessageError } = useSignMessage();
+  // 1Click specific state setters/getters
+  const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
+  const [oneClickSupportedTokens] = useOneClickSupportedTokens();
+  const setOneClickFullQuoteResponse = useSetOneClickFullQuoteResponse();
+  const setOneClickStatus = useSetOneClickStatus();
+
+  // Hooks that might be repurposed or removed if not directly applicable to 1Click UI updates
+  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo(); // For displaying amounts, etc.
 
   const handleWalletConnected = () => {
     if (step === "connect-wallet" || step === "loading") {
@@ -87,334 +89,339 @@ function App() {
 
   const handleFormSubmit = async (data: FormValues) => {
     if (!connection) {
-      console.error("[App.tsx] Connection not available for form submission.");
       setFlowError("Communication connection not available.", "form-entry");
       return;
     }
-
     connection
       .remoteHandle()
-      .call("reportFormDataSubmitted", { formData: data })
-      .catch((e: unknown) =>
-        console.error("App.tsx: Error calling reportFormDataSubmitted", e),
+      .call("reportFormDataSubmitted", { formData: data });
+
+    const userEvmAddress = walletStateValue?.address;
+    if (!userEvmAddress) {
+      setFlowError(
+        "EVM wallet address not available. Please connect your wallet.",
+        "form-entry"
       );
-
-    // Get user's EVM address (partnerUserId)
-    const partnerUserId = walletStateValue?.address;
-
-    // Validate essential preliminary data (EVM address, App ID)
-    if (!partnerUserId) {
-      const errorMsg =
-        "EVM wallet address not available. Please connect your wallet.";
-      setFlowError(errorMsg, "form-entry");
-      connection
-        .remoteHandle()
-        .call("reportProcessFailed", { error: errorMsg, step: "form-entry" })
-        .catch((e: unknown) =>
-          console.error("App.tsx: Error reporting missing EVM address", e),
-        );
-
+      return;
+    }
+    if (!onrampTargetValue) {
+      setFlowError("Target asset not defined.", "form-entry");
       return;
     }
 
-    goToStep("initiating-onramp-service"); // Indicate process is starting
+    goToStep("initiating-onramp-service");
+    setNearIntentsDisplayInfo({ message: "Fetching token data..." });
 
-    let generatedNearIntentsDepositAddress: {
-      address: string;
-      network: string;
-    };
     try {
-      // Generate NEAR Intents deposit address. Defaulting to "base" chain.
-      generatedNearIntentsDepositAddress =
-        await generateNearIntentsDepositAddress(partnerUserId);
-      console.log("generated, ", generatedNearIntentsDepositAddress);
-    } catch (genError) {
-      console.error(
-        "App.tsx: Failed to generate NEAR Intents deposit address:",
-        genError,
+      let currentSupportedTokens = oneClickSupportedTokens;
+      if (!currentSupportedTokens) {
+        currentSupportedTokens = await fetch1ClickSupportedTokens();
+        setOneClickSupportedTokens(currentSupportedTokens);
+      }
+
+      setNearIntentsDisplayInfo({ message: "Finding assets for swap..." });
+
+      const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
+        currentSupportedTokens,
+        data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
+        COINBASE_DEPOSIT_NETWORK // e.g., "base"
       );
-      const errorMsg =
-        genError instanceof Error
-          ? genError.message
-          : "Failed to prepare deposit address.";
-      setFlowError(errorMsg, "initiating-onramp-service");
-      connection
-        .remoteHandle()
-        .call("reportProcessFailed", {
-          error: errorMsg,
-          step: "initiating-onramp-service",
-        })
-        .catch((e: unknown) =>
-          console.error(
-            "App.tsx: Error reporting deposit address generation failure",
-            e,
-          ),
+
+      const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
+        currentSupportedTokens,
+        onrampTargetValue.asset, // e.g., "USDC" - final asset on target chain
+        onrampTargetValue.chain // e.g., "NEAR"
+      );
+
+      if (!originAsset1Click || !destinationAsset1Click) {
+        setFlowError(
+          "Could not find required assets for the swap in 1Click service.",
+          "initiating-onramp-service"
         );
+        return;
+      }
 
-      return;
-    }
+      // Convert fiat amount to smallest unit of origin asset
+      // This assumes data.selectedAsset (e.g. USDC) has a known price relative to data.selectedCurrency (e.g. USD)
+      // For simplicity, if selectedAsset is USDC and currency is USD, amount is 1:1
+      // A proper price feed or conversion logic would be needed for other assets/currencies
+      const amountInSmallestUnit = BigInt(
+        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals)
+      ).toString();
 
-    try {
+      const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 minutes from now
+
+      const quoteParams: QuoteRequestParams = {
+        originAsset: originAsset1Click.assetId,
+        destinationAsset: destinationAsset1Click.assetId,
+        amount: amountInSmallestUnit,
+        recipient: data.nearWalletAddress, // Final recipient on NEAR
+        refundTo: userEvmAddress,
+        refundType: "ORIGIN_CHAIN",
+        depositType: "ORIGIN_CHAIN",
+        recipientType: "DESTINATION_CHAIN", // As we are sending to a NEAR chain address
+        swapType: "EXACT_INPUT",
+        slippageTolerance: 100, // 1%
+        deadline: quoteDeadline,
+        dry: false,
+        referral: ONE_CLICK_REFERRAL_ID,
+      };
+
+      setNearIntentsDisplayInfo({ message: "Requesting swap quote..." });
+      const quoteResponse = await requestSwapQuote(quoteParams);
+      setOneClickFullQuoteResponse(quoteResponse);
+
+      const depositAddressForCoinbase = quoteResponse.quote.depositAddress;
+      const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK
+
       const callbackUrlParams = new URLSearchParams({
         type: "intents",
         action: "withdraw",
-        network: "near",
-        asset: "USDC",
-        amount: data.amount,
-        recipient: data.nearWalletAddress || "",
+        oneClickDepositAddress: depositAddressForCoinbase,
+        targetNetwork: onrampTargetValue.chain,
+        targetAssetSymbol: onrampTargetValue.asset,
+        fiatAmount: data.amount,
+        nearRecipient: data.nearWalletAddress,
       });
 
       const redirectUrl = `${
         window.location.origin
       }/onramp-callback?${callbackUrlParams.toString()}`;
 
-      const depositAddressForCoinbase =
-        generatedNearIntentsDepositAddress.address;
-      const depositNetworkForCoinbase = "base";
-      // generatedNearIntentsDepositAddress.network;
-
-      const onrampParams: OnrampURLParams = {
-        asset: data.selectedAsset,
+      const onrampParamsForCoinbase: OnrampURLParams = {
+        asset: data.selectedAsset, // Asset Coinbase user buys (e.g. USDC)
         amount: data.amount,
-        network: depositNetworkForCoinbase,
-        address: depositAddressForCoinbase,
-        partnerUserId: partnerUserId,
+        network: depositNetworkForCoinbase, // Network Coinbase deposits to (e.g. base)
+        address: depositAddressForCoinbase, // 1Click's deposit address
+        partnerUserId: userEvmAddress,
         redirectUrl: redirectUrl,
         paymentCurrency: data.selectedCurrency,
         paymentMethod: data.paymentMethod.toUpperCase(),
         enableGuestCheckout: true,
       };
 
-      let coinbaseOnrampURL: string;
+      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase);
 
-      try {
-        coinbaseOnrampURL = generateOnrampURL(onrampParams);
-        console.log("onramp", coinbaseOnrampURL);
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          setFlowError(e.message, "initiating-onramp-service");
-          connection
-            .remoteHandle()
-            .call("reportProcessFailed", {
-              error: e.message,
-              step: "initiating-onramp-service",
-            })
-            .catch((e: unknown) =>
-              console.error(
-                "App.tsx: Error calling reportProcessFailed for Coinbase URL error",
-                e,
-              ),
-            );
-        }
-        return;
-      }
-
-      connection
-        .remoteHandle()
-        .call("reportOnrampInitiated", {
-          serviceName: "Coinbase Onramp",
-          details: {
-            url: coinbaseOnrampURL,
-            depositAddress: generatedNearIntentsDepositAddress,
+      connection.remoteHandle().call("reportOnrampInitiated", {
+        serviceName: "Coinbase Onramp (via 1Click)",
+        details: {
+          url: coinbaseOnrampURL,
+          depositAddress: {
+            address: depositAddressForCoinbase,
+            network: depositNetworkForCoinbase,
           },
-        })
-        .catch((e: unknown) =>
-          console.error("App.tsx: Error calling reportOnrampInitiated", e),
-        );
+          quote: quoteResponse,
+        },
+      });
 
-      console.log("Redirecting to Coinbase Onramp:", coinbaseOnrampURL);
+      setNearIntentsDisplayInfo({
+        message: "Redirecting to Coinbase Onramp...",
+      });
       if (window.top) {
         window.top.location.href = coinbaseOnrampURL;
       } else {
-        // Fallback if window.top is not available (e.g. if not in an iframe, though less likely for a popup)
         window.location.href = coinbaseOnrampURL;
       }
-
-      goToStep("processing-transaction");
+      // No goToStep here, as redirect happens. Callback will handle next steps.
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       setFlowError(
-        errorMsg || "Failed to initiate onramp.",
-        "initiating-onramp-service",
+        errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp.",
+        "initiating-onramp-service"
       );
-      connection
-        ?.remoteHandle()
-        .call("reportProcessFailed", {
-          error: errorMsg,
-          step: "initiating-onramp-service",
-        })
-        .catch((err: unknown) =>
-          console.error(
-            "App.tsx: Error calling reportProcessFailed for general catch block",
-            err,
-          ),
-        );
+      connection?.remoteHandle().call("reportProcessFailed", {
+        error: errorMsg,
+        step: "initiating-onramp-service",
+      });
     }
   };
 
   useEffect(() => {
-    const handleCallback = () => {
+    const POLLING_INTERVAL = 5000; // 5 seconds
+    let pollingTimer: NodeJS.Timeout | undefined;
+
+    const pollStatus = async (depositAddress: string) => {
+      try {
+        const statusResponse = await getSwapStatus(depositAddress);
+        setOneClickStatus(statusResponse);
+        setNearIntentsDisplayInfo({
+          message: `Swap status: ${statusResponse.status}`,
+          amountIn: parseFloat(
+            statusResponse.quoteResponse.quote.amountInFormatted
+          ),
+          amountOut: parseFloat(
+            statusResponse.quoteResponse.quote.amountOutFormatted
+          ),
+          explorerUrl:
+            statusResponse.swapDetails?.destinationChainTxHashes?.[0]
+              ?.explorerUrl,
+        });
+
+        switch (statusResponse.status) {
+          case "SUCCESS":
+            goToStep("complete");
+            setOnrampResultAtom({
+              success: true,
+              message: "1Click swap successful.",
+              data: {
+                service: "1Click",
+                transactionId:
+                  statusResponse.swapDetails?.destinationChainTxHashes?.[0]
+                    ?.hash || depositAddress,
+                details: statusResponse,
+              },
+            });
+            clearTimeout(pollingTimer);
+            break;
+          case "REFUNDED":
+          case "FAILED":
+          case "EXPIRED":
+            setFlowError(
+              `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
+              "processing-transaction"
+            );
+            clearTimeout(pollingTimer);
+            break;
+          case "PENDING_DEPOSIT":
+          case "KNOWN_DEPOSIT_TX":
+          case "PROCESSING":
+            // Continue polling
+            pollingTimer = setTimeout(
+              () => pollStatus(depositAddress),
+              POLLING_INTERVAL
+            );
+            break;
+          default:
+            console.warn("Unhandled 1Click status:", statusResponse.status);
+            clearTimeout(pollingTimer);
+            setFlowError(
+              `Unhandled swap status: ${statusResponse.status}`,
+              "processing-transaction"
+            );
+        }
+      } catch (pollError) {
+        console.error("Error polling 1Click status:", pollError);
+        setFlowError(
+          `Error polling swap status: ${
+            (pollError as Error).message
+          }. Retrying...`,
+          "processing-transaction"
+        );
+        // Retry polling after a delay
+        pollingTimer = setTimeout(
+          () => pollStatus(depositAddress),
+          POLLING_INTERVAL * 2
+        ); // Longer delay on error
+      }
+    };
+
+    const handleCallback = async () => {
       const urlParams = new URLSearchParams(window.location.search);
       const type = urlParams.get("type");
-      const action = urlParams.get("action");
-      const asset = urlParams.get("asset");
-      const amount = urlParams.get("amount");
-      const recipient = urlParams.get("recipient");
-      const network = urlParams.get("network");
+      const oneClickDepositAddress = urlParams.get("oneClickDepositAddress");
+      const coinbaseStatus = urlParams.get("status");
+      const coinbaseTransactionId = urlParams.get("transactionId");
 
       if (window.location.pathname === "/onramp-callback") {
-        // Check for NEAR Intent withdrawal callback
-        if (
-          type === "intents" &&
-          action === "withdraw" &&
-          network === "near" && // from URL
-          asset === "USDC" && // from URL, should match hardcoded
-          amount &&
-          recipient &&
-          walletStateValue?.address && // EVM address
-          connection // Ensure connection is available for signMessage
-        ) {
-          goToStep("processing-transaction"); // Or a more specific step like "processing-bridge"
-          setProcessingSubStep("depositing"); // Initial sub-step
+        // Clean up URL params first
+        const newUrl = new URL(window.location.href);
+        urlParams.forEach((_, key) => newUrl.searchParams.delete(key));
+        window.history.replaceState(
+          {},
+          document.title,
+          newUrl.pathname + newUrl.search
+        );
 
-          const requiredCallbackParams: Required<CallbackParams> = {
-            type: "intents",
-            action: "withdraw",
-            network: "near",
-            asset: "USDC",
-            amount: "10",
-            recipient: "efiz.near",
-          };
+        if (type === "intents" && oneClickDepositAddress) {
+          goToStep("processing-transaction");
+          setNearIntentsDisplayInfo({ message: "Processing your onramp..." });
 
-          const handleSignMessage = async (args: {
-            message: string;
-          }): Promise<`0x${string}`> => {
-            if (!walletStateValue?.address) {
-              const errMsg = "EVM address not available for signing.";
-              setFlowError(errMsg, "processing-transaction");
-              setProcessingSubStep("error");
-              throw new Error(errMsg);
-            }
-            if (!connection) {
-              const errMsg = "Connection not available for signing.";
-              setFlowError(errMsg, "processing-transaction");
-              setProcessingSubStep("error");
-              throw new Error(errMsg);
-            }
-            // Sign message directly using wagmi's useSignMessage
-            if (!signMessageAsync) {
-              const errMsg =
-                "signMessageAsync is not available. Ensure WalletProvider is set up correctly.";
-              setFlowError(errMsg, "processing-transaction");
-              setProcessingSubStep("error");
-              throw new Error(errMsg);
-            }
+          if (coinbaseStatus === "success" && coinbaseTransactionId) {
+            setNearIntentsDisplayInfo({
+              message: "Submitting deposit to 1Click...",
+            });
             try {
-              // The account should be implicitly handled by wagmi if connected
-              const signature = await signMessageAsync({
-                message: args.message,
+              await submitDepositTransaction({
+                txHash: coinbaseTransactionId,
+                depositAddress: oneClickDepositAddress,
               });
-              return signature;
-            } catch (signError: unknown) {
-              console.error("App.tsx: Error signing message", signError);
-              const errMsg =
-                signMessageError?.message ||
-                (signError instanceof Error
-                  ? signError.message
-                  : "Failed to sign message.");
-              setFlowError(errMsg, "processing-transaction");
-              setProcessingSubStep("error");
-              throw new Error(errMsg);
-            }
-          };
-
-          // Process the NEAR intent withdrawal
-          processNearIntentWithdrawal({
-            callbackParams: requiredCallbackParams,
-            userEvmAddress: walletStateValue.address!,
-            signMessageAsync: handleSignMessage,
-            updateProgress: (newSubStep: IntentProgress) => {
-              setProcessingSubStep(newSubStep);
-              if (newSubStep === "done") goToStep("complete");
-              if (newSubStep === "error")
-                setFlowError(
-                  "Bridge processing error.",
-                  "processing-transaction",
-                );
-            },
-            updateErrorMessage: (msg: string | null) =>
+              setNearIntentsDisplayInfo({
+                message: "Deposit submitted. Polling for swap status...",
+              });
+              // Start polling
+              pollStatus(oneClickDepositAddress);
+            } catch (submitError) {
               setFlowError(
-                msg || "Unknown bridge error",
-                "processing-transaction",
-              ),
-            updateDisplayInfo: setNearIntentsDisplayInfo,
-          });
-
-          // Clean up URL params
-          const newUrl = new URL(window.location.href);
-          newUrl.searchParams.delete("type");
-          newUrl.searchParams.delete("action");
-          newUrl.searchParams.delete("network");
-          newUrl.searchParams.delete("asset");
-          newUrl.searchParams.delete("amount");
-          newUrl.searchParams.delete("recipient");
-          window.history.replaceState(
-            {},
-            document.title,
-            newUrl.pathname + newUrl.search,
-          );
+                `Failed to submit deposit to 1Click: ${
+                  (submitError as Error).message
+                }`,
+                "processing-transaction"
+              );
+            }
+          } else if (coinbaseStatus === "failure") {
+            const errorMsg =
+              urlParams.get("error") || "Coinbase onramp failed.";
+            setFlowError(errorMsg, "processing-transaction");
+            connection?.remoteHandle().call("reportProcessFailed", {
+              error: errorMsg,
+              step: "processing-transaction",
+            });
+          } else {
+            // Coinbase callback might not have status=success, or missing txId.
+            // This could happen if user closes Coinbase popup early.
+            // We might still try to poll if we have a depositAddress,
+            // assuming funds *might* have been sent.
+            // Or, treat as an error/uncertain state.
+            console.warn(
+              "Coinbase callback status not 'success' or transactionId missing, but 1Click deposit address present.",
+              { coinbaseStatus, coinbaseTransactionId }
+            );
+            setNearIntentsDisplayInfo({
+              message: "Verifying deposit status with 1Click...",
+            });
+            // Attempt to poll anyway, 1Click might have detected the deposit via other means
+            // or it might timeout if no deposit is found.
+            pollStatus(oneClickDepositAddress);
+          }
         } else {
-          // Handle original Coinbase Onramp callback if not an intent
-          const status = urlParams.get("status");
-          const transactionId = urlParams.get("transactionId");
-          if (status === "success" && transactionId) {
+          // Fallback for original non-1Click Coinbase callback if any old links are hit
+          // This part can be removed if only 1Click flow is active
+          if (coinbaseStatus === "success" && coinbaseTransactionId) {
             const resultPayload: OnrampResult = {
               success: true,
-              message: "Onramp successful",
-              data: { transactionId, service: "Coinbase Onramp" }, // Assuming this is still Coinbase
+              message: "Legacy Onramp successful",
+              data: {
+                transactionId: coinbaseTransactionId,
+                service: "Coinbase Onramp (Legacy)",
+              },
             };
             setOnrampResultAtom(resultPayload);
             connection
               ?.remoteHandle()
-              .call("reportProcessComplete", { result: resultPayload })
-              .catch((e: unknown) =>
-                console.error(
-                  "App.tsx: Error calling reportProcessComplete",
-                  e,
-                ),
-              );
+              .call("reportProcessComplete", { result: resultPayload });
             goToStep("complete");
-          } else if (status === "failure") {
-            const errorMsg = urlParams.get("error") || "Onramp failed.";
+          } else if (coinbaseStatus === "failure") {
+            const errorMsg = urlParams.get("error") || "Legacy Onramp failed.";
             setFlowError(errorMsg, "processing-transaction");
-            connection
-              ?.remoteHandle()
-              .call("reportProcessFailed", {
-                error: errorMsg,
-                step: "processing-transaction",
-              })
-              .catch((e: unknown) =>
-                console.error(
-                  "App.tsx: Error calling reportProcessFailed for callback failure",
-                  e,
-                ),
-              );
           }
         }
       }
     };
 
     handleCallback();
+
+    return () => {
+      if (pollingTimer) {
+        clearTimeout(pollingTimer);
+      }
+    };
   }, [
     connection,
     goToStep,
     setFlowError,
     setOnrampResultAtom,
-    walletStateValue,
-    setProcessingSubStep,
+    setOneClickStatus,
     setNearIntentsDisplayInfo,
-    signMessageAsync,
-    signMessageError,
   ]);
 
   useEffect(() => {
@@ -457,7 +464,7 @@ function App() {
         .remoteHandle()
         .call("reportStepChanged", { step })
         .catch((e: unknown) =>
-          console.error("App.tsx: Error calling reportStepChanged", e),
+          console.error("App.tsx: Error calling reportStepChanged", e)
         );
     }
   }, [connection, step]);
@@ -475,16 +482,14 @@ function App() {
             onDisconnect={handleDisconnect}
           />
         );
-      case "connecting-wallet":
-        return <ConnectingWalletView />;
       case "initiating-onramp-service":
-        return <InitiatingOnrampView />;
+        return <ProcessingOnramp step={0} />;
       case "signing-transaction":
-        return <SigningTransactionView />;
+        return <ProcessingOnramp step={1} />;
       case "processing-transaction":
-        return <ProcessingTransactionView />;
+        return <ProcessingOnramp step={2} />;
       case "complete":
-        return <CompletionView result={onrampResultValue} />;
+        return <ProcessingOnramp step={3} result={onrampResultValue} />;
       case "error":
         return (
           <ErrorView error={error} onRetry={() => goToStep("form-entry")} />
@@ -497,12 +502,7 @@ function App() {
     }
   };
 
-  return (
-    <PopupLayout>
-      {renderStepContent()}
-      {isDevMode}
-    </PopupLayout>
-  );
+  return <PopupLayout>{renderStepContent()}</PopupLayout>;
 }
 
 export default App;

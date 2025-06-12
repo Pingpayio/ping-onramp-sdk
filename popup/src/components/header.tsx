@@ -4,7 +4,7 @@ import { useAccount, useDisconnect } from "wagmi";
 import { walletStateAtom } from "@/state/atoms";
 import { Button } from "../components/ui/button";
 
-export default function Header() {
+export default function Header({ title }: { title: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { address, chainId, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
@@ -23,11 +23,16 @@ export default function Header() {
     }
   }, [address, chainId, isConnected, setWalletState]);
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <header className="flex items-center justify-between">
-        <Logo />
-        <h3 className=" font-bold text-[24px]">Buy Assets</h3>
-        <div onClick={() => setIsMenuOpen(!isMenuOpen)}>
+        <a href="https://pingpay.io" target="_blank">
+          <Logo />
+        </a>
+        <h3 className=" font-bold text-[24px]">{title}</h3>
+        <div
+          className="cursor-pointer z-50"
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
@@ -38,15 +43,15 @@ export default function Header() {
             <path
               d="M4 9H26M4 16H26M4 23H26"
               stroke="#AF9EF9"
-              stroke-width="2"
-              stroke-linecap="round"
+              strokeWidth="2"
+              strokeLinecap="round"
             />
           </svg>
         </div>
       </header>
 
       {isMenuOpen && (
-        <div className="absolute right-0 top-full mt-2 w-48 rounded-md bg-gray-800 shadow-lg z-10">
+        <div className="absolute z-50 right-0 top-full mt-2 w-48 rounded-md bg-gray-800 shadow-lg">
           <div className="py-1">
             {isConnected && (
               <Button

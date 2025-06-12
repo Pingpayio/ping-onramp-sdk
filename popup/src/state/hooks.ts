@@ -11,6 +11,10 @@ import {
   processingSubStepAtom,
   signedTransactionAtom,
   walletStateAtom,
+  // 1Click atoms
+  oneClickSupportedTokensAtom,
+  oneClickFullQuoteResponseAtom,
+  oneClickStatusAtom,
 } from "./atoms";
 
 export const useOnrampFlow = () => {
@@ -66,3 +70,17 @@ export const useSetNearIntentsDisplayInfo = (): ((
     | NearIntentsDisplayInfo
     | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo),
 ) => void) => useSetAtom(nearIntentsDisplayInfoAtom);
+
+// Hooks for 1Click API state
+export const useOneClickSupportedTokens = () =>
+  useAtom(oneClickSupportedTokensAtom);
+export const useSetOneClickSupportedTokens = () =>
+  useSetAtom(oneClickSupportedTokensAtom);
+
+export const useOneClickFullQuoteResponse = () =>
+  useAtom(oneClickFullQuoteResponseAtom);
+export const useSetOneClickFullQuoteResponse = () =>
+  useSetAtom(oneClickFullQuoteResponseAtom);
+
+export const useOneClickStatus = () => useAtom(oneClickStatusAtom);
+export const useSetOneClickStatus = () => useSetAtom(oneClickStatusAtom);

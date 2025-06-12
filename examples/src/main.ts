@@ -6,7 +6,7 @@ const openOnrampButton = document.getElementById("openOnrampButton");
 if (openOnrampButton) {
   openOnrampButton.addEventListener("click", () => {
     try {
-      const targetAssetDetails = { chain: "NEAR", asset: "USDC" }; // Define target asset
+      const targetAssetDetails = { chain: "near", asset: "wNEAR" }; // Changed to near and wNEAR
       const onramp = new PingpayOnramp({
         // popupUrl: "http://localhost:5173",
         onPopupReady: () => console.log('Example: Popup is ready'),

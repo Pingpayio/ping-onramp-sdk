@@ -5,7 +5,7 @@ interface ErrorViewProps {
   onRetry?: () => void; // Optional retry callback
 }
 
-const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
+export const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
   <div className="p-4 text-center">
     <h2 className="text-2xl font-semibold text-red-500 mb-4">
       An Error Occurred
@@ -24,5 +24,3 @@ const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
     {/* You could also add a button to close or go back */}
   </div>
 );
-
-export default ErrorView;

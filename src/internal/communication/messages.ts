@@ -52,7 +52,6 @@ export const onrampFlowStepSchema = z.enum([
   "loading",
   "connect-wallet",
   "form-entry",
-  "connecting-wallet",
   "initiating-onramp-service",
   "signing-transaction",
   "processing-transaction",
