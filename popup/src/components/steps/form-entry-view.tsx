@@ -47,7 +47,7 @@ const FALLBACK_TARGET_ASSET: TargetAsset = {
   asset: "wNEAR",
 };
 
-const COINBASE_DEPOSIT_NETWORK = "etehreum"
+const COINBASE_DEPOSIT_NETWORK = "ethereum"
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 // Simple debounce utility
