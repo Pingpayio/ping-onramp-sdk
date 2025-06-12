@@ -44,7 +44,7 @@ interface FormEntryViewProps {
 
 const FALLBACK_TARGET_ASSET: TargetAsset = {
   chain: "NEAR",
-  asset: "wNEAR",
+  asset: "USDC",
 };
 
 const COINBASE_DEPOSIT_NETWORK = "base"
@@ -352,7 +352,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
               <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center  rounded-full bg-white/[0.08] hover:bg-white/5">
                 <img
                   src={
-                    currentOnrampTarget.asset === "wNEAR"
+                    currentOnrampTarget.asset === "USDC"
                       ? "/near-logo-green.png"
                       : "/usd-coin-usdc-logo.svg"
                   }
