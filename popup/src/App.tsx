@@ -1,33 +1,30 @@
 import { useEffect, useState } from "react";
 import type {
-  OnrampResult,
-  TargetAsset,
+  OnrampResult
 } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
 import {
+  useOneClickSupportedTokens,
   useOnrampFlow,
   useOnrampResult,
-  useSetNearIntentsDisplayInfo, 
-  useSetOnrampResult,
-  useSetProcessingSubStep,
-  useWalletState,
   useOnrampTarget,
+  useSetNearIntentsDisplayInfo,
   useSetOneClickFullQuoteResponse,
   useSetOneClickStatus,
-  useOneClickFullQuoteResponse,
   useSetOneClickSupportedTokens,
-  useOneClickSupportedTokens,
+  useSetOnrampResult,
+  useWalletState
 } from "./state/hooks";
 
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
+  getSwapStatus,
   requestSwapQuote,
   submitDepositTransaction,
-  getSwapStatus,
-  type QuoteRequestParams,
   type OneClickToken,
+  type QuoteRequestParams,
 } from "./lib/one-click-api";
 
 import type { OnrampURLParams } from "./utils/rampUtils";
@@ -41,7 +38,7 @@ import { FormEntryView } from "./components/steps/form-entry-view";
 import { LoadingView } from "./components/steps/loading-view";
 import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
 
-const COINBASE_DEPOSIT_NETWORK = "base"; 
+const COINBASE_DEPOSIT_NETWORK = "base";
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 function App() {
@@ -79,11 +76,9 @@ function App() {
   const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
   const [oneClickSupportedTokens] = useOneClickSupportedTokens();
   const setOneClickFullQuoteResponse = useSetOneClickFullQuoteResponse();
-  const [oneClickFullQuoteResponse] = useOneClickFullQuoteResponse();
   const setOneClickStatus = useSetOneClickStatus();
 
   // Hooks that might be repurposed or removed if not directly applicable to 1Click UI updates
-  const setProcessingSubStep = useSetProcessingSubStep(); // e.g. for polling status updates
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo(); // For displaying amounts, etc.
 
   const handleWalletConnected = () => {
@@ -109,7 +104,7 @@ function App() {
     if (!userEvmAddress) {
       setFlowError(
         "EVM wallet address not available. Please connect your wallet.",
-        "form-entry",
+        "form-entry"
       );
       return;
     }
@@ -133,19 +128,19 @@ function App() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        COINBASE_DEPOSIT_NETWORK, // e.g., "base"
+        COINBASE_DEPOSIT_NETWORK // e.g., "base"
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         onrampTargetValue.asset, // e.g., "USDC" - final asset on target chain
-        onrampTargetValue.chain, // e.g., "NEAR"
+        onrampTargetValue.chain // e.g., "NEAR"
       );
 
       if (!originAsset1Click || !destinationAsset1Click) {
         setFlowError(
           "Could not find required assets for the swap in 1Click service.",
-          "initiating-onramp-service",
+          "initiating-onramp-service"
         );
         return;
       }
@@ -155,12 +150,10 @@ function App() {
       // For simplicity, if selectedAsset is USDC and currency is USD, amount is 1:1
       // A proper price feed or conversion logic would be needed for other assets/currencies
       const amountInSmallestUnit = BigInt(
-        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals),
+        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals)
       ).toString();
 
-      const quoteDeadline = new Date(
-        Date.now() + 30 * 60 * 1000,
-      ).toISOString(); // 30 minutes from now
+      const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 minutes from now
 
       const quoteParams: QuoteRequestParams = {
         originAsset: originAsset1Click.assetId,
@@ -186,8 +179,8 @@ function App() {
       const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK
 
       const callbackUrlParams = new URLSearchParams({
-        type: "intents", // Retained as per feedback
-        action: "withdraw", // Retained
+        type: "intents",
+        action: "withdraw",
         oneClickDepositAddress: depositAddressForCoinbase,
         targetNetwork: onrampTargetValue.chain,
         targetAssetSymbol: onrampTargetValue.asset,
@@ -238,14 +231,12 @@ function App() {
       const errorMsg = e instanceof Error ? e.message : String(e);
       setFlowError(
         errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp.",
-        "initiating-onramp-service",
+        "initiating-onramp-service"
       );
-      connection
-        ?.remoteHandle()
-        .call("reportProcessFailed", {
-          error: errorMsg,
-          step: "initiating-onramp-service",
-        });
+      connection?.remoteHandle().call("reportProcessFailed", {
+        error: errorMsg,
+        step: "initiating-onramp-service",
+      });
     }
   };
 
@@ -259,11 +250,16 @@ function App() {
         setOneClickStatus(statusResponse);
         setNearIntentsDisplayInfo({
           message: `Swap status: ${statusResponse.status}`,
-          amountIn: parseFloat(statusResponse.quoteResponse.quote.amountInFormatted),
-          amountOut: parseFloat(statusResponse.quoteResponse.quote.amountOutFormatted),
-          explorerUrl: statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.explorerUrl,
+          amountIn: parseFloat(
+            statusResponse.quoteResponse.quote.amountInFormatted
+          ),
+          amountOut: parseFloat(
+            statusResponse.quoteResponse.quote.amountOutFormatted
+          ),
+          explorerUrl:
+            statusResponse.swapDetails?.destinationChainTxHashes?.[0]
+              ?.explorerUrl,
         });
-
 
         switch (statusResponse.status) {
           case "SUCCESS":
@@ -273,7 +269,9 @@ function App() {
               message: "1Click swap successful.",
               data: {
                 service: "1Click",
-                transactionId: statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.hash || depositAddress,
+                transactionId:
+                  statusResponse.swapDetails?.destinationChainTxHashes?.[0]
+                    ?.hash || depositAddress,
                 details: statusResponse,
               },
             });
@@ -284,7 +282,7 @@ function App() {
           case "EXPIRED":
             setFlowError(
               `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
-              "processing-transaction",
+              "processing-transaction"
             );
             clearTimeout(pollingTimer);
             break;
@@ -294,7 +292,7 @@ function App() {
             // Continue polling
             pollingTimer = setTimeout(
               () => pollStatus(depositAddress),
-              POLLING_INTERVAL,
+              POLLING_INTERVAL
             );
             break;
           default:
@@ -302,7 +300,7 @@ function App() {
             clearTimeout(pollingTimer);
             setFlowError(
               `Unhandled swap status: ${statusResponse.status}`,
-              "processing-transaction",
+              "processing-transaction"
             );
         }
       } catch (pollError) {
@@ -311,12 +309,12 @@ function App() {
           `Error polling swap status: ${
             (pollError as Error).message
           }. Retrying...`,
-          "processing-transaction",
+          "processing-transaction"
         );
         // Retry polling after a delay
         pollingTimer = setTimeout(
           () => pollStatus(depositAddress),
-          POLLING_INTERVAL * 2,
+          POLLING_INTERVAL * 2
         ); // Longer delay on error
       }
     };
@@ -332,8 +330,11 @@ function App() {
         // Clean up URL params first
         const newUrl = new URL(window.location.href);
         urlParams.forEach((_, key) => newUrl.searchParams.delete(key));
-        window.history.replaceState({}, document.title, newUrl.pathname + newUrl.search);
-
+        window.history.replaceState(
+          {},
+          document.title,
+          newUrl.pathname + newUrl.search
+        );
 
         if (type === "intents" && oneClickDepositAddress) {
           goToStep("processing-transaction");
@@ -358,19 +359,17 @@ function App() {
                 `Failed to submit deposit to 1Click: ${
                   (submitError as Error).message
                 }`,
-                "processing-transaction",
+                "processing-transaction"
               );
             }
           } else if (coinbaseStatus === "failure") {
             const errorMsg =
               urlParams.get("error") || "Coinbase onramp failed.";
             setFlowError(errorMsg, "processing-transaction");
-            connection
-              ?.remoteHandle()
-              .call("reportProcessFailed", {
-                error: errorMsg,
-                step: "processing-transaction",
-              });
+            connection?.remoteHandle().call("reportProcessFailed", {
+              error: errorMsg,
+              step: "processing-transaction",
+            });
           } else {
             // Coinbase callback might not have status=success, or missing txId.
             // This could happen if user closes Coinbase popup early.
@@ -379,7 +378,7 @@ function App() {
             // Or, treat as an error/uncertain state.
             console.warn(
               "Coinbase callback status not 'success' or transactionId missing, but 1Click deposit address present.",
-              { coinbaseStatus, coinbaseTransactionId },
+              { coinbaseStatus, coinbaseTransactionId }
             );
             setNearIntentsDisplayInfo({
               message: "Verifying deposit status with 1Click...",
@@ -406,8 +405,7 @@ function App() {
               .call("reportProcessComplete", { result: resultPayload });
             goToStep("complete");
           } else if (coinbaseStatus === "failure") {
-            const errorMsg =
-              urlParams.get("error") || "Legacy Onramp failed.";
+            const errorMsg = urlParams.get("error") || "Legacy Onramp failed.";
             setFlowError(errorMsg, "processing-transaction");
           }
         }
@@ -508,11 +506,7 @@ function App() {
     }
   };
 
-  return (
-    <PopupLayout>
-      {renderStepContent()}
-    </PopupLayout>
-  );
+  return <PopupLayout>{renderStepContent()}</PopupLayout>;
 }
 
 export default App;
