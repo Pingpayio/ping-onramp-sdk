@@ -47,8 +47,8 @@ const FALLBACK_TARGET_ASSET: TargetAsset = {
   asset: "wNEAR",
 };
 
-const COINBASE_DEPOSIT_NETWORK = "base"; // As seen in App.tsx
-const ONE_CLICK_REFERRAL_ID = "pingpay.near"; // As seen in App.tsx
+const COINBASE_DEPOSIT_NETWORK = "etehreum"
+const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 // Simple debounce utility
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -389,11 +389,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           <div className="w-full py-2 gap-1 px-4 flex shrink-0 items-center justify-end text-[#FFFFFF99] text-xs">
             <p>Network:</p>
             <img
-              src={
-                currentOnrampTarget.chain === "NEAR"
-                  ? "/near-logo-green.png"
-                  : "/usd-coin-usdc-logo.svg"
-              }
+              src={"/near-logo-green.png"}
               alt={`${currentOnrampTarget.chain} Protocol Logo`}
               className="w-4 h-4 rounded-full"
             />

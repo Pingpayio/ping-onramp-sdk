@@ -36,7 +36,6 @@ import { FormEntryView } from "./components/steps/form-entry-view";
 import { LoadingView } from "./components/steps/loading-view";
 import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
 
-const COINBASE_DEPOSIT_NETWORK = "base";
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 function App() {
@@ -124,7 +123,7 @@ function App() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        COINBASE_DEPOSIT_NETWORK // e.g., "base"
+        "ethereum" // e.g., "base" // MODIFIED: Use "ethereum" network
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
@@ -188,6 +187,9 @@ function App() {
         window.location.origin
       }/onramp-callback?${callbackUrlParams.toString()}`;
 
+      // Log the manual callback URL for testing
+      console.log("Manually navigable /onramp-callback URL for testing:", redirectUrl);
+
       const onrampParamsForCoinbase: OnrampURLParams = {
         asset: data.selectedAsset, // Asset Coinbase user buys (e.g. USDC)
         amount: data.amount,
@@ -204,15 +206,16 @@ function App() {
 
       connection.remoteHandle().call("reportOnrampInitiated", {
         serviceName: "Coinbase Onramp (via 1Click)",
-        details: {
-          url: coinbaseOnrampURL,
-          depositAddress: {
-            address: depositAddressForCoinbase,
-            network: depositNetworkForCoinbase,
+          details: {
+            url: coinbaseOnrampURL,
+            manualCallbackUrl: redirectUrl, // ADDED: For manual testing
+            depositAddress: {
+              address: depositAddressForCoinbase,
+              network: depositNetworkForCoinbase,
+            },
+            quote: quoteResponse,
           },
-          quote: quoteResponse,
-        },
-      });
+        });
 
       setNearIntentsDisplayInfo({
         message: "Redirecting to Coinbase Onramp...",
