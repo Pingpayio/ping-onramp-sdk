@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { atom, useAtom } from "jotai"; // ADDED: For local hack state
 import type { OnrampResult } from "../../src/internal/communication/messages";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
@@ -38,6 +39,9 @@ import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
 
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
+// Temporary atom for the hacked flow. TODO: Move to atoms.ts if this pattern is kept.
+const hackedFlowDepositAddressAtom = atom<string | null>(null);
+
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
@@ -76,6 +80,7 @@ function App() {
 
   // Hooks that might be repurposed or removed if not directly applicable to 1Click UI updates
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo(); // For displaying amounts, etc.
+  const [hackedFlowAddress, setHackedFlowAddress] = useAtom(hackedFlowDepositAddressAtom);
 
   const handleWalletConnected = () => {
     if (step === "connect-wallet" || step === "loading") {
@@ -197,7 +202,7 @@ function App() {
       }/onramp-callback?${callbackUrlParams.toString()}`;
 
       // Log the manual callback URL for testing
-      console.log("Manually navigable /onramp-callback URL for testing:", redirectUrl);
+      // console.log("Manually navigable /onramp-callback URL for testing:", redirectUrl); // No longer navigating via URL
 
       const onrampParamsForCoinbase: OnrampURLParams = {
         asset: data.selectedAsset, // Asset Coinbase user buys (e.g. USDC)
@@ -226,15 +231,13 @@ function App() {
           },
         });
 
-      setNearIntentsDisplayInfo({
-        message: "Proceeding to onramp callback...", 
-      });
-      if (window.top) {
-        window.top.location.href = redirectUrl; 
-      } else {
-        window.location.href = redirectUrl; 
-      }
-      // No goToStep here, as redirect happens. Callback will handle next steps.
+      // --- HACK: Bypass navigation and directly trigger processing ---
+      console.log("HACK: Bypassing navigation, setting hackedFlowAddress:", depositAddressForCoinbase);
+      setHackedFlowAddress(depositAddressForCoinbase);
+      goToStep("processing-transaction");
+      setNearIntentsDisplayInfo({ message: "Processing transaction (direct)..." });
+      // The useEffect below will now pick up hackedFlowAddress and call pollStatus.
+
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       setFlowError(
@@ -327,7 +330,20 @@ function App() {
       }
     };
 
-    const handleCallback = async () => {
+    // This useEffect now handles both URL-based callbacks and the hacked direct flow
+    const handleCallbackLogic = async () => {
+      // Check for hacked flow first
+      if (hackedFlowAddress) {
+        console.log("HACKED FLOW: useEffect detected active hack with address:", hackedFlowAddress);
+        setNearIntentsDisplayInfo({
+          message: "Verifying deposit status with 1Click (direct flow)...",
+        });
+        pollStatus(hackedFlowAddress);
+        setHackedFlowAddress(null); // Reset hack state after use
+        return; // Skip normal URL callback logic
+      }
+
+      // Original handleCallback logic for URL-based callbacks
       console.log("handleCallback triggered. Pathname:", window.location.pathname, "Search:", window.location.search);
       const urlParams = new URLSearchParams(window.location.search);
       const type = urlParams.get("type");
@@ -404,7 +420,7 @@ function App() {
       }
     };
 
-    handleCallback();
+    handleCallbackLogic(); // Renamed and now handles both flows
 
     return () => {
       if (pollingTimer) {
@@ -418,6 +434,8 @@ function App() {
     setOnrampResultAtom,
     setOneClickStatus,
     setNearIntentsDisplayInfo,
+    hackedFlowAddress, // Added dependency
+    setHackedFlowAddress, // Added dependency
   ]);
 
   useEffect(() => {
