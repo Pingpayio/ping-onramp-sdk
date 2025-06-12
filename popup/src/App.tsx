@@ -277,6 +277,12 @@ function App() {
       try {
         const statusResponse = await getSwapStatus(depositAddress);
         setOneClickStatus(statusResponse);
+        const destTxHash = statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.hash;
+        // Construct the explorer URL if a destination transaction hash is available
+        const explorerLink = destTxHash
+          ? `https://nearblocks.io/txns/${destTxHash}`
+          : statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.explorerUrl; // Fallback to existing explorerUrl
+
         setNearIntentsDisplayInfo({
           message: `Swap status: ${statusResponse.status}`,
           amountIn: parseFloat(
@@ -285,9 +291,7 @@ function App() {
           amountOut: parseFloat(
             statusResponse.quoteResponse.quote.amountOutFormatted
           ),
-          explorerUrl:
-            statusResponse.swapDetails?.destinationChainTxHashes?.[0]
-              ?.explorerUrl,
+          explorerUrl: explorerLink,
         });
 
         switch (statusResponse.status) {
