@@ -123,7 +123,7 @@ function App() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        "ethereum" // e.g., "base" // MODIFIED: Use "ethereum" network
+        "base" // e.g., "base" // MODIFIED: Use "base" network
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
