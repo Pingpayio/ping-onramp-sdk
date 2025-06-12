@@ -258,6 +258,7 @@ function App() {
       const network = urlParams.get("network");
 
       if (window.location.pathname === "/onramp-callback") {
+        console.log("YO");
         // Check for NEAR Intent withdrawal callback
         if (
           type === "intents" &&

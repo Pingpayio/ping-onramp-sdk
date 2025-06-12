@@ -142,9 +142,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
                   <path
                     d="M1.89917 1L5.89917 5L9.89917 1"
                     stroke="white"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
               </div>
@@ -184,9 +184,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
                     <path
                       d="M1.89917 1L5.89917 5L9.89917 1"
                       stroke="white"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     />
                   </svg>
                 </div>
@@ -212,9 +212,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
               <path
                 d="M1.89917 1L5.89917 5L9.89917 1"
                 stroke="white"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
           </div>

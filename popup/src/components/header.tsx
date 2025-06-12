@@ -43,8 +43,8 @@ export default function Header({ title }: { title: string }) {
             <path
               d="M4 9H26M4 16H26M4 23H26"
               stroke="#AF9EF9"
-              stroke-width="2"
-              stroke-linecap="round"
+              strokeWidth="2"
+              strokeLinecap="round"
             />
           </svg>
         </div>
