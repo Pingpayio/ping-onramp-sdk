@@ -1,8 +1,10 @@
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import React, { useState } from "react";
-import { FormProvider, useForm, Controller } from "react-hook-form";
+import { Controller, FormProvider, useForm } from "react-hook-form";
 import { useAccount } from "wagmi";
-import { walletStateAtom } from "../../state/atoms";
+import type { TargetAsset } from "../../../../src/internal/communication/messages";
+import { onrampTargetAtom, walletStateAtom } from "../../state/atoms";
+import Header from "../header";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -13,34 +15,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import Header from "../header";
 
 export type FormValues = {
   amount: string;
-  selectedAsset: string;
+  selectedAsset: string; // This is the asset to buy on Coinbase (e.g., USDC)
   selectedCurrency: string;
   paymentMethod: string;
-  nearWalletAddress?: string;
+  nearWalletAddress: string; // Made non-optional
 };
 
 interface FormEntryViewProps {
   onSubmit: (data: FormValues) => void;
   onDisconnect: () => void;
-  generatedEvmAddress?: string;
 }
 
-export const FormEntryView: React.FC<FormEntryViewProps> = ({
-  onSubmit,
-  // generatedEvmAddress,
-}) => {
+const FALLBACK_TARGET_ASSET: TargetAsset = {
+  chain: "NEAR",
+  asset: "NEAR",
+};
+
+export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
+  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
+  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+
   const methods = useForm<FormValues>({
     mode: "onChange",
     defaultValues: {
       amount: "",
-      selectedAsset: "USDC",
-      selectedCurrency: "USD", // Will be part of amount display, not separate field
+      selectedAsset: "USDC", // Asset to buy on Coinbase
+      selectedCurrency: "USD",
       paymentMethod: "card",
-      nearWalletAddress: "",
+      nearWalletAddress: "", // Will be validated as required
     },
   });
   const {
@@ -55,7 +60,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
 
   // For payment method subtext
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    methods.getValues("paymentMethod"),
+    methods.getValues("paymentMethod")
   );
   const [isAmountFocused, setIsAmountFocused] = useState(false);
 
@@ -116,10 +121,10 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
               })}
               onFocus={() => setIsAmountFocused(true)}
               onBlur={() => setIsAmountFocused(false)}
-              className=" font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="font-bold border-none text-[24px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="0"
             />
-            <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center  rounded-full bg-white/[0.08] hover:bg-white/5">
+            <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5">
               <img
                 src="/usd.svg"
                 alt="USD Currency Logo"
@@ -131,7 +136,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
               <span className=" text-white font-normal">
                 {methods.getValues("selectedCurrency")}{" "}
               </span>
-              <div>
+              {/* <div>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="11"
@@ -147,7 +152,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
                     strokeLinejoin="round"
                   />
                 </svg>
-              </div>
+              </div> */}
             </div>
           </div>
           {errors.amount && (
@@ -160,20 +165,26 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
           <div className="w-full p-4 gap-2 flex flex-col ">
             <p>You Receive</p>
             <div className="flex flex-row items-center justify-between ">
-              <p className=" font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+              <p className="font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
                 100
               </p>
               <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center  rounded-full bg-white/[0.08] hover:bg-white/5">
                 <img
-                  src="/near-logo-green.png"
-                  alt="USD Currency Logo"
+                  src={
+                    currentOnrampTarget.asset === "NEAR"
+                      ? "/near-logo-green.png"
+                      : "/usd-coin-usdc-logo.svg"
+                  }
+                  alt={`${currentOnrampTarget.asset} Logo`}
                   width={"20px"}
                   height={"20px"}
                   className="rounded-full"
                 />
 
-                <span className=" text-white font-normal">NEAR</span>
-                <div>
+                <span className=" text-white font-normal">
+                  {currentOnrampTarget.asset}
+                </span>
+                {/* <div>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="11"
@@ -189,7 +200,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
                       strokeLinejoin="round"
                     />
                   </svg>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -197,12 +208,16 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
           <div className="w-full py-2 gap-1 px-4 flex shrink-0 items-center justify-end text-[#FFFFFF99] text-xs">
             <p>Network:</p>
             <img
-              src="/near-logo-green.png"
-              alt="NEAR Protocol Logo"
+              src={
+                currentOnrampTarget.chain === "NEAR"
+                  ? "/near-logo-green.png"
+                  : "/usd-coin-usdc-logo.svg"
+              }
+              alt={`${currentOnrampTarget.chain} Protocol Logo`}
               className="w-4 h-4 rounded-full"
             />
-            <span>NEAR</span>
-            <svg
+            <span>{currentOnrampTarget.chain}</span>
+            {/* <svg
               xmlns="http://www.w3.org/2000/svg"
               width="11"
               height="6"
@@ -216,7 +231,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-            </svg>
+            </svg> */}
           </div>
         </div>
 
@@ -313,7 +328,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
           disabled={!isValid}
         >
-          Buy NEAR
+          Buy {currentOnrampTarget.asset}
         </Button>
       </form>
     </FormProvider>
