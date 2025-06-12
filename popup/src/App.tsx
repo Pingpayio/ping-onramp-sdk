@@ -24,7 +24,7 @@ import type { FormValues } from "./components/steps/form-entry-view";
 import { FormEntryView } from "./components/steps/form-entry-view";
 import { LoadingView } from "./components/steps/loading-view";
 import type { CallbackParams, IntentProgress } from "./types/onramp";
-import { ProcessingOnramp } from "./components/processsing-onramp";
+import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
 
 function App() {
   const { connection } = usePopupConnection();

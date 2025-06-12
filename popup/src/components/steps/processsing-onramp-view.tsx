@@ -1,9 +1,9 @@
-import type { OnrampResult } from "../../../src/internal/communication/messages";
-import { Progress } from "./ui/progress";
-import Header from "./header";
+import type { OnrampResult } from "../../../../src/internal/communication/messages";
+import { Progress } from "../ui/progress";
+import Header from "../header";
 import { FaClock } from "react-icons/fa";
-import type { StepBox } from "./step-box-types";
-import { StepInfoBox } from "./step-info-box";
+import type { StepBox } from "../step-box-types";
+import { StepInfoBox } from "../step-info-box";
 
 export interface ProcessingOnrampProps {
   step: number;

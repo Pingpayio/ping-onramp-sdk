@@ -1,7 +1,12 @@
-import type { StepBox } from "./step-box-types";
-
 interface StepInfoBoxProps {
   box: StepBox;
+}
+
+export interface StepBox {
+  icon: React.ReactNode;
+  title: string;
+  desc: string;
+  color: string;
 }
 
 export function StepInfoBox({ box }: StepInfoBoxProps) {
