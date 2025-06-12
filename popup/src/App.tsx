@@ -123,7 +123,7 @@ function App() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        "base" // e.g., "base" // MODIFIED: Use "base" network
+        "base" // e.g., "base" 
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
@@ -218,12 +218,12 @@ function App() {
         });
 
       setNearIntentsDisplayInfo({
-        message: "Redirecting to Coinbase Onramp...",
+        message: "Proceeding to onramp callback...", 
       });
       if (window.top) {
-        window.top.location.href = coinbaseOnrampURL;
+        window.top.location.href = redirectUrl; 
       } else {
-        window.location.href = coinbaseOnrampURL;
+        window.location.href = redirectUrl; 
       }
       // No goToStep here, as redirect happens. Callback will handle next steps.
     } catch (e: unknown) {
