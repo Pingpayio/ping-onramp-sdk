@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { atom, useAtom } from "jotai"; // ADDED: For local hack state
-import type { OnrampResult } from "../../src/internal/communication/messages";
+import { atom, useAtom } from "jotai";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
 import {
@@ -216,13 +215,32 @@ function App() {
         enableGuestCheckout: true,
       };
 
-      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase);
+      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase); // Still generate for potential non-navigational use or logging
+
+      // For the hacked flow, send placeholder URLs to prevent external navigation,
+      // but include the data that would have been in the callback URL.
+      const simulatedCallbackData = {
+        type: "intents",
+        action: "withdraw",
+        oneClickDepositAddress: depositAddressForCoinbase,
+        targetNetwork: onrampTargetValue.chain,
+        targetAssetSymbol: onrampTargetValue.asset,
+        fiatAmount: data.amount,
+        nearRecipient: data.nearWalletAddress,
+      };
+      if (openerOrigin) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (simulatedCallbackData as any).ping_sdk_opener_origin = openerOrigin;
+      }
 
       connection.remoteHandle().call("reportOnrampInitiated", {
-        serviceName: "Coinbase Onramp (via 1Click)",
+        serviceName: "Coinbase Onramp (via 1Click) - HACKED FLOW",
           details: {
-            url: coinbaseOnrampURL,
-            manualCallbackUrl: redirectUrl, // ADDED: For manual testing
+            url: "HACK_FLOW:NAVIGATION_PREVENTED", // Placeholder to prevent navigation
+            manualCallbackUrl: "HACK_FLOW:NAVIGATION_PREVENTED", // Placeholder
+            originalCoinbaseOnrampURL: coinbaseOnrampURL, // Keep original for logging if needed
+            originalRedirectUrl: redirectUrl, // Keep original for logging if needed
+            simulatedCallbackParams: simulatedCallbackData, // Data that would have been in callback
             depositAddress: {
               address: depositAddressForCoinbase,
               network: depositNetworkForCoinbase,
