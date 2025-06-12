@@ -293,6 +293,14 @@ button:focus-visible {
     @apply min-h-[44px] min-w-[44px];
   }
 
+  .popup-root {
+      button,
+  a,
+  [role="button"] {
+    @apply min-h-auto min-w-auto;
+  }
+  }
+
   /* Prevent double scrollbars */
   .overflow-y-auto {
     -webkit-overflow-scrolling: touch;
