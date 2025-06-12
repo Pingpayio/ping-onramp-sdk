@@ -41,6 +41,7 @@ const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
+  console.log("App component render. Current step:", step);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -327,23 +328,27 @@ function App() {
     };
 
     const handleCallback = async () => {
+      console.log("handleCallback triggered. Pathname:", window.location.pathname, "Search:", window.location.search);
       const urlParams = new URLSearchParams(window.location.search);
       const type = urlParams.get("type");
+      console.log("handleCallback: type from URL:", type);
       const oneClickDepositAddress = urlParams.get("oneClickDepositAddress");
+      console.log("handleCallback: oneClickDepositAddress from URL:", oneClickDepositAddress);
       const coinbaseStatus = urlParams.get("status");
       const coinbaseTransactionId = urlParams.get("transactionId");
 
       if (window.location.pathname === "/onramp-callback") {
         // Clean up URL params first
-        const newUrl = new URL(window.location.href);
-        urlParams.forEach((_, key) => newUrl.searchParams.delete(key));
-        window.history.replaceState(
-          {},
-          document.title,
-          newUrl.pathname + newUrl.search
-        );
+        // const newUrl = new URL(window.location.href);
+        // urlParams.forEach((_, key) => newUrl.searchParams.delete(key));
+        // window.history.replaceState(
+        //   {},
+        //   document.title,
+        //   newUrl.pathname + newUrl.search
+        // );
 
         if (type === "intents" && oneClickDepositAddress) {
+          console.log("going");
           goToStep("processing-transaction");
           setNearIntentsDisplayInfo({ message: "Processing your onramp..." });
 
@@ -394,28 +399,8 @@ function App() {
             // or it might timeout if no deposit is found.
             pollStatus(oneClickDepositAddress);
           }
-        } else {
-          // Fallback for original non-1Click Coinbase callback if any old links are hit
-          // This part can be removed if only 1Click flow is active
-          if (coinbaseStatus === "success" && coinbaseTransactionId) {
-            const resultPayload: OnrampResult = {
-              success: true,
-              message: "Legacy Onramp successful",
-              data: {
-                transactionId: coinbaseTransactionId,
-                service: "Coinbase Onramp (Legacy)",
-              },
-            };
-            setOnrampResultAtom(resultPayload);
-            connection
-              ?.remoteHandle()
-              .call("reportProcessComplete", { result: resultPayload });
-            goToStep("complete");
-          } else if (coinbaseStatus === "failure") {
-            const errorMsg = urlParams.get("error") || "Legacy Onramp failed.";
-            setFlowError(errorMsg, "processing-transaction");
-          }
         }
+        console.log("some other thing");
       }
     };
 
