@@ -1,10 +1,23 @@
 import { useAtomValue, useSetAtom } from "jotai";
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
+import {
+  oneClickSupportedTokensAtom,
+  onrampTargetAtom,
+  walletStateAtom,
+} from "../../state/atoms";
+import {
+  requestSwapQuote,
+  find1ClickAsset,
+  type QuoteRequestParams,
+  type OneClickToken,
+  fetch1ClickSupportedTokens,
+} from "../../lib/one-click-api";
 import { useAccount } from "wagmi";
 import type { TargetAsset } from "../../../../src/internal/communication/messages";
-import { onrampTargetAtom, walletStateAtom } from "../../state/atoms";
+
 import Header from "../header";
+import LoadingSpinner from "../loading-spinner";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
@@ -31,12 +44,40 @@ interface FormEntryViewProps {
 
 const FALLBACK_TARGET_ASSET: TargetAsset = {
   chain: "NEAR",
-  asset: "NEAR",
+  asset: "wNEAR",
 };
+
+const COINBASE_DEPOSIT_NETWORK = "base"; // As seen in App.tsx
+const ONE_CLICK_REFERRAL_ID = "pingpay.near"; // As seen in App.tsx
+
+// Simple debounce utility
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  delay: number,
+): (...args: Parameters<T>) => void {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return (...args: Parameters<T>) => {
+    if (timeoutId) {
+      clearTimeout(timeoutId);
+    }
+    timeoutId = setTimeout(() => {
+      func(...args);
+    }, delay);
+  };
+}
 
 export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
   const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
   const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  const allSupportedTokens = useAtomValue(oneClickSupportedTokensAtom);
+  const setAllSupportedTokens = useSetAtom(oneClickSupportedTokensAtom);
+
+  const [estimatedReceiveAmount, setEstimatedReceiveAmount] = useState<
+    string | null
+  >(null);
+  const [isQuoteLoading, setIsQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState<string | null>(null);
 
   const methods = useForm<FormValues>({
     mode: "onChange",
@@ -54,11 +95,12 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     control,
     watch,
     formState: { isValid, errors },
+    getValues,
   } = methods;
   const { address, chainId, isConnected } = useAccount();
   const setWalletState = useSetAtom(walletStateAtom);
+  const depositAmountWatcher = watch("amount");
 
-  // For payment method subtext
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
     methods.getValues("paymentMethod")
   );
@@ -96,6 +138,137 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
       setWalletState(null);
     }
   }, [address, chainId, isConnected, setWalletState]);
+
+  const fetchQuotePreview = useCallback(
+    async (amountStr: string) => {
+      if (!amountStr || parseFloat(amountStr) <= 0) {
+        setEstimatedReceiveAmount(null);
+        setQuoteError(null);
+        setIsQuoteLoading(false);
+        return;
+      }
+
+      setIsQuoteLoading(true);
+      setQuoteError(null);
+      setEstimatedReceiveAmount("..."); // Placeholder for loading
+
+      try {
+        let currentSupportedTokens = allSupportedTokens;
+        if (!currentSupportedTokens) {
+          currentSupportedTokens = await fetch1ClickSupportedTokens();
+          setAllSupportedTokens(currentSupportedTokens);
+        }
+        
+        if (!currentSupportedTokens || currentSupportedTokens.length === 0) {
+          throw new Error("Supported token list is empty or not loaded.");
+        }
+
+        const formSnapshot = getValues();
+
+        const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
+          currentSupportedTokens,
+          formSnapshot.selectedAsset,
+          COINBASE_DEPOSIT_NETWORK,
+        );
+
+        const destinationAsset1Click: OneClickToken | undefined =
+          find1ClickAsset(
+            currentSupportedTokens,
+            currentOnrampTarget.asset,
+            currentOnrampTarget.chain,
+          );
+
+        if (!originAsset1Click || !destinationAsset1Click) {
+          throw new Error("Could not find required assets for the quote.");
+        }
+
+        const amountInSmallestUnit = BigInt(
+          Math.floor(
+            parseFloat(amountStr) * 10 ** originAsset1Click.decimals,
+          ),
+        ).toString();
+
+        const quoteDeadline = new Date(
+          Date.now() + 5 * 60 * 1000,
+        ).toISOString();
+
+        let recipientForPreview: string;
+        const enteredNearWalletAddress = formSnapshot.nearWalletAddress;
+
+        if (destinationAsset1Click.blockchain.toLowerCase() === "near") {
+          recipientForPreview = enteredNearWalletAddress || "preview.near";
+        } else {
+          recipientForPreview = enteredNearWalletAddress || address || "0x0000000000000000000000000000000000000000";
+        }
+
+        const quoteParams: QuoteRequestParams = {
+          originAsset: originAsset1Click.assetId,
+          destinationAsset: destinationAsset1Click.assetId,
+          amount: amountInSmallestUnit,
+          recipient: recipientForPreview,
+          refundTo: address || "0x0000000000000000000000000000000000000000",
+          refundType: "ORIGIN_CHAIN",
+          depositType: "ORIGIN_CHAIN",
+          recipientType: "DESTINATION_CHAIN",
+          swapType: "EXACT_INPUT",
+          slippageTolerance: 100, // 1%
+          deadline: quoteDeadline,
+          dry: true, // CRITICAL: For preview only
+          referral: ONE_CLICK_REFERRAL_ID,
+        };
+
+        const quoteResponse = await requestSwapQuote(quoteParams);
+        const rawAmount = parseFloat(quoteResponse.quote.amountOutFormatted);
+        if (!isNaN(rawAmount)) {
+          const truncatedAmount = Math.floor(rawAmount * 100) / 100;
+          setEstimatedReceiveAmount(truncatedAmount.toFixed(2));
+        } else {
+          // Fallback if parsing fails, though amountOutFormatted should be a number string
+          setEstimatedReceiveAmount(quoteResponse.quote.amountOutFormatted);
+        }
+        setQuoteError(null);
+      } catch (e: unknown) {
+        const errorMsg = e instanceof Error ? e.message : String(e);
+        console.error("Quote preview error:", errorMsg);
+        setQuoteError("Unavailable");
+        setEstimatedReceiveAmount(null);
+      } finally {
+        setIsQuoteLoading(false);
+      }
+    },
+    [allSupportedTokens, currentOnrampTarget, address, getValues, setAllSupportedTokens],
+  );
+
+  const debouncedFetchQuotePreview = useCallback(
+    debounce(fetchQuotePreview, 750),
+    [fetchQuotePreview],
+  );
+
+  useEffect(() => {
+    if (depositAmountWatcher && parseFloat(depositAmountWatcher) > 0) {
+      debouncedFetchQuotePreview(depositAmountWatcher);
+    } else {
+      setEstimatedReceiveAmount(null);
+      setQuoteError(null);
+      setIsQuoteLoading(false);
+    }
+  }, [depositAmountWatcher, debouncedFetchQuotePreview]);
+
+  useEffect(() => {
+    const loadSupportedTokens = async () => {
+      if (!allSupportedTokens) {
+        try {
+          const tokens = await fetch1ClickSupportedTokens();
+          setAllSupportedTokens(tokens);
+        } catch (error) {
+          console.error("Failed to fetch supported tokens on mount:", error);
+          setQuoteError("Could not load token data.");
+        }
+      }
+    };
+    loadSupportedTokens();
+  }, [allSupportedTokens, setAllSupportedTokens]);
+
 
   return (
     <FormProvider {...methods}>
@@ -163,15 +336,23 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         {/* Amount Input */}
         <div className="w-full border gap-2 flex flex-col border-white/[0.18] rounded-[8px] bg-white/5">
           <div className="w-full p-4 gap-2 flex flex-col ">
-            <p>You Receive</p>
+            <p>You Receive (Estimated)</p>
             <div className="flex flex-row items-center justify-between ">
-              <p className="font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px]  text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                100
-              </p>
+              <div className="flex items-center">
+                {isQuoteLoading ? (
+                  <LoadingSpinner size="xs" inline={true} />
+                ) : (
+                  <p className="font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
+                    {quoteError
+                      ? quoteError
+                      : estimatedReceiveAmount || "-"}
+                  </p>
+                )}
+              </div>
               <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center  rounded-full bg-white/[0.08] hover:bg-white/5">
                 <img
                   src={
-                    currentOnrampTarget.asset === "NEAR"
+                    currentOnrampTarget.asset === "wNEAR"
                       ? "/near-logo-green.png"
                       : "/usd-coin-usdc-logo.svg"
                   }
