@@ -29,7 +29,7 @@ interface FormEntryViewProps {
   generatedEvmAddress?: string;
 }
 
-const FormEntryView: React.FC<FormEntryViewProps> = ({
+export const FormEntryView: React.FC<FormEntryViewProps> = ({
   onSubmit,
   // generatedEvmAddress,
 }) => {
@@ -319,5 +319,3 @@ const FormEntryView: React.FC<FormEntryViewProps> = ({
     </FormProvider>
   );
 };
-
-export default FormEntryView;

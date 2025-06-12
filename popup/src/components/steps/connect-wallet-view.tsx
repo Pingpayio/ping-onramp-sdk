@@ -6,7 +6,7 @@ interface ConnectWalletViewProps {
   onConnected: () => void;
 }
 
-const ConnectWalletView: React.FC<ConnectWalletViewProps> = ({
+export const ConnectWalletView: React.FC<ConnectWalletViewProps> = ({
   onConnected,
 }) => {
   const { address, isConnected } = useAccount();
@@ -42,5 +42,3 @@ const ConnectWalletView: React.FC<ConnectWalletViewProps> = ({
     </div>
   );
 };
-
-export default ConnectWalletView;

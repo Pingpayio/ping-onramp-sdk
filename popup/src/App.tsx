@@ -18,12 +18,11 @@ import type { OnrampURLParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
 import PopupLayout from "./components/layout/popup-layout";
-import ConnectWalletView from "./components/steps/connect-wallet-view";
-import ConnectingWalletView from "./components/steps/connecting-wallet-view";
-import ErrorView from "./components/steps/error-view";
+import { ConnectWalletView } from "./components/steps/connect-wallet-view";
+import { ErrorView } from "./components/steps/error-view";
 import type { FormValues } from "./components/steps/form-entry-view";
-import FormEntryView from "./components/steps/form-entry-view";
-import LoadingView from "./components/steps/loading-view";
+import { FormEntryView } from "./components/steps/form-entry-view";
+import { LoadingView } from "./components/steps/loading-view";
 import type { CallbackParams, IntentProgress } from "./types/onramp";
 import { ProcessingOnramp } from "./components/processsing-onramp";
 
@@ -49,7 +48,6 @@ function App() {
         "loading",
         "connect-wallet",
         "form-entry",
-        "connecting-wallet",
         "initiating-onramp-service",
         "signing-transaction",
         "processing-transaction",
@@ -469,8 +467,6 @@ function App() {
             onDisconnect={handleDisconnect}
           />
         );
-      case "connecting-wallet":
-        return <ConnectingWalletView />;
       case "initiating-onramp-service":
         return <ProcessingOnramp step={0} />;
       case "signing-transaction":
