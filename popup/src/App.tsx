@@ -173,6 +173,10 @@ function App() {
       const depositAddressForCoinbase = quoteResponse.quote.depositAddress;
       const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK
 
+      // Get ping_sdk_opener_origin from the current URL
+      const currentUrlParams = new URLSearchParams(window.location.search);
+      const openerOrigin = currentUrlParams.get("ping_sdk_opener_origin");
+
       const callbackUrlParams = new URLSearchParams({
         type: "intents",
         action: "withdraw",
@@ -182,6 +186,10 @@ function App() {
         fiatAmount: data.amount,
         nearRecipient: data.nearWalletAddress,
       });
+
+      if (openerOrigin) {
+        callbackUrlParams.set("ping_sdk_opener_origin", openerOrigin);
+      }
 
       const redirectUrl = `${
         window.location.origin
