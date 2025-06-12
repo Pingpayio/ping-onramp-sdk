@@ -3,6 +3,7 @@ import { Progress } from "../ui/progress";
 import Header from "../header";
 import { FaClock } from "react-icons/fa";
 import { StepInfoBox, type StepBox } from "../step-info-box";
+import { Button } from "../ui/button";
 
 export interface ProcessingOnrampProps {
   step: number;
@@ -158,12 +159,9 @@ export function ProcessingOnramp({
         </div>
       </div>
       <div className="flex w-full gap-4 mt-6">
-        <button className="flex-1 py-4! h-auto! px-8! rounded-full! bg-white text-[#3D315E] font-semibold hover:bg-gray-200 transition-all duration-300 ease-in-out text-base!">
-          Return Home
-        </button>
-        <button className="flex-1 py-4! h-auto! px-8! rounded-full! bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base!">
+        <Button className="flex-1 w-full py-4! h-auto! px-8! rounded-full! bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base!">
           View on Explorer
-        </button>
+        </Button>
       </div>
     </div>
   );
