@@ -34,6 +34,7 @@ import type { FormValues } from "./components/steps/form-entry-view";
 import { FormEntryView } from "./components/steps/form-entry-view";
 import { LoadingView } from "./components/steps/loading-view";
 import { ProcessingOnramp } from "./components/steps/processsing-onramp-view";
+import type { OnrampCallbackParams } from "./routes/_layout/onramp-callback";
 
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
@@ -181,7 +182,7 @@ function App() {
       const currentUrlParams = new URLSearchParams(window.location.search);
       const openerOrigin = currentUrlParams.get("ping_sdk_opener_origin");
 
-      const callbackUrlParams = new URLSearchParams({
+      const params: OnrampCallbackParams = {
         type: "intents",
         action: "withdraw",
         oneClickDepositAddress: depositAddressForCoinbase,
@@ -189,7 +190,9 @@ function App() {
         targetAssetSymbol: onrampTargetValue.asset,
         fiatAmount: data.amount,
         nearRecipient: data.nearWalletAddress,
-      });
+      };
+
+      const callbackUrlParams = new URLSearchParams(params);
 
       if (openerOrigin) {
         callbackUrlParams.set("ping_sdk_opener_origin", openerOrigin);
@@ -374,7 +377,7 @@ function App() {
       const coinbaseStatus = urlParams.get("status");
       const coinbaseTransactionId = urlParams.get("transactionId");
 
-      if (window.location.pathname === "/onramp-callback") {
+      if (window.location.pathname === "/onramp-callback") { // MOVE THIS OUT
         // Clean up URL params first
         // const newUrl = new URL(window.location.href);
         // urlParams.forEach((_, key) => newUrl.searchParams.delete(key));

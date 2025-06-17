@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LayoutRouteImport } from './routes/_layout'
 import { Route as LayoutIndexRouteImport } from './routes/_layout/index'
+import { Route as LayoutOnrampCallbackIndexRouteImport } from './routes/_layout/onramp-callback/index'
 
 const LayoutRoute = LayoutRouteImport.update({
   id: '/_layout',
@@ -21,24 +22,33 @@ const LayoutIndexRoute = LayoutIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
+const LayoutOnrampCallbackIndexRoute =
+  LayoutOnrampCallbackIndexRouteImport.update({
+    id: '/onramp-callback/',
+    path: '/onramp-callback/',
+    getParentRoute: () => LayoutRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof LayoutIndexRoute
+  '/onramp-callback': typeof LayoutOnrampCallbackIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof LayoutIndexRoute
+  '/onramp-callback': typeof LayoutOnrampCallbackIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/': typeof LayoutIndexRoute
+  '/_layout/onramp-callback/': typeof LayoutOnrampCallbackIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/onramp-callback'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_layout' | '/_layout/'
+  to: '/' | '/onramp-callback'
+  id: '__root__' | '/_layout' | '/_layout/' | '/_layout/onramp-callback/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -61,15 +71,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutIndexRouteImport
       parentRoute: typeof LayoutRoute
     }
+    '/_layout/onramp-callback/': {
+      id: '/_layout/onramp-callback/'
+      path: '/onramp-callback'
+      fullPath: '/onramp-callback'
+      preLoaderRoute: typeof LayoutOnrampCallbackIndexRouteImport
+      parentRoute: typeof LayoutRoute
+    }
   }
 }
 
 interface LayoutRouteChildren {
   LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutOnrampCallbackIndexRoute: typeof LayoutOnrampCallbackIndexRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutIndexRoute: LayoutIndexRoute,
+  LayoutOnrampCallbackIndexRoute: LayoutOnrampCallbackIndexRoute,
 }
 
 const LayoutRouteWithChildren =
