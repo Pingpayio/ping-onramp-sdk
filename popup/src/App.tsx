@@ -538,7 +538,7 @@ function App() {
     }
   };
 
-  return <PopupLayout>{renderStepContent()}</PopupLayout>;
+  return renderStepContent();
 }
 
 export default App;
