@@ -28,7 +28,6 @@ import {
 import type { OnrampURLParams } from "./utils/rampUtils";
 import { generateOnrampURL } from "./utils/rampUtils";
 
-import PopupLayout from "./components/layout/popup-layout";
 import { ConnectWalletView } from "./components/steps/connect-wallet-view";
 import { ErrorView } from "./components/steps/error-view";
 import type { FormValues } from "./components/steps/form-entry-view";
