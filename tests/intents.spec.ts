@@ -196,6 +196,7 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
         const callbackUrlParams = new URLSearchParams({
           type: "intents",
           action: "withdraw",
+          depositAddress: "mockOneClickDepositAddressForTest",
           network: "near",
           asset: "USDC",
           amount: MOCK_AMOUNT,

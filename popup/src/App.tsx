@@ -1,5 +1,5 @@
+import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { atom, useAtom } from "jotai";
 import { usePopupConnection } from "./internal/communication/usePopupConnection";
 
 import {
@@ -9,18 +9,14 @@ import {
   useOnrampTarget,
   useSetNearIntentsDisplayInfo,
   useSetOneClickFullQuoteResponse,
-  useSetOneClickStatus,
   useSetOneClickSupportedTokens,
-  useSetOnrampResult,
-  useWalletState,
+  useWalletState
 } from "./state/hooks";
 
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
-  getSwapStatus,
   requestSwapQuote,
-  submitDepositTransaction,
   type OneClickToken,
   type QuoteRequestParams,
 } from "./lib/one-click-api";
@@ -38,12 +34,10 @@ import type { OnrampCallbackParams } from "./routes/_layout/onramp-callback";
 
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
-// Temporary atom for the hacked flow. TODO: Move to atoms.ts if this pattern is kept.
-const hackedFlowDepositAddressAtom = atom<string | null>(null);
-
 function App() {
   const { connection } = usePopupConnection();
   const { step, goToStep, error, setFlowError } = useOnrampFlow();
+  const router = useRouter();
   console.log("App component render. Current step:", step);
 
   useEffect(() => {
@@ -68,18 +62,13 @@ function App() {
 
   const [walletStateValue] = useWalletState();
   const [onrampResultValue] = useOnrampResult();
-  const setOnrampResultAtom = useSetOnrampResult();
-  const [onrampTargetValue] = useOnrampTarget(); // Get the target asset
+  const [onrampTargetValue] = useOnrampTarget();
 
-  // 1Click specific state setters/getters
   const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
   const [oneClickSupportedTokens] = useOneClickSupportedTokens();
   const setOneClickFullQuoteResponse = useSetOneClickFullQuoteResponse();
-  const setOneClickStatus = useSetOneClickStatus();
 
-  // Hooks that might be repurposed or removed if not directly applicable to 1Click UI updates
-  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo(); // For displaying amounts, etc.
-  const [hackedFlowAddress, setHackedFlowAddress] = useAtom(hackedFlowDepositAddressAtom);
+  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
 
   const handleWalletConnected = () => {
     if (step === "connect-wallet" || step === "loading") {
@@ -128,7 +117,7 @@ function App() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        "base" // e.g., "base" 
+        "base" // e.g., "base"
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
@@ -185,11 +174,11 @@ function App() {
       const params: OnrampCallbackParams = {
         type: "intents",
         action: "withdraw",
-        oneClickDepositAddress: depositAddressForCoinbase,
-        targetNetwork: onrampTargetValue.chain,
-        targetAssetSymbol: onrampTargetValue.asset,
-        fiatAmount: data.amount,
-        nearRecipient: data.nearWalletAddress,
+        depositAddress: depositAddressForCoinbase,
+        network: onrampTargetValue.chain,
+        asset: onrampTargetValue.asset,
+        amount: data.amount,
+        recipient: data.nearWalletAddress,
       };
 
       const callbackUrlParams = new URLSearchParams(params);
@@ -217,47 +206,54 @@ function App() {
         enableGuestCheckout: true,
       };
 
-      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase); // Still generate for potential non-navigational use or logging
+      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase); // THIS SHOULD BE WHERE WE REDIRECT
 
-      // For the hacked flow, send placeholder URLs to prevent external navigation,
-      // but include the data that would have been in the callback URL.
-      const simulatedCallbackData = {
+      // Prepare callback data for router navigation
+      const callbackParams: OnrampCallbackParams = {
         type: "intents",
         action: "withdraw",
-        oneClickDepositAddress: depositAddressForCoinbase,
-        targetNetwork: onrampTargetValue.chain,
-        targetAssetSymbol: onrampTargetValue.asset,
-        fiatAmount: data.amount,
-        nearRecipient: data.nearWalletAddress,
+        depositAddress: depositAddressForCoinbase,
+        network: onrampTargetValue.chain,
+        asset: onrampTargetValue.asset,
+        amount: data.amount,
+        recipient: data.nearWalletAddress,
       };
       if (openerOrigin) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (simulatedCallbackData as any).ping_sdk_opener_origin = openerOrigin;
+        (callbackParams as any).ping_sdk_opener_origin = openerOrigin;
       }
 
-      connection.remoteHandle().call("reportOnrampInitiated", {
-        serviceName: "Coinbase Onramp (via 1Click) - HACKED FLOW",
-          details: {
-            url: "HACK_FLOW:NAVIGATION_PREVENTED", // Placeholder to prevent navigation
-            manualCallbackUrl: "HACK_FLOW:NAVIGATION_PREVENTED", // Placeholder
-            originalCoinbaseOnrampURL: coinbaseOnrampURL, // Keep original for logging if needed
-            originalRedirectUrl: redirectUrl, // Keep original for logging if needed
-            simulatedCallbackParams: simulatedCallbackData, // Data that would have been in callback
-            depositAddress: {
-              address: depositAddressForCoinbase,
-              network: depositNetworkForCoinbase,
-            },
-            quote: quoteResponse,
+      // Report onramp initiation to the parent application
+      await connection.remoteHandle().call("reportOnrampInitiated", {
+        serviceName: "Coinbase Onramp (via 1Click)",
+        details: {
+          url: import.meta.env.PROD ? coinbaseOnrampURL : "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER",
+          manualCallbackUrl: redirectUrl,
+          originalCoinbaseOnrampURL: coinbaseOnrampURL,
+          callbackParams: callbackParams,
+          depositAddress: {
+            address: depositAddressForCoinbase,
+            network: depositNetworkForCoinbase,
           },
+          quote: quoteResponse,
+        },
+      });
+
+      if (import.meta.env.PROD) {
+        // In production: Redirect to Coinbase Onramp URL
+        console.log("Production mode: Redirecting to Coinbase Onramp URL");
+        window.location.href = coinbaseOnrampURL;
+      } else {
+        // In development: Use router to navigate to the onramp-callback route
+        console.log(
+          "Development mode: Navigating to onramp-callback with params:",
+          callbackParams
+        );
+        router.navigate({
+          to: "/onramp-callback",
+          search: callbackParams,
         });
-
-      // --- HACK: Bypass navigation and directly trigger processing ---
-      console.log("HACK: Bypassing navigation, setting hackedFlowAddress:", depositAddressForCoinbase);
-      setHackedFlowAddress(depositAddressForCoinbase);
-      goToStep("processing-transaction");
-      setNearIntentsDisplayInfo({ message: "Processing transaction (direct)..." });
-      // The useEffect below will now pick up hackedFlowAddress and call pollStatus.
-
+      }
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
       setFlowError(
@@ -270,197 +266,6 @@ function App() {
       });
     }
   };
-
-  useEffect(() => {
-    const POLLING_INTERVAL = 5000; // 5 seconds
-    let pollingTimer: NodeJS.Timeout | undefined;
-
-    const pollStatus = async (depositAddress: string) => {
-      try {
-        const statusResponse = await getSwapStatus(depositAddress);
-        setOneClickStatus(statusResponse);
-        const destTxHash = statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.hash;
-        // Construct the explorer URL if a destination transaction hash is available
-        const explorerLink = destTxHash
-          ? `https://nearblocks.io/txns/${destTxHash}`
-          : statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.explorerUrl; // Fallback to existing explorerUrl
-
-        setNearIntentsDisplayInfo({
-          message: `Swap status: ${statusResponse.status}`,
-          amountIn: parseFloat(
-            statusResponse.quoteResponse.quote.amountInFormatted
-          ),
-          amountOut: parseFloat(
-            statusResponse.quoteResponse.quote.amountOutFormatted
-          ),
-          explorerUrl: explorerLink,
-        });
-
-        switch (statusResponse.status) {
-          case "SUCCESS":
-            goToStep("complete");
-            setOnrampResultAtom({
-              success: true,
-              message: "1Click swap successful.",
-              data: {
-                service: "1Click",
-                transactionId:
-                  statusResponse.swapDetails?.destinationChainTxHashes?.[0]
-                    ?.hash || depositAddress,
-                details: statusResponse,
-              },
-            });
-            clearTimeout(pollingTimer);
-            break;
-          case "REFUNDED":
-          case "FAILED":
-          case "EXPIRED":
-            setFlowError(
-              `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
-              "processing-transaction"
-            );
-            clearTimeout(pollingTimer);
-            break;
-          case "PENDING_DEPOSIT":
-          case "KNOWN_DEPOSIT_TX":
-          case "PROCESSING":
-            // Continue polling
-            pollingTimer = setTimeout(
-              () => pollStatus(depositAddress),
-              POLLING_INTERVAL
-            );
-            break;
-          default:
-            console.warn("Unhandled 1Click status:", statusResponse.status);
-            clearTimeout(pollingTimer);
-            setFlowError(
-              `Unhandled swap status: ${statusResponse.status}`,
-              "processing-transaction"
-            );
-        }
-      } catch (pollError) {
-        console.error("Error polling 1Click status:", pollError);
-        setFlowError(
-          `Error polling swap status: ${
-            (pollError as Error).message
-          }. Retrying...`,
-          "processing-transaction"
-        );
-        // Retry polling after a delay
-        pollingTimer = setTimeout(
-          () => pollStatus(depositAddress),
-          POLLING_INTERVAL * 2
-        ); // Longer delay on error
-      }
-    };
-
-    // This useEffect now handles both URL-based callbacks and the hacked direct flow
-    const handleCallbackLogic = async () => {
-      // Check for hacked flow first
-      if (hackedFlowAddress) {
-        console.log("HACKED FLOW: useEffect detected active hack with address:", hackedFlowAddress);
-        setNearIntentsDisplayInfo({
-          message: "Verifying deposit status with 1Click (direct flow)...",
-        });
-        pollStatus(hackedFlowAddress);
-        setHackedFlowAddress(null); // Reset hack state after use
-        return; // Skip normal URL callback logic
-      }
-
-      // Original handleCallback logic for URL-based callbacks
-      console.log("handleCallback triggered. Pathname:", window.location.pathname, "Search:", window.location.search);
-      const urlParams = new URLSearchParams(window.location.search);
-      const type = urlParams.get("type");
-      console.log("handleCallback: type from URL:", type);
-      const oneClickDepositAddress = urlParams.get("oneClickDepositAddress");
-      console.log("handleCallback: oneClickDepositAddress from URL:", oneClickDepositAddress);
-      const coinbaseStatus = urlParams.get("status");
-      const coinbaseTransactionId = urlParams.get("transactionId");
-
-      if (window.location.pathname === "/onramp-callback") { // MOVE THIS OUT
-        // Clean up URL params first
-        // const newUrl = new URL(window.location.href);
-        // urlParams.forEach((_, key) => newUrl.searchParams.delete(key));
-        // window.history.replaceState(
-        //   {},
-        //   document.title,
-        //   newUrl.pathname + newUrl.search
-        // );
-
-        if (type === "intents" && oneClickDepositAddress) {
-          console.log("going");
-          goToStep("processing-transaction");
-          setNearIntentsDisplayInfo({ message: "Processing your onramp..." });
-
-          if (coinbaseStatus === "success" && coinbaseTransactionId) {
-            setNearIntentsDisplayInfo({
-              message: "Submitting deposit to 1Click...",
-            });
-            try {
-              await submitDepositTransaction({
-                txHash: coinbaseTransactionId,
-                depositAddress: oneClickDepositAddress,
-              });
-              setNearIntentsDisplayInfo({
-                message: "Deposit submitted. Polling for swap status...",
-              });
-              // Start polling
-              pollStatus(oneClickDepositAddress);
-            } catch (submitError) {
-              setFlowError(
-                `Failed to submit deposit to 1Click: ${
-                  (submitError as Error).message
-                }`,
-                "processing-transaction"
-              );
-            }
-          } else if (coinbaseStatus === "failure") {
-            const errorMsg =
-              urlParams.get("error") || "Coinbase onramp failed.";
-            setFlowError(errorMsg, "processing-transaction");
-            connection?.remoteHandle().call("reportProcessFailed", {
-              error: errorMsg,
-              step: "processing-transaction",
-            });
-          } else {
-            // Coinbase callback might not have status=success, or missing txId.
-            // This could happen if user closes Coinbase popup early.
-            // We might still try to poll if we have a depositAddress,
-            // assuming funds *might* have been sent.
-            // Or, treat as an error/uncertain state.
-            console.warn(
-              "Coinbase callback status not 'success' or transactionId missing, but 1Click deposit address present.",
-              { coinbaseStatus, coinbaseTransactionId }
-            );
-            setNearIntentsDisplayInfo({
-              message: "Verifying deposit status with 1Click...",
-            });
-            // Attempt to poll anyway, 1Click might have detected the deposit via other means
-            // or it might timeout if no deposit is found.
-            pollStatus(oneClickDepositAddress);
-          }
-        }
-        console.log("some other thing");
-      }
-    };
-
-    handleCallbackLogic(); // Renamed and now handles both flows
-
-    return () => {
-      if (pollingTimer) {
-        clearTimeout(pollingTimer);
-      }
-    };
-  }, [
-    connection,
-    goToStep,
-    setFlowError,
-    setOnrampResultAtom,
-    setOneClickStatus,
-    setNearIntentsDisplayInfo,
-    hackedFlowAddress, // Added dependency
-    setHackedFlowAddress, // Added dependency
-  ]);
 
   useEffect(() => {
     const isWalletConnected = !!(walletStateValue && walletStateValue.address);
