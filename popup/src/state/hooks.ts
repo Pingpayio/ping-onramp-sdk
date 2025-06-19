@@ -1,18 +1,13 @@
 import { useAtom, useSetAtom } from "jotai";
-import type { IntentProgress, NearIntentsDisplayInfo } from "../types/onramp";
+import type { NearIntentsDisplayInfo } from "../types/onramp";
 import {
-  formDataAtom,
   nearIntentsDisplayInfoAtom,
+  oneClickStatusAtom,
+  oneClickSupportedTokensAtom,
   onrampErrorAtom,
   onrampResultAtom,
   onrampTargetAtom,
-  processingSubStepAtom,
-  signedTransactionAtom,
-  walletStateAtom,
-  // 1Click atoms
-  oneClickSupportedTokensAtom,
-  oneClickFullQuoteResponseAtom,
-  oneClickStatusAtom,
+  walletStateAtom
 } from "./atoms";
 
 /**
@@ -32,21 +27,10 @@ export const useOnrampFlow = () => {
 
 export const useOnrampTarget = () => useAtom(onrampTargetAtom);
 export const useSetOnrampTarget = () => useSetAtom(onrampTargetAtom);
-export const useFormData = () => useAtom(formDataAtom);
 export const useWalletState = () => useAtom(walletStateAtom);
 export const useSetWalletState = () => useSetAtom(walletStateAtom);
-export const useSignedTransaction = () => useAtom(signedTransactionAtom);
 export const useOnrampResult = () => useAtom(onrampResultAtom);
 export const useSetOnrampResult = () => useSetAtom(onrampResultAtom);
-
-export const useProcessingSubStep = (): [
-  IntentProgress,
-  (update: IntentProgress | ((prev: IntentProgress) => IntentProgress)) => void,
-] => useAtom(processingSubStepAtom);
-
-export const useSetProcessingSubStep = (): ((
-  update: IntentProgress | ((prev: IntentProgress) => IntentProgress),
-) => void) => useSetAtom(processingSubStepAtom);
 
 export const useNearIntentsDisplayInfo = (): [
   NearIntentsDisplayInfo,
@@ -68,11 +52,6 @@ export const useOneClickSupportedTokens = () =>
   useAtom(oneClickSupportedTokensAtom);
 export const useSetOneClickSupportedTokens = () =>
   useSetAtom(oneClickSupportedTokensAtom);
-
-export const useOneClickFullQuoteResponse = () =>
-  useAtom(oneClickFullQuoteResponseAtom);
-export const useSetOneClickFullQuoteResponse = () =>
-  useSetAtom(oneClickFullQuoteResponseAtom);
 
 export const useOneClickStatus = () => useAtom(oneClickStatusAtom);
 export const useSetOneClickStatus = () => useSetAtom(oneClickStatusAtom);

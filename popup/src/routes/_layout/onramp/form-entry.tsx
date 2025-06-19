@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { FormEntryView } from "../../../components/steps/form-entry-view";
 import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
-import { useWalletState } from "../../../state/hooks";
+import { useSetOneClickSupportedTokens, useWalletState } from "../../../state/hooks";
 import type { FormValues } from "../../../components/steps/form-entry-view";
 import { useOnrampTarget } from "../../../state/hooks";
 import { generateOnrampURL } from "../../../lib/coinbase";
@@ -17,8 +17,6 @@ import {
 import {
   useOneClickSupportedTokens,
   useSetNearIntentsDisplayInfo,
-  useSetOneClickFullQuoteResponse,
-  useSetOneClickSupportedTokens,
 } from "../../../state/hooks";
 import type { OnrampCallbackParams } from "./callback";
 
@@ -36,7 +34,6 @@ function FormEntryRoute() {
 
   const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
   const [oneClickSupportedTokens] = useOneClickSupportedTokens();
-  const setOneClickFullQuoteResponse = useSetOneClickFullQuoteResponse();
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
 
   // Report step change to parent application
@@ -158,7 +155,6 @@ function FormEntryRoute() {
 
       setNearIntentsDisplayInfo({ message: "Requesting swap quote..." });
       const quoteResponse = await requestSwapQuote(quoteParams);
-      setOneClickFullQuoteResponse(quoteResponse);
 
       const depositAddressForCoinbase = quoteResponse.quote.depositAddress;
       const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK

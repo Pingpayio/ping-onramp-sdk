@@ -21,7 +21,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jotai": "^2.12.5",
-    "lodash": "^4.17.21",
     "lucide-react": "^0.511.0",
     "post-me": "^0.4.5",
     "react": "^19.1.0",
