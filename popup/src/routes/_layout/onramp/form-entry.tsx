@@ -40,6 +40,10 @@ function FormEntryRoute() {
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
 
   // Report step change to parent application
+  // Get ping_sdk_opener_origin from the current URL
+  const currentUrlParams = new URLSearchParams(window.location.search);
+  const openerOrigin = currentUrlParams.get("ping_sdk_opener_origin");
+
   useEffect(() => {
     if (connection) {
       connection
@@ -59,9 +63,19 @@ function FormEntryRoute() {
 
     const userEvmAddress = walletState?.address;
     if (!userEvmAddress) {
+      // Create error search params and preserve ping_sdk_opener_origin
+      const errorSearch: Record<string, string> = { 
+        error: "EVM wallet address not available. Please connect your wallet." 
+      };
+      
+      // Add ping_sdk_opener_origin if it exists
+      if (openerOrigin) {
+        errorSearch.ping_sdk_opener_origin = openerOrigin;
+      }
+      
       navigate({ 
         to: "/onramp/error",
-        search: { error: "EVM wallet address not available. Please connect your wallet." }
+        search: errorSearch
       });
       return;
     }
@@ -69,8 +83,15 @@ function FormEntryRoute() {
     // If onrampTarget is not defined, use default wNEAR on NEAR chain
     const targetAsset = onrampTarget || { chain: "NEAR", asset: "wNEAR" };
 
-    // Navigate to initiating route
-    navigate({ to: "/onramp/initiating" });
+    // Navigate to initiating route and preserve ping_sdk_opener_origin
+    const initiatingSearch = openerOrigin 
+      ? { ping_sdk_opener_origin: openerOrigin } 
+      : {};
+      
+    navigate({ 
+      to: "/onramp/initiating",
+      search: initiatingSearch
+    });
     setNearIntentsDisplayInfo({ message: "Fetching token data..." });
 
     try {
@@ -95,11 +116,19 @@ function FormEntryRoute() {
       );
 
       if (!originAsset1Click || !destinationAsset1Click) {
+        // Create error search params and preserve ping_sdk_opener_origin
+        const errorSearch: Record<string, string> = { 
+          error: "Could not find required assets for the swap in 1Click service." 
+        };
+        
+        // Add ping_sdk_opener_origin if it exists
+        if (openerOrigin) {
+          errorSearch.ping_sdk_opener_origin = openerOrigin;
+        }
+        
         navigate({ 
           to: "/onramp/error",
-          search: { 
-            error: "Could not find required assets for the swap in 1Click service." 
-          }
+          search: errorSearch
         });
         return;
       }
@@ -133,10 +162,6 @@ function FormEntryRoute() {
 
       const depositAddressForCoinbase = quoteResponse.quote.depositAddress;
       const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK
-
-      // Get ping_sdk_opener_origin from the current URL
-      const currentUrlParams = new URLSearchParams(window.location.search);
-      const openerOrigin = currentUrlParams.get("ping_sdk_opener_origin");
 
       const params: OnrampCallbackParams = {
         type: "intents",
@@ -220,11 +245,20 @@ function FormEntryRoute() {
       }
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
+      
+      // Create error search params and preserve ping_sdk_opener_origin
+      const errorSearch: Record<string, string> = { 
+        error: errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp." 
+      };
+      
+      // Add ping_sdk_opener_origin if it exists
+      if (openerOrigin) {
+        errorSearch.ping_sdk_opener_origin = openerOrigin;
+      }
+      
       navigate({ 
         to: "/onramp/error",
-        search: { 
-          error: errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp." 
-        }
+        search: errorSearch
       });
       connection?.remoteHandle().call("reportProcessFailed", {
         error: errorMsg,
@@ -234,7 +268,16 @@ function FormEntryRoute() {
   };
 
   const handleDisconnect = () => {
-    navigate({ to: "/onramp/connect-wallet", replace: true });
+    // Preserve ping_sdk_opener_origin when navigating to connect-wallet
+    const navigationSearch = openerOrigin 
+      ? { ping_sdk_opener_origin: openerOrigin } 
+      : {};
+      
+    navigate({ 
+      to: "/onramp/connect-wallet", 
+      search: navigationSearch,
+      replace: true 
+    });
   };
 
   return (

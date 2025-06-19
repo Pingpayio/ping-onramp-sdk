@@ -7,6 +7,7 @@ import { z } from "zod";
 // Define the search parameters schema
 const errorSearchSchema = z.object({
   error: z.string().optional(),
+  ping_sdk_opener_origin: z.string().optional(),
 });
 
 export const Route = createFileRoute("/_layout/onramp/error")({
@@ -44,7 +45,15 @@ function ErrorRoute() {
   }, [connection, searchParams.error]);
 
   const handleRetry = () => {
-    navigate({ to: "/onramp/form-entry" });
+    // Preserve ping_sdk_opener_origin when navigating back to form-entry
+    const navigationSearch = searchParams.ping_sdk_opener_origin 
+      ? { ping_sdk_opener_origin: searchParams.ping_sdk_opener_origin } 
+      : {};
+      
+    navigate({ 
+      to: "/onramp/form-entry",
+      search: navigationSearch
+    });
   };
 
   return (

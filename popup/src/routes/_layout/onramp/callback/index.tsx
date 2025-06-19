@@ -17,6 +17,7 @@ const onrampCallbackSearchSchema = z.object({
   asset: z.string(),
   amount: z.string(),
   recipient: z.string(),
+  ping_sdk_opener_origin: z.string().optional(),
 });
 
 export type OnrampCallbackParams = z.infer<typeof onrampCallbackSearchSchema>;
@@ -79,7 +80,16 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
-          navigate({ to: "/onramp/complete" });
+          
+          // Preserve ping_sdk_opener_origin when navigating to complete
+          const completeSearch = searchParams.ping_sdk_opener_origin 
+            ? { ping_sdk_opener_origin: searchParams.ping_sdk_opener_origin } 
+            : {};
+            
+          navigate({ 
+            to: "/onramp/complete",
+            search: completeSearch
+          });
           break;
         case "REFUNDED":
         case "FAILED":
@@ -88,11 +98,20 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
+          
+          // Create error search params and preserve ping_sdk_opener_origin
+          const failedErrorSearch: Record<string, string> = { 
+            error: `Swap ${statusResponse.status.toLowerCase()}. Check details.` 
+          };
+          
+          // Add ping_sdk_opener_origin if it exists
+          if (searchParams.ping_sdk_opener_origin) {
+            failedErrorSearch.ping_sdk_opener_origin = searchParams.ping_sdk_opener_origin;
+          }
+          
           navigate({ 
             to: "/onramp/error",
-            search: { 
-              error: `Swap ${statusResponse.status.toLowerCase()}. Check details.` 
-            }
+            search: failedErrorSearch
           });
           break;
         case "PENDING_DEPOSIT":
@@ -110,11 +129,20 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
+          
+          // Create error search params and preserve ping_sdk_opener_origin
+          const unhandledErrorSearch: Record<string, string> = { 
+            error: `Unhandled swap status: ${statusResponse.status}` 
+          };
+          
+          // Add ping_sdk_opener_origin if it exists
+          if (searchParams.ping_sdk_opener_origin) {
+            unhandledErrorSearch.ping_sdk_opener_origin = searchParams.ping_sdk_opener_origin;
+          }
+          
           navigate({ 
             to: "/onramp/error",
-            search: { 
-              error: `Unhandled swap status: ${statusResponse.status}` 
-            }
+            search: unhandledErrorSearch
           });
       }
     } catch (pollError) {
@@ -134,7 +162,16 @@ function RouteComponent() {
 
   useEffect(() => {
     if (searchParams.type === "intents" && searchParams.depositAddress) {
-      navigate({ to: "/onramp/processing" });
+      // Preserve ping_sdk_opener_origin when navigating
+      const navigationSearch = searchParams.ping_sdk_opener_origin 
+        ? { ping_sdk_opener_origin: searchParams.ping_sdk_opener_origin } 
+        : {};
+        
+      navigate({ 
+        to: "/onramp/processing",
+        search: navigationSearch
+      });
+      
       setNearIntentsDisplayInfo({
         message: "Verifying deposit status with 1Click...",
       });
@@ -143,9 +180,18 @@ function RouteComponent() {
       pollStatus(searchParams.depositAddress);
     } else {
       // Handle invalid params
+      const errorSearch: Record<string, string> = { 
+        error: "Invalid onramp callback parameters." 
+      };
+      
+      // Add ping_sdk_opener_origin if it exists
+      if (searchParams.ping_sdk_opener_origin) {
+        errorSearch.ping_sdk_opener_origin = searchParams.ping_sdk_opener_origin;
+      }
+      
       navigate({ 
         to: "/onramp/error",
-        search: { error: "Invalid onramp callback parameters." }
+        search: errorSearch
       });
     }
 

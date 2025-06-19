@@ -3,9 +3,16 @@ import { useEffect } from "react";
 import { ProcessingOnramp } from "../../../components/steps/processsing-onramp-view";
 import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
 import { useOnrampResult } from "../../../state/hooks";
+import { z } from "zod";
+
+// Define the search parameters schema
+const completeSearchSchema = z.object({
+  ping_sdk_opener_origin: z.string().optional(),
+});
 
 export const Route = createFileRoute("/_layout/onramp/complete")({
   component: CompleteRoute,
+  validateSearch: (search) => completeSearchSchema.parse(search),
 });
 
 function CompleteRoute() {
