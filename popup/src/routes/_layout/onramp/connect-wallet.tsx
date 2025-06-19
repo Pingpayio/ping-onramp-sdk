@@ -23,7 +23,7 @@ function ConnectWalletRoute() {
   useEffect(() => {
     if (connection) {
       connection
-        .remoteHandle()
+        ?.remoteHandle()
         .call("reportStepChanged", { step: "connect-wallet" })
         .catch((e: unknown) =>
           console.error("Error calling reportStepChanged", e)

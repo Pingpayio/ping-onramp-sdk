@@ -47,7 +47,7 @@ function FormEntryRoute() {
   useEffect(() => {
     if (connection) {
       connection
-        .remoteHandle()
+        ?.remoteHandle()
         .call("reportStepChanged", { step: "form-entry" })
         .catch((e: unknown) =>
           console.error("Error calling reportStepChanged", e)
@@ -213,7 +213,7 @@ function FormEntryRoute() {
       }
 
       // Report onramp initiation to the parent application
-      await connection.remoteHandle().call("reportOnrampInitiated", {
+      await connection?.remoteHandle().call("reportOnrampInitiated", {
         serviceName: "Coinbase Onramp (via 1Click)",
         details: {
           url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT ? coinbaseOnrampURL : "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER",

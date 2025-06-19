@@ -23,7 +23,7 @@ function ProcessingRoute() {
   useEffect(() => {
     if (connection) {
       connection
-        .remoteHandle()
+        ?.remoteHandle()
         .call("reportStepChanged", { step: "processing-transaction" })
         .catch((e: unknown) => {
           console.error("Error calling reportStepChanged", e);

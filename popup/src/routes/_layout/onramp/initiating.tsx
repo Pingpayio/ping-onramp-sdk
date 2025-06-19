@@ -23,7 +23,7 @@ function InitiatingRoute() {
   useEffect(() => {
     if (connection) {
       connection
-        .remoteHandle()
+        ?.remoteHandle()
         .call("reportStepChanged", { step: "initiating-onramp-service" })
         .catch((e: unknown) => {
           console.error("Error calling reportStepChanged", e);

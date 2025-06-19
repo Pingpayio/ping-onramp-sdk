@@ -23,7 +23,7 @@ function CompleteRoute() {
   useEffect(() => {
     if (connection) {
       connection
-        .remoteHandle()
+        ?.remoteHandle()
         .call("reportStepChanged", { step: "complete" })
         .catch((e: unknown) =>
           console.error("Error calling reportStepChanged", e)
@@ -31,7 +31,7 @@ function CompleteRoute() {
 
       if (onrampResult) {
         connection
-          .remoteHandle()
+          ?.remoteHandle()
           .call("reportProcessComplete", { result: onrampResult })
           .catch((e: unknown) =>
             console.error("Error calling reportProcessComplete", e)

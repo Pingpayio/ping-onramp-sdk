@@ -24,7 +24,7 @@ function ErrorRoute() {
   useEffect(() => {
     if (connection) {
       connection
-        .remoteHandle()
+        ?.remoteHandle()
         .call("reportStepChanged", { step: "error" })
         .catch((e: unknown) =>
           console.error("Error calling reportStepChanged", e)
@@ -32,7 +32,7 @@ function ErrorRoute() {
 
       if (searchParams.error) {
         connection
-          .remoteHandle()
+          ?.remoteHandle()
           .call("reportProcessFailed", {
             error: searchParams.error,
             step: "error",

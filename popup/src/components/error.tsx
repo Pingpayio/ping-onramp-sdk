@@ -24,7 +24,7 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
     // Report to parent application if connection is available
     if (connection) {
-      connection.remoteHandle().call("reportProcessFailed", {
+      connection?.remoteHandle().call("reportProcessFailed", {
         error: errorMessage,
         step: "error",
       }).catch((e: unknown) => {

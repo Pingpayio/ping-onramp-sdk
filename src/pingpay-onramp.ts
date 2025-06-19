@@ -76,7 +76,7 @@ export class PingpayOnramp {
                   payload,
                 );
                 await this.postMeConnection
-                  .remoteHandle()
+                  ?.remoteHandle()
                   .call("initiateOnrampInPopup", payload);
                 console.log("SDK: initiateOnrampInPopup call completed.");
               } catch (e) {

@@ -220,7 +220,7 @@ export function usePopupConnection() {
         console.log("Popup: post-me ChildHandshake successful.");
         setConnection(conn);
         conn
-          .remoteHandle()
+          ?.remoteHandle()
           .call("reportPopupReady")
           .then(() => console.log("Popup: reportPopupReady call successful."))
           .catch((e: unknown) => {
@@ -249,7 +249,7 @@ export function usePopupConnection() {
       if (currentConnectionValue) {
         console.log("Popup: Window is closing, reporting to SDK");
         currentConnectionValue
-          .remoteHandle()
+          ?.remoteHandle()
           .call("reportPopupClosedByUser")
           .catch((e: unknown) =>
             console.warn(
