@@ -1,12 +1,10 @@
 import { useAtom, useSetAtom } from "jotai";
-import type { OnrampFlowStep } from "../../../src/internal/communication/messages";
 import type { IntentProgress, NearIntentsDisplayInfo } from "../types/onramp";
 import {
   formDataAtom,
   nearIntentsDisplayInfoAtom,
   onrampErrorAtom,
   onrampResultAtom,
-  onrampStepAtom,
   onrampTargetAtom,
   processingSubStepAtom,
   signedTransactionAtom,
@@ -17,25 +15,19 @@ import {
   oneClickStatusAtom,
 } from "./atoms";
 
+/**
+ * Hook for managing global error state
+ * @returns Object with error state and setFlowError function
+ */
 export const useOnrampFlow = () => {
-  const [step, setStep] = useAtom(onrampStepAtom);
   const [error, setError] = useAtom(onrampErrorAtom);
 
-  const goToStep = (newStep: OnrampFlowStep) => {
-    setStep(newStep);
-    setError(null);
-  };
-
-  const setFlowError = (errorMessage: string, errorStep?: OnrampFlowStep) => {
+  const setFlowError = (errorMessage: string) => {
     setError(errorMessage);
-    if (errorStep) {
-      setStep(errorStep);
-    } else {
-      setStep("error");
-    }
+    console.error("Global error set:", errorMessage);
   };
 
-  return { step, goToStep, error, setFlowError };
+  return { error, setFlowError };
 };
 
 export const useOnrampTarget = () => useAtom(onrampTargetAtom);

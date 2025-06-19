@@ -1,15 +1,16 @@
-import React from "react";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-interface PopupLayoutProps {
-  children: React.ReactNode;
-  title?: string;
-}
+export const Route = createFileRoute("/_layout")({
+  component: RouteComponent,
+});
 
-const PopupLayout: React.FC<PopupLayoutProps> = ({ children }) => {
+function RouteComponent() {
   return (
     <div className="popup-root flex flex-col items-center mx-auto my-auto md:min-h-screen justify-center text-white md:bg-white bg-[#121212]">
       <div className="w-full flex p-4 min-h-screen md:min-h-auto flex-col justify-between rounded-[16px] h-full md:w-[500px] md:h-[700px] bg-[#121212]">
-        <main className="flex-1 overflow-auto">{children}</main>
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
         <footer className="text-center text-xs text-white flex gap-1 items-end justify-center py-2">
           <p>Powered by</p>
           <a href="https://pingpay.io" target="_blank">
@@ -19,6 +20,4 @@ const PopupLayout: React.FC<PopupLayoutProps> = ({ children }) => {
       </div>
     </div>
   );
-};
-
-export default PopupLayout;
+}

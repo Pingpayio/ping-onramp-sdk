@@ -10,7 +10,7 @@ export interface CallbackParams {
 export type IntentProgress =
   | "form"
   | "generating_url"
-  | "redirecting_coinbase" // Or other onramp provider
+  | "redirecting"
   | "depositing"
   | "querying"
   | "signing"

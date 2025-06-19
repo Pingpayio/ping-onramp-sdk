@@ -196,13 +196,14 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
         const callbackUrlParams = new URLSearchParams({
           type: "intents",
           action: "withdraw",
+          depositAddress: "mockOneClickDepositAddressForTest",
           network: "near",
           asset: "USDC",
           amount: MOCK_AMOUNT,
           recipient: MOCK_NEAR_ADDRESS,
         });
 
-        const callbackUrl = `${POPUP_BASE_URL}/onramp-callback?${callbackUrlParams.toString()}`;
+        const callbackUrl = `${POPUP_BASE_URL}/onramp/callback?${callbackUrlParams.toString()}`;
 
         // Navigate to our simulated callback URL
         await page.goto(callbackUrl);
