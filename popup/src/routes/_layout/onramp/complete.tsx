@@ -5,10 +5,7 @@ import { usePopupConnection } from "../../../internal/communication/usePopupConn
 import { useOnrampResult } from "../../../state/hooks";
 import { z } from "zod";
 
-// Define the search parameters schema
-const completeSearchSchema = z.object({
-  ping_sdk_opener_origin: z.string().optional(),
-});
+const completeSearchSchema = z.object({});
 
 export const Route = createFileRoute("/_layout/onramp/complete")({
   component: CompleteRoute,

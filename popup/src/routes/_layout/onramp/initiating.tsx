@@ -4,10 +4,7 @@ import { ProcessingOnramp } from "../../../components/steps/processsing-onramp-v
 import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
 import { z } from "zod";
 
-// Define the search parameters schema
-const initiatingSearchSchema = z.object({
-  ping_sdk_opener_origin: z.string().optional(),
-});
+const initiatingSearchSchema = z.object({});
 
 export const Route = createFileRoute("/_layout/onramp/initiating")({
   component: InitiatingRoute,
@@ -28,19 +25,11 @@ function InitiatingRoute() {
         .catch((e: unknown) => {
           console.error("Error calling reportStepChanged", e);
           
-          // Create error search params and preserve ping_sdk_opener_origin
-          const errorSearch: Record<string, string> = { 
-            error: "Failed to report step change." 
-          };
-          
-          // Add ping_sdk_opener_origin if it exists
-          if (searchParams.ping_sdk_opener_origin) {
-            errorSearch.ping_sdk_opener_origin = searchParams.ping_sdk_opener_origin;
-          }
-          
           navigate({ 
             to: "/onramp/error",
-            search: errorSearch
+            search: { 
+              error: "Failed to report step change." 
+            }
           });
         });
     }

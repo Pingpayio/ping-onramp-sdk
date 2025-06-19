@@ -87,6 +87,27 @@ export function usePopupConnection() {
   const setOnrampTarget = useSetOnrampTarget();
   const navigate = useNavigate();
 
+  const PING_SDK_OPENER_ORIGIN_KEY = "ping_sdk_opener_origin";
+  
+  // Get opener origin from sessionStorage or URL
+  let openerOrigin: string | null = null;
+  try {
+    openerOrigin = sessionStorage.getItem(PING_SDK_OPENER_ORIGIN_KEY);
+    if (!openerOrigin) {
+      const queryParams = new URLSearchParams(window.location.search);
+      openerOrigin = queryParams.get("ping_sdk_opener_origin");
+      if (openerOrigin) {
+        try {
+          sessionStorage.setItem(PING_SDK_OPENER_ORIGIN_KEY, openerOrigin);
+        } catch (e) {
+          console.warn("Popup: Failed to write opener origin to sessionStorage", e);
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Popup: Failed to access sessionStorage for opener origin", e);
+  }
+
   useEffect(() => {
     if (!SKIP_POSTME_HANDSHAKE && !window.opener) {
       console.error("Popup: Not opened by an SDK window.");
@@ -163,14 +184,15 @@ export function usePopupConnection() {
       }
     } else {
       // NODE_ENV === 'production'
-      // In PRODUCTION, the SDK (opener) MUST provide its origin via the 'ping_sdk_opener_origin' query parameter.
-      // The popup (e.g., https://onramp.pingpay.io) will use this as the expected remoteOrigin for post-me.
-      const queryParams = new URLSearchParams(window.location.search);
-      const expectedOpenerOrigin = queryParams.get("ping_sdk_opener_origin");
-
-      if (!expectedOpenerOrigin) {
+      // In PRODUCTION, validate the openerOrigin
+      if (openerOrigin) {
+        sdkOrigin = openerOrigin;
+        console.log(
+          `Popup (Prod): Using SDK origin: ${sdkOrigin}. Post-me will validate event.origin against this.`,
+        );
+      } else {
         console.error(
-          "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' query parameter is missing. Cannot securely initialize communication with SDK.",
+          "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' is missing from both sessionStorage and URL query parameters. Cannot securely initialize communication with SDK.",
         );
         setFlowError(
           "Configuration error: SDK identification parameter missing.",
@@ -181,11 +203,6 @@ export function usePopupConnection() {
         });
         return; // Abort connection setup
       }
-
-      sdkOrigin = expectedOpenerOrigin;
-      console.log(
-        `Popup (Prod): Using expected SDK origin for WindowMessenger: ${sdkOrigin}. Post-me will validate event.origin against this.`,
-      );
     }
 
     // Final safeguard: if sdkOrigin somehow ended up as '*' in production, abort.
@@ -268,5 +285,5 @@ export function usePopupConnection() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return { connection };
+  return { connection, openerOrigin };
 }
