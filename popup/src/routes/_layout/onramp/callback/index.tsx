@@ -1,14 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef } from "react";
 import { z } from "zod";
-import LoadingSpinner from "../../../components/loading-spinner";
-import { getSwapStatus } from "../../../lib/one-click-api";
+import LoadingSpinner from "../../../../components/loading-spinner";
+import { getSwapStatus } from "../../../../lib/one-click-api";
 import {
-  useOnrampFlow,
   useSetNearIntentsDisplayInfo,
   useSetOneClickStatus,
   useSetOnrampResult,
-} from "../../../state/hooks";
+} from "../../../../state/hooks";
 
 const onrampCallbackSearchSchema = z.object({
   type: z.literal("intents"),
@@ -22,14 +21,14 @@ const onrampCallbackSearchSchema = z.object({
 
 export type OnrampCallbackParams = z.infer<typeof onrampCallbackSearchSchema>;
 
-export const Route = createFileRoute("/_layout/onramp-callback/")({
+export const Route = createFileRoute("/_layout/onramp/callback/")({
   component: RouteComponent,
   validateSearch: (search) => onrampCallbackSearchSchema.parse(search),
 });
 
 function RouteComponent() {
   const searchParams = Route.useSearch();
-  const { goToStep, setFlowError } = useOnrampFlow();
+  const navigate = Route.useNavigate();
   const setOnrampResultAtom = useSetOnrampResult();
   const setOneClickStatus = useSetOneClickStatus();
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
@@ -65,7 +64,6 @@ function RouteComponent() {
 
       switch (statusResponse.status) {
         case "SUCCESS":
-          goToStep("complete");
           setOnrampResultAtom({
             success: true,
             message: "1Click swap successful.",
@@ -81,18 +79,21 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
+          navigate({ to: "/onramp/complete" });
           break;
         case "REFUNDED":
         case "FAILED":
         case "EXPIRED":
-          setFlowError(
-            `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
-            "processing-transaction"
-          );
           if (pollingTimerRef.current) {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
+          navigate({ 
+            to: "/onramp/error",
+            search: { 
+              error: `Swap ${statusResponse.status.toLowerCase()}. Check details.` 
+            }
+          });
           break;
         case "PENDING_DEPOSIT":
         case "KNOWN_DEPOSIT_TX":
@@ -109,19 +110,20 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
-          setFlowError(
-            `Unhandled swap status: ${statusResponse.status}`,
-            "processing-transaction"
-          );
+          navigate({ 
+            to: "/onramp/error",
+            search: { 
+              error: `Unhandled swap status: ${statusResponse.status}` 
+            }
+          });
       }
     } catch (pollError) {
       console.error("Error polling 1Click status:", pollError);
-      setFlowError(
-        `Error polling swap status: ${
+      setNearIntentsDisplayInfo({
+        message: `Error polling swap status: ${
           (pollError as Error).message
         }. Retrying...`,
-        "processing-transaction"
-      );
+      });
       // Retry polling after a delay
       pollingTimerRef.current = setTimeout(
         () => pollStatus(depositAddress),
@@ -132,7 +134,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (searchParams.type === "intents" && searchParams.depositAddress) {
-      goToStep("processing-transaction");
+      navigate({ to: "/onramp/processing" });
       setNearIntentsDisplayInfo({
         message: "Verifying deposit status with 1Click...",
       });
@@ -141,7 +143,10 @@ function RouteComponent() {
       pollStatus(searchParams.depositAddress);
     } else {
       // Handle invalid params
-      setFlowError("Invalid onramp callback parameters.", "error");
+      navigate({ 
+        to: "/onramp/error",
+        search: { error: "Invalid onramp callback parameters." }
+      });
     }
 
     // Cleanup function to clear any active polling timer
@@ -153,8 +158,7 @@ function RouteComponent() {
     };
   }, [
     searchParams,
-    goToStep,
-    setFlowError,
+    navigate,
     setOnrampResultAtom,
     setOneClickStatus,
     setNearIntentsDisplayInfo,

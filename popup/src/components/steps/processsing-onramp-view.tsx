@@ -40,6 +40,7 @@ const getDisplayInfoForStatus = (
     detailsForDisplay.originAsset = oneClickStatus.quoteResponse.quoteRequest.originAsset; // This is assetId
     detailsForDisplay.destinationAsset = oneClickStatus.quoteResponse.quoteRequest.destinationAsset; // This is assetId
     detailsForDisplay.recipient = oneClickStatus.quoteResponse.quoteRequest.recipient;
+    detailsForDisplay.depositAddress = oneClickStatus.quoteResponse.quote.depositAddress;
 
 
     switch (oneClickStatus.status) {
@@ -218,6 +219,12 @@ export function ProcessingOnramp({
             <div className="flex justify-between">
               <span className="text-gray-400">Est. Amount Out:</span>
               <span className="text-gray-100">{transactionDetails.amountOut}</span>
+            </div>
+          )}
+          {transactionDetails.depositAddress && (
+            <div className="flex justify-between">
+              <span className="text-gray-400">Deposit Address:</span>
+              <span className="text-gray-100">{transactionDetails.depositAddress}</span>
             </div>
           )}
           {transactionDetails.recipient && (

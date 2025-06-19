@@ -203,7 +203,7 @@ test.describe('NEAR Intents Withdrawal Flow', () => {
           recipient: MOCK_NEAR_ADDRESS,
         });
 
-        const callbackUrl = `${POPUP_BASE_URL}/onramp-callback?${callbackUrlParams.toString()}`;
+        const callbackUrl = `${POPUP_BASE_URL}/onramp/callback?${callbackUrlParams.toString()}`;
 
         // Navigate to our simulated callback URL
         await page.goto(callbackUrl);

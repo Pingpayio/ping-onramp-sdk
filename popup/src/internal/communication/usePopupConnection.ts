@@ -1,4 +1,5 @@
 import { atom, useAtom, useAtomValue } from "jotai";
+import { useNavigate } from "@tanstack/react-router";
 // @ts-expect-error post-me typings are weird
 import { ChildHandshake, Connection, WindowMessenger } from "post-me";
 import { useEffect } from "react";
@@ -8,6 +9,9 @@ import type {
   SdkListenerMethods,
 } from "../../../../src/internal/communication/post-me-types";
 import { useOnrampFlow, useSetOnrampTarget } from "../../state/hooks";
+
+const SKIP_POPUP = import.meta.env.VITE_SKIP_POSTME_HANDSHAKE === "true" ||
+  (window as any).VITE_SKIP_POSTME_HANDSHAKE === true;
 
 const popupConnectionAtomInternal = atom<Connection<
   PopupActionMethods,
@@ -32,10 +36,7 @@ export function usePopupConnection() {
   const connection = useAtomValue(popupConnectionAtom);
 
   // Check for skip handshake environment variable (Vite env or global window var for tests)
-  if (
-    import.meta.env.VITE_SKIP_POSTME_HANDSHAKE === "true" ||
-    (window as any).VITE_SKIP_POSTME_HANDSHAKE === true
-  ) {
+  if (SKIP_POPUP) {
     console.warn(
       "[usePopupConnection] Skipping post-me handshake and using mock connection due to VITE_SKIP_POSTME_HANDSHAKE flag.",
     );
@@ -84,16 +85,20 @@ export function usePopupConnection() {
     return { connection: mockConnection };
   }
 
-  const { goToStep, setFlowError } = useOnrampFlow();
+  const { setFlowError } = useOnrampFlow();
   const setOnrampTarget = useSetOnrampTarget();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!window.opener) {
+    if (!SKIP_POPUP && !window.opener) {
       console.error("Popup: Not opened by an SDK window.");
       setFlowError(
-        "Initialization error: Popup not opened correctly.",
-        "loading",
+        "Initialization error: Popup not opened correctly."
       );
+      navigate({
+        to: "/onramp/error",
+        search: { error: "Initialization error: Popup not opened correctly." }
+      });
       return;
     }
 
@@ -105,7 +110,7 @@ export function usePopupConnection() {
         );
         if (payload) {
           setOnrampTarget(payload.target);
-          goToStep("connect-wallet");
+          navigate({ to: "/onramp/connect-wallet" });
 
           connection
             ?.remoteHandle()
@@ -116,7 +121,11 @@ export function usePopupConnection() {
         } else {
           const errorMsg = "Popup: Invalid initiation payload received.";
           console.error(errorMsg);
-          setFlowError(errorMsg, "loading");
+          setFlowError(errorMsg);
+          navigate({
+            to: "/onramp/error",
+            search: { error: errorMsg }
+          });
           connection
             ?.remoteHandle()
             .call("reportProcessFailed", { error: errorMsg, step: "loading" })
@@ -167,8 +176,11 @@ export function usePopupConnection() {
         );
         setFlowError(
           "Configuration error: SDK identification parameter missing.",
-          "loading",
         );
+        navigate({
+          to: "/onramp/error",
+          search: { error: "Configuration error: SDK identification parameter missing." }
+        });
         return; // Abort connection setup
       }
 
@@ -186,8 +198,11 @@ export function usePopupConnection() {
       );
       setFlowError(
         "Security misconfiguration: Wildcard origin detected in production.",
-        "loading",
       );
+      navigate({
+        to: "/onramp/error",
+        search: { error: "Security misconfiguration: Wildcard origin detected in production." }
+      });
       return;
     }
 
@@ -210,7 +225,11 @@ export function usePopupConnection() {
           .then(() => console.log("Popup: reportPopupReady call successful."))
           .catch((e: unknown) => {
             console.error("Popup: Error calling reportPopupReady", e);
-            setFlowError("Failed to signal readiness to SDK.", "loading");
+            setFlowError("Failed to signal readiness to SDK.");
+            navigate({
+              to: "/onramp/error",
+              search: { error: "Failed to signal readiness to SDK." }
+            });
           });
       })
       .catch((e: unknown) => {
@@ -218,8 +237,11 @@ export function usePopupConnection() {
 
         setFlowError(
           `Connection to SDK failed: ${e instanceof Error ? e.message : String(e)}`,
-          "loading",
         );
+        navigate({
+          to: "/onramp/error",
+          search: { error: `Connection to SDK failed: ${e instanceof Error ? e.message : String(e)}` }
+        });
       });
 
     const handleBeforeUnload = () => {

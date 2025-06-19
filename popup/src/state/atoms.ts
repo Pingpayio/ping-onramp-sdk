@@ -1,7 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
 import type {
-  OnrampFlowStep,
   OnrampResult,
   TargetAsset,
 } from "../../../src/internal/communication/messages";
@@ -13,8 +12,7 @@ import type {
 } from "../lib/one-click-api";
 import type { IntentProgress, NearIntentsDisplayInfo } from "../types/onramp";
 
-// Atoms for managing the overall onramp flow state
-export const onrampStepAtom = atom<OnrampFlowStep>("loading");
+// Atom for global error state
 export const onrampErrorAtom = atom<string | null>(null);
 
 // Atoms for data collected during the flow
