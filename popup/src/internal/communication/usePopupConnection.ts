@@ -9,9 +9,7 @@ import type {
   SdkListenerMethods,
 } from "../../../../src/internal/communication/post-me-types";
 import { useOnrampFlow, useSetOnrampTarget } from "../../state/hooks";
-
-const SKIP_POPUP = import.meta.env.VITE_SKIP_POSTME_HANDSHAKE === "true" ||
-  (window as any).VITE_SKIP_POSTME_HANDSHAKE === true;
+import { SKIP_POSTME_HANDSHAKE } from "@/config";
 
 const popupConnectionAtomInternal = atom<Connection<
   PopupActionMethods,
@@ -36,7 +34,7 @@ export function usePopupConnection() {
   const connection = useAtomValue(popupConnectionAtom);
 
   // Check for skip handshake environment variable (Vite env or global window var for tests)
-  if (SKIP_POPUP) {
+  if (SKIP_POSTME_HANDSHAKE) {
     console.warn(
       "[usePopupConnection] Skipping post-me handshake and using mock connection due to VITE_SKIP_POSTME_HANDSHAKE flag.",
     );
@@ -90,7 +88,7 @@ export function usePopupConnection() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!SKIP_POPUP && !window.opener) {
+    if (!SKIP_POSTME_HANDSHAKE && !window.opener) {
       console.error("Popup: Not opened by an SDK window.");
       setFlowError(
         "Initialization error: Popup not opened correctly."

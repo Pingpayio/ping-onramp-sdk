@@ -5,8 +5,8 @@ import { usePopupConnection } from "../../../internal/communication/usePopupConn
 import { useWalletState } from "../../../state/hooks";
 import type { FormValues } from "../../../components/steps/form-entry-view";
 import { useOnrampTarget } from "../../../state/hooks";
-import { generateOnrampURL } from "../../../utils/rampUtils";
-import type { OnrampURLParams } from "../../../utils/rampUtils";
+import { generateOnrampURL } from "../../../lib/coinbase";
+import type { OnrampURLParams } from "../../../lib/coinbase";
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
