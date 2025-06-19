@@ -191,7 +191,7 @@ function FormEntryRoute() {
       await connection.remoteHandle().call("reportOnrampInitiated", {
         serviceName: "Coinbase Onramp (via 1Click)",
         details: {
-          url: import.meta.env.PROD ? coinbaseOnrampURL : "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER",
+          url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT ? coinbaseOnrampURL : "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER",
           manualCallbackUrl: redirectUrl,
           originalCoinbaseOnrampURL: coinbaseOnrampURL,
           callbackParams: callbackParams,
@@ -203,7 +203,7 @@ function FormEntryRoute() {
         },
       });
 
-      if (import.meta.env.PROD) {
+      if (import.meta.env.VITE_PUBLIC_SKIP_REDIRECT) {
         // In production: Redirect to Coinbase Onramp URL
         console.log("Production mode: Redirecting to Coinbase Onramp URL");
         window.location.href = coinbaseOnrampURL;
