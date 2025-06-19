@@ -244,15 +244,16 @@ export function usePopupConnection() {
         });
       });
 
-    const handleBeforeUnload = () => {
+    const handleBeforeUnload = (_: BeforeUnloadEvent) => {
       const currentConnectionValue = connection;
       if (currentConnectionValue) {
+        console.log("Popup: Window is closing, reporting to SDK");
         currentConnectionValue
           .remoteHandle()
           .call("reportPopupClosedByUser")
           .catch((e: unknown) =>
             console.warn(
-              "Popup: Failed to emit reportPopupClosedByUser on unmount/unload",
+              "Popup: Failed to emit reportPopupClosedByUser on unload",
               e,
             ),
           );
@@ -262,7 +263,6 @@ export function usePopupConnection() {
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      handleBeforeUnload();
       window.removeEventListener("beforeunload", handleBeforeUnload);
       connection?.close();
       setConnection(null);

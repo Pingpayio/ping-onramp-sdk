@@ -3,11 +3,13 @@ import React, { useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import { walletStateAtom } from "@/state/atoms";
 import { Button } from "../components/ui/button";
+import { useNavigate } from "@tanstack/react-router";
 
 export default function Header({ title }: { title: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { address, chainId, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
+  const navigate = useNavigate();
   const setWalletState = useSetAtom(walletStateAtom);
   React.useEffect(() => {
     if (isConnected && address) {
@@ -58,6 +60,7 @@ export default function Header({ title }: { title: string }) {
                 type="button"
                 onClick={() => {
                   disconnect();
+                  navigate({ to: "/onramp/connect-wallet", replace: true });
                   setIsMenuOpen(false);
                 }}
                 className="w-full text-left px-4 py-2 text-white/60 hover:bg-white/10 transition ease-in-out duration-150"

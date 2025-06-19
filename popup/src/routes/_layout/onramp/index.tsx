@@ -1,14 +1,10 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { LoadingView } from "../../../components/steps/loading-view";
 import { useWalletState } from "../../../state/hooks";
 
 export const Route = createFileRoute("/_layout/onramp/")({
   component: OnrampIndexRoute,
-  beforeLoad: async () => {
-    return redirect({
-      to: "/onramp/connect-wallet",
-    });
-  },
 });
 
 function OnrampIndexRoute() {
@@ -16,12 +12,20 @@ function OnrampIndexRoute() {
   const navigate = Route.useNavigate();
 
   useEffect(() => {
-    // If wallet is already connected, redirect to form-entry
-    if (walletState && walletState.address) {
-      navigate({ to: "/onramp/form-entry" });
+    if (walletState !== undefined) {
+      if (walletState && walletState.address) {
+        console.log(
+          "[OnrampIndex] Wallet connected, navigating to form-entry."
+        );
+        navigate({ to: "/onramp/form-entry", replace: true });
+      } else {
+        console.log(
+          "[OnrampIndex] Wallet not connected, navigating to connect-wallet."
+        );
+        navigate({ to: "/onramp/connect-wallet", replace: true });
+      }
     }
   }, [walletState, navigate]);
 
-  // This component should never render as we always redirect
-  return null;
+  return <LoadingView />;
 }

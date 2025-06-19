@@ -51,12 +51,6 @@ function FormEntryRoute() {
     }
   }, [connection]);
 
-  // If wallet is not connected, redirect to connect-wallet
-  useEffect(() => {
-    if (!walletState || !walletState.address) {
-      navigate({ to: "/onramp/connect-wallet" });
-    }
-  }, [walletState, navigate]);
 
   const handleFormSubmit = async (data: FormValues) => {
     
@@ -240,7 +234,7 @@ function FormEntryRoute() {
   };
 
   const handleDisconnect = () => {
-    navigate({ to: "/onramp/connect-wallet" });
+    navigate({ to: "/onramp/connect-wallet", replace: true });
   };
 
   return (
