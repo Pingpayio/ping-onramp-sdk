@@ -76,7 +76,7 @@ function Page() {
     <DocsLayout
       tree={tree}
       nav={{
-        title: 'Fumadocs Tanstack',
+        title: 'PingPay Onramp Docs',
       }}
     >
       <DocsPage toc={toc}>
