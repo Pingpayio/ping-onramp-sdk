@@ -115,11 +115,11 @@ function FormEntryRoute() {
         originAsset: originAsset1Click.assetId,
         destinationAsset: destinationAsset1Click.assetId,
         amount: amountInSmallestUnit,
-        recipient: data.nearWalletAddress, // Final recipient on NEAR
+        recipient: data.recipientAddress, // Final recipient address
         refundTo: userEvmAddress,
         refundType: "ORIGIN_CHAIN",
         depositType: "ORIGIN_CHAIN",
-        recipientType: "DESTINATION_CHAIN", // As we are sending to a NEAR chain address
+        recipientType: "DESTINATION_CHAIN", // As we are sending to destination chain address
         swapType: "EXACT_INPUT",
         slippageTolerance: 100, // 1%
         deadline: quoteDeadline,
@@ -140,7 +140,7 @@ function FormEntryRoute() {
         network: targetAsset.chain,
         asset: targetAsset.asset,
         amount: data.amount,
-        recipient: data.nearWalletAddress,
+        recipient: data.recipientAddress,
       };
 
       const callbackUrlParams = new URLSearchParams(params);
@@ -175,7 +175,7 @@ function FormEntryRoute() {
         network: targetAsset.chain,
         asset: targetAsset.asset,
         amount: data.amount,
-        recipient: data.nearWalletAddress,
+        recipient: data.recipientAddress,
       };
       if (openerOrigin) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

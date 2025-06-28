@@ -99,13 +99,13 @@ export function useQuotePreview({
         ).toISOString();
 
         let recipientForPreview: string;
-        const enteredNearWalletAddress = formSnapshot.nearWalletAddress;
+        const enteredRecipientAddress = formSnapshot.recipientAddress;
 
         if (destinationAsset1Click.blockchain.toLowerCase() === "near") {
-          recipientForPreview = enteredNearWalletAddress || "preview.near";
+          recipientForPreview = enteredRecipientAddress || "preview.near";
         } else {
           recipientForPreview =
-            enteredNearWalletAddress ||
+            enteredRecipientAddress ||
             address ||
             "0x0000000000000000000000000000000000000000";
         }

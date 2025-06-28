@@ -17,7 +17,7 @@ export type FormValues = {
   selectedAsset: string; // This is the asset to buy on Coinbase (e.g., USDC)
   selectedCurrency: string;
   paymentMethod: string;
-  nearWalletAddress: string; // Made non-optional
+  recipientAddress: string; // Recipient wallet address
 };
 
 interface FormEntryViewProps {
@@ -41,26 +41,26 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
       selectedAsset: "USDC",
       selectedCurrency: "USD",
       paymentMethod: "card",
-      nearWalletAddress: "",
+      recipientAddress: "",
     },
   });
-  
+
   const {
     handleSubmit,
     watch,
     formState: { isValid },
     getValues,
   } = methods;
-  
+
   const depositAmountWatcher = watch("amount");
-  
+
   // Use custom hooks
   useWalletState();
-  const { estimatedReceiveAmount, isQuoteLoading, quoteError } = useQuotePreview({
-    amount: depositAmountWatcher,
-    getFormValues: getValues,
-  });
-
+  const { estimatedReceiveAmount, isQuoteLoading, quoteError } =
+    useQuotePreview({
+      amount: depositAmountWatcher,
+      getFormValues: getValues,
+    });
 
   return (
     <FormProvider {...methods}>
@@ -69,22 +69,22 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
       >
         <Header title="Buy Assets" />
-        
+
         <DepositAmountInput />
-        
+
         <ReceiveAmountDisplay
           estimatedReceiveAmount={estimatedReceiveAmount}
           isQuoteLoading={isQuoteLoading}
           quoteError={quoteError}
         />
-        
+
         <WalletAddressInput />
-        
+
         <PaymentMethodSelector />
 
         <Button
           type="submit"
-          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 py-2 transition ease-in-out duration-150"
+          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
           disabled={!isValid}
         >
           Buy {currentOnrampTarget.asset}
