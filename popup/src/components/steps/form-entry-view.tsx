@@ -76,6 +76,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           estimatedReceiveAmount={estimatedReceiveAmount}
           isQuoteLoading={isQuoteLoading}
           quoteError={quoteError}
+          depositAmount={depositAmountWatcher}
         />
 
         <WalletAddressInput />
