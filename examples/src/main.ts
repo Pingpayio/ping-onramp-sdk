@@ -1,5 +1,5 @@
-// import { PingpayOnramp } from '../../dist/index.js'; // don't commit this to main
-import { PingpayOnramp } from '@pingpay/onramp-sdk';
+// import { PingpayOnramp } from "../../dist/index.js"; // don't commit this to main
+import { PingpayOnramp } from "@pingpay/onramp-sdk";
 
 const openOnrampButton = document.getElementById("openOnrampButton");
 
@@ -9,10 +9,12 @@ if (openOnrampButton) {
       const targetAssetDetails = { chain: "NEAR", asset: "wNEAR" };
       const onramp = new PingpayOnramp({
         // popupUrl: "http://localhost:5173",
-        onPopupReady: () => console.log('Example: Popup is ready'),
-        onProcessComplete: (result) => console.log('Example: Process complete', result),
-        onProcessFailed: (errorInfo) => console.error('Example: Process failed', errorInfo),
-        onPopupClose: () => console.log('Example: Popup was closed'),
+        onPopupReady: () => console.log("Example: Popup is ready"),
+        onProcessComplete: (result) =>
+          console.log("Example: Process complete", result),
+        onProcessFailed: (errorInfo) =>
+          console.error("Example: Process failed", errorInfo),
+        onPopupClose: () => console.log("Example: Popup was closed"),
       });
       onramp.initiateOnramp(targetAssetDetails); // Call initiateOnramp with targetAsset
     } catch (error) {
