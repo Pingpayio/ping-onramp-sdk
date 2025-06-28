@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { onrampTargetAtom } from "../../state/atoms";
 import LoadingSpinner from "../loading-spinner";
+import { RateModal } from "../rate-modal";
 import type { TargetAsset } from "../../../../src/internal/communication/messages";
 
 const FALLBACK_TARGET_ASSET: TargetAsset = {
@@ -21,26 +23,32 @@ export function ReceiveAmountDisplay({
   quoteError,
   depositAmount,
 }: ReceiveAmountDisplayProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
   const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
-  
+
   // Calculate dynamic exchange rate
   const calculateExchangeRate = () => {
-    if (!estimatedReceiveAmount || !depositAmount || quoteError || isQuoteLoading) {
+    if (
+      !estimatedReceiveAmount ||
+      !depositAmount ||
+      quoteError ||
+      isQuoteLoading
+    ) {
       return null;
     }
-    
+
     const receiveAmountFloat = parseFloat(estimatedReceiveAmount);
     const depositAmountFloat = parseFloat(depositAmount);
-    
+
     if (receiveAmountFloat > 0 && depositAmountFloat > 0) {
       const rate = receiveAmountFloat / depositAmountFloat;
       return rate.toFixed(4); // Show 4 decimal places for precision
     }
-    
+
     return null;
   };
-  
+
   const exchangeRate = calculateExchangeRate();
 
   return (
@@ -80,9 +88,19 @@ export function ReceiveAmountDisplay({
         <div className="py-2 px-4">
           <p className="text-[#FFFFFF99] text-xs">
             {exchangeRate ? (
-              <>Rate: <span className="text-[#AB9FF2]">1 USD ≈ {exchangeRate} {currentOnrampTarget.asset}</span></>
+              <>
+                Rate:{" "}
+                <button
+                  className="px-0! hover:border-0! border-0! hover:underline hover:underline-offset-2 text-[#AB9FF2] inline-block cursor-pointer hover:text-[#AF9EF9] transition-colors"
+                  onClick={() => setIsModalOpen(true)}
+                >
+                  1 USD ≈ {exchangeRate} {currentOnrampTarget.asset}
+                </button>
+              </>
             ) : (
-              <>Rate: <span className="text-[#FFFFFF99]">-</span></>
+              <>
+                Rate: <span className="text-[#FFFFFF99]">-</span>
+              </>
             )}
           </p>
         </div>
@@ -96,6 +114,15 @@ export function ReceiveAmountDisplay({
           <span>{currentOnrampTarget.chain}</span>
         </div>
       </div>
+
+      <RateModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        exchangeRate={exchangeRate || "0"}
+        asset={currentOnrampTarget.asset}
+        depositAmount={depositAmount}
+        estimatedReceiveAmount={estimatedReceiveAmount || "0"}
+      />
     </div>
   );
 }
