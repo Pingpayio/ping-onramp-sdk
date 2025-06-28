@@ -1,23 +1,21 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
+
     // Environment setup & latest features
     "lib": ["ESNext", "DOM", "DOM.Iterable"],
     "target": "ESNext",
     "module": "Preserve",
     "moduleDetection": "force",
-    "jsx": "react-jsx",
     "allowJs": true,
 
-    // Project References
-    "declaration": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": false,
+    "emitDeclarationOnly": true,
+    "outDir": "./dist",
 
     // Bundler mode
     "moduleResolution": "bundler",
-    // "allowImportingTsExtensions": true,
     "verbatimModuleSyntax": true,
-    "noEmit": false,
 
     // Best practices
     "strict": true,

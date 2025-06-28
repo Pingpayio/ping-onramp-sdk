@@ -2,7 +2,7 @@
   "name": "@pingpay/onramp",
   "private": true,
   "scripts": {
-    "build": "bun run --filter \"@pingpay/onramp-sdk\" build",
+    "build": "bun run --filter \"./**\" build",
     "dev": "echo -e '\\x1b[92mExample app running on http://localhost:3000\\x1b[0m' && echo -e '\\x1b[94mPopup app running on http://localhost:5173\\x1b[0m' && concurrently \"bun run --filter @pingpay/onramp-sdk watch\" \"bun run --filter @pingpay/onramp-example dev\" \"bun run --filter @pingpay/onramp-popup dev\"",
     "test": "bunx playwright test",
     "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'",
