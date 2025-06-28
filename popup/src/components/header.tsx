@@ -7,14 +7,14 @@ import { useWalletState } from "../hooks/use-wallet-state";
 
 export default function Header({ title }: { title: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+
   // Manage wallet state updates
   useWalletState();
-  
+
   // Handle click outside to close menu
   const menuRef = useClickOutside<HTMLDivElement>(
     () => setIsMenuOpen(false),
-    isMenuOpen
+    isMenuOpen,
   );
 
   return (
@@ -35,4 +35,3 @@ export default function Header({ title }: { title: string }) {
     </div>
   );
 }
-

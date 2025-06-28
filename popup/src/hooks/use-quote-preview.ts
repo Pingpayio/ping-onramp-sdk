@@ -76,14 +76,14 @@ export function useQuotePreview({
         const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
           currentSupportedTokens,
           formSnapshot.selectedAsset,
-          COINBASE_DEPOSIT_NETWORK
+          COINBASE_DEPOSIT_NETWORK,
         );
 
         const destinationAsset1Click: OneClickToken | undefined =
           find1ClickAsset(
             currentSupportedTokens,
             currentOnrampTarget.asset,
-            currentOnrampTarget.chain
+            currentOnrampTarget.chain,
           );
 
         if (!originAsset1Click || !destinationAsset1Click) {
@@ -91,11 +91,11 @@ export function useQuotePreview({
         }
 
         const amountInSmallestUnit = BigInt(
-          Math.floor(parseFloat(amountStr) * 10 ** originAsset1Click.decimals)
+          Math.floor(parseFloat(amountStr) * 10 ** originAsset1Click.decimals),
         ).toString();
 
         const quoteDeadline = new Date(
-          Date.now() + 5 * 60 * 1000
+          Date.now() + 5 * 60 * 1000,
         ).toISOString();
 
         let recipientForPreview: string;
@@ -150,7 +150,7 @@ export function useQuotePreview({
       address,
       getFormValues,
       setAllSupportedTokens,
-    ]
+    ],
   );
 
   const debouncedFetchQuotePreview = useDebounce(fetchQuotePreview, 750);

@@ -4,10 +4,7 @@ interface MenuIconProps {
 
 export function MenuIcon({ onClick }: MenuIconProps) {
   return (
-    <div
-      className="cursor-pointer z-50"
-      onClick={onClick}
-    >
+    <div className="cursor-pointer z-50" onClick={onClick}>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="30"

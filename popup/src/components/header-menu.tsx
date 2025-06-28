@@ -40,7 +40,7 @@ export const HeaderMenu = forwardRef<HTMLDivElement, HeaderMenuProps>(
         </div>
       </div>
     );
-  }
+  },
 );
 
 HeaderMenu.displayName = "HeaderMenu";

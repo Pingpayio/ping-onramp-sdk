@@ -4,7 +4,11 @@ import { Input } from "../ui/input";
 import type { FormValues } from "../steps/form-entry-view";
 
 export function DepositAmountInput() {
-  const { register, formState: { errors }, getValues } = useFormContext<FormValues>();
+  const {
+    register,
+    formState: { errors },
+    getValues,
+  } = useFormContext<FormValues>();
   const [isAmountFocused, setIsAmountFocused] = useState(false);
 
   return (

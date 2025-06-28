@@ -18,14 +18,15 @@ export function WalletAddressInput() {
     register,
     formState: { errors },
   } = useFormContext<FormValues>();
-  
+
   const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
   const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
-  
+
   // Memoize validation function to prevent recreating on every render
   const validateAddress = useCallback(
-    (value: string) => memoizedValidateRecipientAddress(value, currentOnrampTarget.chain),
-    [currentOnrampTarget.chain]
+    (value: string) =>
+      memoizedValidateRecipientAddress(value, currentOnrampTarget.chain),
+    [currentOnrampTarget.chain],
   );
 
   return (

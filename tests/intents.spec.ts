@@ -45,7 +45,7 @@ test.describe("NEAR Intents Withdrawal Flow", () => {
 
       // Mock near-intents functions
       (window as any).generateNearIntentsDepositAddress = async (
-        evmAddress: string
+        evmAddress: string,
       ) => {
         return {
           address: "0xMockDepositAddress",
@@ -229,24 +229,24 @@ test.describe("NEAR Intents Withdrawal Flow", () => {
     // 6. Verify navigation to processing step and handle signing
     // Wait for the processing transaction view to be visible
     await expect(
-      page.locator('[data-testid="processing-transaction-view"]')
+      page.locator('[data-testid="processing-transaction-view"]'),
     ).toBeVisible({ timeout: 15000 });
 
     // Verify each step in the withdrawal process
     await expect(
-      page.locator('[data-testid="processing-substep-depositing"]')
+      page.locator('[data-testid="processing-substep-depositing"]'),
     ).toBeVisible({ timeout: 5000 });
     await expect(page.locator("text=Depositing funds")).toBeVisible();
 
     await expect(
-      page.locator('[data-testid="processing-substep-querying"]')
+      page.locator('[data-testid="processing-substep-querying"]'),
     ).toBeVisible({ timeout: 5000 });
     await expect(
-      page.locator("text=Querying transaction status")
+      page.locator("text=Querying transaction status"),
     ).toBeVisible();
 
     await expect(
-      page.locator('[data-testid="processing-substep-signing"]')
+      page.locator('[data-testid="processing-substep-signing"]'),
     ).toBeVisible({ timeout: 5000 });
     await expect(page.locator("text=Waiting for signature")).toBeVisible();
 
@@ -261,17 +261,17 @@ test.describe("NEAR Intents Withdrawal Flow", () => {
     expect(typeof firstSignMessage.message).toBe("string");
 
     await expect(
-      page.locator('[data-testid="processing-substep-withdrawing"]')
+      page.locator('[data-testid="processing-substep-withdrawing"]'),
     ).toBeVisible({ timeout: 5000 });
     await expect(page.locator("text=Processing withdrawal")).toBeVisible();
     // Wait for completion
     await expect(
-      page.locator('[data-testid="processing-substep-done"]')
+      page.locator('[data-testid="processing-substep-done"]'),
     ).toBeVisible({ timeout: 10000 });
     await expect(page.locator("text=Transaction complete")).toBeVisible();
     await expect(page.locator(`text=${MOCK_AMOUNT} USDC`)).toBeVisible();
     await expect(
-      page.locator('a[href*="nearblocks.io/txns/mock-hash"]')
+      page.locator('a[href*="nearblocks.io/txns/mock-hash"]'),
     ).toBeVisible();
   });
 });
