@@ -1,7 +1,7 @@
 import { useAtomValue } from "jotai";
 import { FormProvider, useForm } from "react-hook-form";
 import { onrampTargetAtom } from "../../state/atoms";
-import type { TargetAsset } from "../../../../src/internal/communication/messages";
+import type { TargetAsset } from "@pingpay/onramp-sdk";
 import { useQuotePreview } from "../../hooks/use-quote-preview";
 import { useWalletState } from "../../hooks/use-wallet-state";
 

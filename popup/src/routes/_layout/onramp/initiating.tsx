@@ -24,12 +24,12 @@ function InitiatingRoute() {
         .call("reportStepChanged", { step: "initiating-onramp-service" })
         .catch((e: unknown) => {
           console.error("Error calling reportStepChanged", e);
-          
-          navigate({ 
+
+          navigate({
             to: "/onramp/error",
-            search: { 
-              error: "Failed to report step change." 
-            }
+            search: {
+              error: "Failed to report step change.",
+            },
           });
         });
     }

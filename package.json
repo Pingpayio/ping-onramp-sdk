@@ -1,48 +1,22 @@
 {
-  "name": "@pingpay/onramp-sdk",
-  "version": "0.1.2",
-  "type": "module",
-  "workspaces": [
-    "popup",
-    "examples"
-  ],
+  "name": "@pingpay/onramp",
+  "private": true,
   "scripts": {
-    "build": "bun run build:sdk && bun run build:popup",
-    "build:sdk": "tsup src/index.ts --format esm,cjs --dts --clean",
-    "watch:sdk": "bun run build:sdk --watch",
-    "build:popup": "cd popup && bun run build",
-    "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\"",
-    "dev:popup": "cd popup && bun run dev",
-    "dev:examples": "cd examples && bun run dev",
-    "test": "bunx playwright test"
+    "build": "bun run --filter \"./**\" build",
+    "dev": "echo -e '\\x1b[92mExample app running on http://localhost:3000\\x1b[0m' && echo -e '\\x1b[94mPopup app running on http://localhost:5173\\x1b[0m' && concurrently \"bun run --filter @pingpay/onramp-sdk watch\" \"bun run --filter @pingpay/onramp-example dev\" \"bun run --filter @pingpay/onramp-popup dev\"",
+    "test": "bunx playwright test",
+    "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'",
+    "fmt:check": "prettier --check '**/*.{js,jsx,ts,tsx,json}'"
   },
   "devDependencies": {
-    "@playwright/test": "^1.52.0",
     "@types/bun": "latest",
-    "@types/node": "^22.15.29",
     "concurrently": "^8.2.2",
-    "tsup": "^8.0.2"
-  },
-  "peerDependencies": {
+    "prettier": "^3.6.2",
     "typescript": "^5"
   },
-  "dependencies": {
-    "@wagmi/core": "^2.17.2",
-    "dotenv": "^16.5.0",
-    "post-me": "^0.4.5",
-    "zod": "^3.25.32"
-  },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "files": [
-    "dist"
+  "workspaces": [
+    "sdk",
+    "popup",
+    "examples"
   ]
 }

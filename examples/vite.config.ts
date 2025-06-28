@@ -1,30 +1,24 @@
 import { defineConfig } from "vite";
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [nodePolyfills({
-    globals: {
-      Buffer: true,
-      global: true,
-      process: true
-    },
-    protocolImports: true,
-  }),],
-  server: {
-    port: 3000, // Example port, can be changed
+export default defineConfig(({ command }) => ({
+  define: {
+    "import.meta.env.POPUP_URL":
+      command === "serve"
+        ? JSON.stringify("http://localhost:5173")
+        : "undefined",
   },
-  resolve: {
-    alias: {
-      '@pingpay/onramp-sdk': '../src/index.ts',
-    },
+  plugins: [],
+  server: {
+    port: 3000,
   },
   optimizeDeps: {
+    exclude: ["@pingpay/onramp-sdk"],
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
-        global: 'globalThis'
+        global: "globalThis",
       },
-    }
+    },
   },
-});
+}));

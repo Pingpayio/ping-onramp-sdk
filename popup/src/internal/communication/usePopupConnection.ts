@@ -7,7 +7,7 @@ import type {
   InitiateOnrampFlowPayload,
   PopupActionMethods,
   SdkListenerMethods,
-} from "../../../../src/internal/communication/post-me-types";
+} from "@pingpay/onramp-sdk";
 import { useOnrampFlow, useSetOnrampTarget } from "../../state/hooks";
 import { SKIP_POSTME_HANDSHAKE } from "@/config";
 
@@ -88,7 +88,7 @@ export function usePopupConnection() {
   const navigate = useNavigate();
 
   const PING_SDK_OPENER_ORIGIN_KEY = "ping_sdk_opener_origin";
-  
+
   // Get opener origin from sessionStorage or URL
   let openerOrigin: string | null = null;
   try {
@@ -100,7 +100,10 @@ export function usePopupConnection() {
         try {
           sessionStorage.setItem(PING_SDK_OPENER_ORIGIN_KEY, openerOrigin);
         } catch (e) {
-          console.warn("Popup: Failed to write opener origin to sessionStorage", e);
+          console.warn(
+            "Popup: Failed to write opener origin to sessionStorage",
+            e,
+          );
         }
       }
     }
@@ -111,12 +114,10 @@ export function usePopupConnection() {
   useEffect(() => {
     if (!SKIP_POSTME_HANDSHAKE && !window.opener) {
       console.error("Popup: Not opened by an SDK window.");
-      setFlowError(
-        "Initialization error: Popup not opened correctly."
-      );
+      setFlowError("Initialization error: Popup not opened correctly.");
       navigate({
         to: "/onramp/error",
-        search: { error: "Initialization error: Popup not opened correctly." }
+        search: { error: "Initialization error: Popup not opened correctly." },
       });
       return;
     }
@@ -143,7 +144,7 @@ export function usePopupConnection() {
           setFlowError(errorMsg);
           navigate({
             to: "/onramp/error",
-            search: { error: errorMsg }
+            search: { error: errorMsg },
           });
           connection
             ?.remoteHandle()
@@ -199,7 +200,9 @@ export function usePopupConnection() {
         );
         navigate({
           to: "/onramp/error",
-          search: { error: "Configuration error: SDK identification parameter missing." }
+          search: {
+            error: "Configuration error: SDK identification parameter missing.",
+          },
         });
         return; // Abort connection setup
       }
@@ -216,7 +219,10 @@ export function usePopupConnection() {
       );
       navigate({
         to: "/onramp/error",
-        search: { error: "Security misconfiguration: Wildcard origin detected in production." }
+        search: {
+          error:
+            "Security misconfiguration: Wildcard origin detected in production.",
+        },
       });
       return;
     }
@@ -243,7 +249,7 @@ export function usePopupConnection() {
             setFlowError("Failed to signal readiness to SDK.");
             navigate({
               to: "/onramp/error",
-              search: { error: "Failed to signal readiness to SDK." }
+              search: { error: "Failed to signal readiness to SDK." },
             });
           });
       })
@@ -255,7 +261,9 @@ export function usePopupConnection() {
         );
         navigate({
           to: "/onramp/error",
-          search: { error: `Connection to SDK failed: ${e instanceof Error ? e.message : String(e)}` }
+          search: {
+            error: `Connection to SDK failed: ${e instanceof Error ? e.message : String(e)}`,
+          },
         });
       });
 

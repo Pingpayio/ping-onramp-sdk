@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { FormEntryView } from "../../../components/steps/form-entry-view";
 import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
-import { useSetOneClickSupportedTokens, useWalletState } from "../../../state/hooks";
+import {
+  useSetOneClickSupportedTokens,
+  useWalletState,
+} from "../../../state/hooks";
 import type { FormValues } from "../../../components/steps/form-entry-view";
 import { useOnrampTarget } from "../../../state/hooks";
 import { generateOnrampURL } from "../../../lib/coinbase";
@@ -43,33 +46,33 @@ function FormEntryRoute() {
         ?.remoteHandle()
         .call("reportStepChanged", { step: "form-entry" })
         .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e)
+          console.error("Error calling reportStepChanged", e),
         );
     }
   }, [connection]);
 
-
   const handleFormSubmit = async (data: FormValues) => {
-    
-    connection?.remoteHandle()
+    connection
+      ?.remoteHandle()
       .call("reportFormDataSubmitted", { formData: data });
 
     const userEvmAddress = walletState?.address;
     if (!userEvmAddress) {
-    navigate({ 
-      to: "/onramp/error",
-      search: { 
-        error: "EVM wallet address not available. Please connect your wallet." 
-      }
-    });
+      navigate({
+        to: "/onramp/error",
+        search: {
+          error:
+            "EVM wallet address not available. Please connect your wallet.",
+        },
+      });
       return;
     }
-    
+
     // If onrampTarget is not defined, use default wNEAR on NEAR chain
     const targetAsset = onrampTarget || { chain: "NEAR", asset: "wNEAR" };
 
-    navigate({ 
-      to: "/onramp/initiating"
+    navigate({
+      to: "/onramp/initiating",
     });
     setNearIntentsDisplayInfo({ message: "Fetching token data..." });
 
@@ -85,28 +88,29 @@ function FormEntryRoute() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        "base" // e.g., "base"
+        "base", // e.g., "base"
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         targetAsset.asset, // e.g., "USDC" - final asset on target chain
-        targetAsset.chain // e.g., "NEAR"
+        targetAsset.chain, // e.g., "NEAR"
       );
 
       if (!originAsset1Click || !destinationAsset1Click) {
-        navigate({ 
+        navigate({
           to: "/onramp/error",
-          search: { 
-            error: "Could not find required assets for the swap in 1Click service." 
-          }
+          search: {
+            error:
+              "Could not find required assets for the swap in 1Click service.",
+          },
         });
         return;
       }
 
       // Convert fiat amount to smallest unit of origin asset
       const amountInSmallestUnit = BigInt(
-        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals)
+        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals),
       ).toString();
 
       const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 minutes from now
@@ -186,7 +190,9 @@ function FormEntryRoute() {
       await connection?.remoteHandle().call("reportOnrampInitiated", {
         serviceName: "Coinbase Onramp (via 1Click)",
         details: {
-          url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER": coinbaseOnrampURL,
+          url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT
+            ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
+            : coinbaseOnrampURL,
           manualCallbackUrl: redirectUrl,
           originalCoinbaseOnrampURL: coinbaseOnrampURL,
           callbackParams: callbackParams,
@@ -206,7 +212,7 @@ function FormEntryRoute() {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
           "Development mode: Navigating to onramp-callback with params:",
-          callbackParams
+          callbackParams,
         );
         navigate({
           to: "/onramp/callback",
@@ -215,12 +221,13 @@ function FormEntryRoute() {
       }
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
-      
-      navigate({ 
+
+      navigate({
         to: "/onramp/error",
-        search: { 
-          error: errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp." 
-        }
+        search: {
+          error:
+            errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp.",
+        },
       });
       connection?.remoteHandle().call("reportProcessFailed", {
         error: errorMsg,
@@ -230,9 +237,9 @@ function FormEntryRoute() {
   };
 
   const handleDisconnect = () => {
-    navigate({ 
-      to: "/onramp/connect-wallet", 
-      replace: true 
+    navigate({
+      to: "/onramp/connect-wallet",
+      replace: true,
     });
   };
 

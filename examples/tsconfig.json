@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "composite": true,
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "target": "ESNext",
     "useDefineForClassFields": true,
     "module": "ESNext",
@@ -11,7 +13,7 @@
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true, // Since Vite handles the build
+    "noEmit": true,
 
     /* Linting */
     "strict": true,
@@ -20,7 +22,8 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Path Aliases for TS - to match Vite config */
-    "baseUrl": "." // Project root is 'examples/'
+    "baseUrl": "."
   },
-  "include": ["src"] // Only check files in examples/src
+  "include": ["src"],
+  "references": [{ "path": "../sdk" }]
 }

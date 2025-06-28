@@ -15,12 +15,12 @@ function OnrampIndexRoute() {
     if (walletState !== undefined) {
       if (walletState && walletState.address) {
         console.log(
-          "[OnrampIndex] Wallet connected, navigating to form-entry."
+          "[OnrampIndex] Wallet connected, navigating to form-entry.",
         );
         navigate({ to: "/onramp/form-entry", replace: true });
       } else {
         console.log(
-          "[OnrampIndex] Wallet not connected, navigating to connect-wallet."
+          "[OnrampIndex] Wallet not connected, navigating to connect-wallet.",
         );
         navigate({ to: "/onramp/connect-wallet", replace: true });
       }
