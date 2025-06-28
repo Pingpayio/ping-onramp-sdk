@@ -292,7 +292,7 @@ export function ProcessingOnramp({
       {transactionDetails.explorerLink && (
         <div className="flex w-full gap-4 mt-6">
           <Button
-            className="flex-1 w-full py-4! h-auto! px-8! rounded-full! bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base!"
+            className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base"
             onClick={() =>
               window.open(transactionDetails.explorerLink, "_blank")
             }

@@ -187,11 +187,11 @@ test.describe("NEAR Intents Withdrawal Flow", () => {
 
     // Wait for form elements to be visible and enabled
     await page.waitForSelector("#amount:not([disabled])");
-    await page.waitForSelector("#nearWalletAddress:not([disabled])");
+    await page.waitForSelector("#recipientAddress:not([disabled])");
 
     // 3. Fill the form
     await page.fill("#amount", MOCK_AMOUNT);
-    await page.fill("#nearWalletAddress", MOCK_NEAR_ADDRESS);
+    await page.fill("#recipientAddress", MOCK_NEAR_ADDRESS);
 
     // Payment method is already defaulted to 'card'
     // USDC is already selected and disabled
