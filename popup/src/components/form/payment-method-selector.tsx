@@ -55,10 +55,10 @@ export function PaymentMethodSelector() {
             }}
             defaultValue={field.value}
           >
-            <SelectTrigger className="w-full rounded-lg hover:shadow-sm transition-shadow z-50 bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[42px] text-white flex items-center px-3 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70">
+            <SelectTrigger className="w-full rounded-lg hover:shadow-sm transition-shadow z-50 bg-[#303030] border border-[rgba(255,255,255,0.18)] h-[54px] text-white flex items-center px-4 focus:ring-0 focus:ring-offset-0 focus-visible:ring-0 focus-visible:outline-none focus-visible:border-[#AF9EF9] focus-visible:border-[1.5px] hover:border-[#AF9EF9]/70 font-medium">
               <SelectValue
                 placeholder="Select payment method"
-                className="font-normal text-white/60"
+                className="font-medium text-white/60"
               />
             </SelectTrigger>
             <SelectContent className="bg-[#303030] border-[#AF9EF9] text-white/60 w-full">
