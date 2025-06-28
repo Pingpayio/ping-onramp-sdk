@@ -7,7 +7,7 @@ import {
   onrampErrorAtom,
   onrampResultAtom,
   onrampTargetAtom,
-  walletStateAtom
+  walletStateAtom,
 } from "./atoms";
 
 /**

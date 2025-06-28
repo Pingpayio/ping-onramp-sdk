@@ -1,14 +1,17 @@
 {
-  "name": "ping-onramp",
+  "name": "@pingpay/onramp",
   "private": true,
   "scripts": {
     "build": "bun run --filter \"@pingpay/onramp-sdk\" build",
-    "dev": "echo -e '\\x1b[92mExample app running on http://localhost:3000\\x1b[0m' && echo -e '\\x1b[94mPopup app running on http://localhost:5173\\x1b[0m' && concurrently \"bun run --filter @pingpay/onramp-sdk watch\" \"bun run --filter pingpay-onramp-example dev\" \"bun run --filter @pingpay/onramp-popup dev\"",
-    "test": "bunx playwright test"
+    "dev": "echo -e '\\x1b[92mExample app running on http://localhost:3000\\x1b[0m' && echo -e '\\x1b[94mPopup app running on http://localhost:5173\\x1b[0m' && concurrently \"bun run --filter @pingpay/onramp-sdk watch\" \"bun run --filter @pingpay/onramp-example dev\" \"bun run --filter @pingpay/onramp-popup dev\"",
+    "test": "bunx playwright test",
+    "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'",
+    "fmt:check": "prettier --check '**/*.{js,jsx,ts,tsx,json}'"
   },
   "devDependencies": {
     "@types/bun": "latest",
     "concurrently": "^8.2.2",
+    "prettier": "^3.6.2",
     "typescript": "^5"
   },
   "workspaces": [

@@ -4,10 +4,7 @@ import type {
   OnrampResult,
   TargetAsset,
 } from "../../../src/internal/communication/messages";
-import type {
-  OneClickToken,
-  StatusResponseData
-} from "../lib/one-click-api";
+import type { OneClickToken, StatusResponseData } from "../lib/one-click-api";
 import type { NearIntentsDisplayInfo } from "../types/onramp";
 
 // Atom for global error state

@@ -149,23 +149,17 @@ export async function requestSwapQuote(
 export async function submitDepositTransaction(
   params: SubmitDepositParams,
 ): Promise<StatusResponseData> {
-  const response = await fetch(
-    `${ONE_CLICK_API_BASE_URL}/deposit/submit`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      body: JSON.stringify(params),
+  const response = await fetch(`${ONE_CLICK_API_BASE_URL}/deposit/submit`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
     },
-  );
+    body: JSON.stringify(params),
+  });
   if (!response.ok) {
     const errorBody = await response.json().catch(() => response.text());
-    console.error(
-      "1Click API Error (submitDepositTransaction):",
-      errorBody,
-    );
+    console.error("1Click API Error (submitDepositTransaction):", errorBody);
     throw new Error(
       `Failed to submit deposit transaction: ${response.status} ${
         errorBody?.message || JSON.stringify(errorBody)

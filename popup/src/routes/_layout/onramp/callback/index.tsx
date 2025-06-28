@@ -55,10 +55,10 @@ function RouteComponent() {
       setNearIntentsDisplayInfo({
         message: `Swap status: ${statusResponse.status}`,
         amountIn: parseFloat(
-          statusResponse.quoteResponse.quote.amountInFormatted
+          statusResponse.quoteResponse.quote.amountInFormatted,
         ),
         amountOut: parseFloat(
-          statusResponse.quoteResponse.quote.amountOutFormatted
+          statusResponse.quoteResponse.quote.amountOutFormatted,
         ),
         explorerUrl: explorerLink,
       });
@@ -80,9 +80,9 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
-          
-          navigate({ 
-            to: "/onramp/complete"
+
+          navigate({
+            to: "/onramp/complete",
           });
           break;
         case "REFUNDED":
@@ -92,12 +92,12 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
-          
-          navigate({ 
+
+          navigate({
             to: "/onramp/error",
-            search: { 
-              error: `Swap ${statusResponse.status.toLowerCase()}. Check details.` 
-            }
+            search: {
+              error: `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
+            },
           });
           break;
         case "PENDING_DEPOSIT":
@@ -106,7 +106,7 @@ function RouteComponent() {
           // Continue polling
           pollingTimerRef.current = setTimeout(
             () => pollStatus(depositAddress),
-            POLLING_INTERVAL
+            POLLING_INTERVAL,
           );
           break;
         default:
@@ -115,12 +115,12 @@ function RouteComponent() {
             clearTimeout(pollingTimerRef.current);
             pollingTimerRef.current = undefined;
           }
-          
-          navigate({ 
+
+          navigate({
             to: "/onramp/error",
-            search: { 
-              error: `Unhandled swap status: ${statusResponse.status}` 
-            }
+            search: {
+              error: `Unhandled swap status: ${statusResponse.status}`,
+            },
           });
       }
     } catch (pollError) {
@@ -133,17 +133,17 @@ function RouteComponent() {
       // Retry polling after a delay
       pollingTimerRef.current = setTimeout(
         () => pollStatus(depositAddress),
-        POLLING_INTERVAL * 2
+        POLLING_INTERVAL * 2,
       ); // Longer delay on error
     }
   };
 
   useEffect(() => {
     if (searchParams.type === "intents" && searchParams.depositAddress) {
-      navigate({ 
-        to: "/onramp/processing"
+      navigate({
+        to: "/onramp/processing",
       });
-      
+
       setNearIntentsDisplayInfo({
         message: "Verifying deposit status with 1Click...",
       });
@@ -151,11 +151,11 @@ function RouteComponent() {
       // Start polling for status
       pollStatus(searchParams.depositAddress);
     } else {
-      navigate({ 
+      navigate({
         to: "/onramp/error",
-        search: { 
-          error: "Invalid onramp callback parameters." 
-        }
+        search: {
+          error: "Invalid onramp callback parameters.",
+        },
       });
     }
 

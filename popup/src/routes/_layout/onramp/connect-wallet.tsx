@@ -4,7 +4,6 @@ import { ConnectWalletView } from "../../../components/steps/connect-wallet-view
 import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
 import { z } from "zod";
 
-
 const connectWalletSearchSchema = z.object({});
 
 export const Route = createFileRoute("/_layout/onramp/connect-wallet")({
@@ -23,15 +22,15 @@ function ConnectWalletRoute() {
         ?.remoteHandle()
         .call("reportStepChanged", { step: "connect-wallet" })
         .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e)
+          console.error("Error calling reportStepChanged", e),
         );
     }
   }, [connection]);
 
   const handleWalletConnected = () => {
-    navigate({ 
-      to: "/onramp/form-entry", 
-      replace: true 
+    navigate({
+      to: "/onramp/form-entry",
+      replace: true,
     });
   };
 

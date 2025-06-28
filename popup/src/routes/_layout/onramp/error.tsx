@@ -25,7 +25,7 @@ function ErrorRoute() {
         ?.remoteHandle()
         .call("reportStepChanged", { step: "error" })
         .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e)
+          console.error("Error calling reportStepChanged", e),
         );
 
       if (searchParams.error) {
@@ -36,15 +36,15 @@ function ErrorRoute() {
             step: "error",
           })
           .catch((e: unknown) =>
-            console.error("Error calling reportProcessFailed", e)
+            console.error("Error calling reportProcessFailed", e),
           );
       }
     }
   }, [connection, searchParams.error]);
 
   const handleRetry = () => {
-    navigate({ 
-      to: "/onramp/form-entry"
+    navigate({
+      to: "/onramp/form-entry",
     });
   };
 

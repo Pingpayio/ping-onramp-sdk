@@ -23,7 +23,7 @@ function CompleteRoute() {
         ?.remoteHandle()
         .call("reportStepChanged", { step: "complete" })
         .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e)
+          console.error("Error calling reportStepChanged", e),
         );
 
       if (onrampResult) {
@@ -31,7 +31,7 @@ function CompleteRoute() {
           ?.remoteHandle()
           .call("reportProcessComplete", { result: onrampResult })
           .catch((e: unknown) =>
-            console.error("Error calling reportProcessComplete", e)
+            console.error("Error calling reportProcessComplete", e),
           );
       }
     }
