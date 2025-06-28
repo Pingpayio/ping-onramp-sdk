@@ -1,13 +1,32 @@
 import { useFormContext } from "react-hook-form";
+import { useAtomValue } from "jotai";
+import { useCallback } from "react";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
+import { onrampTargetAtom } from "../../state/atoms";
+import { memoizedValidateRecipientAddress } from "../../lib/address-validation";
 import type { FormValues } from "../steps/form-entry-view";
+import type { TargetAsset } from "../../../../src/internal/communication/messages";
+
+const FALLBACK_TARGET_ASSET: TargetAsset = {
+  chain: "NEAR",
+  asset: "wNEAR",
+};
 
 export function WalletAddressInput() {
   const {
     register,
     formState: { errors },
   } = useFormContext<FormValues>();
+  
+  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
+  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  
+  // Memoize validation function to prevent recreating on every render
+  const validateAddress = useCallback(
+    (value: string) => memoizedValidateRecipientAddress(value, currentOnrampTarget.chain),
+    [currentOnrampTarget.chain]
+  );
 
   return (
     <div className="flex flex-col gap-1">
@@ -22,6 +41,7 @@ export function WalletAddressInput() {
         id="recipientAddress"
         {...register("recipientAddress", {
           required: "Recipient wallet address is required",
+          validate: validateAddress,
         })}
         className="block w-full p-4 rounded-lg h-[54px] bg-white/[0.08] border border-[rgba(255,255,255,0.18)] focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 placeholder:text-base placeholder:font-base"
         placeholder="Enter Recipient Address"
