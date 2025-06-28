@@ -9,11 +9,11 @@ function Home() {
   return (
     <HomeLayout
       nav={{
-        title: 'Tanstack Start',
+        title: 'PingPay Docs',
       }}
       className="text-center py-32 justify-center"
     >
-      <h1 className="font-medium text-xl mb-4">Fumadocs on Tanstack Start.</h1>
+      <h1 className="font-medium text-xl mb-4">PingPay Docs</h1>
       <Link
         to="/docs/$"
         params={{

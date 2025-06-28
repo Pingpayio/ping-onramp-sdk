@@ -6,9 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build && tsc --noEmit",
-    "start": "node .output/server/index.mjs",
-    "deploy": "bun run build && wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface Env"
+    "start": "node .output/server/index.mjs"
   },
   "dependencies": {
     "@fumadocs/mdx-remote": "^1.3.3",
