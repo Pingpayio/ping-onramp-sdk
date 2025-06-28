@@ -1,13 +1,15 @@
-import type {
-  OnrampFlowStep,
-  TargetAsset as ChannelTargetAsset,
-  OnrampResult as ChannelOnrampResult,
-  initiateOnrampFlowPayloadSchema,
+import {
   formDataSubmittedPayloadSchema,
-  walletConnectedPayloadSchema,
-  transactionSignedPayloadSchema,
+  initiateOnrampFlowPayloadSchema,
   onrampInitiatedPayloadSchema,
   processFailedPayloadSchema,
+  transactionSignedPayloadSchema,
+  walletConnectedPayloadSchema,
+} from "./internal/communication/messages";
+import type {
+  OnrampFlowStep,
+  OnrampResult as ChannelOnrampResult,
+  TargetAsset as ChannelTargetAsset,
 } from "./internal/communication/messages";
 import { z } from "zod";
 
