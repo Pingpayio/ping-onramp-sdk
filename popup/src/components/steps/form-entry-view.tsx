@@ -47,14 +47,14 @@ const FALLBACK_TARGET_ASSET: TargetAsset = {
   asset: "wNEAR",
 };
 
-const COINBASE_DEPOSIT_NETWORK = "base"
+const COINBASE_DEPOSIT_NETWORK = "base";
 const ONE_CLICK_REFERRAL_ID = "pingpay.near";
 
 // Simple debounce utility
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function debounce<T extends (...args: any[]) => void>(
   func: T,
-  delay: number,
+  delay: number
 ): (...args: Parameters<T>) => void {
   let timeoutId: ReturnType<typeof setTimeout> | null = null;
   return (...args: Parameters<T>) => {
@@ -158,7 +158,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           currentSupportedTokens = await fetch1ClickSupportedTokens();
           setAllSupportedTokens(currentSupportedTokens);
         }
-        
+
         if (!currentSupportedTokens || currentSupportedTokens.length === 0) {
           throw new Error("Supported token list is empty or not loaded.");
         }
@@ -168,14 +168,14 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
           currentSupportedTokens,
           formSnapshot.selectedAsset,
-          COINBASE_DEPOSIT_NETWORK,
+          COINBASE_DEPOSIT_NETWORK
         );
 
         const destinationAsset1Click: OneClickToken | undefined =
           find1ClickAsset(
             currentSupportedTokens,
             currentOnrampTarget.asset,
-            currentOnrampTarget.chain,
+            currentOnrampTarget.chain
           );
 
         if (!originAsset1Click || !destinationAsset1Click) {
@@ -183,13 +183,11 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         }
 
         const amountInSmallestUnit = BigInt(
-          Math.floor(
-            parseFloat(amountStr) * 10 ** originAsset1Click.decimals,
-          ),
+          Math.floor(parseFloat(amountStr) * 10 ** originAsset1Click.decimals)
         ).toString();
 
         const quoteDeadline = new Date(
-          Date.now() + 5 * 60 * 1000,
+          Date.now() + 5 * 60 * 1000
         ).toISOString();
 
         let recipientForPreview: string;
@@ -198,7 +196,10 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         if (destinationAsset1Click.blockchain.toLowerCase() === "near") {
           recipientForPreview = enteredNearWalletAddress || "preview.near";
         } else {
-          recipientForPreview = enteredNearWalletAddress || address || "0x0000000000000000000000000000000000000000";
+          recipientForPreview =
+            enteredNearWalletAddress ||
+            address ||
+            "0x0000000000000000000000000000000000000000";
         }
 
         const quoteParams: QuoteRequestParams = {
@@ -236,12 +237,18 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         setIsQuoteLoading(false);
       }
     },
-    [allSupportedTokens, currentOnrampTarget, address, getValues, setAllSupportedTokens],
+    [
+      allSupportedTokens,
+      currentOnrampTarget,
+      address,
+      getValues,
+      setAllSupportedTokens,
+    ]
   );
 
   const debouncedFetchQuotePreview = useCallback(
     debounce(fetchQuotePreview, 750),
-    [fetchQuotePreview],
+    [fetchQuotePreview]
   );
 
   useEffect(() => {
@@ -268,7 +275,6 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     };
     loadSupportedTokens();
   }, [allSupportedTokens, setAllSupportedTokens]);
-
 
   return (
     <FormProvider {...methods}>
@@ -343,9 +349,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
                   <LoadingSpinner size="xs" inline={true} />
                 ) : (
                   <p className="font-bold border-none text-[18px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                    {quoteError
-                      ? quoteError
-                      : estimatedReceiveAmount || "-"}
+                    {quoteError ? quoteError : estimatedReceiveAmount || "-"}
                   </p>
                 )}
               </div>

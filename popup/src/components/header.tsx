@@ -1,5 +1,5 @@
 import { useSetAtom } from "jotai";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useAccount, useDisconnect } from "wagmi";
 import { walletStateAtom } from "@/state/atoms";
 import { Button } from "../components/ui/button";
@@ -11,6 +11,8 @@ export default function Header({ title }: { title: string }) {
   const { disconnect } = useDisconnect();
   const navigate = useNavigate();
   const setWalletState = useSetAtom(walletStateAtom);
+  const popupRef = useRef<HTMLDivElement>(null);
+
   React.useEffect(() => {
     if (isConnected && address) {
       setWalletState({
@@ -24,6 +26,26 @@ export default function Header({ title }: { title: string }) {
       setWalletState(null);
     }
   }, [address, chainId, isConnected, setWalletState]);
+
+  // Use Effect to close the dropdown when clicked outside
+  React.useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        isMenuOpen &&
+        popupRef.current &&
+        !popupRef.current.contains(event.target as Node)
+      ) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMenuOpen]);
+
   return (
     <div className="relative w-full">
       <header className="flex items-center justify-between">
@@ -53,7 +75,10 @@ export default function Header({ title }: { title: string }) {
       </header>
 
       {isMenuOpen && (
-        <div className="absolute z-50 right-0 top-full mt-2 w-48 rounded-md bg-gray-800 shadow-lg">
+        <div
+          ref={popupRef}
+          className="absolute z-50 right-0 top-full mt-2 w-48 rounded-md bg-gray-800 shadow-lg"
+        >
           <div className="py-1">
             {isConnected && (
               <Button
