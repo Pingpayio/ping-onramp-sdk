@@ -13,6 +13,8 @@ import type {
 } from "./internal/communication/messages";
 import { z } from "zod";
 
+export * from "./internal/communication/post-me-types";
+
 /**
  * Configuration for the PingpayOnramp SDK.
  */

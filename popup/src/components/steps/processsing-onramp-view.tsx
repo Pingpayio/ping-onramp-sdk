@@ -1,4 +1,4 @@
-import type { OnrampResult } from "../../../../src/internal/communication/messages";
+import type { OnrampResult } from "@pingpay/onramp-sdk";
 import { Progress } from "../ui/progress";
 import Header from "../header";
 import { FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa"; // Added FaSpinner, FaCheckCircle

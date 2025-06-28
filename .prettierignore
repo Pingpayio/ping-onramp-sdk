@@ -4,3 +4,4 @@ node_modules
 docs
 .tanstack
 test-results
+routeTree.gen.ts

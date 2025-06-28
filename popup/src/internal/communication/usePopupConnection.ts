@@ -7,7 +7,7 @@ import type {
   InitiateOnrampFlowPayload,
   PopupActionMethods,
   SdkListenerMethods,
-} from "../../../../src/internal/communication/post-me-types";
+} from "@pingpay/onramp-sdk";
 import { useOnrampFlow, useSetOnrampTarget } from "../../state/hooks";
 import { SKIP_POSTME_HANDSHAKE } from "@/config";
 

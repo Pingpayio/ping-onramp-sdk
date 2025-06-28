@@ -14,7 +14,7 @@ import {
   fetch1ClickSupportedTokens,
 } from "../../lib/one-click-api";
 import { useAccount } from "wagmi";
-import type { TargetAsset } from "../../../../src/internal/communication/messages";
+import type { TargetAsset } from "@pingpay/onramp-sdk";
 
 import Header from "../header";
 import LoadingSpinner from "../loading-spinner";

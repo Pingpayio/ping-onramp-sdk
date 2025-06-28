@@ -26,6 +26,7 @@
       "version": "0.0.0",
       "dependencies": {
         "@coinbase/onchainkit": "^0.38.13",
+        "@pingpay/onramp-sdk": "workspace:*",
         "@radix-ui/react-label": "^2.1.7",
         "@radix-ui/react-progress": "^1.1.7",
         "@radix-ui/react-select": "^2.2.5",

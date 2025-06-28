@@ -1,9 +1,6 @@
 import { atom } from "jotai";
 import { atomWithStorage } from "jotai/utils";
-import type {
-  OnrampResult,
-  TargetAsset,
-} from "../../../src/internal/communication/messages";
+import type { OnrampResult, TargetAsset } from "@pingpay/onramp-sdk";
 import type { OneClickToken, StatusResponseData } from "../lib/one-click-api";
 import type { NearIntentsDisplayInfo } from "../types/onramp";
 
