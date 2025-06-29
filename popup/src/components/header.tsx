@@ -14,7 +14,7 @@ export default function Header({ title }: { title: string }) {
   // Handle click outside to close menu
   const menuRef = useClickOutside<HTMLDivElement>(
     () => setIsMenuOpen(false),
-    isMenuOpen,
+    isMenuOpen
   );
 
   return (
@@ -23,7 +23,7 @@ export default function Header({ title }: { title: string }) {
         <a href="https://pingpay.io" target="_blank">
           <Logo />
         </a>
-        <h3 className=" font-bold text-[24px]">{title}</h3>
+        <h3 className=" font-semibold text-[24px]">{title}</h3>
         <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} />
       </header>
 
