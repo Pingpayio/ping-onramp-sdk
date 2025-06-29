@@ -169,7 +169,7 @@ function FormEntryRoute() {
         enableGuestCheckout: true,
       };
 
-      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase);
+      const coinbaseOnrampURL = await generateOnrampURL(onrampParamsForCoinbase);
 
       // Prepare callback data for router navigation
       const callbackParams: OnrampCallbackParams = {

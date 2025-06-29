@@ -12,7 +12,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     react(),
-    tailwindcss(),
+    tailwindcss() as any,
   ],
   resolve: {
     alias: {
@@ -25,6 +25,14 @@ export default defineConfig({
       // Node.js global to browser globalThis
       define: {
         global: "globalThis",
+      },
+    },
+  },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8787',
+        changeOrigin: true,
       },
     },
   },

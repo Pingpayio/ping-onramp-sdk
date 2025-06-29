@@ -2,13 +2,11 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "api",
   "main": "src/index.ts",
-  "compatibility_date": "2025-06-29"
-  // "compatibility_flags": [
-  //   "nodejs_compat"
-  // ],
-  // "vars": {
-  //   "MY_VAR": "my-variable"
-  // },
+  "compatibility_date": "2025-06-29",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ]
+  // "kv_namespaces": [
   // "kv_namespaces": [
   //   {
   //     "binding": "MY_KV_NAMESPACE",

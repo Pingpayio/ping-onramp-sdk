@@ -1,91 +1,98 @@
-import { CDP_PROJECT_ID } from "../config";
-
 /**
  * Utility functions for Coinbase Onramp URL generation
  */
 export interface OnrampURLParams {
-  asset: string; // e.g., "USDC"
-  amount: string; // Fiat amount, e.g., "10"
-  network: string; // EVM network for deposit, e.g., "base"
-  address: string; // EVM deposit address (e.g., NEAR Intents deposit address on Base)
-  partnerUserId: string; // User's EVM wallet address
-  redirectUrl: string; // Callback URL to this application
-  paymentCurrency?: string;
-  paymentMethod?: string;
-  enableGuestCheckout?: boolean;
-  sessionId?: string;
+	asset: string; // e.g., "USDC"
+	amount: string; // Fiat amount, e.g., "10"
+	network: string; // EVM network for deposit, e.g., "base"
+	address: string; // EVM deposit address (e.g., NEAR Intents deposit address on Base)
+	partnerUserId: string; // User's EVM wallet address
+	redirectUrl: string; // Callback URL to this application
+	paymentCurrency?: string;
+	paymentMethod?: string;
+	enableGuestCheckout?: boolean;
 }
+
+const API_BASE_URL = import.meta.env.PROD ? 'https://api.onramp.pingpay.io' : '';
+
+async function fetchSessionToken(address: string, network: string, assets: string[]): Promise<string> {
+	const response = await fetch(`${API_BASE_URL}/api/onramp/coinbase/init`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			addresses: [{ address, blockchains: [network] }],
+			assets,
+		}),
+	});
+
+	if (!response.ok) {
+		throw new Error('Failed to fetch session token');
+	}
+
+	const { token } = await response.json();
+	return token;
+}
+
 /**
  * Generates a Coinbase Onramp URL with the provided parameters
  */
-export function generateOnrampURL(params: OnrampURLParams): string {
-  const {
-    asset,
-    amount,
-    network,
-    address,
-    partnerUserId,
-    redirectUrl,
-    paymentCurrency,
-    paymentMethod,
-    enableGuestCheckout,
-    sessionId,
-  } = params;
+export async function generateOnrampURL(params: OnrampURLParams): Promise<string> {
+	const {
+		asset,
+		amount,
+		network,
+		address,
+		partnerUserId,
+		redirectUrl,
+		paymentCurrency,
+		paymentMethod,
+		enableGuestCheckout,
+	} = params;
 
-  if (!CDP_PROJECT_ID || CDP_PROJECT_ID === "YOUR_COINBASE_APP_ID_HERE") {
-    throw new Error("Coinbase App ID is not set or is a placeholder.");
-  }
+	const numericAmount = parseFloat(amount);
+	if (isNaN(numericAmount) || numericAmount <= 0) {
+		throw new Error('Invalid or zero amount provided for onramp.');
+	}
 
-  const numericAmount = parseFloat(amount);
-  if (isNaN(numericAmount) || numericAmount <= 0) {
-    throw new Error("Invalid or zero amount provided for onramp.");
-  }
+	const sessionToken = await fetchSessionToken(address, network, [asset]);
 
-  const baseUrl = "https://pay.coinbase.com/buy/select-asset";
-  const queryParams = new URLSearchParams();
+	const baseUrl = 'https://pay.coinbase.com/buy/select-asset';
+	const queryParams = new URLSearchParams();
 
-  // Required parameters
-  queryParams.append("appId", CDP_PROJECT_ID);
+	queryParams.append('sessionToken', sessionToken);
 
-  const addressesObj: Record<string, string[]> = {};
-  addressesObj[address] = [network];
-  queryParams.append("addresses", JSON.stringify(addressesObj));
+	if (asset) {
+		queryParams.append('defaultAsset', asset.toUpperCase());
+	}
 
-  if (asset) {
-    queryParams.append("assets", JSON.stringify([asset]));
-    queryParams.append("defaultAsset", asset.toUpperCase());
-  }
+	if (network) {
+		queryParams.append('defaultNetwork', network.toUpperCase());
+	}
 
-  if (network) {
-    queryParams.append("defaultNetwork", network.toUpperCase());
-  }
+	if (paymentMethod) {
+		const formattedPaymentMethod = paymentMethod.toUpperCase();
+		queryParams.append('defaultPaymentMethod', formattedPaymentMethod);
+	}
 
-  if (paymentMethod) {
-    const formattedPaymentMethod = paymentMethod.toUpperCase();
-    queryParams.append("defaultPaymentMethod", formattedPaymentMethod);
-  }
+	if (numericAmount > 0) {
+		queryParams.append('presetFiatAmount', numericAmount.toString());
+	}
 
-  if (numericAmount > 0) {
-    queryParams.append("presetFiatAmount", numericAmount.toString());
-  }
+	if (paymentCurrency) {
+		queryParams.append('fiatCurrency', paymentCurrency.toUpperCase());
+	}
 
-  if (paymentCurrency) {
-    queryParams.append("fiatCurrency", paymentCurrency.toUpperCase());
-  }
+	queryParams.append('partnerUserId', partnerUserId.substring(0, 49));
 
-  queryParams.append("partnerUserId", partnerUserId.substring(0, 49));
+	if (redirectUrl) {
+		queryParams.append('redirectUrl', redirectUrl);
+	}
 
-  if (redirectUrl) {
-    queryParams.append("redirectUrl", redirectUrl);
-  }
+	if (enableGuestCheckout !== undefined) {
+		queryParams.append('enableGuestCheckout', enableGuestCheckout.toString());
+	}
 
-  if (sessionId) {
-    queryParams.append("sessionToken", sessionId);
-  }
-
-  if (enableGuestCheckout !== undefined) {
-    queryParams.append("enableGuestCheckout", enableGuestCheckout.toString());
-  }
-
-  return `${baseUrl}?${queryParams.toString()}`;
+	return `${baseUrl}?${queryParams.toString()}`;
 }
