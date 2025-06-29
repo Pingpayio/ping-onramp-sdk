@@ -294,27 +294,30 @@ export function ProcessingOnramp({
       </div>
 
       <p className="text-xs text-white/60 py-2">
-        Do not close this window, transaction is being processed.
+        {step === 3 && result?.success
+          ? "Transaction complete, you can now close this window."
+          : "Do not close this window, transaction is being processed."}
       </p>
 
       <div className="flex items-center w-full">
         <div className="flex w-full gap-4 flex-1">
           <Button
-            className="flex-1 w-full px-8 h-[58px] rounded-full! bg-white! text-[#3D315E] font-semibold hover:bg-white/90! transition-all duration-300 ease-in-out text-base"
+            className="flex-1 w-full px-8 h-[58px] rounded-full! bg-white! text-[#3D315E] font-semibold hover:bg-white/90! transition-all duration-300 ease-in-out text-base disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() => (window.location.href = "/onramp")}
+            disabled={!(step === 3 && result?.success)}
           >
             Return Home
           </Button>
-          {transactionDetails.explorerLink && (
-            <Button
-              className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base"
-              onClick={() =>
-                window.open(transactionDetails.explorerLink, "_blank")
-              }
-            >
-              View on Explorer
-            </Button>
-          )}
+          <Button
+            className="flex-1 w-full px-8 h-[58px] rounded-full! bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base disabled:opacity-50 disabled:cursor-not-allowed"
+            onClick={() =>
+              transactionDetails.explorerLink &&
+              window.open(transactionDetails.explorerLink, "_blank")
+            }
+            disabled={!transactionDetails.explorerLink}
+          >
+            View on Explorer
+          </Button>
         </div>
       </div>
     </div>
