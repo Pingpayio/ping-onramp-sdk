@@ -6,8 +6,8 @@ export const Route = createFileRoute("/_layout")({
 
 function RouteComponent() {
   return (
-    <div className="popup-root flex flex-col items-center mx-auto my-auto md:min-h-screen justify-center text-white md:bg-white bg-[#121212]">
-      <div className="w-full flex p-4 min-h-screen md:min-h-[700px] flex-col justify-between rounded-[16px] h-full md:w-[500px] bg-[#121212]">
+    <div className="popup-root flex flex-col items-center mx-auto my-auto md:min-h-screen justify-center text-white md:bg-white bg-[#1E1E1E]">
+      <div className="w-full flex p-4 min-h-screen md:min-h-[700px] flex-col justify-between rounded-[16px] h-full md:w-[500px] bg-[#1E1E1E]">
         <main className="flex-1 overflow-auto">
           <Outlet />
         </main>

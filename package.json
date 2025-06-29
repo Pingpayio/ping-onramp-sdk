@@ -19,5 +19,10 @@
     "popup",
     "examples",
     "docs"
+  ],
+  "trustedDependencies": [
+    "@parcel/watcher",
+    "@swc/core",
+    "@tailwindcss/oxide"
   ]
 }

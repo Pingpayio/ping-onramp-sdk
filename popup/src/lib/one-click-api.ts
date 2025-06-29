@@ -102,7 +102,7 @@ export async function fetch1ClickSupportedTokens(): Promise<OneClickToken[]> {
   if (!response.ok) {
     const errorBody = await response.text();
     throw new Error(
-      `Failed to fetch 1Click supported tokens: ${response.status} ${errorBody}`,
+      `Failed to fetch 1Click supported tokens: ${response.status} ${errorBody}`
     );
   }
   return response.json();
@@ -112,18 +112,18 @@ export async function fetch1ClickSupportedTokens(): Promise<OneClickToken[]> {
 export function find1ClickAsset(
   tokens: OneClickToken[],
   symbol: string,
-  blockchain: string,
+  blockchain: string
 ): OneClickToken | undefined {
   return tokens.find(
     (token) =>
       token.symbol.toLowerCase() === symbol.toLowerCase() &&
-      token.blockchain.toLowerCase() === blockchain.toLowerCase(),
+      token.blockchain.toLowerCase() === blockchain.toLowerCase()
   );
 }
 
 // Function to request a swap quote
 export async function requestSwapQuote(
-  params: QuoteRequestParams,
+  params: QuoteRequestParams
 ): Promise<QuoteResponseData> {
   const response = await fetch(`${ONE_CLICK_API_BASE_URL}/quote`, {
     method: "POST",
@@ -139,7 +139,7 @@ export async function requestSwapQuote(
     throw new Error(
       `Failed to request swap quote: ${response.status} ${
         errorBody?.message || JSON.stringify(errorBody)
-      }`,
+      }`
     );
   }
   return response.json();
@@ -147,7 +147,7 @@ export async function requestSwapQuote(
 
 // Function to submit deposit transaction hash
 export async function submitDepositTransaction(
-  params: SubmitDepositParams,
+  params: SubmitDepositParams
 ): Promise<StatusResponseData> {
   const response = await fetch(`${ONE_CLICK_API_BASE_URL}/deposit/submit`, {
     method: "POST",
@@ -163,7 +163,7 @@ export async function submitDepositTransaction(
     throw new Error(
       `Failed to submit deposit transaction: ${response.status} ${
         errorBody?.message || JSON.stringify(errorBody)
-      }`,
+      }`
     );
   }
   return response.json();
@@ -171,22 +171,22 @@ export async function submitDepositTransaction(
 
 // Function to get swap execution status
 export async function getSwapStatus(
-  depositAddress: string,
+  depositAddress: string
 ): Promise<StatusResponseData> {
   const response = await fetch(
     `${ONE_CLICK_API_BASE_URL}/status?depositAddress=${encodeURIComponent(
-      depositAddress,
+      depositAddress
     )}`,
     {
       headers: {
         Accept: "application/json",
       },
-    },
+    }
   );
   if (!response.ok) {
     if (response.status === 404) {
       console.warn(
-        `1Click API: Deposit address ${depositAddress} not found (404).`,
+        `1Click API: Deposit address ${depositAddress} not found (404).`
       );
     }
     const errorBody = await response.json().catch(() => response.text());
@@ -194,7 +194,7 @@ export async function getSwapStatus(
     throw new Error(
       `Failed to get swap status: ${response.status} ${
         errorBody?.message || JSON.stringify(errorBody)
-      }`,
+      }`
     );
   }
   return response.json();

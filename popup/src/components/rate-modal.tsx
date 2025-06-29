@@ -29,16 +29,21 @@ export function RateModal({
 
   return (
     <div className="fixed flex-col inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="w-full max-w-full h-full bg-[#121212] rounded-lg">
+      <div className="w-full max-w-full h-full bg-[#1E1E1E] rounded-lg">
         {/* Header */}
 
         <div className="relative w-full px-4 pt-4">
           <div className="flex items-center justify-between">
-            <a href="https://pingpay.io" target="_blank">
+            <a
+              href="https://pingpay.io"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               <Logo />
             </a>
             <h3 className=" font-bold text-[24px]">Onramp Rate</h3>
             <button
+              type="button"
               onClick={onClose}
               className="p-0! hover:border-0! border-0!"
             >
