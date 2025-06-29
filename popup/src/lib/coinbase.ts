@@ -13,7 +13,63 @@ export interface OnrampURLParams {
 	enableGuestCheckout?: boolean;
 }
 
+export interface Country {
+	id: string;
+	name: string;
+	supported_payment_methods: string[];
+	states?: {
+		id: string;
+		name: string;
+	}[];
+}
+
+export interface CoinbaseConfig {
+	countries: Country[];
+}
+
+export interface PaymentCurrency {
+	id: string;
+	name: string;
+	min_amount: string;
+	max_amount: string;
+	payment_methods: {
+		type: string;
+		min_amount: string;
+		max_amount: string;
+	}[];
+}
+
+export interface PurchaseCurrency {
+	id: string;
+	name: string;
+}
+
+export interface CoinbaseOptions {
+	payment_currencies: PaymentCurrency[];
+	purchase_currencies: PurchaseCurrency[];
+}
+
 const API_BASE_URL = import.meta.env.PROD ? 'https://api.onramp.pingpay.io' : '';
+
+export async function fetchOnrampConfig(): Promise<CoinbaseConfig> {
+	const response = await fetch(`${API_BASE_URL}/api/onramp/coinbase/config`);
+	if (!response.ok) {
+		throw new Error('Failed to fetch onramp config');
+	}
+	return response.json();
+}
+
+export async function fetchOnrampOptions(country: string, subdivision?: string): Promise<CoinbaseOptions> {
+	const params = new URLSearchParams({ country });
+	if (subdivision) {
+		params.append('subdivision', subdivision);
+	}
+	const response = await fetch(`${API_BASE_URL}/api/onramp/coinbase/options?${params.toString()}`);
+	if (!response.ok) {
+		throw new Error('Failed to fetch onramp options');
+	}
+	return response.json();
+}
 
 async function fetchSessionToken(address: string, network: string, assets: string[]): Promise<string> {
 	const response = await fetch(`${API_BASE_URL}/api/onramp/coinbase/init`, {

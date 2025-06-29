@@ -1,5 +1,7 @@
 import { useAtomValue } from "jotai";
+import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { fetchOnrampConfig, fetchOnrampOptions } from "../../lib/coinbase";
 import { onrampTargetAtom } from "../../state/atoms";
 import type { TargetAsset } from "@pingpay/onramp-sdk";
 import { useQuotePreview } from "../../hooks/use-quote-preview";
@@ -61,6 +63,25 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
       amount: depositAmountWatcher,
       getFormValues: getValues,
     });
+
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const config = await fetchOnrampConfig();
+        console.log("Coinbase Onramp Config:", config);
+
+        // Example: Fetch options for the US
+        if (config.countries.some((c) => c.id === "US")) {
+          const options = await fetchOnrampOptions("US", "IL");
+          console.log("Coinbase Onramp Options (US):", options);
+        }
+      } catch (error) {
+        console.error("Failed to fetch initial onramp data:", error);
+      }
+    };
+
+    loadInitialData();
+  }, []);
 
   return (
     <FormProvider {...methods}>
