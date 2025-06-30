@@ -2,7 +2,7 @@ import React from "react";
 
 interface ErrorViewProps {
   error: string | null;
-  onRetry?: () => void; // Optional retry callback
+  onRetry?: () => void;
 }
 
 export const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
@@ -21,6 +21,5 @@ export const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
         Try Again
       </button>
     )}
-    {/* You could also add a button to close or go back */}
   </div>
 );

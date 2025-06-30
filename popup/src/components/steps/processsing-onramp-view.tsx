@@ -1,26 +1,20 @@
 import type { OnrampResult } from "@pingpay/onramp-sdk";
 import { Progress } from "../ui/progress";
 import Header from "../header";
-import { FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa"; // Added FaSpinner, FaCheckCircle
+import { FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa";
 import { StepInfoBox, type StepBox } from "../step-info-box";
 import { Button } from "../ui/button";
 import {
   useNearIntentsDisplayInfo,
   useOneClickStatus,
-} from "../../state/hooks"; // Added hooks
+} from "../../state/hooks";
 import type { StatusResponseData } from "../../lib/one-click-api";
 
-// This 'step' prop from App.tsx now maps to broader phases:
-// 0: "initiating-onramp-service" (Getting 1Click quote, redirecting to Coinbase)
-// 1: (Not directly used by 1Click, was "signing-transaction") - Can be skipped or merged
-// 2: "processing-transaction" (Submitting deposit to 1Click, polling status)
-// 3: "complete"
 export interface ProcessingOnrampProps {
-  step: number; // Main step from App.tsx
-  result?: OnrampResult | null; // For the "complete" step
+  step: number;
+  result?: OnrampResult | null;
 }
 
-// Helper to map 1Click status to a progress percentage and StepBox
 const getDisplayInfoForStatus = (
   oneClickStatus?: StatusResponseData | null,
   nearIntentsDisplayInfo?: { message?: string; explorerUrl?: string },
@@ -29,7 +23,7 @@ const getDisplayInfoForStatus = (
   box: StepBox;
   detailsForDisplay: Record<string, string | undefined>;
 } => {
-  let progress = 10; // Default starting progress
+  let progress = 10;
   let box: StepBox = {
     icon: <FaSpinner className="animate-spin text-blue-400 text-xl" />,
     title: "Initiating...",
@@ -152,7 +146,7 @@ export function ProcessingOnramp({
     };
     transactionDetails.transactionId = result.data?.transactionId;
     transactionDetails.service = result.data?.service;
-    transactionDetails.explorerLink = nearIntentsDisplayInfo.explorerUrl; // From final success in App.tsx
+    transactionDetails.explorerLink = nearIntentsDisplayInfo.explorerUrl;
     transactionDetails.amountIn = nearIntentsDisplayInfo.amountIn?.toString();
     transactionDetails.amountOut = nearIntentsDisplayInfo.amountOut?.toString();
   } else if (step === 0) {

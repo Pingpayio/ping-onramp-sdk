@@ -1,10 +1,5 @@
-export interface NearIntentsDisplayInfo {
-  logoUrl?: string;
-  contractName?: string;
-  message?: string;
-  amountIn?: number; // e.g., fiat amount or initial crypto amount
-  amountOut?: number; // e.g., final crypto amount received by user
-  explorerUrl?: string;
+export enum OnrampProviderId {
+  Coinbase = 'COINBASE',
 }
 
 export interface OnrampConfigResponse {

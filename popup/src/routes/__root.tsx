@@ -1,9 +1,10 @@
-import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { WalletProvider } from "@/context/wallet-provider";
-import React from "react";
 import { ErrorComponent } from "@/components/error";
+import { WalletProvider } from "@/context/wallet-provider";
+import type { RouterContext } from "@/main";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
+import React from "react";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootComponent,
   errorComponent: ErrorComponent,
 });

@@ -1,24 +1,18 @@
-import { useState, useCallback, useEffect } from "react";
 import { useAtomValue, useSetAtom } from "jotai";
+import { useCallback, useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { oneClickSupportedTokensAtom, onrampTargetAtom } from "../state/atoms";
 import {
-  requestSwapQuote,
-  find1ClickAsset,
-  type QuoteRequestParams,
-  type OneClickToken,
   fetch1ClickSupportedTokens,
+  find1ClickAsset,
+  requestSwapQuote,
+  type OneClickToken,
+  type QuoteRequestParams,
 } from "../lib/one-click-api";
-import type { TargetAsset } from "../../../src/internal/communication/messages";
+import { oneClickSupportedTokensAtom, onrampTargetAtom } from "../state/atoms";
 import { useDebounce } from "./use-debounce";
 
-const FALLBACK_TARGET_ASSET: TargetAsset = {
-  chain: "NEAR",
-  asset: "wNEAR",
-};
-
 const COINBASE_DEPOSIT_NETWORK = "base";
-const ONE_CLICK_REFERRAL_ID = "pingpay.near";
+const ONE_CLICK_REFERRAL_ID = "pingpayio.near";
 
 interface QuotePreviewState {
   estimatedReceiveAmount: string | null;
@@ -35,8 +29,7 @@ export function useQuotePreview({
   amount,
   getFormValues,
 }: UseQuotePreviewParams): QuotePreviewState {
-  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
-  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  const onrampTarget = useAtomValue(onrampTargetAtom);
   const allSupportedTokens = useAtomValue(oneClickSupportedTokensAtom);
   const setAllSupportedTokens = useSetAtom(oneClickSupportedTokensAtom);
   const { address } = useAccount();
@@ -82,8 +75,8 @@ export function useQuotePreview({
         const destinationAsset1Click: OneClickToken | undefined =
           find1ClickAsset(
             currentSupportedTokens,
-            currentOnrampTarget.asset,
-            currentOnrampTarget.chain,
+            onrampTarget.asset,
+            onrampTarget.chain,
           );
 
         if (!originAsset1Click || !destinationAsset1Click) {
@@ -146,7 +139,7 @@ export function useQuotePreview({
     },
     [
       allSupportedTokens,
-      currentOnrampTarget,
+      onrampTarget,
       address,
       getFormValues,
       setAllSupportedTokens,

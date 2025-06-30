@@ -1,15 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
+import type { FormValues } from "../../../components/steps/form-entry-view";
 import { FormEntryView } from "../../../components/steps/form-entry-view";
 import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
-import {
-  useSetOneClickSupportedTokens,
-  useWalletState,
-} from "../../../state/hooks";
-import type { FormValues } from "../../../components/steps/form-entry-view";
-import { useOnrampTarget } from "../../../state/hooks";
-import { generateOnrampURL } from "../../../lib/coinbase";
-import type { OnrampURLParams } from "../../../lib/coinbase";
+import { initOnramp, onrampConfigQueryOptions } from "../../../lib/coinbase";
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
@@ -19,13 +14,18 @@ import {
 } from "../../../lib/one-click-api";
 import {
   useOneClickSupportedTokens,
+  useOnrampTarget,
   useSetNearIntentsDisplayInfo,
+  useSetOneClickSupportedTokens,
+  useWalletState,
 } from "../../../state/hooks";
 import type { OnrampCallbackParams } from "./callback";
 
-const ONE_CLICK_REFERRAL_ID = "pingpay.near";
+const ONE_CLICK_REFERRAL_ID = "pingpayio.near";
 
 export const Route = createFileRoute("/_layout/onramp/form-entry")({
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(onrampConfigQueryOptions),
   component: FormEntryRoute,
 });
 
@@ -33,6 +33,7 @@ function FormEntryRoute() {
   const { connection, openerOrigin } = usePopupConnection();
   const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
+  const { data: onrampConfig } = useQuery(onrampConfigQueryOptions);
   const navigate = Route.useNavigate();
 
   const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
@@ -46,7 +47,7 @@ function FormEntryRoute() {
         ?.remoteHandle()
         .call("reportStepChanged", { step: "form-entry" })
         .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e),
+          console.error("Error calling reportStepChanged", e)
         );
     }
   }, [connection]);
@@ -68,9 +69,6 @@ function FormEntryRoute() {
       return;
     }
 
-    // If onrampTarget is not defined, use default wNEAR on NEAR chain
-    const targetAsset = onrampTarget || { chain: "NEAR", asset: "wNEAR" };
-
     navigate({
       to: "/onramp/initiating",
     });
@@ -88,13 +86,13 @@ function FormEntryRoute() {
       const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
         data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        "base", // e.g., "base"
+        "base" // e.g., "base"
       );
 
       const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
         currentSupportedTokens,
-        targetAsset.asset, // e.g., "USDC" - final asset on target chain
-        targetAsset.chain, // e.g., "NEAR"
+        onrampTarget.asset, // e.g., "USDC" - final asset on target chain
+        onrampTarget.chain // e.g., "NEAR"
       );
 
       if (!originAsset1Click || !destinationAsset1Click) {
@@ -110,7 +108,7 @@ function FormEntryRoute() {
 
       // Convert fiat amount to smallest unit of origin asset
       const amountInSmallestUnit = BigInt(
-        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals),
+        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals)
       ).toString();
 
       const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 minutes from now
@@ -141,8 +139,8 @@ function FormEntryRoute() {
         type: "intents",
         action: "withdraw",
         depositAddress: depositAddressForCoinbase,
-        network: targetAsset.chain,
-        asset: targetAsset.asset,
+        network: onrampTarget.chain,
+        asset: onrampTarget.asset,
         amount: data.amount,
         recipient: data.recipientAddress,
       };
@@ -157,7 +155,7 @@ function FormEntryRoute() {
         window.location.origin
       }/onramp/callback?${callbackUrlParams.toString()}`;
 
-      const onrampParamsForCoinbase: OnrampURLParams = {
+      const onrampInitParams = {
         asset: data.selectedAsset, // Asset Coinbase user buys (e.g. USDC)
         amount: data.amount,
         network: depositNetworkForCoinbase, // Network Coinbase deposits to (e.g. base)
@@ -169,15 +167,22 @@ function FormEntryRoute() {
         enableGuestCheckout: true,
       };
 
-      const coinbaseOnrampURL = await generateOnrampURL(onrampParamsForCoinbase);
+      if (!onrampConfig?.sessionId) {
+        throw new Error("Onramp session not initialized.");
+      }
+
+      const { redirectUrl: coinbaseOnrampURL } = await initOnramp(
+        onrampConfig.sessionId,
+        onrampInitParams
+      );
 
       // Prepare callback data for router navigation
       const callbackParams: OnrampCallbackParams = {
         type: "intents",
         action: "withdraw",
         depositAddress: depositAddressForCoinbase,
-        network: targetAsset.chain,
-        asset: targetAsset.asset,
+        network: onrampTarget.chain,
+        asset: onrampTarget.asset,
         amount: data.amount,
         recipient: data.recipientAddress,
       };
@@ -212,7 +217,7 @@ function FormEntryRoute() {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
           "Development mode: Navigating to onramp-callback with params:",
-          callbackParams,
+          callbackParams
         );
         navigate({
           to: "/onramp/callback",

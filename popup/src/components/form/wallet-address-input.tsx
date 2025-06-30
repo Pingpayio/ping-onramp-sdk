@@ -1,17 +1,11 @@
-import { useFormContext } from "react-hook-form";
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
+import { useFormContext } from "react-hook-form";
+import { memoizedValidateRecipientAddress } from "../../lib/address-validation";
+import { onrampTargetAtom } from "../../state/atoms";
+import type { FormValues } from "../steps/form-entry-view";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
-import { onrampTargetAtom } from "../../state/atoms";
-import { memoizedValidateRecipientAddress } from "../../lib/address-validation";
-import type { FormValues } from "../steps/form-entry-view";
-import type { TargetAsset } from "../../../../src/internal/communication/messages";
-
-const FALLBACK_TARGET_ASSET: TargetAsset = {
-  chain: "NEAR",
-  asset: "wNEAR",
-};
 
 export function WalletAddressInput() {
   const {
@@ -19,14 +13,13 @@ export function WalletAddressInput() {
     formState: { errors },
   } = useFormContext<FormValues>();
 
-  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
-  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  const onrampTarget = useAtomValue(onrampTargetAtom);
 
   // Memoize validation function to prevent recreating on every render
   const validateAddress = useCallback(
     (value: string) =>
-      memoizedValidateRecipientAddress(value, currentOnrampTarget.chain),
-    [currentOnrampTarget.chain],
+      memoizedValidateRecipientAddress(value, onrampTarget.chain),
+    [onrampTarget.chain],
   );
 
   return (

@@ -8,9 +8,12 @@ import type { NearIntentsDisplayInfo } from "../types/onramp";
 export const onrampErrorAtom = atom<string | null>(null);
 
 // Atoms for data collected during the flow
-export const onrampTargetAtom = atomWithStorage<TargetAsset | null>(
+export const onrampTargetAtom = atomWithStorage<TargetAsset>(
   "onrampTarget", // sessionStorage key
-  null,
+  {
+    chain: "NEAR",
+    asset: "wNEAR",
+  },
 );
 export const walletStateAtom = atomWithStorage<{
   address: string;

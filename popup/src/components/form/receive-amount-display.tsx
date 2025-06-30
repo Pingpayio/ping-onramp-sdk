@@ -3,12 +3,6 @@ import { useAtomValue } from "jotai";
 import { onrampTargetAtom } from "../../state/atoms";
 import LoadingSpinner from "../loading-spinner";
 import { RateModal } from "../rate-modal";
-import type { TargetAsset } from "../../../../src/internal/communication/messages";
-
-const FALLBACK_TARGET_ASSET: TargetAsset = {
-  chain: "NEAR",
-  asset: "wNEAR",
-};
 
 interface ReceiveAmountDisplayProps {
   estimatedReceiveAmount: string | null;
@@ -24,8 +18,7 @@ export function ReceiveAmountDisplay({
   depositAmount,
 }: ReceiveAmountDisplayProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
-  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  const onrampTarget = useAtomValue(onrampTargetAtom);
 
   // Calculate dynamic exchange rate
   const calculateExchangeRate = () => {
@@ -68,17 +61,17 @@ export function ReceiveAmountDisplay({
           <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5">
             <img
               src={
-                currentOnrampTarget.asset === "wNEAR"
+                onrampTarget.asset === "wNEAR"
                   ? "/near-logo-green.png"
                   : "/usd-coin-usdc-logo.svg"
               }
-              alt={`${currentOnrampTarget.asset} Logo`}
+              alt={`${onrampTarget.asset} Logo`}
               width="20px"
               height="20px"
               className="rounded-full"
             />
             <span className="text-white font-normal">
-              {currentOnrampTarget.asset}
+              {onrampTarget.asset}
             </span>
           </div>
         </div>
@@ -94,7 +87,7 @@ export function ReceiveAmountDisplay({
                   className="px-0! hover:border-0! border-0! hover:underline hover:underline-offset-2 text-[#AB9FF2] inline-block cursor-pointer hover:text-[#AF9EF9] transition-colors"
                   onClick={() => setIsModalOpen(true)}
                 >
-                  1 USD ≈ {exchangeRate} {currentOnrampTarget.asset}
+                  1 USD ≈ {exchangeRate} {onrampTarget.asset}
                 </button>
               </>
             ) : (
@@ -108,10 +101,10 @@ export function ReceiveAmountDisplay({
           <p>Network:</p>
           <img
             src="/near-logo-green.png"
-            alt={`${currentOnrampTarget.chain} Protocol Logo`}
+            alt={`${onrampTarget.chain} Protocol Logo`}
             className="w-4 h-4 rounded-full"
           />
-          <span>{currentOnrampTarget.chain}</span>
+          <span>{onrampTarget.chain}</span>
         </div>
       </div>
 
@@ -119,7 +112,7 @@ export function ReceiveAmountDisplay({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         exchangeRate={exchangeRate || "0"}
-        asset={currentOnrampTarget.asset}
+        asset={onrampTarget.asset}
         depositAmount={depositAmount}
         estimatedReceiveAmount={estimatedReceiveAmount || "0"}
       />

@@ -1,4 +1,0 @@
-const tsrStartManifest = () => ({ "routes": { "__root__": { "filePath": "/Users/ebraem/workspace/pingpay/ping-onramp-sdk/docs/src/routes/__root.tsx", "children": ["/", "/docs/$"], "preloads": ["/assets/main-DPSXTf-Y.js"], "assets": [] }, "/": { "filePath": "/Users/ebraem/workspace/pingpay/ping-onramp-sdk/docs/src/routes/index.tsx", "assets": [], "preloads": ["/assets/index-CL_TGMPG.js", "/assets/index-3bRJ4LBI.js", "/assets/language-toggle-CVfU_LIg.js"] }, "/docs/$": { "filePath": "/Users/ebraem/workspace/pingpay/ping-onramp-sdk/docs/src/routes/docs/$.tsx", "assets": [], "preloads": ["/assets/_-OnF4uJUe.js", "/assets/index-3bRJ4LBI.js", "/assets/language-toggle-CVfU_LIg.js", "/assets/index-DKjRcP81.js"] } }, "clientEntry": "/assets/main-DPSXTf-Y.js" });
-
-export { tsrStartManifest };
-//# sourceMappingURL=_tanstack-start-manifest_v-B0dwJV-Z.mjs.map

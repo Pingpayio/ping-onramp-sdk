@@ -1,22 +1,19 @@
 import { useAtomValue } from "jotai";
-import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import { fetchOnrampConfig, fetchOnrampOptions } from "../../lib/coinbase";
-import { onrampTargetAtom } from "../../state/atoms";
-import type { TargetAsset } from "@pingpay/onramp-sdk";
 import { useQuotePreview } from "../../hooks/use-quote-preview";
 import { useWalletState } from "../../hooks/use-wallet-state";
+import { onrampTargetAtom } from "../../state/atoms";
 
-import Header from "../header";
-import { Button } from "../ui/button";
 import { DepositAmountInput } from "../form/deposit-amount-input";
+import { PaymentMethodSelector } from "../form/payment-method-selector";
 import { ReceiveAmountDisplay } from "../form/receive-amount-display";
 import { WalletAddressInput } from "../form/wallet-address-input";
-import { PaymentMethodSelector } from "../form/payment-method-selector";
+import Header from "../header";
+import { Button } from "../ui/button";
 
 export type FormValues = {
   amount: string;
-  selectedAsset: string; // This is the asset to buy on Coinbase (e.g., USDC)
+  selectedAsset: string; // The asset to buy
   selectedCurrency: string;
   paymentMethod: string;
   recipientAddress: string; // Recipient wallet address
@@ -27,14 +24,8 @@ interface FormEntryViewProps {
   onDisconnect: () => void;
 }
 
-const FALLBACK_TARGET_ASSET: TargetAsset = {
-  chain: "NEAR",
-  asset: "wNEAR",
-};
-
 export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
-  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
-  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  const onrampTarget = useAtomValue(onrampTargetAtom);
 
   const methods = useForm<FormValues>({
     mode: "onChange",
@@ -56,32 +47,12 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
 
   const depositAmountWatcher = watch("amount");
 
-  // Use custom hooks
   useWalletState();
   const { estimatedReceiveAmount, isQuoteLoading, quoteError } =
     useQuotePreview({
       amount: depositAmountWatcher,
       getFormValues: getValues,
     });
-
-  useEffect(() => {
-    const loadInitialData = async () => {
-      try {
-        const config = await fetchOnrampConfig();
-        console.log("Coinbase Onramp Config:", config);
-
-        // Example: Fetch options for the US
-        if (config.countries.some((c) => c.id === "US")) {
-          const options = await fetchOnrampOptions("US", "IL");
-          console.log("Coinbase Onramp Options (US):", options);
-        }
-      } catch (error) {
-        console.error("Failed to fetch initial onramp data:", error);
-      }
-    };
-
-    loadInitialData();
-  }, []);
 
   return (
     <FormProvider {...methods}>
@@ -109,7 +80,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
           disabled={!isValid}
         >
-          Buy {currentOnrampTarget.asset}
+          Buy {onrampTarget.asset}
         </Button>
       </form>
     </FormProvider>
