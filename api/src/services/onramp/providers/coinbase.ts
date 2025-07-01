@@ -1,5 +1,6 @@
 import { generateJwt } from '@coinbase/cdp-sdk/auth';
 import type { OnrampConfigResponse, OnrampInitResponse, PaymentCurrency, PurchaseCurrency } from '@pingpay/onramp-types';
+import { ProviderError } from '../../../lib/errors';
 import type { OnrampProvider } from './types';
 
 interface CoinbaseConfigResponse {
@@ -13,6 +14,30 @@ interface CoinbaseOptionsResponse {
 
 interface CoinbaseTokenResponse {
   token: string;
+}
+
+interface CoinbaseOnrampQuoteResponse {
+  payment_total: {
+    value: string;
+    currency: string;
+  },
+  payment_subtotal: {
+    value: string;
+    currency: string;
+  },
+  purchase_amount: {
+    value: string;
+    currency: string;
+  },
+  coinbase_fee: {
+    value: string;
+    currency: string;
+  },
+  network_fee: {
+    value: string;
+    currency: string;
+  },
+  quote_id: string
 }
 
 async function getCoinbaseAuthToken(
@@ -45,6 +70,12 @@ class CoinbaseProvider implements OnrampProvider {
     const configResponse = await fetch(`https://api.developer.coinbase.com${configPath}`, {
       headers: { Authorization: `Bearer ${configToken}` },
     });
+
+    if (!configResponse.ok) {
+      const errorBody = await configResponse.text();
+      throw new ProviderError('Coinbase onramp config failed', { error: errorBody });
+    }
+
     const configData = (await configResponse.json()) as CoinbaseConfigResponse;
     const countryInfo = configData.countries.find((c) => c.id === country);
 
@@ -68,6 +99,12 @@ class CoinbaseProvider implements OnrampProvider {
     const optionsResponse = await fetch(`https://api.developer.coinbase.com${optionsPath}?${optionsParams.toString()}`, {
       headers: { Authorization: `Bearer ${optionsToken}` },
     });
+
+    if (!optionsResponse.ok) {
+      const errorBody = await optionsResponse.text();
+      throw new ProviderError('Coinbase onramp options failed', { error: errorBody });
+    }
+
     const optionsData = (await optionsResponse.json()) as CoinbaseOptionsResponse;
 
     return {
@@ -96,6 +133,12 @@ class CoinbaseProvider implements OnrampProvider {
       },
       body: JSON.stringify(tokenBody),
     });
+
+    if (!tokenResponse.ok) {
+      const errorBody = await tokenResponse.text();
+      throw new ProviderError('Coinbase onramp session token failed', { error: errorBody });
+    }
+
     const { token: sessionToken } = (await tokenResponse.json()) as CoinbaseTokenResponse;
 
     const onrampUrl = new URL('https://pay.coinbase.com/buy/select-asset');
@@ -113,6 +156,43 @@ class CoinbaseProvider implements OnrampProvider {
     }
 
     return { redirectUrl: onrampUrl.toString() };
+  }
+
+  async getOnrampQuote(env: any, quoteParams: any): Promise<CoinbaseOnrampQuoteResponse> {
+    const { COINBASE_API_KEY, COINBASE_API_SECRET } = env;
+    const { purchase_amount, purchase_currency, purchase_network, payment_currency, country, subdivision, payment_method } = quoteParams;
+
+    const quotePath = '/onramp/v1/buy/quote';
+    const quoteBody = {
+      purchaseCurrency: purchase_currency,
+      purchaseNetwork: purchase_network,
+      paymentAmount: parseFloat(purchase_amount).toFixed(2),
+      paymentCurrency: payment_currency,
+      paymentMethod: payment_method,
+      country,
+      subdivision,
+    };
+
+    const quoteToken = await getCoinbaseAuthToken(COINBASE_API_KEY, COINBASE_API_SECRET, 'POST', quotePath);
+
+    const quoteResponse = await fetch(`https://api.developer.coinbase.com${quotePath}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${quoteToken}`,
+      },
+      body: JSON.stringify(quoteBody),
+    });
+
+
+    if (!quoteResponse.ok) {
+      const errorBody = await quoteResponse.text();
+      throw new ProviderError('Coinbase quote failed', { error: errorBody });
+    }
+    
+    const quoteData = (await quoteResponse.json()) as CoinbaseOnrampQuoteResponse; 
+
+    return quoteData;
   }
 }
 

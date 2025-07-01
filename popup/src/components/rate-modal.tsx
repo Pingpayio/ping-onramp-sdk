@@ -3,29 +3,25 @@ import { Logo } from "./logo";
 interface RateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  exchangeRate: string;
+  quote: any;
   asset: string;
-  depositAmount: string;
-  estimatedReceiveAmount: string;
 }
 
 export function RateModal({
   isOpen,
   onClose,
-  exchangeRate,
+  quote,
   asset,
-  // depositAmount,
-  // estimatedReceiveAmount,
 }: RateModalProps) {
   if (!isOpen) return null;
 
-  // Mock data - replace with actual values when available
-  const maxSlippage = "0.5%";
+  const { fees, swapQuote } = quote;
+  const { maxSlippage, networkFee, providerFee, pingpayFee, totalFee, swapFee } =
+    fees;
+  const exchangeRate = (
+    1 / parseFloat(swapQuote.quote.amountOutUsd)
+  ).toFixed(2);
   const route = "via 1Click";
-  const networkFee = "0.00";
-  const coinbaseFee = "0.00";
-  const pingpayFee = "0.00";
-  const totalFee = "0.00";
 
   return (
     <div className="fixed flex-col inset-0 bg-black/80 flex items-center justify-center z-50">
@@ -71,7 +67,7 @@ export function RateModal({
               <div className="flex text-sm justify-between items-center">
                 <span className=" text-white/60">Pricing Rate</span>
                 <span className="text-white">
-                  1 USD ≈ {exchangeRate} {asset}
+                  1 {asset} ≈ {exchangeRate} USD
                 </span>
               </div>
 
@@ -98,8 +94,14 @@ export function RateModal({
 
               {/* Coinbase Fee */}
               <div className="flex text-sm justify-between items-center">
-                <span className="text-white/60">Coinbase Fee</span>
-                <span className="text-white">${coinbaseFee}</span>
+                <span className="text-white/60">Provider Fee</span>
+                <span className="text-white">${providerFee}</span>
+              </div>
+
+              {/* Swap Fee */}
+              <div className="flex text-sm justify-between items-center">
+                <span className="text-white/60">Swap Fee</span>
+                <span className="text-white">${swapFee}</span>
               </div>
 
               {/* Pingpay Fee */}
@@ -110,7 +112,7 @@ export function RateModal({
 
               {/* Total Fee */}
               <div className="flex text-sm justify-between items-center">
-                <span className="text-white">Total Fee</span>
+                <span className="text-white">Total Fees</span>
                 <span className="text-white">${totalFee}</span>
               </div>
             </div>

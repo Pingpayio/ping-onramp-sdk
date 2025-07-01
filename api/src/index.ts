@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { ApiError } from './lib/errors';
 import onramp from './routes/onramp';
 
 export type Bindings = {
@@ -20,5 +21,19 @@ app.use('*', async (c, next) => {
 });
 
 app.route('/onramp', onramp);
+
+app.onError((err, c) => {
+	if (err instanceof ApiError) {
+		return c.json(
+			{
+				error: err.message,
+				details: err.details,
+			},
+			err.status,
+		);
+	}
+	console.error(err);
+	return c.json({ error: 'Internal Server Error' }, 500);
+});
 
 export default app;

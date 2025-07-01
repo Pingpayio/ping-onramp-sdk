@@ -6,7 +6,8 @@ import { onrampTargetAtom } from "@/state/atoms";
 import { useQuery } from "@tanstack/react-query";
 import { onrampConfigQueryOptions } from "@/lib/coinbase";
 import type { OnrampConfigResponse, PaymentMethodLimit } from "@pingpay/onramp-types";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { debounce } from "lodash-es";
 
 import { DepositAmountInput } from "../form/deposit-amount-input";
 import { PaymentMethodSelector } from "../form/payment-method-selector";
@@ -46,7 +47,6 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     handleSubmit,
     watch,
     formState: { isValid },
-    getValues,
     trigger,
   } = methods;
 
@@ -54,8 +54,29 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     data: OnrampConfigResponse | undefined;
   };
 
-  const depositAmountWatcher = watch("amount");
-  const paymentMethodWatcher = watch("paymentMethod");
+  const [
+    depositAmountWatcher,
+    paymentMethodWatcher,
+    selectedAssetWatcher,
+    recipientAddressWatcher,
+  ] = watch([
+    "amount",
+    "paymentMethod",
+    "selectedAsset",
+    "recipientAddress",
+  ]);
+  const [debouncedAmount, setDebouncedAmount] = useState("");
+
+  const debouncedSetAmount = useCallback(
+    debounce((amount: string) => {
+      setDebouncedAmount(amount);
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSetAmount(depositAmountWatcher);
+  }, [depositAmountWatcher, debouncedSetAmount]);
 
   const isInitialRender = useRef(true);
   useEffect(() => {
@@ -95,10 +116,12 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
   };
 
   useWalletState();
-  const { estimatedReceiveAmount, isQuoteLoading, quoteError } =
+  const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
     useQuotePreview({
-      amount: depositAmountWatcher,
-      getFormValues: getValues,
+      amount: debouncedAmount,
+      selectedAsset: selectedAssetWatcher,
+      paymentMethod: paymentMethodWatcher,
+      recipientAddress: recipientAddressWatcher,
     });
 
   return (
@@ -114,8 +137,9 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         <ReceiveAmountDisplay
           estimatedReceiveAmount={estimatedReceiveAmount}
           isQuoteLoading={isQuoteLoading}
-          quoteError={quoteError}
+          quoteError={error?.message}
           depositAmount={depositAmountWatcher}
+          quote={quote}
         />
 
         <WalletAddressInput />
@@ -125,7 +149,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         <Button
           type="submit"
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
-          disabled={!isValid || !estimatedReceiveAmount || isQuoteLoading}
+          disabled={!isValid || !quote || isQuoteLoading}
         >
           Buy {onrampTarget.asset}
         </Button>

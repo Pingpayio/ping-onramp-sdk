@@ -7,8 +7,9 @@ import { RateModal } from "../rate-modal";
 interface ReceiveAmountDisplayProps {
   estimatedReceiveAmount: string | null;
   isQuoteLoading: boolean;
-  quoteError: string | null;
+  quoteError?: string;
   depositAmount: string;
+  quote: any;
 }
 
 export function ReceiveAmountDisplay({
@@ -16,6 +17,7 @@ export function ReceiveAmountDisplay({
   isQuoteLoading,
   quoteError,
   depositAmount,
+  quote,
 }: ReceiveAmountDisplayProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const onrampTarget = useAtomValue(onrampTargetAtom);
@@ -54,7 +56,11 @@ export function ReceiveAmountDisplay({
               <LoadingSpinner size="xs" inline={true} />
             ) : (
               <p className="font-bold border-none text-[24px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                {quoteError ? quoteError : estimatedReceiveAmount || "-"}
+                {quoteError
+                  ? "-"
+                  : estimatedReceiveAmount
+                  ? parseFloat(estimatedReceiveAmount).toFixed(6)
+                  : "-"}
               </p>
             )}
           </div>
@@ -71,7 +77,8 @@ export function ReceiveAmountDisplay({
               className="rounded-full"
             />
             <span className="text-white font-normal">
-              {onrampTarget.asset}
+              {/* {onrampTarget.asset} */}
+              NEAR
             </span>
           </div>
         </div>
@@ -108,14 +115,14 @@ export function ReceiveAmountDisplay({
         </div>
       </div>
 
-      <RateModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        exchangeRate={exchangeRate || "0"}
-        asset={onrampTarget.asset}
-        depositAmount={depositAmount}
-        estimatedReceiveAmount={estimatedReceiveAmount || "0"}
-      />
+      {quote && (
+        <RateModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          quote={quote}
+          asset={onrampTarget.asset}
+        />
+      )}
     </div>
   );
 }

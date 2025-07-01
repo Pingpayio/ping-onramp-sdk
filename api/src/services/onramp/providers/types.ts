@@ -8,4 +8,6 @@ export interface OnrampProvider {
   ): Promise<Partial<OnrampConfigResponse>>;
 
   generateOnrampUrl(env: any, formData: any): Promise<OnrampInitResponse>;
+
+  getOnrampQuote(env: any, quoteParams: any): Promise<any>;
 }

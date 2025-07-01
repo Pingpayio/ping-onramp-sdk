@@ -20,6 +20,25 @@ export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
   staleTime: 1000 * 60 * 5, // 5 minutes
 });
 
+export const onrampQuoteQueryOptions = (formData: any) => ({
+  queryKey: ['onramp', 'quote', formData],
+  queryFn: async (): Promise<any> => {
+    const response = await fetch(`${API_BASE_URL}/api/onramp/quote`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    if (!response.ok) {
+      throw new Error('Failed to fetch onramp quote');
+    }
+    return response.json();
+  },
+  staleTime: 1000 * 60 * 5, // 5 minutes
+  enabled: !!(formData.amount && parseInt(formData.amount) > 0)
+});
+
 export async function initOnramp(sessionId: string, formData: any): Promise<OnrampInitResponse> {
   const response = await fetch(`${API_BASE_URL}/api/onramp/init`, {
     method: 'POST',
