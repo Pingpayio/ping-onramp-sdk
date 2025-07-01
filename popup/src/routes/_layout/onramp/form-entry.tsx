@@ -1,31 +1,40 @@
-import { useQuery } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
-import type { FormValues } from "../../../components/steps/form-entry-view";
-import { FormEntryView } from "../../../components/steps/form-entry-view";
-import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
-import { initOnramp, onrampConfigQueryOptions } from "../../../lib/coinbase";
+import { ErrorView } from "@/components/steps/error-view";
+import type { FormValues } from "@/components/steps/form-entry-view";
+import { FormEntryView } from "@/components/steps/form-entry-view";
+import { usePopupConnection } from "@/internal/communication/usePopupConnection";
+import { initOnramp, onrampConfigQueryOptions } from "@/lib/coinbase";
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
   requestSwapQuote,
   type OneClickToken,
   type QuoteRequestParams,
-} from "../../../lib/one-click-api";
+} from "@/lib/one-click-api";
+import { onrampTargetAtom } from "@/state/atoms";
 import {
   useOneClickSupportedTokens,
   useOnrampTarget,
   useSetNearIntentsDisplayInfo,
   useSetOneClickSupportedTokens,
   useWalletState,
-} from "../../../state/hooks";
-import type { OnrampCallbackParams } from "./callback";
+} from "@/state/hooks";
+import type { OnrampCallbackParams } from "@/types";
+import { useQuery } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 const ONE_CLICK_REFERRAL_ID = "pingpayio.near";
 
 export const Route = createFileRoute("/_layout/onramp/form-entry")({
-  loader: ({ context }) =>
-    context.queryClient.ensureQueryData(onrampConfigQueryOptions),
+  errorComponent: ({ error, reset }) => (
+    <ErrorView error={error.message} onRetry={reset} />
+  ),
+  loader: ({ context }) => {
+    const targetAsset = context.store.get(onrampTargetAtom);
+    return context.queryClient.ensureQueryData(
+      onrampConfigQueryOptions(targetAsset)
+    );
+  },
   component: FormEntryRoute,
 });
 
@@ -33,7 +42,9 @@ function FormEntryRoute() {
   const { connection, openerOrigin } = usePopupConnection();
   const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
-  const { data: onrampConfig } = useQuery(onrampConfigQueryOptions);
+  const { data: onrampConfig } = useQuery(
+    onrampConfigQueryOptions(onrampTarget)
+  );
   const navigate = Route.useNavigate();
 
   const setOneClickSupportedTokens = useSetOneClickSupportedTokens();

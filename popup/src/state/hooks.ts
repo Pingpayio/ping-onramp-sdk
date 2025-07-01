@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from "jotai";
-import type { NearIntentsDisplayInfo } from "../types/onramp";
+import type { NearIntentsDisplayInfo } from "../types";
 import {
   nearIntentsDisplayInfoAtom,
   oneClickStatusAtom,

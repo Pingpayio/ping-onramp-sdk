@@ -8,7 +8,7 @@ import type {
   PopupActionMethods,
   SdkListenerMethods,
 } from "@pingpay/onramp-sdk";
-import { useOnrampFlow, useSetOnrampTarget } from "../../state/hooks";
+import { useOnrampFlow, useSetOnrampTarget } from "@/state/hooks";
 import { SKIP_POSTME_HANDSHAKE } from "@/config";
 
 const popupConnectionAtomInternal = atom<Connection<

@@ -29,5 +29,8 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "references": [
+    {"path": "../types"}
+  ]
 }

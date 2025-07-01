@@ -1,8 +1,8 @@
 import { useAtomValue } from "jotai";
 import { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
-import { memoizedValidateRecipientAddress } from "../../lib/address-validation";
-import { onrampTargetAtom } from "../../state/atoms";
+import { memoizedValidateRecipientAddress } from "@/lib/address-validation";
+import { onrampTargetAtom } from "@/state/atoms";
 import type { FormValues } from "../steps/form-entry-view";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";

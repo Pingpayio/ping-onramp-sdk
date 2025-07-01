@@ -3,11 +3,16 @@ import { useFormContext } from "react-hook-form";
 import { Input } from "../ui/input";
 import type { FormValues } from "../steps/form-entry-view";
 
-export function DepositAmountInput() {
+interface DepositAmountInputProps {
+  validationRules: any;
+}
+
+export function DepositAmountInput({ validationRules }: DepositAmountInputProps) {
   const {
     register,
     formState: { errors },
     getValues,
+    trigger,
   } = useFormContext<FormValues>();
   const [isAmountFocused, setIsAmountFocused] = useState(false);
 
@@ -22,12 +27,12 @@ export function DepositAmountInput() {
         <Input
           type="number"
           id="amount"
-          {...register("amount", {
-            required: "Amount is required",
-            min: { value: 0.01, message: "Amount must be positive" },
-          })}
+          {...register("amount", validationRules)}
           onFocus={() => setIsAmountFocused(true)}
-          onBlur={() => setIsAmountFocused(false)}
+          onBlur={() => {
+            setIsAmountFocused(false);
+            trigger("amount");
+          }}
           className="font-bold border-none text-[24px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="0"
         />

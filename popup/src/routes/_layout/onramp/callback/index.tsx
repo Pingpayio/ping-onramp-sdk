@@ -1,26 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
-import { z } from "zod";
-import LoadingSpinner from "../../../../components/loading-spinner";
-import { getSwapStatus } from "../../../../lib/one-click-api";
+import LoadingSpinner from "@/components/loading-spinner";
+import { getSwapStatus } from "@/lib/one-click-api";
 import {
   useSetNearIntentsDisplayInfo,
   useSetOneClickStatus,
   useSetOnrampResult,
-} from "../../../../state/hooks";
-
-const onrampCallbackSearchSchema = z.object({
-  type: z.literal("intents"),
-  action: z.literal("withdraw"),
-  depositAddress: z.string(),
-  network: z.string(),
-  asset: z.string(),
-  amount: z.string(),
-  recipient: z.string(),
-  ping_sdk_opener_origin: z.string().optional(),
-});
-
-export type OnrampCallbackParams = z.infer<typeof onrampCallbackSearchSchema>;
+} from "@/state/hooks";
+import { onrampCallbackSearchSchema } from "@/types";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/_layout/onramp/callback/")({
   component: RouteComponent,
@@ -34,8 +21,6 @@ function RouteComponent() {
   const setOneClickStatus = useSetOneClickStatus();
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
   const pollingTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  console.log("Onramp Callback Search Params:", searchParams);
 
   // Poll for swap status
   const pollStatus = async (depositAddress: string) => {
@@ -55,10 +40,10 @@ function RouteComponent() {
       setNearIntentsDisplayInfo({
         message: `Swap status: ${statusResponse.status}`,
         amountIn: parseFloat(
-          statusResponse.quoteResponse.quote.amountInFormatted,
+          statusResponse.quoteResponse.quote.amountInFormatted
         ),
         amountOut: parseFloat(
-          statusResponse.quoteResponse.quote.amountOutFormatted,
+          statusResponse.quoteResponse.quote.amountOutFormatted
         ),
         explorerUrl: explorerLink,
       });
@@ -106,7 +91,7 @@ function RouteComponent() {
           // Continue polling
           pollingTimerRef.current = setTimeout(
             () => pollStatus(depositAddress),
-            POLLING_INTERVAL,
+            POLLING_INTERVAL
           );
           break;
         default:
@@ -133,7 +118,7 @@ function RouteComponent() {
       // Retry polling after a delay
       pollingTimerRef.current = setTimeout(
         () => pollStatus(depositAddress),
-        POLLING_INTERVAL * 2,
+        POLLING_INTERVAL * 2
       ); // Longer delay on error
     }
   };

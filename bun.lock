@@ -14,6 +14,7 @@
       "name": "api",
       "dependencies": {
         "@coinbase/cdp-sdk": "^1.21.0",
+        "@pingpay/onramp-types": "workspace:*",
         "hono": "^4.8.3",
       },
       "devDependencies": {
@@ -60,6 +61,7 @@
         "@pingpay/onramp-sdk": "workspace:*",
       },
       "devDependencies": {
+        "@pingpay/onramp-types": "workspace:*",
         "typescript": "^5.8.3",
         "vite": "^6.3.5",
       },
@@ -70,6 +72,7 @@
       "dependencies": {
         "@coinbase/onchainkit": "^0.38.13",
         "@pingpay/onramp-sdk": "workspace:*",
+        "@pingpay/onramp-types": "workspace:*",
         "@radix-ui/react-label": "^2.1.7",
         "@radix-ui/react-progress": "^1.1.7",
         "@radix-ui/react-select": "^2.2.5",
@@ -93,6 +96,7 @@
       },
       "devDependencies": {
         "@eslint/js": "^9.25.0",
+        "@pingpay/onramp-types": "workspace:*",
         "@tanstack/router-plugin": "^1.121.16",
         "@types/react": "^19.1.2",
         "@types/react-dom": "^19.1.2",
@@ -119,9 +123,22 @@
         "zod": "^3.25.32",
       },
       "devDependencies": {
+        "@pingpay/onramp-types": "workspace:*",
         "@playwright/test": "^1.52.0",
         "@types/bun": "latest",
         "tsup": "^8.0.2",
+      },
+      "peerDependencies": {
+        "typescript": "^5",
+      },
+    },
+    "types": {
+      "name": "@pingpay/onramp-types",
+      "dependencies": {
+        "zod": "^3.25.67",
+      },
+      "devDependencies": {
+        "@types/bun": "latest",
       },
       "peerDependencies": {
         "typescript": "^5",
@@ -514,6 +531,8 @@
     "@pingpay/onramp-popup": ["@pingpay/onramp-popup@workspace:popup"],
 
     "@pingpay/onramp-sdk": ["@pingpay/onramp-sdk@workspace:sdk"],
+
+    "@pingpay/onramp-types": ["@pingpay/onramp-types@workspace:types"],
 
     "@pkgjs/parseargs": ["@pkgjs/parseargs@0.11.0", "", {}, "sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg=="],
 

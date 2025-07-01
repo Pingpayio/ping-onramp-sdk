@@ -1,26 +1,35 @@
-import { getCoinbaseOnrampOptions, generateCoinbaseOnrampUrl } from './coinbase';
-import type { OnrampConfigResponse, OnrampInitResponse } from './types';
+import { coinbaseProvider } from './providers/coinbase';
+import type { OnrampConfigResponse, OnrampInitResponse, TargetAsset } from '@pingpay/onramp-types';
 import { createSession, getSession } from './session-store';
 
 export async function getAggregatedOnrampConfig(
   env: any,
-  location: { country: string; subdivision?: string },
+  location: { country: string; subdivision?: string, currency: string },
   device: { userAgent: string | null },
+  targetAsset: TargetAsset,
 ): Promise<OnrampConfigResponse> {
-  const coinbaseOptions = await getCoinbaseOnrampOptions(env, location, device);
+  const coinbaseOptions = await coinbaseProvider.getOnrampOptions(env, location, device);
+
+  const paymentCurrencies = coinbaseOptions.paymentCurrencies!.filter(
+    (currency) => currency.id === location.currency,
+  );
+  const purchaseCurrencies = coinbaseOptions.purchaseCurrencies!.filter(
+    (currency) => currency.symbol === 'USDC',
+  );
 
   const aggregatedOptions = {
     paymentMethods: coinbaseOptions.paymentMethods,
-    supportedFiatCurrencies: coinbaseOptions.supportedFiatCurrencies,
-    supportedCryptoAssets: coinbaseOptions.supportedCryptoAssets,
+    paymentCurrencies,
+    purchaseCurrencies,
+    isIosDevice: coinbaseOptions.isIosDevice,
   };
 
-  const sessionId = await createSession(env.SESSIONS, { location, device });
+  const sessionId = await createSession(env.SESSIONS, { location, device, targetAsset });
 
   return {
     sessionId,
     ...aggregatedOptions,
-  };
+  } as OnrampConfigResponse;
 }
 
 export async function generateOnrampUrl(
@@ -35,7 +44,7 @@ export async function generateOnrampUrl(
 
   // In the future, we would use the session and form data to decide which provider to use.
   // For now, we'll always use Coinbase.
-  const redirectUrl = await generateCoinbaseOnrampUrl(env, formData);
+  const { redirectUrl } = await coinbaseProvider.generateOnrampUrl(env, formData);
 
   return { redirectUrl };
 }

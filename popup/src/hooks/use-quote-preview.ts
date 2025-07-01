@@ -7,8 +7,8 @@ import {
   requestSwapQuote,
   type OneClickToken,
   type QuoteRequestParams,
-} from "../lib/one-click-api";
-import { oneClickSupportedTokensAtom, onrampTargetAtom } from "../state/atoms";
+} from "@/lib/one-click-api";
+import { oneClickSupportedTokensAtom, onrampTargetAtom } from "@/state/atoms";
 import { useDebounce } from "./use-debounce";
 
 const COINBASE_DEPOSIT_NETWORK = "base";

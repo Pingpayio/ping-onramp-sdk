@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
-import { onrampTargetAtom } from "../../state/atoms";
+import { onrampTargetAtom } from "@/state/atoms";
 import LoadingSpinner from "../loading-spinner";
 import { RateModal } from "../rate-modal";
 

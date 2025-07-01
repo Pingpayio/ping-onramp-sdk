@@ -7,8 +7,8 @@ import { Button } from "../ui/button";
 import {
   useNearIntentsDisplayInfo,
   useOneClickStatus,
-} from "../../state/hooks";
-import type { StatusResponseData } from "../../lib/one-click-api";
+} from "@/state/hooks";
+import type { StatusResponseData } from "@/lib/one-click-api";
 
 export interface ProcessingOnrampProps {
   step: number;

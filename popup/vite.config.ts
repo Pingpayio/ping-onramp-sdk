@@ -20,7 +20,7 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ["@pingpay/onramp-sdk"],
+    exclude: ["@pingpay/onramp-sdk", "@pingpay/onramp-types"],
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
