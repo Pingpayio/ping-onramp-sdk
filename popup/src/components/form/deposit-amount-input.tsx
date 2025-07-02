@@ -1,7 +1,7 @@
+import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Input } from "../ui/input";
-import type { FormValues } from "../steps/form-entry-view";
 
 interface DepositAmountInputProps {
   validationRules: any;
@@ -35,7 +35,9 @@ export function DepositAmountInput({
           }}
           onBlur={() => {
             setIsAmountFocused(false);
-            trigger("amount");
+            trigger("amount").catch((e: unknown) => {
+              console.error("Failed to trigger amount:", e);
+            });
           }}
           className="font-bold border-none text-[24px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="0"

@@ -18,6 +18,7 @@ export function useParentMessenger() {
   return { call };
 }
 
+// TODO: move OnrampFlowStep to common types
 export function useReportStep(step: string) {
   const { connection } = usePopupConnection();
 

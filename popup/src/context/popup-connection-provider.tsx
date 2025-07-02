@@ -17,11 +17,7 @@ import type {
   PopupActionMethods,
   SdkListenerMethods,
 } from "@pingpay/onramp-sdk";
-import {
-  ChildHandshake,
-  type Connection,
-  WindowMessenger,
-} from "post-me";
+import { ChildHandshake, type Connection, WindowMessenger } from "post-me";
 
 type PopupConnection = Connection<PopupActionMethods, SdkListenerMethods>;
 type ConnectionStatus = "idle" | "connecting" | "connected" | "error";

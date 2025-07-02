@@ -45,11 +45,6 @@ export const onrampQuoteQueryOptions = (formData: OnrampQuoteRequest) => ({
     return response.json() as Promise<OnrampQuoteResponse>;
   },
   staleTime: 1000 * 30, // 30 seconds
-  enabled: !!(
-    formData.amount &&
-    parseFloat(formData.amount) > 0 &&
-    formData.sessionId
-  ),
 });
 
 export async function initOnramp(

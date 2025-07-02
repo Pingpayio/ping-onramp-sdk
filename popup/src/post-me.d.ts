@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 declare module "post-me" {
-  
   type Method = (...args: any[]) => any;
 
   // A collection of methods, keyed by their names.

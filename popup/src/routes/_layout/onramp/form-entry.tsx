@@ -4,7 +4,7 @@ import {
   useParentMessenger,
   useReportStep,
 } from "@/hooks/use-parent-messenger";
-import { useQuotePreview } from "@/hooks/use-quote-preview";
+import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/coinbase";
 import { onrampTargetAtom } from "@/state/atoms";
 import { useOnrampTarget, useWalletState } from "@/state/hooks";
@@ -12,7 +12,7 @@ import type { PaymentMethodLimit } from "@pingpay/onramp-types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, type RegisterOptions } from "react-hook-form";
 
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
 import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
   loader: ({ context }) => {
     const targetAsset = context.store.get(onrampTargetAtom);
     return context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset)
+      onrampConfigQueryOptions(targetAsset),
     );
   },
   component: FormEntryRoute,
@@ -47,7 +47,7 @@ function FormEntryRoute() {
   const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
   const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget)
+    onrampConfigQueryOptions(onrampTarget),
   );
   const navigate = Route.useNavigate();
 
@@ -91,14 +91,18 @@ function FormEntryRoute() {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
           );
-          if (limit) {
-            if (value < parseFloat(limit.min)) {
-              return `Minimum amount is ${limit.min}`;
-            }
-            if (value > parseFloat(limit.max)) {
-              return `Maximum amount is ${limit.max}`;
+          if (
+            !isAmountValid(value.toString(), paymentMethodWatcher, onrampConfig)
+          ) {
+            if (limit) {
+              if (value < parseFloat(limit.min)) {
+                return `Minimum amount is ${limit.min}`;
+              }
+              if (value > parseFloat(limit.max)) {
+                return `Maximum amount is ${limit.max}`;
+              }
             }
           }
         }
@@ -146,7 +150,7 @@ function FormEntryRoute() {
 
       const { redirectUrl: onrampUrl } = await initOnramp(
         onrampConfig.sessionId,
-        { ...data }
+        { ...data },
       );
 
       await call("reportOnrampInitiated", {
@@ -166,7 +170,7 @@ function FormEntryRoute() {
       } else {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
-          "Development mode: Navigating to onramp-callback with params:"
+          "Development mode: Navigating to onramp-callback with params:",
         );
         const url = new URL(onrampUrl);
         const targetRedirectUrl = url.searchParams.get("redirectUrl");
@@ -178,8 +182,7 @@ function FormEntryRoute() {
       void navigate({
         to: "/onramp/error",
         search: {
-          error:
-            errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp.",
+          error: errorMsg || "Failed to initiate onramp.",
         },
       });
       call("reportProcessFailed", {

@@ -1,4 +1,5 @@
 import { onrampConfigQueryOptions } from "@/lib/coinbase";
+import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import { onrampTargetAtom } from "@/state/atoms";
 import type { OnrampConfigResponse } from "@pingpay/onramp-types";
 import { useQuery } from "@tanstack/react-query";
@@ -6,7 +7,6 @@ import { useAtomValue } from "jotai";
 import { CreditCard, Landmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import type { FormValues } from "../steps/form-entry-view";
 import { Label } from "../ui/label";
 import {
   Select,
@@ -81,11 +81,20 @@ export function PaymentMethodSelector() {
                 className="font-medium text-white placeholder:text-base placeholder:font-base"
               />
             </SelectTrigger>
-            <SelectContent className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1">
+            <SelectContent
+              className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1"
+              side="top"
+            >
               {(onrampConfig?.paymentMethods as { id: string; name: string }[])
-                .filter((method) =>
-                  ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(method.id),
-                )
+                .filter((method) => {
+                  if (onrampConfig?.isIosDevice) {
+                    return ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(
+                      method.id,
+                    );
+                  } else {
+                    return ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id);
+                  }
+                })
                 .map((method) => {
                   return (
                     <SelectItem

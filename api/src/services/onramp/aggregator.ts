@@ -88,7 +88,7 @@ export async function generateOnrampUrl(
     asset: session.targetAsset.asset,
     amount: amount,
     recipient: recipientAddress,
-    depositAddress
+    depositAddress,
   });
 
   const redirectUrl = `${session.origin}/onramp/callback?${callbackParams.toString()}`;
