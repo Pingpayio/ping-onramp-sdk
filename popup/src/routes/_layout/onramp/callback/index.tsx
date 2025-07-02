@@ -40,10 +40,10 @@ function RouteComponent() {
       setNearIntentsDisplayInfo({
         message: `Swap status: ${statusResponse.status}`,
         amountIn: parseFloat(
-          statusResponse.quoteResponse.quote.amountInFormatted
+          statusResponse.quoteResponse.quote.amountInFormatted,
         ),
         amountOut: parseFloat(
-          statusResponse.quoteResponse.quote.amountOutFormatted
+          statusResponse.quoteResponse.quote.amountOutFormatted,
         ),
         explorerUrl: explorerLink,
       });
@@ -91,7 +91,7 @@ function RouteComponent() {
           // Continue polling
           pollingTimerRef.current = setTimeout(
             () => pollStatus(depositAddress),
-            POLLING_INTERVAL
+            POLLING_INTERVAL,
           );
           break;
         default:
@@ -118,7 +118,7 @@ function RouteComponent() {
       // Retry polling after a delay
       pollingTimerRef.current = setTimeout(
         () => pollStatus(depositAddress),
-        POLLING_INTERVAL * 2
+        POLLING_INTERVAL * 2,
       ); // Longer delay on error
     }
   };

@@ -23,6 +23,10 @@ export function ReceiveAmountDisplay({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const onrampTarget = useAtomValue(onrampTargetAtom);
 
+  console.log("quote", quote);
+  console.log("estimatedReceiveAmount", estimatedReceiveAmount);
+  console.log("quoteError", typeof quoteError);
+
   // Calculate dynamic exchange rate
   const calculateExchangeRate = () => {
     if (
@@ -122,7 +126,9 @@ export function ReceiveAmountDisplay({
       {quote && (
         <RateModal
           isOpen={isModalOpen}
-          onClose={() => { setIsModalOpen(false) }}
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
           quote={quote}
           asset={onrampTarget.asset}
         />

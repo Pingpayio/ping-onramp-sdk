@@ -4,10 +4,7 @@ import Header from "../header";
 import { FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa";
 import { StepInfoBox, type StepBox } from "../step-info-box";
 import { Button } from "../ui/button";
-import {
-  useNearIntentsDisplayInfo,
-  useOneClickStatus,
-} from "@/state/hooks";
+import { useNearIntentsDisplayInfo, useOneClickStatus } from "@/state/hooks";
 import type { StatusResponseData } from "@/lib/one-click-api";
 
 export interface ProcessingOnrampProps {
@@ -123,10 +120,7 @@ const getDisplayInfoForStatus = (
   return { progress, box, detailsForDisplay };
 };
 
-export function ProcessingOnramp({
-  step, // Main step from App.tsx
-  result, // For the "complete" step from OnrampResult
-}: ProcessingOnrampProps) {
+export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
   const [oneClickStatus] = useOneClickStatus();
   const [nearIntentsDisplayInfo] = useNearIntentsDisplayInfo();
 
@@ -136,7 +130,6 @@ export function ProcessingOnramp({
   let transactionDetails: Record<string, string | undefined> = {};
 
   if (step === 3 && result?.success) {
-    // "complete" step
     displayProgress = 100;
     displayBox = {
       icon: <FaCheckCircle className="text-green-400 text-xl" />,
@@ -144,6 +137,7 @@ export function ProcessingOnramp({
       desc: result.message || "Onramp and swap successful!",
       color: "border-green-400",
     };
+    // TODO: Transaction details typings
     transactionDetails.transactionId = result.data?.transactionId;
     transactionDetails.service = result.data?.service;
     transactionDetails.explorerLink = nearIntentsDisplayInfo.explorerUrl;

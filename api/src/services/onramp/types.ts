@@ -1,5 +1,5 @@
 export enum OnrampProviderId {
-  Coinbase = 'COINBASE',
+  Coinbase = "COINBASE",
 }
 
 export interface OnrampConfigResponse {

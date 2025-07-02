@@ -32,9 +32,7 @@ interface FormEntryViewProps {
   onDisconnect: () => void;
 }
 
-export const FormEntryView: React.FC<FormEntryViewProps> = ({
-  onSubmit,
-}) => {
+export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
   const onrampTarget = useAtomValue(onrampTargetAtom);
 
   const methods = useForm<FormValues>({
@@ -56,7 +54,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
   } = methods;
 
   const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget)
+    onrampConfigQueryOptions(onrampTarget),
   );
 
   const [
@@ -76,7 +74,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
     debounce((amount: string) => {
       setDebouncedAmount(amount);
     }, 300),
-    []
+    [],
   );
 
   useEffect(() => {
@@ -102,7 +100,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
           );
           if (limit) {
             if (value < parseFloat(limit.min)) {
@@ -148,7 +146,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({
         <ReceiveAmountDisplay
           estimatedReceiveAmount={estimatedReceiveAmount}
           isQuoteLoading={isQuoteLoading}
-          quoteError={error instanceof Error ? error.message : String(error)}
+          quoteError={error instanceof Error ? error.message : undefined}
           depositAmount={depositAmountWatcher}
           quote={quote}
         />

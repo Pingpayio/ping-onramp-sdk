@@ -20,7 +20,7 @@ export default function Header({ title }: { title: string }) {
   return (
     <div className="relative w-full">
       <header className="flex items-center justify-between">
-        <a href="https://pingpay.io" target="_blank">
+        <a href="https://pingpay.io" target="_blank" rel="noreferrer noopener">
           <Logo />
         </a>
         <h3 className=" font-bold text-[24px]">{title}</h3>

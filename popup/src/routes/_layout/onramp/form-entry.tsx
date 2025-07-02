@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
   loader: ({ context }) => {
     const targetAsset = context.store.get(onrampTargetAtom);
     return context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset)
+      onrampConfigQueryOptions(targetAsset),
     );
   },
   component: FormEntryRoute,
@@ -33,7 +33,7 @@ function FormEntryRoute() {
   const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
   const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget)
+    onrampConfigQueryOptions(onrampTarget),
   );
   const navigate = Route.useNavigate();
 
@@ -41,7 +41,7 @@ function FormEntryRoute() {
 
   const handleFormSubmit = async (
     data: FormValues,
-    quoteResponse: OnrampQuoteResponse
+    quoteResponse: OnrampQuoteResponse,
   ) => {
     call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
       console.error("Failed to report form data submitted:", e);
@@ -79,7 +79,7 @@ function FormEntryRoute() {
       };
 
       const callbackUrlParams = new URLSearchParams(
-        callbackParams as Record<string, string>
+        callbackParams as Record<string, string>,
       );
       const redirectUrl = `${
         window.location.origin
@@ -91,7 +91,7 @@ function FormEntryRoute() {
 
       const { redirectUrl: onrampUrl } = await initOnramp(
         onrampConfig.sessionId,
-        data
+        data,
       );
 
       await call("reportOnrampInitiated", {
@@ -119,7 +119,7 @@ function FormEntryRoute() {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
           "Development mode: Navigating to onramp-callback with params:",
-          callbackParams
+          callbackParams,
         );
         void navigate({
           to: "/onramp/callback",

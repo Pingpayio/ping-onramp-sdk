@@ -1,5 +1,8 @@
 import type { FormValues } from "@/components/steps/form-entry-view";
-import { onrampConfigQueryOptions, onrampQuoteQueryOptions } from "@/lib/coinbase";
+import {
+  onrampConfigQueryOptions,
+  onrampQuoteQueryOptions,
+} from "@/lib/coinbase";
 import { onrampTargetAtom } from "@/state/atoms";
 import { useQuery } from "@tanstack/react-query";
 import { useAtomValue } from "jotai";
@@ -8,9 +11,11 @@ export function useQuotePreview({
   amount,
   selectedCurrency,
   paymentMethod,
-}: Omit<FormValues, 'selectedAsset'>) {
+}: Omit<FormValues, "selectedAsset">) {
   const onrampTarget = useAtomValue(onrampTargetAtom);
-  const { data: onrampConfig } = useQuery(onrampConfigQueryOptions(onrampTarget));
+  const { data: onrampConfig } = useQuery(
+    onrampConfigQueryOptions(onrampTarget),
+  );
 
   const {
     data: quote,
@@ -22,7 +27,7 @@ export function useQuotePreview({
       sourceCurrency: selectedCurrency,
       destinationAsset: onrampTarget,
       paymentMethod,
-      sessionId: onrampConfig?.sessionId ?? '',
+      sessionId: onrampConfig?.sessionId ?? "",
     }),
     enabled: !!amount && parseFloat(amount) > 0 && !!onrampConfig?.sessionId,
     retry: false,

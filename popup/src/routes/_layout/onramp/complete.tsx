@@ -25,7 +25,7 @@ function CompleteRoute() {
       call("reportProcessComplete", { result: onrampResult })?.catch(
         (e: unknown) => {
           console.error("Failed to report process failure:", e);
-        }
+        },
       );
     }
   }, [call, onrampResult]);

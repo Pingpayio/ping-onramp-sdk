@@ -82,7 +82,7 @@ export const PopupConnectionProvider = ({
     ): Promise<ReturnType<SdkListenerMethods[TMethod]> | undefined> => {
       if (!connectionRef.current) {
         console.warn(
-          `[PopupConnectionProvider] Attempted to call ${method} before connection was established.`
+          `[PopupConnectionProvider] Attempted to call ${method} before connection was established.`,
         );
         return undefined;
       }
@@ -96,7 +96,7 @@ export const PopupConnectionProvider = ({
         throw e;
       }
     },
-    []
+    [],
   );
 
   const establishConnection = useCallback(async () => {
@@ -104,14 +104,14 @@ export const PopupConnectionProvider = ({
 
     if (SKIP_POSTME_HANDSHAKE) {
       console.warn(
-        "[PopupConnectionProvider] Skipping post-me handshake due to VITE_SKIP_POSTME_HANDSHAKE flag."
+        "[PopupConnectionProvider] Skipping post-me handshake due to VITE_SKIP_POSTME_HANDSHAKE flag.",
       );
       const mockConnection = {
         remoteHandle: () => ({
           call: (methodName: string, params?: unknown) => {
             console.log(
               `[MockConnection] Called ${methodName} with params:`,
-              params
+              params,
             );
             return Promise.resolve({});
           },
@@ -145,10 +145,10 @@ export const PopupConnectionProvider = ({
     } else {
       if (!openerOrigin) {
         console.error(
-          "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' is missing."
+          "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' is missing.",
         );
         setFlowError(
-          "Configuration error: SDK identification parameter missing."
+          "Configuration error: SDK identification parameter missing.",
         );
         setStatus("error");
         return;
@@ -158,10 +158,10 @@ export const PopupConnectionProvider = ({
 
     if (sdkOrigin === "*" && process.env.NODE_ENV === "production") {
       console.error(
-        "Popup (Prod): CRITICAL - sdkOrigin resolved to '*'. Aborting."
+        "Popup (Prod): CRITICAL - sdkOrigin resolved to '*'. Aborting.",
       );
       setFlowError(
-        "Security misconfiguration: Wildcard origin detected in production."
+        "Security misconfiguration: Wildcard origin detected in production.",
       );
       setStatus("error");
       return;
@@ -171,7 +171,7 @@ export const PopupConnectionProvider = ({
       initiateOnrampInPopup: async (payload: InitiateOnrampFlowPayload) => {
         console.log(
           "[Popup] Received initiateOnrampInPopup from SDK:",
-          payload
+          payload,
         );
         setOnrampTarget(payload.target);
         void navigate({ to: "/onramp/connect-wallet" });
@@ -188,7 +188,7 @@ export const PopupConnectionProvider = ({
     try {
       const conn = await ChildHandshake<PopupActionMethods>(
         messenger,
-        popupActionMethods
+        popupActionMethods,
       );
       console.log("Popup: post-me ChildHandshake successful.");
       connectionRef.current = conn;
@@ -213,7 +213,7 @@ export const PopupConnectionProvider = ({
         call("reportPopupClosedByUser").catch((e: unknown) => {
           console.warn(
             "Popup: Failed to emit reportPopupClosedByUser on unload",
-            e
+            e,
           );
         });
       }
@@ -234,7 +234,7 @@ export const PopupConnectionProvider = ({
       status,
       call,
     }),
-    [status, call]
+    [status, call],
   );
 
   return (

@@ -30,7 +30,5 @@
     "noPropertyAccessFromIndexSignature": false
   },
   "include": ["src/**/*"],
-  "references": [
-    {"path": "../types"}
-  ]
+  "references": [{ "path": "../types" }]
 }

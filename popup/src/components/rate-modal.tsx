@@ -1,5 +1,6 @@
 import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import { Logo } from "./logo";
+import { Button } from "./ui/button";
 
 interface RateModalProps {
   isOpen: boolean;
@@ -8,20 +9,21 @@ interface RateModalProps {
   asset: string;
 }
 
-export function RateModal({
-  isOpen,
-  onClose,
-  quote,
-  asset,
-}: RateModalProps) {
+export function RateModal({ isOpen, onClose, quote, asset }: RateModalProps) {
   if (!isOpen) return null;
 
   const { fees, swapQuote } = quote;
-  const { maxSlippage, networkFee, providerFee, pingpayFee, totalFee, swapFee } =
-    fees;
-  const exchangeRate = (
-    1 / parseFloat(swapQuote.quote.amountOutUsd)
-  ).toFixed(2);
+  const {
+    maxSlippage,
+    networkFee,
+    providerFee,
+    pingpayFee,
+    totalFee,
+    swapFee,
+  } = fees;
+  const exchangeRate = (1 / parseFloat(swapQuote.quote.amountOutUsd)).toFixed(
+    2,
+  );
   const route = "via 1Click";
 
   return (
@@ -31,11 +33,15 @@ export function RateModal({
 
         <div className="relative w-full px-4 pt-4">
           <div className="flex items-center justify-between">
-            <a href="https://pingpay.io" target="_blank">
+            <a
+              href="https://pingpay.io"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               <Logo />
             </a>
             <h3 className=" font-bold text-[24px]">Onramp Rate</h3>
-            <button
+            <Button
               onClick={onClose}
               className="p-0! hover:border-0! border-0!"
             >
@@ -54,7 +60,7 @@ export function RateModal({
                   stroke-linejoin="round"
                 />
               </svg>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -70,6 +76,7 @@ export function RateModal({
                 <span className="text-white">
                   1 {asset} ≈ {exchangeRate} USD
                 </span>
+                {/* TODO: need asset price */}
               </div>
 
               {/* Max Slippage */}

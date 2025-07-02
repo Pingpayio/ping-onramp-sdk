@@ -134,7 +134,9 @@ export async function requestSwapQuote(
     body: JSON.stringify(params),
   });
   if (!response.ok) {
-    const errorBody = await response.json().catch(() => response.text()) as { message?: string };
+    const errorBody = (await response.json().catch(() => response.text())) as {
+      message?: string;
+    };
     console.error("1Click API Error (requestSwapQuote):", errorBody);
     throw new Error(
       `Failed to request swap quote: ${response.status} ${
@@ -158,7 +160,9 @@ export async function submitDepositTransaction(
     body: JSON.stringify(params),
   });
   if (!response.ok) {
-    const errorBody = await response.json().catch(() => response.text()) as { message?: string };
+    const errorBody = (await response.json().catch(() => response.text())) as {
+      message?: string;
+    };
     console.error("1Click API Error (submitDepositTransaction):", errorBody);
     throw new Error(
       `Failed to submit deposit transaction: ${response.status} ${
@@ -189,7 +193,9 @@ export async function getSwapStatus(
         `1Click API: Deposit address ${depositAddress} not found (404).`,
       );
     }
-    const errorBody = await response.json().catch(() => response.text()) as { message?: string };
+    const errorBody = (await response.json().catch(() => response.text())) as {
+      message?: string;
+    };
     console.error("1Click API Error (getSwapStatus):", errorBody);
     throw new Error(
       `Failed to get swap status: ${response.status} ${

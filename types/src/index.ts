@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 // -------------------
 // Base Schemas
@@ -10,7 +10,7 @@ export const targetAssetSchema = z.object({
 });
 
 export const onrampProviderIdSchema = z.nativeEnum({
-  Coinbase: 'COINBASE',
+  Coinbase: "COINBASE",
 });
 
 export const paymentMethodLimitSchema = z.object({
@@ -49,10 +49,10 @@ export const onrampConfigRequestSchema = z.object({
 
 export const onrampQuoteRequestSchema = z.object({
   sessionId: z.string(),
-  amount: z.string(),
+  amount: z.coerce.string(),
   sourceCurrency: z.string(),
   destinationAsset: targetAssetSchema,
-  paymentMethod: z.string()
+  paymentMethod: z.string(),
 });
 
 export const onrampInitRequestSchema = z.object({
@@ -81,16 +81,16 @@ export const onrampInitResponseSchema = z.object({
 });
 
 const swapQuoteRequestSchema = z.object({
-  swapType: z.enum(['EXACT_INPUT', 'EXACT_OUTPUT']),
+  swapType: z.enum(["EXACT_INPUT", "EXACT_OUTPUT"]),
   slippageTolerance: z.number(),
   originAsset: z.string(),
-  depositType: z.enum(['ORIGIN_CHAIN', 'INTENTS']),
+  depositType: z.enum(["ORIGIN_CHAIN", "INTENTS"]),
   destinationAsset: z.string(),
   amount: z.string(),
   refundTo: z.string(),
-  refundType: z.enum(['ORIGIN_CHAIN', 'INTENTS']),
+  refundType: z.enum(["ORIGIN_CHAIN", "INTENTS"]),
   recipient: z.string(),
-  recipientType: z.enum(['DESTINATION_CHAIN', 'INTENTS']),
+  recipientType: z.enum(["DESTINATION_CHAIN", "INTENTS"]),
   deadline: z.string(),
   dry: z.boolean().optional(),
   referral: z.string().optional(),
@@ -113,11 +113,11 @@ const swapQuoteSchema = z.object({
     depositAddress: z.string(),
     amountIn: z.string(),
     amountInFormatted: z.string(),
-    amountInUsd: z.string().optional(),
+    amountInUsd: z.string(),
     minAmountIn: z.string().optional(),
     amountOut: z.string(),
     amountOutFormatted: z.string(),
-    amountOutUsd: z.string().optional(),
+    amountOutUsd: z.string(),
     minAmountOut: z.string().optional(),
     deadline: z.string(),
     timeWhenInactive: z.string(),
@@ -162,7 +162,6 @@ export const onrampQuoteResponseSchema = z.object({
     swapFee: z.string(),
   }),
 });
-
 
 // -------------------
 // Inferred Types

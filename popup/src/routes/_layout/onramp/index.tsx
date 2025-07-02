@@ -15,18 +15,20 @@ export const Route = createFileRoute("/_layout/onramp/")({
       redirect({
         to: "/onramp/form-entry",
         replace: true,
+        throw: true,
       });
     } else {
       redirect({
         to: "/onramp/connect-wallet",
         replace: true,
+        throw: true,
       });
     }
   },
   loader: ({ context }) => {
     const targetAsset = context.store.get(onrampTargetAtom);
     return context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset)
+      onrampConfigQueryOptions(targetAsset),
     );
   },
   component: OnrampIndexRoute,

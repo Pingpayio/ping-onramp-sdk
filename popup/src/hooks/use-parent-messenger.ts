@@ -19,7 +19,7 @@ export function useParentMessenger() {
 }
 
 export function useReportStep(step: string) {
-  const{ connection } = usePopupConnection();
+  const { connection } = usePopupConnection();
 
   useEffect(() => {
     if (connection) {

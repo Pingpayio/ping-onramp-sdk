@@ -1,6 +1,9 @@
-import type { StatusCode } from 'hono/utils/http-status';
+import type { StatusCode } from "hono/utils/http-status";
 
-type ContentfulStatusCode = Exclude<StatusCode, 100 | 101 | 102 | 103 | 204 | 205 | 304>;
+type ContentfulStatusCode = Exclude<
+  StatusCode,
+  100 | 101 | 102 | 103 | 204 | 205 | 304
+>;
 
 export class ApiError extends Error {
   public readonly status: ContentfulStatusCode;
@@ -21,7 +24,11 @@ export class ProviderError extends ApiError {
 }
 
 export class ServiceError extends ApiError {
-  constructor(message: string, status: ContentfulStatusCode = 400, details?: any) {
+  constructor(
+    message: string,
+    status: ContentfulStatusCode = 400,
+    details?: any,
+  ) {
     super(message, status, details);
   }
 }

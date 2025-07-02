@@ -1,20 +1,28 @@
-import type { FormValues } from '@/components/steps/form-entry-view';
-import type { OnrampConfigResponse, OnrampInitResponse, OnrampQuoteRequest, OnrampQuoteResponse, TargetAsset } from '@pingpay/onramp-types';
+import type { FormValues } from "@/components/steps/form-entry-view";
+import type {
+  OnrampConfigResponse,
+  OnrampInitResponse,
+  OnrampQuoteRequest,
+  OnrampQuoteResponse,
+  TargetAsset,
+} from "@pingpay/onramp-types";
 
-const API_BASE_URL = import.meta.env.PROD ? 'https://api.onramp.pingpay.io' : '';
+const API_BASE_URL = import.meta.env.PROD
+  ? "https://api.onramp.pingpay.io"
+  : "";
 
 export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
-  queryKey: ['onramp', 'config', targetAsset],
+  queryKey: ["onramp", "config", targetAsset],
   queryFn: async (): Promise<OnrampConfigResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/onramp/config`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ targetAsset, currency: "USD" }),
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch onramp config');
+      throw new Error("Failed to fetch onramp config");
     }
     return response.json() as Promise<OnrampConfigResponse>;
   },
@@ -22,29 +30,36 @@ export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
 });
 
 export const onrampQuoteQueryOptions = (formData: OnrampQuoteRequest) => ({
-  queryKey: ['onramp', 'quote', formData],
+  queryKey: ["onramp", "quote", formData],
   queryFn: async (): Promise<OnrampQuoteResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/onramp/quote`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
     });
     if (!response.ok) {
-      throw new Error('Failed to fetch onramp quote');
+      throw new Error("Failed to fetch onramp quote");
     }
     return response.json() as Promise<OnrampQuoteResponse>;
   },
   staleTime: 1000 * 30, // 30 seconds
-  enabled: !!(formData.amount && parseFloat(formData.amount) > 0 && formData.sessionId),
+  enabled: !!(
+    formData.amount &&
+    parseFloat(formData.amount) > 0 &&
+    formData.sessionId
+  ),
 });
 
-export async function initOnramp(sessionId: string, formData: FormValues): Promise<OnrampInitResponse> {
+export async function initOnramp(
+  sessionId: string,
+  formData: FormValues,
+): Promise<OnrampInitResponse> {
   const response = await fetch(`${API_BASE_URL}/api/onramp/init`, {
-    method: 'POST',
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       sessionId,
@@ -53,7 +68,7 @@ export async function initOnramp(sessionId: string, formData: FormValues): Promi
   });
 
   if (!response.ok) {
-    throw new Error('Failed to initialize onramp');
+    throw new Error("Failed to initialize onramp");
   }
   return response.json() as Promise<OnrampInitResponse>;
 }

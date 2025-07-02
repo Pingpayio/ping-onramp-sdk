@@ -1,4 +1,7 @@
-import type { OnrampConfigResponse, OnrampInitResponse } from '@pingpay/onramp-types';
+import type {
+  OnrampConfigResponse,
+  OnrampInitResponse,
+} from "@pingpay/onramp-types";
 
 export interface OnrampProvider {
   getOnrampOptions(

@@ -44,12 +44,12 @@ export function PaymentMethodSelector() {
     getValues,
   } = useFormContext<FormValues>();
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    getValues("paymentMethod")
+    getValues("paymentMethod"),
   );
 
   const onrampTarget = useAtomValue(onrampTargetAtom);
   const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget)
+    onrampConfigQueryOptions(onrampTarget),
   ) as { data: OnrampConfigResponse | undefined };
 
   const paymentMethodWatcher = watch("paymentMethod");
@@ -84,7 +84,7 @@ export function PaymentMethodSelector() {
             <SelectContent className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1">
               {(onrampConfig?.paymentMethods as { id: string; name: string }[])
                 .filter((method) =>
-                  ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(method.id)
+                  ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(method.id),
                 )
                 .map((method) => {
                   return (

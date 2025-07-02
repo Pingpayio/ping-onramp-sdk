@@ -7,10 +7,15 @@ import {
 } from "../../lib/one-click-api";
 import { coinbaseProvider } from "./providers/coinbase";
 
-const ONE_CLICK_REFERRAL_ID = 'pingpayio.near';
+const ONE_CLICK_REFERRAL_ID = "pingpayio.near";
 
-export async function getCombinedQuote(env: any, formData: any, country: string) {
-  const { amount, onrampTarget, recipientAddress, address, paymentMethod } = formData;
+export async function getCombinedQuote(
+  env: any,
+  formData: any,
+  country: string,
+) {
+  const { amount, destinationAsset, recipientAddress, address, paymentMethod } =
+    formData;
 
   // 1. Get Onramp Quote
   const onrampQuoteParams = {
@@ -22,18 +27,25 @@ export async function getCombinedQuote(env: any, formData: any, country: string)
     country: country,
   };
 
-  const onrampQuote = await coinbaseProvider.getOnrampQuote(env, onrampQuoteParams);
+  const onrampQuote = await coinbaseProvider.getOnrampQuote(
+    env,
+    onrampQuoteParams,
+  );
 
   // 2. Get 1-Click Swap Quote
-  if (!onrampTarget.asset || !onrampTarget.chain) {
+  if (!destinationAsset.asset || !destinationAsset.chain) {
     throw new ServiceError("Onramp target asset or chain is not defined.");
   }
   const supportedTokens = await fetch1ClickSupportedTokens();
-  const originAsset1Click = find1ClickAsset(supportedTokens, onrampQuoteParams.purchase_currency, onrampQuoteParams.purchase_network);
+  const originAsset1Click = find1ClickAsset(
+    supportedTokens,
+    onrampQuoteParams.purchase_currency,
+    onrampQuoteParams.purchase_network,
+  );
   const destinationAsset1Click = find1ClickAsset(
     supportedTokens,
-    onrampTarget.asset as string,
-    onrampTarget.chain as string,
+    destinationAsset.asset as string,
+    destinationAsset.chain as string,
   );
 
   if (!originAsset1Click || !destinationAsset1Click) {
@@ -41,16 +53,22 @@ export async function getCombinedQuote(env: any, formData: any, country: string)
   }
 
   const amountInSmallestUnit = BigInt(
-    Math.floor(parseFloat(onrampQuote.purchase_amount.value) * 10 ** originAsset1Click.decimals),
+    Math.floor(
+      parseFloat(onrampQuote.purchase_amount.value) *
+        10 ** originAsset1Click.decimals,
+    ),
   ).toString();
 
   const quoteDeadline = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
   let recipientForPreview: string;
-  if (destinationAsset1Click.blockchain.toLowerCase() === 'near') {
-    recipientForPreview = recipientAddress || 'preview.near';
+  if (destinationAsset1Click.blockchain.toLowerCase() === "near") {
+    recipientForPreview = recipientAddress || "preview.near";
   } else {
-    recipientForPreview = recipientAddress || address || '0x0000000000000000000000000000000000000000';
+    recipientForPreview =
+      recipientAddress ||
+      address ||
+      "0x0000000000000000000000000000000000000000";
   }
 
   const swapQuoteParams: QuoteRequestParams = {
@@ -90,7 +108,7 @@ export async function getCombinedQuote(env: any, formData: any, country: string)
       networkFee: networkFee.toFixed(2),
       providerFee: providerFee.toFixed(2),
       swapFee: swapFee.toFixed(2),
-      pingpayFee: '0.00',
+      pingpayFee: "0.00",
       totalFee: totalFee.toFixed(2),
     },
     estimatedReceiveAmount: swapQuote.quote.amountOutFormatted,
