@@ -5,7 +5,7 @@ import {
   useReportStep,
 } from "@/hooks/use-parent-messenger";
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
-import { initOnramp, onrampConfigQueryOptions } from "@/lib/coinbase";
+import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
 import { useOnrampTarget, useWalletState } from "@/state/hooks";
 import type { PaymentMethodLimit } from "@pingpay/onramp-types";

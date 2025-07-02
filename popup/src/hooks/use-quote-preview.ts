@@ -1,7 +1,7 @@
 import {
   onrampConfigQueryOptions,
   onrampQuoteQueryOptions,
-} from "@/lib/coinbase";
+} from "@/lib/pingpay-api";
 import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import { onrampTargetAtom } from "@/state/atoms";
 import type {

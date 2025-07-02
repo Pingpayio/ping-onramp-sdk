@@ -1,6 +1,6 @@
 import { ErrorView } from "@/components/steps/error-view";
 import { LoadingView } from "@/components/steps/loading-view";
-import { onrampConfigQueryOptions } from "@/lib/coinbase";
+import { onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom, walletStateAtom } from "@/state/atoms";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
