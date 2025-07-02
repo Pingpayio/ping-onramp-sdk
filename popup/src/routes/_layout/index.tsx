@@ -2,7 +2,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/")({
   component: RouteComponent,
-  beforeLoad: async () => {
+  beforeLoad: () => {
     // Redirect to the onramp route
     return redirect({
       to: "/onramp",
@@ -11,6 +11,6 @@ export const Route = createFileRoute("/_layout/")({
 });
 
 function RouteComponent() {
-  // This component should never render as we always redirect
+  // Maybe one day we'll put a landing page, or onramp vs offramp
   return null;
 }

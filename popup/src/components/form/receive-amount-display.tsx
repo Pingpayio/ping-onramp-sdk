@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
 import { onrampTargetAtom } from "@/state/atoms";
+import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import LoadingSpinner from "../loading-spinner";
 import { RateModal } from "../rate-modal";
 
 interface ReceiveAmountDisplayProps {
-  estimatedReceiveAmount: string | null;
+  estimatedReceiveAmount?: string;
   isQuoteLoading: boolean;
   quoteError?: string;
   depositAmount: string;
-  quote: any;
+  quote?: OnrampQuoteResponse;
 }
 
 export function ReceiveAmountDisplay({
@@ -59,8 +60,8 @@ export function ReceiveAmountDisplay({
                 {quoteError
                   ? "-"
                   : estimatedReceiveAmount
-                  ? parseFloat(estimatedReceiveAmount).toFixed(6)
-                  : "-"}
+                    ? parseFloat(estimatedReceiveAmount).toFixed(6)
+                    : "-"}
               </p>
             )}
           </div>
@@ -92,7 +93,10 @@ export function ReceiveAmountDisplay({
                 Rate:{" "}
                 <button
                   className="px-0! hover:border-0! border-0! hover:underline hover:underline-offset-2 text-[#AB9FF2] inline-block cursor-pointer hover:text-[#AF9EF9] transition-colors"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                  type="button"
                 >
                   1 USD ≈ {exchangeRate} {onrampTarget.asset}
                 </button>
@@ -118,7 +122,7 @@ export function ReceiveAmountDisplay({
       {quote && (
         <RateModal
           isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
+          onClose={() => { setIsModalOpen(false) }}
           quote={quote}
           asset={onrampTarget.asset}
         />

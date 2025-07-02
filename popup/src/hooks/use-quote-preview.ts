@@ -1,42 +1,29 @@
-import { useAtomValue } from "jotai";
-import { useQuery } from "@tanstack/react-query";
-import { useAccount } from "wagmi";
+import type { FormValues } from "@/components/steps/form-entry-view";
 import { onrampConfigQueryOptions, onrampQuoteQueryOptions } from "@/lib/coinbase";
 import { onrampTargetAtom } from "@/state/atoms";
-
-interface UseQuotePreviewParams {
-  amount: string;
-  selectedAsset: string;
-  paymentMethod: string;
-  recipientAddress: string;
-}
+import { useQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
 
 export function useQuotePreview({
   amount,
-  selectedAsset,
+  selectedCurrency,
   paymentMethod,
-  recipientAddress,
-}: UseQuotePreviewParams) {
+}: Omit<FormValues, 'selectedAsset'>) {
   const onrampTarget = useAtomValue(onrampTargetAtom);
-  const { address } = useAccount();
   const { data: onrampConfig } = useQuery(onrampConfigQueryOptions(onrampTarget));
-
-  const formData = {
-    amount,
-    selectedAsset,
-    onrampTarget,
-    recipientAddress,
-    address,
-    paymentMethod,
-    sessionId: onrampConfig?.sessionId,
-  };
 
   const {
     data: quote,
     error,
     isLoading,
   } = useQuery({
-    ...onrampQuoteQueryOptions(formData),
+    ...onrampQuoteQueryOptions({
+      amount,
+      sourceCurrency: selectedCurrency,
+      destinationAsset: onrampTarget,
+      paymentMethod,
+      sessionId: onrampConfig?.sessionId ?? '',
+    }),
     enabled: !!amount && parseFloat(amount) > 0 && !!onrampConfig?.sessionId,
     retry: false,
     staleTime: Infinity,

@@ -10,7 +10,7 @@
     "jsxImportSource": "hono/jsx",
     "composite": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
+    "emitDeclarationOnly": false,
     "outDir": "./dist",
     "rootDir": "./src"
   },

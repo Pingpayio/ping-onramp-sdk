@@ -1,9 +1,10 @@
+import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import { Logo } from "./logo";
 
 interface RateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  quote: any;
+  quote: OnrampQuoteResponse;
   asset: string;
 }
 

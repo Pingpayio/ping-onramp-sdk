@@ -1,5 +1,5 @@
 {
-  "name": "api",
+  "name": "@pingpay/onramp-api",
   "scripts": {
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
@@ -7,6 +7,7 @@
   },
   "dependencies": {
     "@coinbase/cdp-sdk": "^1.21.0",
+    "@hono/zod-validator": "^0.7.0",
     "@pingpay/onramp-types": "workspace:*",
     "hono": "^4.8.3"
   },

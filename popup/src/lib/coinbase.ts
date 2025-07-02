@@ -1,4 +1,5 @@
-import type { OnrampConfigResponse, OnrampInitResponse, TargetAsset } from '@pingpay/onramp-types';
+import type { FormValues } from '@/components/steps/form-entry-view';
+import type { OnrampConfigResponse, OnrampInitResponse, OnrampQuoteRequest, OnrampQuoteResponse, TargetAsset } from '@pingpay/onramp-types';
 
 const API_BASE_URL = import.meta.env.PROD ? 'https://api.onramp.pingpay.io' : '';
 
@@ -15,14 +16,14 @@ export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
     if (!response.ok) {
       throw new Error('Failed to fetch onramp config');
     }
-    return response.json();
+    return response.json() as Promise<OnrampConfigResponse>;
   },
   staleTime: 1000 * 60 * 5, // 5 minutes
 });
 
-export const onrampQuoteQueryOptions = (formData: any) => ({
+export const onrampQuoteQueryOptions = (formData: OnrampQuoteRequest) => ({
   queryKey: ['onramp', 'quote', formData],
-  queryFn: async (): Promise<any> => {
+  queryFn: async (): Promise<OnrampQuoteResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/onramp/quote`, {
       method: 'POST',
       headers: {
@@ -33,13 +34,13 @@ export const onrampQuoteQueryOptions = (formData: any) => ({
     if (!response.ok) {
       throw new Error('Failed to fetch onramp quote');
     }
-    return response.json();
+    return response.json() as Promise<OnrampQuoteResponse>;
   },
-  staleTime: 1000 * 60 * 5, // 5 minutes
-  enabled: !!(formData.amount && parseInt(formData.amount) > 0)
+  staleTime: 1000 * 30, // 30 seconds
+  enabled: !!(formData.amount && parseFloat(formData.amount) > 0 && formData.sessionId),
 });
 
-export async function initOnramp(sessionId: string, formData: any): Promise<OnrampInitResponse> {
+export async function initOnramp(sessionId: string, formData: FormValues): Promise<OnrampInitResponse> {
   const response = await fetch(`${API_BASE_URL}/api/onramp/init`, {
     method: 'POST',
     headers: {
@@ -54,6 +55,5 @@ export async function initOnramp(sessionId: string, formData: any): Promise<Onra
   if (!response.ok) {
     throw new Error('Failed to initialize onramp');
   }
-
-  return response.json();
+  return response.json() as Promise<OnrampInitResponse>;
 }

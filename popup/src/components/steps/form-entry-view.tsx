@@ -5,7 +5,10 @@ import { useWalletState } from "@/hooks/use-wallet-state";
 import { onrampTargetAtom } from "@/state/atoms";
 import { useQuery } from "@tanstack/react-query";
 import { onrampConfigQueryOptions } from "@/lib/coinbase";
-import type { OnrampConfigResponse, PaymentMethodLimit } from "@pingpay/onramp-types";
+import type {
+  OnrampQuoteResponse,
+  PaymentMethodLimit,
+} from "@pingpay/onramp-types";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { debounce } from "lodash-es";
 
@@ -16,20 +19,22 @@ import { WalletAddressInput } from "../form/wallet-address-input";
 import Header from "../header";
 import { Button } from "../ui/button";
 
-export type FormValues = {
+export interface FormValues {
   amount: string;
   selectedAsset: string; // The asset to buy
   selectedCurrency: string;
   paymentMethod: string;
   recipientAddress: string; // Recipient wallet address
-};
+}
 
 interface FormEntryViewProps {
-  onSubmit: (data: FormValues) => void;
+  onSubmit: (data: FormValues, quote: OnrampQuoteResponse) => void;
   onDisconnect: () => void;
 }
 
-export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
+export const FormEntryView: React.FC<FormEntryViewProps> = ({
+  onSubmit,
+}) => {
   const onrampTarget = useAtomValue(onrampTargetAtom);
 
   const methods = useForm<FormValues>({
@@ -50,20 +55,20 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
     trigger,
   } = methods;
 
-  const { data: onrampConfig } = useQuery(onrampConfigQueryOptions(onrampTarget)) as {
-    data: OnrampConfigResponse | undefined;
-  };
+  const { data: onrampConfig } = useQuery(
+    onrampConfigQueryOptions(onrampTarget)
+  );
 
   const [
     depositAmountWatcher,
     paymentMethodWatcher,
-    selectedAssetWatcher,
     recipientAddressWatcher,
+    selectedCurrencyWatcher,
   ] = watch([
     "amount",
     "paymentMethod",
-    "selectedAsset",
     "recipientAddress",
+    "selectedCurrency",
   ]);
   const [debouncedAmount, setDebouncedAmount] = useState("");
 
@@ -84,27 +89,27 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
       isInitialRender.current = false;
       return;
     }
-    trigger("amount");
+    trigger("amount").catch((e: unknown) => {
+      console.error("Failed to trigger amount:", e);
+    });
   }, [paymentMethodWatcher, trigger]);
 
   const getValidationRules = () => {
-    const rules: any = {
+    const rules = {
       valueAsNumber: true,
       validate: (value: number) => {
         if (onrampConfig && paymentMethodWatcher) {
-          const paymentCurrency = onrampConfig.paymentCurrencies?.[0];
-          if (paymentCurrency) {
-            const limit = paymentCurrency.limits.find(
-              (l: PaymentMethodLimit) =>
-                l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
-            );
-            if (limit) {
-              if (value < parseFloat(limit.min)) {
-                return `Minimum amount is ${limit.min}`;
-              }
-              if (value > parseFloat(limit.max)) {
-                return `Maximum amount is ${limit.max}`;
-              }
+          const paymentCurrency = onrampConfig.paymentCurrencies[0];
+          const limit = paymentCurrency.limits.find(
+            (l: PaymentMethodLimit) =>
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
+          );
+          if (limit) {
+            if (value < parseFloat(limit.min)) {
+              return `Minimum amount is ${limit.min}`;
+            }
+            if (value > parseFloat(limit.max)) {
+              return `Maximum amount is ${limit.max}`;
             }
           }
         }
@@ -119,15 +124,21 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
   const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
     useQuotePreview({
       amount: debouncedAmount,
-      selectedAsset: selectedAssetWatcher,
       paymentMethod: paymentMethodWatcher,
       recipientAddress: recipientAddressWatcher,
+      selectedCurrency: selectedCurrencyWatcher,
     });
+
+  const handleFormSubmit = (data: FormValues) => {
+    if (quote) {
+      onSubmit(data, quote);
+    }
+  };
 
   return (
     <FormProvider {...methods}>
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(handleFormSubmit)}
         className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
       >
         <Header title="Buy Assets" />
@@ -137,7 +148,7 @@ export const FormEntryView: React.FC<FormEntryViewProps> = ({ onSubmit }) => {
         <ReceiveAmountDisplay
           estimatedReceiveAmount={estimatedReceiveAmount}
           isQuoteLoading={isQuoteLoading}
-          quoteError={error?.message}
+          quoteError={error instanceof Error ? error.message : String(error)}
           depositAmount={depositAmountWatcher}
           quote={quote}
         />

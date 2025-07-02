@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useAccount } from "wagmi";
 
 interface ConnectWalletViewProps {
-  onConnected: () => void;
+  onConnected: () => Promise<void>;
 }
 
 export const ConnectWalletView: React.FC<ConnectWalletViewProps> = ({
@@ -13,7 +13,7 @@ export const ConnectWalletView: React.FC<ConnectWalletViewProps> = ({
 
   useEffect(() => {
     if (isConnected && address) {
-      onConnected();
+      void onConnected();
     }
   }, [isConnected, address, onConnected]);
 

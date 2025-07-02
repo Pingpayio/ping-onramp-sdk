@@ -1,4 +1,5 @@
 import { ErrorComponent } from "@/components/error";
+import { PopupConnectionProvider } from "@/context/popup-connection-provider";
 import { WalletProvider } from "@/context/wallet-provider";
 import type { RouterContext } from "@/main";
 import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
@@ -12,9 +13,11 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 function RootComponent() {
   return (
     <React.Fragment>
-      <WalletProvider>
-        <Outlet />
-      </WalletProvider>
+      <PopupConnectionProvider>
+        <WalletProvider>
+          <Outlet />
+        </WalletProvider>
+      </PopupConnectionProvider>
     </React.Fragment>
   );
 }

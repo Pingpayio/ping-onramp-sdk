@@ -83,7 +83,7 @@ export function PaymentMethodSelector() {
             </SelectTrigger>
             <SelectContent className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1">
               {(onrampConfig?.paymentMethods as { id: string; name: string }[])
-                ?.filter((method) =>
+                .filter((method) =>
                   ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(method.id)
                 )
                 .map((method) => {

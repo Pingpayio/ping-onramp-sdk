@@ -7,7 +7,9 @@ interface DepositAmountInputProps {
   validationRules: any;
 }
 
-export function DepositAmountInput({ validationRules }: DepositAmountInputProps) {
+export function DepositAmountInput({
+  validationRules,
+}: DepositAmountInputProps) {
   const {
     register,
     formState: { errors },
@@ -28,7 +30,9 @@ export function DepositAmountInput({ validationRules }: DepositAmountInputProps)
           type="number"
           id="amount"
           {...register("amount", validationRules)}
-          onFocus={() => setIsAmountFocused(true)}
+          onFocus={() => {
+            setIsAmountFocused(true);
+          }}
           onBlur={() => {
             setIsAmountFocused(false);
             trigger("amount");

@@ -1,12 +1,12 @@
+import { usePopupConnection } from "@/context/popup-connection-provider";
 import type { ErrorComponentProps } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { usePopupConnection } from "../internal/communication/usePopupConnection";
-import { Button } from "./ui/button";
 import { useSetAtom } from "jotai";
+import { useEffect } from "react";
 import { onrampErrorAtom } from "../state/atoms";
+import { Button } from "./ui/button";
 
 export function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  const { connection } = usePopupConnection();
+  const { call } = usePopupConnection();
   const setError = useSetAtom(onrampErrorAtom);
 
   // Extract error message
@@ -20,19 +20,13 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
     // Update global error state
     setError(errorMessage);
 
-    // Report to parent application if connection is available
-    if (connection) {
-      connection
-        ?.remoteHandle()
-        .call("reportProcessFailed", {
-          error: errorMessage,
-          step: "error",
-        })
-        .catch((e: unknown) => {
-          console.error("Failed to report error to parent:", e);
-        });
-    }
-  }, [connection, errorMessage, setError]);
+    call("reportProcessFailed", {
+      error: errorMessage,
+      step: "error",
+    }).catch((e: unknown) => {
+      console.error("Failed to report error to parent:", e);
+    });
+  }, [call, errorMessage, setError]);
 
   return (
     <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-[#1A1A1A] text-white">
@@ -49,7 +43,7 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
         <div className="flex flex-col gap-3">
           <Button
-            onClick={() => reset()}
+            onClick={reset}
             className="w-full bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90"
           >
             Try Again

@@ -12,7 +12,6 @@
   "dependencies": {
     "@coinbase/onchainkit": "^0.38.13",
     "@pingpay/onramp-sdk": "workspace:*",
-    "@pingpay/onramp-types": "workspace:*",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-select": "^2.2.5",
@@ -42,6 +41,7 @@
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
     "@vitejs/plugin-react-swc": "^3.9.0",
+    "@pingpay/onramp-types": "workspace:*",
     "eslint": "^9.25.0",
     "eslint-plugin-react-dom": "^1.52.2",
     "eslint-plugin-react-hooks": "^5.2.0",
