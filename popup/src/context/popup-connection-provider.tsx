@@ -17,8 +17,11 @@ import type {
   PopupActionMethods,
   SdkListenerMethods,
 } from "@pingpay/onramp-sdk";
-// @ts-expect-error post-me typings are weird
-import { ChildHandshake, Connection, WindowMessenger } from "post-me";
+import {
+  ChildHandshake,
+  type Connection,
+  WindowMessenger,
+} from "post-me";
 
 type PopupConnection = Connection<PopupActionMethods, SdkListenerMethods>;
 type ConnectionStatus = "idle" | "connecting" | "connected" | "error";
@@ -186,10 +189,7 @@ export const PopupConnectionProvider = ({
     });
 
     try {
-      const conn = await ChildHandshake<PopupActionMethods>(
-        messenger,
-        popupActionMethods,
-      );
+      const conn = await ChildHandshake(messenger, popupActionMethods);
       console.log("Popup: post-me ChildHandshake successful.");
       connectionRef.current = conn;
       setStatus("connected");
