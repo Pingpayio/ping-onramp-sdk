@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { Logo } from "./logo";
-import { MenuIcon } from "./menu-icon";
-import { HeaderMenu } from "./header-menu";
 import { useClickOutside } from "../hooks/use-click-outside";
 import { useWalletState } from "../hooks/use-wallet-state";
+import { Logo } from "./logo";
+import { MenuIcon } from "./menu-icon";
 
 export default function Header({ title }: { title: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,12 +25,12 @@ export default function Header({ title }: { title: string }) {
         <h3 className=" font-bold text-[24px]">{title}</h3>
         <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} />
       </header>
-
+      {/* 
       <HeaderMenu
         ref={menuRef}
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-      />
+      /> */}
     </div>
   );
 }

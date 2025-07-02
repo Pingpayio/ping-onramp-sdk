@@ -102,7 +102,7 @@ export async function generateOnrampUrl(
       address: depositAddress,
       redirectUrl,
       paymentCurrency: selectedCurrency,
-      paymentMethod,
+      paymentMethod
     },
   );
 

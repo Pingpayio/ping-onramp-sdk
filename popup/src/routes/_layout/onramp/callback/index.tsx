@@ -90,7 +90,7 @@ function RouteComponent() {
         case "PROCESSING":
           // Continue polling
           pollingTimerRef.current = setTimeout(
-            () => pollStatus(depositAddress),
+            () => void pollStatus(depositAddress),
             POLLING_INTERVAL,
           );
           break;
@@ -117,7 +117,7 @@ function RouteComponent() {
       });
       // Retry polling after a delay
       pollingTimerRef.current = setTimeout(
-        () => pollStatus(depositAddress),
+        () => void pollStatus(depositAddress),
         POLLING_INTERVAL * 2,
       ); // Longer delay on error
     }
@@ -134,7 +134,7 @@ function RouteComponent() {
       });
 
       // Start polling for status
-      pollStatus(searchParams.depositAddress);
+      void pollStatus(searchParams.depositAddress);
     } else {
       void navigate({
         to: "/onramp/error",

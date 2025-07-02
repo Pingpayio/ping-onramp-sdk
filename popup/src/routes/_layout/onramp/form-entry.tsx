@@ -7,12 +7,12 @@ import {
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
-import { useOnrampTarget, useWalletState } from "@/state/hooks";
+import { useOnrampTarget } from "@/state/hooks";
 import type { PaymentMethodLimit } from "@pingpay/onramp-types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { FormProvider, useForm, type RegisterOptions } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
 import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
@@ -20,6 +20,7 @@ import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
 import { WalletAddressInput } from "@/components/form/wallet-address-input";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
+import { SKIP_REDIRECT } from "@/config";
 
 export interface FormValues {
   amount: string;
@@ -36,7 +37,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
   loader: ({ context }) => {
     const targetAsset = context.store.get(onrampTargetAtom);
     return context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset),
+      onrampConfigQueryOptions(targetAsset)
     );
   },
   component: FormEntryRoute,
@@ -44,10 +45,10 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
 
 function FormEntryRoute() {
   const { call } = useParentMessenger();
-  const [walletState] = useWalletState();
+  // const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
   const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget),
+    onrampConfigQueryOptions(onrampTarget)
   );
   const navigate = Route.useNavigate();
 
@@ -91,7 +92,7 @@ function FormEntryRoute() {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
           );
           if (
             !isAmountValid(value.toString(), paymentMethodWatcher, onrampConfig)
@@ -128,16 +129,16 @@ function FormEntryRoute() {
       console.error("Failed to report form data submitted:", e);
     });
 
-    if (!walletState?.address) {
-      void navigate({
-        to: "/onramp/error",
-        search: {
-          error:
-            "EVM wallet address not available. Please connect your wallet.",
-        },
-      });
-      return;
-    }
+    // if (!walletState?.address) {
+    //   void navigate({
+    //     to: "/onramp/error",
+    //     search: {
+    //       error:
+    //         "EVM wallet address not available. Please connect your wallet.",
+    //     },
+    //   });
+    //   return;
+    // }
 
     void navigate({
       to: "/onramp/initiating",
@@ -150,31 +151,33 @@ function FormEntryRoute() {
 
       const { redirectUrl: onrampUrl } = await initOnramp(
         onrampConfig.sessionId,
-        { ...data },
+        { ...data }
       );
+
+      console.log("SKIP_REDIRECT", SKIP_REDIRECT);
+      console.log("typeof SKIP_REDIRECT", typeof SKIP_REDIRECT);
 
       await call("reportOnrampInitiated", {
         serviceName: "Coinbase Onramp (via 1Click)",
         details: {
-          url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT
+          url: SKIP_REDIRECT
             ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
             : onrampUrl,
           onrampUrl,
         },
       });
-
-      if (!import.meta.env.VITE_PUBLIC_SKIP_REDIRECT) {
-        // In production: Redirect to Onramp URL
-        console.log("Production mode: Redirecting to Coinbase Onramp URL");
-        window.location.href = onrampUrl;
-      } else {
+      if (SKIP_REDIRECT === "true") {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
-          "Development mode: Navigating to onramp-callback with params:",
+          "Development mode: Navigating to onramp-callback with params:"
         );
         const url = new URL(onrampUrl);
         const targetRedirectUrl = url.searchParams.get("redirectUrl");
         window.location.href = targetRedirectUrl!;
+      } else {
+        // In production: Redirect to Onramp URL
+        console.log("Production mode: Redirecting to Coinbase Onramp URL");
+        window.location.href = onrampUrl;
       }
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);

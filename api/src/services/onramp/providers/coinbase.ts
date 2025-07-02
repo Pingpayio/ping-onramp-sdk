@@ -166,6 +166,7 @@ class CoinbaseProvider implements OnrampProvider {
       addresses: [{ address, blockchains: [network] }],
       assets: [asset],
     };
+    console.log("tokenBody", tokenBody);
     const token = await getCoinbaseAuthToken(
       COINBASE_API_KEY,
       COINBASE_API_SECRET,
@@ -195,18 +196,15 @@ class CoinbaseProvider implements OnrampProvider {
       (await tokenResponse.json()) as CoinbaseTokenResponse;
 
     const onrampUrl = new URL("https://pay.coinbase.com/buy/select-asset");
-    onrampUrl.searchParams.set("sessionToken", sessionToken);
-    onrampUrl.searchParams.set("defaultAsset", asset);
-    onrampUrl.searchParams.set("defaultNetwork", network);
+    onrampUrl.searchParams.set("appId", "b72ad924-2530-464b-b12f-00d1efc7dee6");
+    // onrampUrl.searchParams.set("addresses", tokenBody.addresses);
+    // onrampUrl.searchParams.set("defaultAsset", asset);
+    onrampUrl.searchParams.set("defaultNetwork", "base");
+    onrampUrl.searchParams.set("fiatCurrency", paymentCurrency);
     onrampUrl.searchParams.set("presetFiatAmount", amount);
-    onrampUrl.searchParams.set("partnerUserId", partnerUserId);
+    onrampUrl.searchParams.set("sessionToken", sessionToken);
+    // onrampUrl.searchParams.set("partnerUserId", partnerUserId); // TODO: this could be used to track portfolio onramp
     onrampUrl.searchParams.set("redirectUrl", redirectUrl);
-    if (paymentCurrency) {
-      onrampUrl.searchParams.set("fiatCurrency", paymentCurrency);
-    }
-    if (paymentMethod) {
-      onrampUrl.searchParams.set("defaultPaymentMethod", paymentMethod);
-    }
 
     return { redirectUrl: onrampUrl.toString() };
   }
