@@ -1,18 +1,33 @@
 import { ErrorView } from "@/components/steps/error-view";
-import type { FormValues } from "@/components/steps/form-entry-view";
-import { FormEntryView } from "@/components/steps/form-entry-view";
-import { usePopupConnection } from "@/context/popup-connection-provider";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   useParentMessenger,
   useReportStep,
 } from "@/hooks/use-parent-messenger";
+import { useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/coinbase";
 import { onrampTargetAtom } from "@/state/atoms";
 import { useOnrampTarget, useWalletState } from "@/state/hooks";
-import type { OnrampCallbackParams } from "@/types";
-import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
+import type { PaymentMethodLimit } from "@pingpay/onramp-types";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { FormProvider, useForm } from "react-hook-form";
+
+import { DepositAmountInput } from "@/components/form/deposit-amount-input";
+import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
+import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
+import { WalletAddressInput } from "@/components/form/wallet-address-input";
+import Header from "@/components/header";
+import { Button } from "@/components/ui/button";
+
+export interface FormValues {
+  amount: string;
+  selectedAsset: string;
+  selectedCurrency: string;
+  paymentMethod: string;
+  recipientAddress: string;
+}
 
 export const Route = createFileRoute("/_layout/onramp/form-entry")({
   errorComponent: ({ error, reset }) => (
@@ -21,28 +36,90 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
   loader: ({ context }) => {
     const targetAsset = context.store.get(onrampTargetAtom);
     return context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset),
+      onrampConfigQueryOptions(targetAsset)
     );
   },
   component: FormEntryRoute,
 });
 
 function FormEntryRoute() {
-  const { openerOrigin } = usePopupConnection();
   const { call } = useParentMessenger();
   const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
   const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget),
+    onrampConfigQueryOptions(onrampTarget)
   );
   const navigate = Route.useNavigate();
 
   useReportStep("form-entry");
 
-  const handleFormSubmit = async (
-    data: FormValues,
-    quoteResponse: OnrampQuoteResponse,
-  ) => {
+  const methods = useForm<FormValues>({
+    mode: "onSubmit",
+    defaultValues: {
+      amount: "",
+      selectedAsset: "USDC",
+      selectedCurrency: "USD",
+      paymentMethod: "CARD",
+      recipientAddress: "",
+    },
+  });
+
+  const {
+    handleSubmit,
+    watch,
+    formState: { isValid },
+    trigger,
+  } = methods;
+
+  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher] =
+    watch(["amount", "paymentMethod", "selectedCurrency"]);
+  const debouncedAmount = useDebounce(depositAmountWatcher, 300);
+
+  useEffect(() => {
+    if (depositAmountWatcher) {
+      trigger("amount").catch((e: unknown) => {
+        console.error("Failed to trigger amount:", e);
+      });
+    }
+  }, [paymentMethodWatcher, trigger, depositAmountWatcher]);
+
+  const getValidationRules = () => {
+    const rules = {
+      valueAsNumber: true,
+      validate: (value: number) => {
+        if (onrampConfig && paymentMethodWatcher) {
+          const paymentCurrency = onrampConfig.paymentCurrencies[0];
+          const limit = paymentCurrency.limits.find(
+            (l: PaymentMethodLimit) =>
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
+          );
+          if (limit) {
+            if (value < parseFloat(limit.min)) {
+              return `Minimum amount is ${limit.min}`;
+            }
+            if (value > parseFloat(limit.max)) {
+              return `Maximum amount is ${limit.max}`;
+            }
+          }
+        }
+        return true;
+      },
+    };
+
+    return rules;
+  };
+
+  const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
+    useQuotePreview({
+      amount: debouncedAmount,
+      paymentMethod: paymentMethodWatcher,
+      selectedCurrency: selectedCurrencyWatcher,
+    });
+
+  const handleFormSubmit = async (data: FormValues) => {
+    if (!quote) {
+      return;
+    }
     call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
       console.error("Failed to report form data submitted:", e);
     });
@@ -63,35 +140,13 @@ function FormEntryRoute() {
     });
 
     try {
-      const depositAddressForCoinbase =
-        quoteResponse.swapQuote.quote.depositAddress;
-      const depositNetworkForCoinbase = "base";
-
-      const callbackParams: OnrampCallbackParams = {
-        type: "intents",
-        action: "withdraw",
-        depositAddress: depositAddressForCoinbase,
-        network: onrampTarget.chain,
-        asset: onrampTarget.asset,
-        amount: data.amount,
-        recipient: data.recipientAddress,
-        ...(openerOrigin && { ping_sdk_opener_origin: openerOrigin }),
-      };
-
-      const callbackUrlParams = new URLSearchParams(
-        callbackParams as Record<string, string>,
-      );
-      const redirectUrl = `${
-        window.location.origin
-      }/onramp/callback?${callbackUrlParams.toString()}`;
-
       if (!onrampConfig?.sessionId) {
         throw new Error("Onramp session not initialized.");
       }
 
       const { redirectUrl: onrampUrl } = await initOnramp(
         onrampConfig.sessionId,
-        data,
+        { ...data }
       );
 
       await call("reportOnrampInitiated", {
@@ -100,14 +155,7 @@ function FormEntryRoute() {
           url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT
             ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
             : onrampUrl,
-          manualCallbackUrl: redirectUrl,
-          originalCoinbaseOnrampURL: onrampUrl,
-          callbackParams: callbackParams,
-          depositAddress: {
-            address: depositAddressForCoinbase,
-            network: depositNetworkForCoinbase,
-          },
-          quote: quoteResponse,
+          onrampUrl,
         },
       });
 
@@ -118,13 +166,11 @@ function FormEntryRoute() {
       } else {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
-          "Development mode: Navigating to onramp-callback with params:",
-          callbackParams,
+          "Development mode: Navigating to onramp-callback with params:"
         );
-        void navigate({
-          to: "/onramp/callback",
-          search: callbackParams,
-        });
+        const url = new URL(onrampUrl);
+        const targetRedirectUrl = url.searchParams.get("redirectUrl");
+        window.location.href = targetRedirectUrl!;
       }
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
@@ -145,17 +191,36 @@ function FormEntryRoute() {
     }
   };
 
-  const handleDisconnect = () => {
-    void navigate({
-      to: "/onramp/connect-wallet",
-      replace: true,
-    });
-  };
-
   return (
-    <FormEntryView
-      onSubmit={(data, quote) => void handleFormSubmit(data, quote)}
-      onDisconnect={handleDisconnect}
-    />
+    <FormProvider {...methods}>
+      <form
+        onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
+        className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
+      >
+        <Header title="Buy Assets" />
+
+        <DepositAmountInput validationRules={getValidationRules()} />
+
+        <ReceiveAmountDisplay
+          estimatedReceiveAmount={estimatedReceiveAmount}
+          isQuoteLoading={isQuoteLoading}
+          quoteError={error instanceof Error ? error.message : undefined}
+          depositAmount={depositAmountWatcher}
+          quote={quote}
+        />
+
+        <WalletAddressInput />
+
+        <PaymentMethodSelector />
+
+        <Button
+          type="submit"
+          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
+          disabled={!isValid || !quote || isQuoteLoading}
+        >
+          Buy {onrampTarget.asset}
+        </Button>
+      </form>
+    </FormProvider>
   );
 }

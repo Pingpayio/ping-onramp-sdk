@@ -66,7 +66,7 @@ function RouteComponent() {
             pollingTimerRef.current = undefined;
           }
 
-          navigate({
+          void navigate({
             to: "/onramp/complete",
           });
           break;
@@ -78,7 +78,7 @@ function RouteComponent() {
             pollingTimerRef.current = undefined;
           }
 
-          navigate({
+          void navigate({
             to: "/onramp/error",
             search: {
               error: `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
@@ -101,7 +101,7 @@ function RouteComponent() {
             pollingTimerRef.current = undefined;
           }
 
-          navigate({
+          void navigate({
             to: "/onramp/error",
             search: {
               error: `Unhandled swap status: ${statusResponse.status}`,
@@ -125,7 +125,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (searchParams.type === "intents" && searchParams.depositAddress) {
-      navigate({
+      void navigate({
         to: "/onramp/processing",
       });
 
@@ -136,7 +136,7 @@ function RouteComponent() {
       // Start polling for status
       pollStatus(searchParams.depositAddress);
     } else {
-      navigate({
+      void navigate({
         to: "/onramp/error",
         search: {
           error: "Invalid onramp callback parameters.",

@@ -1,4 +1,4 @@
-import type { FormValues } from "@/components/steps/form-entry-view";
+import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import type {
   OnrampConfigResponse,
   OnrampInitResponse,

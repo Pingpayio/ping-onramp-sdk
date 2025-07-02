@@ -5,8 +5,8 @@ import type { TargetAsset } from "@pingpay/onramp-types";
 export interface SessionData {
   location: { country: string; subdivision?: string };
   device: { userAgent: string | null };
-  targetAsset?: TargetAsset;
-  // Add other session data as needed
+  targetAsset: TargetAsset;
+  origin: string;
 }
 
 export async function createSession(

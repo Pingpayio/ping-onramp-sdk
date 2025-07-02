@@ -13,6 +13,7 @@ export async function getCombinedQuote(
   env: any,
   formData: any,
   country: string,
+  dryRun: boolean = true,
 ) {
   const { amount, destinationAsset, recipientAddress, address, paymentMethod } =
     formData;
@@ -83,7 +84,7 @@ export async function getCombinedQuote(
     swapType: "EXACT_INPUT",
     slippageTolerance: 100,
     deadline: quoteDeadline,
-    dry: true,
+    dry: dryRun,
     referral: ONE_CLICK_REFERRAL_ID,
   };
 

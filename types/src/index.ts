@@ -57,11 +57,11 @@ export const onrampQuoteRequestSchema = z.object({
 
 export const onrampInitRequestSchema = z.object({
   sessionId: z.string(),
+  amount: z.coerce.string(),
   paymentMethod: z.string(),
-  walletAddress: z.string(),
-  amount: z.string(),
-  sourceCurrency: z.string(),
-  destinationAsset: targetAssetSchema,
+  recipientAddress: z.string(),
+  selectedAsset: z.string(),
+  selectedCurrency: z.string(),
 });
 
 // -------------------

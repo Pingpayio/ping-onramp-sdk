@@ -11,7 +11,7 @@ export function useQuotePreview({
   amount,
   selectedCurrency,
   paymentMethod,
-}: Omit<FormValues, "selectedAsset">) {
+}: Omit<FormValues, "selectedAsset" | "recipientAddress" | "depositAddress">) {
   const onrampTarget = useAtomValue(onrampTargetAtom);
   const { data: onrampConfig } = useQuery(
     onrampConfigQueryOptions(onrampTarget),

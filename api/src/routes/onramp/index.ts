@@ -22,7 +22,12 @@ onramp.post(
     let country = c.req.header("cf-ipcountry");
     let subdivision = c.req.header("cf-region-code");
     const userAgent = c.req.header("user-agent");
+    const origin = c.req.header("origin");
     const { targetAsset, currency } = c.req.valid("json");
+
+    if (!origin) {
+      return c.json({ error: "Origin header not found" }, 400);
+    }
 
     // Fallback for local development
     if (c.env.ENVIRONMENT === "development" && !country) {
@@ -39,6 +44,7 @@ onramp.post(
       { country, subdivision: subdivision ?? undefined, currency },
       { userAgent: userAgent ?? null },
       targetAsset,
+      origin,
     );
 
     return c.json(config);

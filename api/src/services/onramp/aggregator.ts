@@ -5,12 +5,14 @@ import type {
   TargetAsset,
 } from "@pingpay/onramp-types";
 import { createSession, getSession } from "./session-store";
+import { getCombinedQuote } from "./quote";
 
 export async function getAggregatedOnrampConfig(
   env: any,
   location: { country: string; subdivision?: string; currency: string },
   device: { userAgent: string | null },
   targetAsset: TargetAsset,
+  origin: string,
 ): Promise<OnrampConfigResponse> {
   const coinbaseOptions = await coinbaseProvider.getOnrampOptions(
     env,
@@ -36,6 +38,7 @@ export async function getAggregatedOnrampConfig(
     location,
     device,
     targetAsset,
+    origin,
   });
 
   return {
@@ -54,12 +57,54 @@ export async function generateOnrampUrl(
     throw new Error("Invalid session ID");
   }
 
-  // In the future, we would use the session and form data to decide which provider to use.
-  // For now, we'll always use Coinbase.
-  const { redirectUrl } = await coinbaseProvider.generateOnrampUrl(
+  const {
+    amount,
+    paymentMethod,
+    recipientAddress,
+    selectedAsset,
+    selectedCurrency,
+  } = formData;
+
+  const quoteFormData = {
+    amount,
+    destinationAsset: session.targetAsset,
+    recipientAddress,
+    paymentMethod,
+  };
+
+  const { swapQuote } = await getCombinedQuote(
     env,
-    formData,
+    quoteFormData,
+    session.location.country,
+    false,
   );
 
-  return { redirectUrl };
+  const depositAddress = swapQuote.quote.depositAddress;
+
+  const callbackParams = new URLSearchParams({
+    type: "intents",
+    action: "withdraw",
+    network: session.targetAsset.chain,
+    asset: session.targetAsset.asset,
+    amount: amount,
+    recipient: recipientAddress,
+    depositAddress
+  });
+
+  const redirectUrl = `${session.origin}/onramp/callback?${callbackParams.toString()}`;
+
+  const { redirectUrl: onrampUrl } = await coinbaseProvider.generateOnrampUrl(
+    env,
+    {
+      amount,
+      asset: selectedAsset,
+      network: "base",
+      address: depositAddress,
+      redirectUrl,
+      paymentCurrency: selectedCurrency,
+      paymentMethod,
+    },
+  );
+
+  return { redirectUrl: onrampUrl };
 }
