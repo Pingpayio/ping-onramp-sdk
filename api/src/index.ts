@@ -53,7 +53,7 @@ app.use("*", async (c, next) => {
   return corsMiddleware(c, next);
 });
 
-app.use("*").use(cookieSessionMiddleware);
+app.use("*", cookieSessionMiddleware);
 
 app.route("/onramp", onramp);
 
