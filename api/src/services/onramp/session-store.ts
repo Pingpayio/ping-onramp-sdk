@@ -1,5 +1,4 @@
 /// <reference types="@cloudflare/workers-types" />
-import { v4 as uuidv4 } from "uuid";
 import type { TargetAsset } from "@pingpay/onramp-types";
 
 export interface SessionData {
@@ -13,7 +12,7 @@ export async function createSession(
   kv: KVNamespace,
   data: SessionData,
 ): Promise<string> {
-  const sessionId = uuidv4();
+  const sessionId = crypto.randomUUID();
   await kv.put(sessionId, JSON.stringify(data), { expirationTtl: 3600 }); // 1 hour expiration
   return sessionId;
 }
