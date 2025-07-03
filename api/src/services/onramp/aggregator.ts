@@ -82,7 +82,7 @@ export async function generateOnrampUrl(
     {
       amount,
       asset: selectedAsset,
-      network: "base",
+      network: "ethereum",
       address: depositAddress,
       redirectUrl,
       paymentCurrency: selectedCurrency,

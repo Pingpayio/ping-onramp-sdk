@@ -196,10 +196,10 @@ class CoinbaseProvider implements OnrampProvider {
       (await tokenResponse.json()) as CoinbaseTokenResponse;
 
     const onrampUrl = new URL("https://pay.coinbase.com/buy/select-asset");
-    onrampUrl.searchParams.set("appId", "b72ad924-2530-464b-b12f-00d1efc7dee6");
+    // onrampUrl.searchParams.set("appId", "b72ad924-2530-464b-b12f-00d1efc7dee6");
     // onrampUrl.searchParams.set("addresses", tokenBody.addresses);
     // onrampUrl.searchParams.set("defaultAsset", asset);
-    onrampUrl.searchParams.set("defaultNetwork", "base");
+    onrampUrl.searchParams.set("defaultNetwork", network);
     onrampUrl.searchParams.set("fiatCurrency", paymentCurrency);
     onrampUrl.searchParams.set("presetFiatAmount", amount);
     onrampUrl.searchParams.set("sessionToken", sessionToken);
