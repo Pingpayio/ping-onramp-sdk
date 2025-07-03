@@ -13,12 +13,20 @@ export type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
-app.use("*", async (c, next) => {
-  const corsMiddlewareHandler = cors({
-    origin: c.env.CORS_ORIGIN,
-  });
-  return corsMiddlewareHandler(c, next);
-});
+app.use(
+  "/*",
+  cors({
+    origin: (origin, c) => {
+      const allowedOrigins = (c.env.CORS_ORIGIN || "").split(",");
+      if (allowedOrigins.includes(origin)) {
+        return origin;
+      }
+      return allowedOrigins.includes(origin) ? origin : undefined;
+    },
+    allowMethods: ["POST", "GET", "OPTIONS"],
+    allowHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.route("/onramp", onramp);
 
