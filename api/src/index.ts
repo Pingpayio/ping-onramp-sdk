@@ -24,7 +24,7 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         return origin;
       }
-      return "";
+      return null;
     },
     allowMethods: ["POST", "GET", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
