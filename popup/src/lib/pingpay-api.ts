@@ -8,7 +8,7 @@ import type {
   TargetAsset,
 } from "@pingpay/onramp-types";
 
-const API_BASE_URL = PINGPAY_API_URL;
+const API_BASE_URL = import.meta.env.DEV ? "" : PINGPAY_API_URL;
 
 export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
   queryKey: ["onramp", "config", targetAsset],
@@ -19,6 +19,7 @@ export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ targetAsset, currency: "USD" }),
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("Failed to fetch onramp config");
@@ -37,6 +38,7 @@ export const onrampQuoteQueryOptions = (formData: OnrampQuoteRequest) => ({
         "Content-Type": "application/json",
       },
       body: JSON.stringify(formData),
+      credentials: "include",
     });
     if (!response.ok) {
       throw new Error("Failed to fetch onramp quote");
@@ -47,7 +49,6 @@ export const onrampQuoteQueryOptions = (formData: OnrampQuoteRequest) => ({
 });
 
 export async function initOnramp(
-  sessionId: string,
   formData: FormValues,
 ): Promise<OnrampInitResponse> {
   const response = await fetch(`${API_BASE_URL}/api/onramp/init`, {
@@ -55,10 +56,8 @@ export async function initOnramp(
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      sessionId,
-      ...formData,
-    }),
+    body: JSON.stringify(formData),
+    credentials: "include",
   });
 
   if (!response.ok) {

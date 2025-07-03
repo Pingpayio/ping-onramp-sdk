@@ -8,8 +8,9 @@
   "dependencies": {
     "@coinbase/cdp-sdk": "^1.21.0",
     "@hono/zod-validator": "^0.7.0",
-    "@pingpay/onramp-types": "^0.0.1",
-    "hono": "^4.8.3"
+    "@pingpay/onramp-types": "^0.0.2",
+    "hono": "^4.8.3",
+    "hono-sessions": "^0.7.3"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250628.0",

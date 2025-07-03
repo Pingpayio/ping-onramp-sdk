@@ -1,6 +1,8 @@
 import { Hono } from "hono";
+import { Session } from "hono-sessions";
 import { cors } from "hono/cors";
 import { ApiError } from "./lib/errors";
+import { cookieSessionMiddleware, SessionData } from "./middleware/sessions";
 import onramp from "./routes/onramp";
 
 export type Bindings = {
@@ -8,45 +10,50 @@ export type Bindings = {
   COINBASE_API_SECRET: string;
   CORS_ORIGIN: string;
   ENVIRONMENT: string;
-  SESSIONS: KVNamespace;
+  SESSION_ENCRYPTION_KEY: string;
 };
 
-const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
+const app = new Hono<{
+  Bindings: Bindings;
+  Variables: {
+    session: Session<SessionData>;
+    session_key_rotation: boolean;
+  };
+}>().basePath("/api");
 
-app.use(
-  "*", async (c, next) => {
-    const corsMiddleware = cors({
-      origin: (origin, c) => {
-        const allowedOriginsEnv = (c.env.CORS_ORIGIN || "")
-          .split(",")
-          .map((o: string) => o.trim())
-          .filter(Boolean);
+app.use("*").use(cookieSessionMiddleware);
 
-        const hardcodedAllowedOrigins = ["https://onramp.pingpay.io"];
+app.use("*", async (c, next) => {
+  const corsMiddleware = cors({
+    origin: (origin, c) => {
+      const allowedOriginsEnv = (c.env.CORS_ORIGIN || "")
+        .split(",")
+        .map((o: string) => o.trim())
+        .filter(Boolean);
 
-        const allAllowedOrigins = [
-          ...allowedOriginsEnv,
-          ...hardcodedAllowedOrigins,
-        ];
+      const hardcodedAllowedOrigins = ["https://onramp.pingpay.io"];
 
-        if (allAllowedOrigins.includes("*")) {
-          return "*";
-        }
+      const allAllowedOrigins = [
+        ...allowedOriginsEnv,
+        ...hardcodedAllowedOrigins,
+      ];
 
-        if (origin && allAllowedOrigins.includes(origin)) {
-          return origin;
-        }
+      if (allAllowedOrigins.includes("*")) {
+        return "*";
+      }
 
-        return null;
-      },
-      allowMethods: ["GET", "OPTIONS", "POST"],
-      allowHeaders: ["Content-Type", "Authorization"],
-      credentials: true,
-    });
-    return corsMiddleware(c, next);
+      if (origin && allAllowedOrigins.includes(origin)) {
+        return origin;
+      }
+
+      return null;
+    },
+    allowMethods: ["GET", "OPTIONS", "POST"],
+    allowHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
   });
-
-
+  return corsMiddleware(c, next);
+});
 
 app.route("/onramp", onramp);
 

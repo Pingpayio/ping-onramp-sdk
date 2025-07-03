@@ -1,18 +1,16 @@
-import { coinbaseProvider } from "./providers/coinbase";
 import type {
   OnrampConfigResponse,
-  OnrampInitResponse,
-  TargetAsset,
+  OnrampInitResponse
 } from "@pingpay/onramp-types";
-import { createSession, getSession } from "./session-store";
+import { OnrampInitRequest } from "@pingpay/onramp-types";
+import { OnrampSessionContext } from "../../middleware/onramp-session";
+import { coinbaseProvider } from "./providers/coinbase";
 import { getCombinedQuote } from "./quote";
 
 export async function getAggregatedOnrampConfig(
   env: any,
   location: { country: string; subdivision?: string; currency: string },
   device: { userAgent: string | null },
-  targetAsset: TargetAsset,
-  origin: string,
 ): Promise<OnrampConfigResponse> {
   const coinbaseOptions = await coinbaseProvider.getOnrampOptions(
     env,
@@ -34,29 +32,15 @@ export async function getAggregatedOnrampConfig(
     isIosDevice: coinbaseOptions.isIosDevice,
   };
 
-  const sessionId = await createSession(env.SESSIONS, {
-    location,
-    device,
-    targetAsset,
-    origin,
-  });
-
-  return {
-    sessionId,
-    ...aggregatedOptions,
-  } as OnrampConfigResponse;
+  return aggregatedOptions as OnrampConfigResponse;
 }
 
 export async function generateOnrampUrl(
   env: any,
-  sessionId: string,
-  formData: any,
+  session: OnrampSessionContext,
+  formData: OnrampInitRequest,
 ): Promise<OnrampInitResponse> {
-  const session = await getSession(env.SESSIONS, sessionId);
-  if (!session) {
-    throw new Error("Invalid session ID");
-  }
-
+  const { location, targetAsset, origin } = session;
   const {
     amount,
     paymentMethod,
@@ -67,7 +51,7 @@ export async function generateOnrampUrl(
 
   const quoteFormData = {
     amount,
-    destinationAsset: session.targetAsset,
+    destinationAsset: targetAsset,
     recipientAddress,
     paymentMethod,
   };
@@ -75,7 +59,7 @@ export async function generateOnrampUrl(
   const { swapQuote } = await getCombinedQuote(
     env,
     quoteFormData,
-    session.location.country,
+    location.country,
     false,
   );
 
@@ -84,14 +68,14 @@ export async function generateOnrampUrl(
   const callbackParams = new URLSearchParams({
     type: "intents",
     action: "withdraw",
-    network: session.targetAsset.chain,
-    asset: session.targetAsset.asset,
+    network: targetAsset.chain,
+    asset: targetAsset.asset,
     amount: amount,
     recipient: recipientAddress,
     depositAddress,
   });
 
-  const redirectUrl = `${session.origin}/onramp/callback?${callbackParams.toString()}`;
+  const redirectUrl = `${origin}/onramp/callback?${callbackParams.toString()}`;
 
   const { redirectUrl: onrampUrl } = await coinbaseProvider.generateOnrampUrl(
     env,

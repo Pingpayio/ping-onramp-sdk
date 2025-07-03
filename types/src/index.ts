@@ -48,7 +48,6 @@ export const onrampConfigRequestSchema = z.object({
 });
 
 export const onrampQuoteRequestSchema = z.object({
-  sessionId: z.string(),
   amount: z.coerce.string(),
   sourceCurrency: z.string(),
   destinationAsset: targetAssetSchema,
@@ -56,7 +55,6 @@ export const onrampQuoteRequestSchema = z.object({
 });
 
 export const onrampInitRequestSchema = z.object({
-  sessionId: z.string(),
   amount: z.coerce.string(),
   paymentMethod: z.string(),
   recipientAddress: z.string(),
@@ -69,7 +67,6 @@ export const onrampInitRequestSchema = z.object({
 // -------------------
 
 export const onrampConfigResponseSchema = z.object({
-  sessionId: z.string(),
   paymentMethods: z.array(z.object({ id: z.string() })),
   paymentCurrencies: z.array(paymentCurrencySchema),
   purchaseCurrencies: z.array(purchaseCurrencySchema),

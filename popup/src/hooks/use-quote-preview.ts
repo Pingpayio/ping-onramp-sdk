@@ -56,11 +56,8 @@ export function useQuotePreview({
       sourceCurrency: selectedCurrency,
       destinationAsset: onrampTarget,
       paymentMethod,
-      sessionId: onrampConfig?.sessionId ?? "",
     }),
-    enabled:
-      isAmountValid(amount, paymentMethod, onrampConfig) &&
-      !!onrampConfig?.sessionId,
+    enabled: isAmountValid(amount, paymentMethod, onrampConfig),
     retry: false,
     staleTime: Infinity,
     refetchOnWindowFocus: false,

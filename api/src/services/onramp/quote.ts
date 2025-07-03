@@ -13,7 +13,7 @@ export async function getCombinedQuote(
   env: any,
   formData: any,
   country: string,
-  dryRun: boolean = true,
+  dryRun = true,
 ) {
   const { amount, destinationAsset, recipientAddress, address, paymentMethod } =
     formData;
@@ -56,7 +56,7 @@ export async function getCombinedQuote(
   const amountInSmallestUnit = BigInt(
     Math.floor(
       parseFloat(onrampQuote.purchase_amount.value) *
-        10 ** originAsset1Click.decimals,
+      10 ** originAsset1Click.decimals,
     ),
   ).toString();
 

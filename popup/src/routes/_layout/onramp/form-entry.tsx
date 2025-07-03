@@ -145,14 +145,7 @@ function FormEntryRoute() {
     });
 
     try {
-      if (!onrampConfig?.sessionId) {
-        throw new Error("Onramp session not initialized.");
-      }
-
-      const { redirectUrl: onrampUrl } = await initOnramp(
-        onrampConfig.sessionId,
-        { ...data },
-      );
+      const { redirectUrl: onrampUrl } = await initOnramp(data);
 
       console.log("SKIP_REDIRECT", SKIP_REDIRECT);
       console.log("typeof SKIP_REDIRECT", typeof SKIP_REDIRECT);
