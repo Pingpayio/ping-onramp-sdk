@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useClickOutside } from "../hooks/use-click-outside";
+// import { useClickOutside } from "../hooks/use-click-outside";
 import { useWalletState } from "../hooks/use-wallet-state";
 import { Logo } from "./logo";
 import { MenuIcon } from "./menu-icon";
@@ -11,10 +11,10 @@ export default function Header({ title }: { title: string }) {
   useWalletState();
 
   // Handle click outside to close menu
-  const menuRef = useClickOutside<HTMLDivElement>(
-    () => setIsMenuOpen(false),
-    isMenuOpen,
-  );
+  // const menuRef = useClickOutside<HTMLDivElement>(
+  //   () => setIsMenuOpen(false),
+  //   isMenuOpen,
+  // );
 
   return (
     <div className="relative w-full">
