@@ -15,8 +15,11 @@ export interface SessionData {
 }
 
 export const cookieSessionMiddleware = createMiddleware(async (c, next) => {
-  const store = new CookieStore({ sessionCookieName: "session", encryptionKey: c.env.SESSION_ENCRYPTION_KEY });
+  const store = new CookieStore();
   const isProd = c.env.ENVIRONMENT === "production";
+
+  console.log("environment", c.env.ENVIRONMENT);
+  console.log("encrpyt key", c.env.SESSION_ENCRYPTION_KEY);
 
   const m = sessionMiddleware({
     store,

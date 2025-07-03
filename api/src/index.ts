@@ -22,6 +22,7 @@ const app = new Hono<{
 }>().basePath("/api");
 
 app.use("*", async (c, next) => {
+  console.log("origin", c.env.CORS_ORIGIN);
   const corsMiddleware = cors({
     origin: (origin, c) => {
       const allowedOriginsEnv = (c.env.CORS_ORIGIN || "")
