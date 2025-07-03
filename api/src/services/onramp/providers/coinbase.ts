@@ -155,10 +155,10 @@ class CoinbaseProvider implements OnrampProvider {
       asset,
       network,
       address,
-      partnerUserId,
+      // partnerUserId,
       redirectUrl,
       paymentCurrency,
-      paymentMethod,
+      // paymentMethod,
     } = formData;
 
     const tokenPath = "/onramp/v1/token";
@@ -166,7 +166,7 @@ class CoinbaseProvider implements OnrampProvider {
       addresses: [{ address, blockchains: [network] }],
       assets: [asset],
     };
-    console.log("tokenBody", tokenBody);
+
     const token = await getCoinbaseAuthToken(
       COINBASE_API_KEY,
       COINBASE_API_SECRET,

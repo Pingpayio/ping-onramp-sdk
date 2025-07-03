@@ -63,8 +63,6 @@ onramp.post(
       session.set(key as keyof SessionData, value);
     }
 
-    console.log("saved session", session);
-
     const config = await getAggregatedOnrampConfig(
       c.env,
       { country, subdivision: subdivision ?? undefined, currency },
