@@ -217,7 +217,8 @@ function FormEntryRoute() {
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
           disabled={!isValid || !quote || isQuoteLoading}
         >
-          Buy {onrampTarget.asset}
+          {/* Buy {onrampTarget.asset} */}
+          Buy NEAR
         </Button>
       </form>
     </FormProvider>
