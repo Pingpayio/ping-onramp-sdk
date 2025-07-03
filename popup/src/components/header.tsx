@@ -22,7 +22,7 @@ export default function Header({ title }: { title: string }) {
         <a href="https://pingpay.io" target="_blank" rel="noreferrer noopener">
           <Logo />
         </a>
-        <h3 className=" font-bold text-[24px]">{title}</h3>
+        <h3 className=" font-semibold text-[24px]">{title}</h3>
         <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} />
       </header>
       {/* 

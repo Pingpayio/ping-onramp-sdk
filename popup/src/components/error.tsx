@@ -30,7 +30,7 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
 
   return (
     <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-[#1A1A1A] text-white">
-      <div className="w-full max-w-md p-6 rounded-lg bg-[#232228] border border-[#FFFFFF2E] shadow-lg">
+      <div className="w-full max-w-md p-6 rounded-lg bg-[#303030] border border-white/20 shadow-lg">
         <h2 className="text-2xl font-semibold text-red-400 mb-4">
           Something went wrong
         </h2>
@@ -52,7 +52,7 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
           <Button
             onClick={() => (window.location.href = "/onramp")}
             variant="outline"
-            className="w-full border-[#FFFFFF2E] text-white hover:bg-white/5"
+            className="w-full border-white/20 text-white hover:bg-white/5"
           >
             Go to Start
           </Button>

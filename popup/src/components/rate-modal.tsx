@@ -28,7 +28,7 @@ export function RateModal({ isOpen, onClose, quote, asset }: RateModalProps) {
 
   return (
     <div className="fixed flex-col inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="w-full max-w-full h-full bg-[#121212] rounded-lg">
+      <div className="w-full max-w-full h-full bg-[#1E1E1E] rounded-lg">
         {/* Header */}
 
         <div className="relative w-full px-4 pt-4">

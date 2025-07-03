@@ -12,11 +12,11 @@ export const Route = createFileRoute("/_layout/onramp/")({
     // const walletState = context.store.get(walletStateAtom);
 
     // if (walletState?.address) {
-      redirect({
-        to: "/onramp/form-entry",
-        replace: true,
-        throw: true,
-      });
+    redirect({
+      to: "/onramp/form-entry",
+      replace: true,
+      throw: true,
+    });
     // } else {
     //   redirect({
     //     to: "/onramp/connect-wallet",
