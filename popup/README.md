@@ -1,3 +1,3 @@
 # Popup
 
-This is the popup app, accessible by the SDK
+This is the popup app, accessible by the SDK, talks to the API
