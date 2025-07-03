@@ -1,4 +1,11 @@
-import { useState, useEffect } from "react";
+import { onrampConfigQueryOptions } from "@/lib/pingpay-api";
+import type { FormValues } from "@/routes/_layout/onramp/form-entry";
+import { onrampTargetAtom } from "@/state/atoms";
+import type { OnrampConfigResponse } from "@pingpay/onramp-types";
+import { useQuery } from "@tanstack/react-query";
+import { useAtomValue } from "jotai";
+import { CreditCard, Landmark } from "lucide-react";
+import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
 import { Label } from "../ui/label";
 import {
@@ -8,8 +15,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { CreditCard, Landmark } from "lucide-react";
-import type { FormValues } from "../steps/form-entry-view";
 
 // Apple logo SVG component
 const AppleLogo = () => (
@@ -42,6 +47,11 @@ export function PaymentMethodSelector() {
     getValues("paymentMethod"),
   );
 
+  const onrampTarget = useAtomValue(onrampTargetAtom);
+  const { data: onrampConfig } = useQuery(
+    onrampConfigQueryOptions(onrampTarget),
+  ) as { data: OnrampConfigResponse | undefined };
+
   const paymentMethodWatcher = watch("paymentMethod");
 
   useEffect(() => {
@@ -71,40 +81,57 @@ export function PaymentMethodSelector() {
                 className="font-medium text-white placeholder:text-base placeholder:font-base"
               />
             </SelectTrigger>
-            <SelectContent className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1">
-              <SelectItem
-                value="card"
-                className="!text-white !text-base !font-medium hover:!text-white hover:!bg-white/10 focus:!bg-white/10 !p-4 !pr-8 !cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
-                    <CreditCard size={20} />
-                  </div>
-                  <span>Debit or Credit Card</span>
-                </div>
-              </SelectItem>
-              <SelectItem
-                value="ach"
-                className="!text-white !text-base !font-medium hover:!text-white hover:!bg-white/10 focus:!bg-white/10 !p-4 !pr-8 !cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
-                    <Landmark size={20} />
-                  </div>
-                  <span>Bank Transfer (ACH)</span>
-                </div>
-              </SelectItem>
-              <SelectItem
-                value="apple"
-                className="!text-white !text-base !font-medium hover:!text-white hover:!bg-white/10 focus:!bg-white/10 !p-4 !pr-8 !cursor-pointer"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
-                    <AppleLogo />
-                  </div>
-                  <span>Apple Pay</span>
-                </div>
-              </SelectItem>
+            <SelectContent
+              className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1"
+              side="top"
+            >
+              {(onrampConfig?.paymentMethods as { id: string; name: string }[])
+                .filter((method) => {
+                  if (onrampConfig?.isIosDevice) {
+                    return ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(
+                      method.id,
+                    );
+                  } else {
+                    return ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id);
+                  }
+                })
+                .map((method) => {
+                  return (
+                    <SelectItem
+                      key={method.id}
+                      value={method.id}
+                      className="!text-white !text-base !font-medium hover:!text-white hover:!bg-white/10 focus:!bg-white/10 !p-4 !pr-8 !cursor-pointer"
+                    >
+                      <div className="flex items-center gap-3">
+                        {method.id === "CARD" && (
+                          <>
+                            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
+                              <CreditCard size={20} />
+                            </div>
+                            <span>Debit or Credit Card</span>
+                          </>
+                        )}
+                        {method.id === "ACH_BANK_ACCOUNT" && (
+                          <>
+                            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
+                              <Landmark size={20} />
+                            </div>
+                            <span>Bank Transfer (ACH)</span>
+                          </>
+                        )}
+                        {method.id === "APPLE_PAY" && (
+                          <>
+                            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
+                              {" "}
+                              <AppleLogo />
+                            </div>
+                            <span>Apply Pay</span>
+                          </>
+                        )}
+                      </div>
+                    </SelectItem>
+                  );
+                })}
             </SelectContent>
           </Select>
         )}

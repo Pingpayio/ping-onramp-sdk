@@ -42,3 +42,6 @@ report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
 # vibe coding instructions
 CLAUDE.md
 .github/instructions/
+
+# hosting
+.netlify

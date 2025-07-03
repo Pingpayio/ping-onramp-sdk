@@ -1,44 +1,47 @@
+import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import { Logo } from "./logo";
+import { Button } from "./ui/button";
 
 interface RateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  exchangeRate: string;
+  quote: OnrampQuoteResponse;
   asset: string;
-  depositAmount: string;
-  estimatedReceiveAmount: string;
 }
 
-export function RateModal({
-  isOpen,
-  onClose,
-  exchangeRate,
-  asset,
-  // depositAmount,
-  // estimatedReceiveAmount,
-}: RateModalProps) {
+export function RateModal({ isOpen, onClose, quote, asset }: RateModalProps) {
   if (!isOpen) return null;
 
-  // Mock data - replace with actual values when available
-  const maxSlippage = "0.5%";
+  const { fees, swapQuote } = quote;
+  const {
+    maxSlippage,
+    networkFee,
+    providerFee,
+    pingpayFee,
+    totalFee,
+    swapFee,
+  } = fees;
+  const exchangeRate = (1 / parseFloat(swapQuote.quote.amountOutUsd)).toFixed(
+    2,
+  );
   const route = "via 1Click";
-  const networkFee = "0.00";
-  const coinbaseFee = "0.00";
-  const pingpayFee = "0.00";
-  const totalFee = "0.00";
 
   return (
     <div className="fixed flex-col inset-0 bg-black/80 flex items-center justify-center z-50">
-      <div className="w-full max-w-full h-full bg-[#121212] rounded-lg">
+      <div className="w-full max-w-full h-full bg-[#1E1E1E] rounded-lg">
         {/* Header */}
 
         <div className="relative w-full px-4 pt-4">
           <div className="flex items-center justify-between">
-            <a href="https://pingpay.io" target="_blank">
+            <a
+              href="https://pingpay.io"
+              target="_blank"
+              rel="noreferrer noopener"
+            >
               <Logo />
             </a>
             <h3 className=" font-bold text-[24px]">Onramp Rate</h3>
-            <button
+            <Button
               onClick={onClose}
               className="p-0! hover:border-0! border-0!"
             >
@@ -52,12 +55,12 @@ export function RateModal({
                 <path
                   d="M13.1836 1.14453L1.18359 13.1445M1.18359 1.14453L13.1836 13.1445"
                   stroke="#AF9EF9"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 />
               </svg>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -71,8 +74,9 @@ export function RateModal({
               <div className="flex text-sm justify-between items-center">
                 <span className=" text-white/60">Pricing Rate</span>
                 <span className="text-white">
-                  1 USD ≈ {exchangeRate} {asset}
+                  1 {asset} ≈ {exchangeRate} USD
                 </span>
+                {/* TODO: need asset price */}
               </div>
 
               {/* Max Slippage */}
@@ -98,8 +102,14 @@ export function RateModal({
 
               {/* Coinbase Fee */}
               <div className="flex text-sm justify-between items-center">
-                <span className="text-white/60">Coinbase Fee</span>
-                <span className="text-white">${coinbaseFee}</span>
+                <span className="text-white/60">Provider Fee</span>
+                <span className="text-white">${providerFee}</span>
+              </div>
+
+              {/* Swap Fee */}
+              <div className="flex text-sm justify-between items-center">
+                <span className="text-white/60">Swap Fee</span>
+                <span className="text-white">${swapFee}</span>
               </div>
 
               {/* Pingpay Fee */}
@@ -110,7 +120,7 @@ export function RateModal({
 
               {/* Total Fee */}
               <div className="flex text-sm justify-between items-center">
-                <span className="text-white">Total Fee</span>
+                <span className="text-white">Total Fees</span>
                 <span className="text-white">${totalFee}</span>
               </div>
             </div>

@@ -1,9 +1,8 @@
 import { useAtom, useSetAtom } from "jotai";
-import type { NearIntentsDisplayInfo } from "../types/onramp";
+import type { NearIntentsDisplayInfo } from "../types";
 import {
   nearIntentsDisplayInfoAtom,
   oneClickStatusAtom,
-  oneClickSupportedTokensAtom,
   onrampErrorAtom,
   onrampResultAtom,
   onrampTargetAtom,
@@ -46,12 +45,6 @@ export const useSetNearIntentsDisplayInfo = (): ((
     | NearIntentsDisplayInfo
     | ((prev: NearIntentsDisplayInfo) => NearIntentsDisplayInfo),
 ) => void) => useSetAtom(nearIntentsDisplayInfoAtom);
-
-// Hooks for 1Click API state
-export const useOneClickSupportedTokens = () =>
-  useAtom(oneClickSupportedTokensAtom);
-export const useSetOneClickSupportedTokens = () =>
-  useSetAtom(oneClickSupportedTokensAtom);
 
 export const useOneClickStatus = () => useAtom(oneClickStatusAtom);
 export const useSetOneClickStatus = () => useSetAtom(oneClickStatusAtom);

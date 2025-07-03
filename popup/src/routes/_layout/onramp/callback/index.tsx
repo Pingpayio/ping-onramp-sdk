@@ -1,26 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef } from "react";
-import { z } from "zod";
-import LoadingSpinner from "../../../../components/loading-spinner";
-import { getSwapStatus } from "../../../../lib/one-click-api";
+import LoadingSpinner from "@/components/loading-spinner";
+import { getSwapStatus } from "@/lib/one-click-api";
 import {
   useSetNearIntentsDisplayInfo,
   useSetOneClickStatus,
   useSetOnrampResult,
-} from "../../../../state/hooks";
-
-const onrampCallbackSearchSchema = z.object({
-  type: z.literal("intents"),
-  action: z.literal("withdraw"),
-  depositAddress: z.string(),
-  network: z.string(),
-  asset: z.string(),
-  amount: z.string(),
-  recipient: z.string(),
-  ping_sdk_opener_origin: z.string().optional(),
-});
-
-export type OnrampCallbackParams = z.infer<typeof onrampCallbackSearchSchema>;
+} from "@/state/hooks";
+import { onrampCallbackSearchSchema } from "@/types";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef } from "react";
 
 export const Route = createFileRoute("/_layout/onramp/callback/")({
   component: RouteComponent,
@@ -34,8 +21,6 @@ function RouteComponent() {
   const setOneClickStatus = useSetOneClickStatus();
   const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
   const pollingTimerRef = useRef<NodeJS.Timeout | undefined>(undefined);
-
-  console.log("Onramp Callback Search Params:", searchParams);
 
   // Poll for swap status
   const pollStatus = async (depositAddress: string) => {
@@ -81,7 +66,7 @@ function RouteComponent() {
             pollingTimerRef.current = undefined;
           }
 
-          navigate({
+          void navigate({
             to: "/onramp/complete",
           });
           break;
@@ -93,7 +78,7 @@ function RouteComponent() {
             pollingTimerRef.current = undefined;
           }
 
-          navigate({
+          void navigate({
             to: "/onramp/error",
             search: {
               error: `Swap ${statusResponse.status.toLowerCase()}. Check details.`,
@@ -105,7 +90,7 @@ function RouteComponent() {
         case "PROCESSING":
           // Continue polling
           pollingTimerRef.current = setTimeout(
-            () => pollStatus(depositAddress),
+            () => void pollStatus(depositAddress),
             POLLING_INTERVAL,
           );
           break;
@@ -116,7 +101,7 @@ function RouteComponent() {
             pollingTimerRef.current = undefined;
           }
 
-          navigate({
+          void navigate({
             to: "/onramp/error",
             search: {
               error: `Unhandled swap status: ${statusResponse.status}`,
@@ -132,7 +117,7 @@ function RouteComponent() {
       });
       // Retry polling after a delay
       pollingTimerRef.current = setTimeout(
-        () => pollStatus(depositAddress),
+        () => void pollStatus(depositAddress),
         POLLING_INTERVAL * 2,
       ); // Longer delay on error
     }
@@ -140,7 +125,7 @@ function RouteComponent() {
 
   useEffect(() => {
     if (searchParams.type === "intents" && searchParams.depositAddress) {
-      navigate({
+      void navigate({
         to: "/onramp/processing",
       });
 
@@ -149,9 +134,9 @@ function RouteComponent() {
       });
 
       // Start polling for status
-      pollStatus(searchParams.depositAddress);
+      void pollStatus(searchParams.depositAddress);
     } else {
-      navigate({
+      void navigate({
         to: "/onramp/error",
         search: {
           error: "Invalid onramp callback parameters.",

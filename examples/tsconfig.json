@@ -25,5 +25,5 @@
     "baseUrl": "."
   },
   "include": ["src"],
-  "references": [{ "path": "../sdk" }]
+  "references": [{ "path": "../sdk" }, { "path": "../types" }]
 }

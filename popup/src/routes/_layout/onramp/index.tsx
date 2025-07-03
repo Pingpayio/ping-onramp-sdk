@@ -1,31 +1,39 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { LoadingView } from "../../../components/steps/loading-view";
-import { useWalletState } from "../../../state/hooks";
+import { ErrorView } from "@/components/steps/error-view";
+import { LoadingView } from "@/components/steps/loading-view";
+import { onrampConfigQueryOptions } from "@/lib/pingpay-api";
+import { onrampTargetAtom } from "@/state/atoms";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/onramp/")({
+  errorComponent: ({ error, reset }) => (
+    <ErrorView error={error.message} onRetry={reset} />
+  ),
+  beforeLoad: () => {
+    // const walletState = context.store.get(walletStateAtom);
+
+    // if (walletState?.address) {
+    redirect({
+      to: "/onramp/form-entry",
+      replace: true,
+      throw: true,
+    });
+    // } else {
+    //   redirect({
+    //     to: "/onramp/connect-wallet",
+    //     replace: true,
+    //     throw: true,
+    //   });
+    // }
+  },
+  loader: ({ context }) => {
+    const targetAsset = context.store.get(onrampTargetAtom);
+    return context.queryClient.ensureQueryData(
+      onrampConfigQueryOptions(targetAsset),
+    );
+  },
   component: OnrampIndexRoute,
 });
 
 function OnrampIndexRoute() {
-  const [walletState] = useWalletState();
-  const navigate = Route.useNavigate();
-
-  useEffect(() => {
-    if (walletState !== undefined) {
-      if (walletState && walletState.address) {
-        console.log(
-          "[OnrampIndex] Wallet connected, navigating to form-entry.",
-        );
-        navigate({ to: "/onramp/form-entry", replace: true });
-      } else {
-        console.log(
-          "[OnrampIndex] Wallet not connected, navigating to connect-wallet.",
-        );
-        navigate({ to: "/onramp/connect-wallet", replace: true });
-      }
-    }
-  }, [walletState, navigate]);
-
   return <LoadingView />;
 }

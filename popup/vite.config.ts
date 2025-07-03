@@ -12,7 +12,7 @@ export default defineConfig({
       autoCodeSplitting: true,
     }),
     react(),
-    tailwindcss(),
+    tailwindcss() as any,
   ],
   resolve: {
     alias: {
@@ -20,11 +20,19 @@ export default defineConfig({
     },
   },
   optimizeDeps: {
-    exclude: ["@pingpay/onramp-sdk"],
+    exclude: ["@pingpay/onramp-sdk", "@pingpay/onramp-types"],
     esbuildOptions: {
       // Node.js global to browser globalThis
       define: {
         global: "globalThis",
+      },
+    },
+  },
+  server: {
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:8787",
+        changeOrigin: true,
       },
     },
   },

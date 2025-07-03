@@ -1,9 +1,12 @@
+import {
+  useParentMessenger,
+  useReportStep,
+} from "@/hooks/use-parent-messenger";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { ProcessingOnramp } from "../../../components/steps/processsing-onramp-view";
-import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
-import { useOnrampResult } from "../../../state/hooks";
 import { z } from "zod";
+import { ProcessingOnramp } from "@/components/steps/processsing-onramp-view";
+import { useOnrampResult } from "@/state/hooks";
 
 const completeSearchSchema = z.object({});
 
@@ -13,29 +16,19 @@ export const Route = createFileRoute("/_layout/onramp/complete")({
 });
 
 function CompleteRoute() {
-  const { connection } = usePopupConnection();
   const [onrampResult] = useOnrampResult();
+  const { call } = useParentMessenger();
+  useReportStep("complete");
 
-  // Report step change to parent application
   useEffect(() => {
-    if (connection) {
-      connection
-        ?.remoteHandle()
-        .call("reportStepChanged", { step: "complete" })
-        .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e),
-        );
-
-      if (onrampResult) {
-        connection
-          ?.remoteHandle()
-          .call("reportProcessComplete", { result: onrampResult })
-          .catch((e: unknown) =>
-            console.error("Error calling reportProcessComplete", e),
-          );
-      }
+    if (onrampResult) {
+      call("reportProcessComplete", { result: onrampResult })?.catch(
+        (e: unknown) => {
+          console.error("Failed to report process failure:", e);
+        },
+      );
     }
-  }, [connection, onrampResult]);
+  }, [call, onrampResult]);
 
   return <ProcessingOnramp step={3} result={onrampResult} />;
 }

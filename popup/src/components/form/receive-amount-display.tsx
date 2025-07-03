@@ -1,20 +1,16 @@
 import { useState } from "react";
 import { useAtomValue } from "jotai";
-import { onrampTargetAtom } from "../../state/atoms";
+import { onrampTargetAtom } from "@/state/atoms";
+import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import LoadingSpinner from "../loading-spinner";
 import { RateModal } from "../rate-modal";
-import type { TargetAsset } from "../../../../src/internal/communication/messages";
-
-const FALLBACK_TARGET_ASSET: TargetAsset = {
-  chain: "NEAR",
-  asset: "wNEAR",
-};
 
 interface ReceiveAmountDisplayProps {
-  estimatedReceiveAmount: string | null;
+  estimatedReceiveAmount?: string;
   isQuoteLoading: boolean;
-  quoteError: string | null;
+  quoteError?: string;
   depositAmount: string;
+  quote?: OnrampQuoteResponse;
 }
 
 export function ReceiveAmountDisplay({
@@ -22,10 +18,10 @@ export function ReceiveAmountDisplay({
   isQuoteLoading,
   quoteError,
   depositAmount,
+  quote,
 }: ReceiveAmountDisplayProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const onrampTargetFromAtom = useAtomValue(onrampTargetAtom);
-  const currentOnrampTarget = onrampTargetFromAtom ?? FALLBACK_TARGET_ASSET;
+  const onrampTarget = useAtomValue(onrampTargetAtom);
 
   // Calculate dynamic exchange rate
   const calculateExchangeRate = () => {
@@ -61,24 +57,29 @@ export function ReceiveAmountDisplay({
               <LoadingSpinner size="xs" inline={true} />
             ) : (
               <p className="font-bold border-none text-[24px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none">
-                {quoteError ? quoteError : estimatedReceiveAmount || "-"}
+                {quoteError
+                  ? "-"
+                  : estimatedReceiveAmount
+                    ? parseFloat(estimatedReceiveAmount).toFixed(6)
+                    : "-"}
               </p>
             )}
           </div>
           <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5">
             <img
               src={
-                currentOnrampTarget.asset === "wNEAR"
+                onrampTarget.asset === "wNEAR"
                   ? "/near-logo-green.png"
                   : "/usd-coin-usdc-logo.svg"
               }
-              alt={`${currentOnrampTarget.asset} Logo`}
+              alt={`${onrampTarget.asset} Logo`}
               width="20px"
               height="20px"
               className="rounded-full"
             />
             <span className="text-white font-normal">
-              {currentOnrampTarget.asset}
+              {/* {onrampTarget.asset} */}
+              NEAR
             </span>
           </div>
         </div>
@@ -92,9 +93,12 @@ export function ReceiveAmountDisplay({
                 Rate:{" "}
                 <button
                   className="px-0! hover:border-0! border-0! hover:underline hover:underline-offset-2 text-[#AB9FF2] inline-block cursor-pointer hover:text-[#AF9EF9] transition-colors"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                  type="button"
                 >
-                  1 USD ≈ {exchangeRate} {currentOnrampTarget.asset}
+                  1 USD ≈ {exchangeRate} {onrampTarget.asset}
                 </button>
               </>
             ) : (
@@ -108,21 +112,23 @@ export function ReceiveAmountDisplay({
           <p>Network:</p>
           <img
             src="/near-logo-green.png"
-            alt={`${currentOnrampTarget.chain} Protocol Logo`}
+            alt={`${onrampTarget.chain} Protocol Logo`}
             className="w-4 h-4 rounded-full"
           />
-          <span>{currentOnrampTarget.chain}</span>
+          <span>{onrampTarget.chain}</span>
         </div>
       </div>
 
-      <RateModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        exchangeRate={exchangeRate || "0"}
-        asset={currentOnrampTarget.asset}
-        depositAmount={depositAmount}
-        estimatedReceiveAmount={estimatedReceiveAmount || "0"}
-      />
+      {quote && (
+        <RateModal
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+          }}
+          quote={quote}
+          asset={onrampTarget.asset}
+        />
+      )}
     </div>
   );
 }

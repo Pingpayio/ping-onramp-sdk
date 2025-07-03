@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 export function useClickOutside<T extends HTMLElement>(
   callback: () => void,
-  isActive: boolean = true,
+  isActive = true,
 ) {
   const ref = useRef<T>(null);
 

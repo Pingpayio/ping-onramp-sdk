@@ -27,7 +27,7 @@ export type OnrampInitiatedPayload = z.infer<
 export type ProcessFailedPayload = z.infer<typeof processFailedPayloadSchema>;
 
 // Methods the SDK (Parent) will expose, for the Popup (Child) to call
-export interface SdkListenerMethods {
+export type SdkListenerMethods = {
   reportPopupReady: () => Promise<void>;
   reportFlowStarted: (payload: InitiateOnrampFlowPayload) => Promise<void>;
   reportStepChanged: (payload: {
@@ -41,9 +41,9 @@ export interface SdkListenerMethods {
   reportProcessComplete: (payload: { result: OnrampResult }) => Promise<void>;
   reportProcessFailed: (payload: ProcessFailedPayload) => Promise<void>;
   reportPopupClosedByUser: () => Promise<void>;
-}
+};
 
 // Methods the Popup (Child) will expose, for the SDK (Parent) to call
-export interface PopupActionMethods {
+export type PopupActionMethods = {
   initiateOnrampInPopup: (payload: InitiateOnrampFlowPayload) => Promise<void>;
-}
+};

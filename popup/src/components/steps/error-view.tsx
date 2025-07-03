@@ -1,8 +1,9 @@
 import React from "react";
+import { Button } from "../ui/button";
 
 interface ErrorViewProps {
   error: string | null;
-  onRetry?: () => void; // Optional retry callback
+  onRetry?: () => void;
 }
 
 export const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
@@ -14,13 +15,12 @@ export const ErrorView: React.FC<ErrorViewProps> = ({ error, onRetry }) => (
       {error || "An unknown error occurred. Please try again."}
     </p>
     {onRetry && (
-      <button
+      <Button
         onClick={onRetry}
         className="px-4 py-2 bg-yellow-500 text-gray-900 rounded hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-400 focus:ring-opacity-50 transition ease-in-out duration-150"
       >
         Try Again
-      </button>
+      </Button>
     )}
-    {/* You could also add a button to close or go back */}
   </div>
 );

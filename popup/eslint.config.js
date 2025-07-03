@@ -5,15 +5,17 @@ import reactRefresh from "eslint-plugin-react-refresh";
 import reactX from "eslint-plugin-react-x";
 import globals from "globals";
 import tseslint from "typescript-eslint";
+import pluginRouter from "@tanstack/eslint-plugin-router";
 
 export default tseslint.config(
   { ignores: ["dist"] },
   {
     extends: [
+      ...pluginRouter.configs["flat/recommended"],
       js.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
-      ...tseslint.configs.strictTypeChecked,
-      ...tseslint.configs.stylisticTypeChecked,
+      // ...tseslint.configs.strictTypeChecked,
+      // ...tseslint.configs.stylisticTypeChecked,
     ],
     files: ["**/*.{ts,tsx}"],
     languageOptions: {

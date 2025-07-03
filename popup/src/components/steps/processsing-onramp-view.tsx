@@ -1,26 +1,17 @@
+import type { StatusResponseData } from "@/lib/one-click-api";
+import { useNearIntentsDisplayInfo, useOneClickStatus } from "@/state/hooks";
 import type { OnrampResult } from "@pingpay/onramp-sdk";
-import { Progress } from "../ui/progress";
+import { FaCheckCircle, FaClock, FaRegClock, FaSpinner } from "react-icons/fa";
 import Header from "../header";
-import { FaClock, FaSpinner, FaCheckCircle } from "react-icons/fa"; // Added FaSpinner, FaCheckCircle
 import { StepInfoBox, type StepBox } from "../step-info-box";
 import { Button } from "../ui/button";
-import {
-  useNearIntentsDisplayInfo,
-  useOneClickStatus,
-} from "../../state/hooks"; // Added hooks
-import type { StatusResponseData } from "../../lib/one-click-api";
+import { Progress } from "../ui/progress";
 
-// This 'step' prop from App.tsx now maps to broader phases:
-// 0: "initiating-onramp-service" (Getting 1Click quote, redirecting to Coinbase)
-// 1: (Not directly used by 1Click, was "signing-transaction") - Can be skipped or merged
-// 2: "processing-transaction" (Submitting deposit to 1Click, polling status)
-// 3: "complete"
 export interface ProcessingOnrampProps {
-  step: number; // Main step from App.tsx
-  result?: OnrampResult | null; // For the "complete" step
+  step: number;
+  result?: OnrampResult | null;
 }
 
-// Helper to map 1Click status to a progress percentage and StepBox
 const getDisplayInfoForStatus = (
   oneClickStatus?: StatusResponseData | null,
   nearIntentsDisplayInfo?: { message?: string; explorerUrl?: string },
@@ -29,9 +20,9 @@ const getDisplayInfoForStatus = (
   box: StepBox;
   detailsForDisplay: Record<string, string | undefined>;
 } => {
-  let progress = 10; // Default starting progress
+  let progress = 10;
   let box: StepBox = {
-    icon: <FaSpinner className="animate-spin text-blue-400 text-xl" />,
+    icon: <FaSpinner className="animate-spin text-blue-400 text-[32px]" />,
     title: "Initiating...",
     desc: nearIntentsDisplayInfo?.message || "Preparing your onramp and swap.",
     color: "border-blue-400",
@@ -59,18 +50,20 @@ const getDisplayInfoForStatus = (
       case "PENDING_DEPOSIT":
         progress = 25;
         box = {
-          icon: <FaClock className="text-yellow-400 text-xl" />,
+          icon: <FaRegClock className="text-indigo-400 text-[32px]" />,
           title: "Pending Onramp Deposit",
           desc:
             nearIntentsDisplayInfo?.message ||
             "Waiting for funds to be deposited by Coinbase to the 1Click address.",
-          color: "border-yellow-400",
+          color: "border-indigo-400",
         };
         break;
       case "KNOWN_DEPOSIT_TX":
         progress = 50;
         box = {
-          icon: <FaSpinner className="animate-spin text-blue-400 text-xl" />,
+          icon: (
+            <FaSpinner className="animate-spin text-blue-400 text-[32px]" />
+          ),
           title: "Processing Deposit",
           desc:
             nearIntentsDisplayInfo?.message ||
@@ -81,7 +74,9 @@ const getDisplayInfoForStatus = (
       case "PROCESSING":
         progress = 75;
         box = {
-          icon: <FaSpinner className="animate-spin text-indigo-400 text-xl" />,
+          icon: (
+            <FaSpinner className="animate-spin text-indigo-400 text-[32px]" />
+          ),
           title: "Swap in Progress",
           desc:
             nearIntentsDisplayInfo?.message ||
@@ -92,7 +87,7 @@ const getDisplayInfoForStatus = (
       case "SUCCESS":
         progress = 100;
         box = {
-          icon: <FaCheckCircle className="text-green-400 text-xl" />,
+          icon: <FaCheckCircle className="text-green-400 text-[32px]" />,
           title: "Transaction Complete",
           desc:
             nearIntentsDisplayInfo?.message ||
@@ -108,7 +103,7 @@ const getDisplayInfoForStatus = (
       case "EXPIRED":
         progress = 100; // Or a specific error progress
         box = {
-          icon: <FaClock className="text-red-400 text-xl" />, // Consider a specific error icon
+          icon: <FaClock className="text-red-400 text-[32px]" />, // Consider a specific error icon
           title: `Swap ${oneClickStatus.status}`,
           desc:
             nearIntentsDisplayInfo?.message ||
@@ -129,10 +124,7 @@ const getDisplayInfoForStatus = (
   return { progress, box, detailsForDisplay };
 };
 
-export function ProcessingOnramp({
-  step, // Main step from App.tsx
-  result, // For the "complete" step from OnrampResult
-}: ProcessingOnrampProps) {
+export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
   const [oneClickStatus] = useOneClickStatus();
   const [nearIntentsDisplayInfo] = useNearIntentsDisplayInfo();
 
@@ -142,24 +134,24 @@ export function ProcessingOnramp({
   let transactionDetails: Record<string, string | undefined> = {};
 
   if (step === 3 && result?.success) {
-    // "complete" step
     displayProgress = 100;
     displayBox = {
-      icon: <FaCheckCircle className="text-green-400 text-xl" />,
+      icon: <FaCheckCircle className="text-green-400 text-[32px]" />,
       title: "Transaction Complete",
       desc: result.message || "Onramp and swap successful!",
       color: "border-green-400",
     };
+    // TODO: Transaction details typings
     transactionDetails.transactionId = result.data?.transactionId;
     transactionDetails.service = result.data?.service;
-    transactionDetails.explorerLink = nearIntentsDisplayInfo.explorerUrl; // From final success in App.tsx
+    transactionDetails.explorerLink = nearIntentsDisplayInfo.explorerUrl;
     transactionDetails.amountIn = nearIntentsDisplayInfo.amountIn?.toString();
     transactionDetails.amountOut = nearIntentsDisplayInfo.amountOut?.toString();
   } else if (step === 0) {
     // "initiating-onramp-service"
     displayProgress = 15;
     displayBox = {
-      icon: <FaSpinner className="animate-spin text-blue-400 text-xl" />,
+      icon: <FaSpinner className="animate-spin text-blue-400 text-[32px]" />,
       title: "Initiating Onramp",
       desc:
         nearIntentsDisplayInfo.message ||
@@ -182,7 +174,7 @@ export function ProcessingOnramp({
   } else {
     // Default/fallback or other steps
     displayBox = {
-      icon: <FaSpinner className="animate-spin text-gray-400 text-xl" />,
+      icon: <FaSpinner className="animate-spin text-gray-400 text-[32px]" />,
       title: "Processing...",
       desc: nearIntentsDisplayInfo.message || "Please wait.",
       color: "border-gray-400",
@@ -191,10 +183,10 @@ export function ProcessingOnramp({
   }
 
   return (
-    <div className="min-h-screen md:min-h-auto flex flex-col items-center h-full">
+    <div className="flex flex-col items-center h-full">
       <Header title="Processing Onramp" />
       <div className="w-full mt-4 mb-4">
-        <div className="flex flex-col gap-2 bg-[#232228] border border-[#FFFFFF2E] rounded-lg p-4">
+        <div className="flex flex-col gap-2.5 bg-[#303030] border border-white/20 rounded-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-base font-medium text-white">
               Transaction Progress
@@ -209,8 +201,8 @@ export function ProcessingOnramp({
 
       <StepInfoBox box={displayBox} />
 
-      <div className="w-full flex flex-col gap-2 bg-[#232228] border border-[#FFFFFF2E] rounded-lg p-4 mt-4">
-        <span className="font-semibold text-gray-100 mb-2">
+      <div className="w-full flex flex-col gap-2 bg-[#303030] border border-white/20 rounded-lg p-4 mt-4">
+        <span className="font-semibold text-sm text-gray-100">
           Transaction Details
         </span>
         <div className="flex flex-col gap-1 text-sm">
@@ -289,13 +281,21 @@ export function ProcessingOnramp({
         </div>
       </div>
 
+      <p className="text-xs text-white/60 py-2">
+        {step === 3 && result?.success
+          ? "Transaction complete, you can now close this window."
+          : "Do not close this window, transaction is being processed."}
+      </p>
+
       {transactionDetails.explorerLink && (
         <div className="flex w-full gap-4 mt-6">
           <Button
-            className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base"
+            className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={() =>
+              transactionDetails.explorerLink &&
               window.open(transactionDetails.explorerLink, "_blank")
             }
+            disabled={!transactionDetails.explorerLink}
           >
             View on Explorer
           </Button>

@@ -1,0 +1,39 @@
+import { Hono } from "hono";
+import { cors } from "hono/cors";
+import { ApiError } from "./lib/errors";
+import onramp from "./routes/onramp";
+
+export type Bindings = {
+  COINBASE_API_KEY: string;
+  COINBASE_API_SECRET: string;
+  CORS_ORIGIN: string;
+  ENVIRONMENT: string;
+  SESSIONS: KVNamespace;
+};
+
+const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
+
+app.use("*", async (c, next) => {
+  const corsMiddlewareHandler = cors({
+    origin: c.env.CORS_ORIGIN,
+  });
+  return corsMiddlewareHandler(c, next);
+});
+
+app.route("/onramp", onramp);
+
+app.onError((err, c) => {
+  if (err instanceof ApiError) {
+    return c.json(
+      {
+        error: err.message,
+        details: err.details,
+      },
+      err.status,
+    );
+  }
+  console.error(err);
+  return c.json({ error: "Internal Server Error" }, 500);
+});
+
+export default app;

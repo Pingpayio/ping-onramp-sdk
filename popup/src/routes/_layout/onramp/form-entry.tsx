@@ -1,252 +1,232 @@
+import { ErrorView } from "@/components/steps/error-view";
+import { useDebounce } from "@/hooks/use-debounce";
+import {
+  useParentMessenger,
+  useReportStep,
+} from "@/hooks/use-parent-messenger";
+import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
+import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
+import { onrampTargetAtom } from "@/state/atoms";
+import { useOnrampTarget } from "@/state/hooks";
+import type { PaymentMethodLimit } from "@pingpay/onramp-types";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { FormEntryView } from "../../../components/steps/form-entry-view";
-import { usePopupConnection } from "../../../internal/communication/usePopupConnection";
-import {
-  useSetOneClickSupportedTokens,
-  useWalletState,
-} from "../../../state/hooks";
-import type { FormValues } from "../../../components/steps/form-entry-view";
-import { useOnrampTarget } from "../../../state/hooks";
-import { generateOnrampURL } from "../../../lib/coinbase";
-import type { OnrampURLParams } from "../../../lib/coinbase";
-import {
-  fetch1ClickSupportedTokens,
-  find1ClickAsset,
-  requestSwapQuote,
-  type OneClickToken,
-  type QuoteRequestParams,
-} from "../../../lib/one-click-api";
-import {
-  useOneClickSupportedTokens,
-  useSetNearIntentsDisplayInfo,
-} from "../../../state/hooks";
-import type { OnrampCallbackParams } from "./callback";
+import { FormProvider, useForm } from "react-hook-form";
 
-const ONE_CLICK_REFERRAL_ID = "pingpay.near";
+import { DepositAmountInput } from "@/components/form/deposit-amount-input";
+import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
+import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
+import { WalletAddressInput } from "@/components/form/wallet-address-input";
+import Header from "@/components/header";
+import { Button } from "@/components/ui/button";
+import { SKIP_REDIRECT } from "@/config";
+
+export interface FormValues {
+  amount: string;
+  selectedAsset: string;
+  selectedCurrency: string;
+  paymentMethod: string;
+  recipientAddress: string;
+}
 
 export const Route = createFileRoute("/_layout/onramp/form-entry")({
+  errorComponent: ({ error, reset }) => (
+    <ErrorView error={error.message} onRetry={reset} />
+  ),
+  loader: ({ context }) => {
+    const targetAsset = context.store.get(onrampTargetAtom);
+    return context.queryClient.ensureQueryData(
+      onrampConfigQueryOptions(targetAsset),
+    );
+  },
   component: FormEntryRoute,
 });
 
 function FormEntryRoute() {
-  const { connection, openerOrigin } = usePopupConnection();
-  const [walletState] = useWalletState();
+  const { call } = useParentMessenger();
+  // const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
+  const { data: onrampConfig } = useQuery(
+    onrampConfigQueryOptions(onrampTarget),
+  );
   const navigate = Route.useNavigate();
 
-  const setOneClickSupportedTokens = useSetOneClickSupportedTokens();
-  const [oneClickSupportedTokens] = useOneClickSupportedTokens();
-  const setNearIntentsDisplayInfo = useSetNearIntentsDisplayInfo();
+  useReportStep("form-entry");
 
-  // Report step change to parent application
+  const methods = useForm<FormValues>({
+    mode: "onSubmit",
+    defaultValues: {
+      amount: "",
+      selectedAsset: "USDC",
+      selectedCurrency: "USD",
+      paymentMethod: "CARD",
+      recipientAddress: "",
+    },
+  });
+
+  const {
+    handleSubmit,
+    watch,
+    formState: { isValid },
+    trigger,
+  } = methods;
+
+  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher] =
+    watch(["amount", "paymentMethod", "selectedCurrency"]);
+  const debouncedAmount = useDebounce(depositAmountWatcher, 300);
+
   useEffect(() => {
-    if (connection) {
-      connection
-        ?.remoteHandle()
-        .call("reportStepChanged", { step: "form-entry" })
-        .catch((e: unknown) =>
-          console.error("Error calling reportStepChanged", e),
-        );
+    if (depositAmountWatcher) {
+      trigger("amount").catch((e: unknown) => {
+        console.error("Failed to trigger amount:", e);
+      });
     }
-  }, [connection]);
+  }, [paymentMethodWatcher, trigger, depositAmountWatcher]);
+
+  const getValidationRules = () => {
+    const rules = {
+      valueAsNumber: true,
+      validate: (value: number) => {
+        if (onrampConfig && paymentMethodWatcher) {
+          const paymentCurrency = onrampConfig.paymentCurrencies[0];
+          const limit = paymentCurrency.limits.find(
+            (l: PaymentMethodLimit) =>
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
+          );
+          if (
+            !isAmountValid(value.toString(), paymentMethodWatcher, onrampConfig)
+          ) {
+            if (limit) {
+              if (value < parseFloat(limit.min)) {
+                return `Minimum amount is ${limit.min}`;
+              }
+              if (value > parseFloat(limit.max)) {
+                return `Maximum amount is ${limit.max}`;
+              }
+            }
+          }
+        }
+        return true;
+      },
+    };
+
+    return rules;
+  };
+
+  const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
+    useQuotePreview({
+      amount: debouncedAmount,
+      paymentMethod: paymentMethodWatcher,
+      selectedCurrency: selectedCurrencyWatcher,
+    });
 
   const handleFormSubmit = async (data: FormValues) => {
-    connection
-      ?.remoteHandle()
-      .call("reportFormDataSubmitted", { formData: data });
-
-    const userEvmAddress = walletState?.address;
-    if (!userEvmAddress) {
-      navigate({
-        to: "/onramp/error",
-        search: {
-          error:
-            "EVM wallet address not available. Please connect your wallet.",
-        },
-      });
+    if (!quote) {
       return;
     }
+    call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
+      console.error("Failed to report form data submitted:", e);
+    });
 
-    // If onrampTarget is not defined, use default wNEAR on NEAR chain
-    const targetAsset = onrampTarget || { chain: "NEAR", asset: "wNEAR" };
+    // if (!walletState?.address) {
+    //   void navigate({
+    //     to: "/onramp/error",
+    //     search: {
+    //       error:
+    //         "EVM wallet address not available. Please connect your wallet.",
+    //     },
+    //   });
+    //   return;
+    // }
 
-    navigate({
+    void navigate({
       to: "/onramp/initiating",
     });
-    setNearIntentsDisplayInfo({ message: "Fetching token data..." });
 
     try {
-      let currentSupportedTokens = oneClickSupportedTokens;
-      if (!currentSupportedTokens) {
-        currentSupportedTokens = await fetch1ClickSupportedTokens();
-        setOneClickSupportedTokens(currentSupportedTokens);
+      if (!onrampConfig?.sessionId) {
+        throw new Error("Onramp session not initialized.");
       }
 
-      setNearIntentsDisplayInfo({ message: "Finding assets for swap..." });
-
-      const originAsset1Click: OneClickToken | undefined = find1ClickAsset(
-        currentSupportedTokens,
-        data.selectedAsset, // e.g., "USDC" - asset to buy on Coinbase
-        "base", // e.g., "base"
+      const { redirectUrl: onrampUrl } = await initOnramp(
+        onrampConfig.sessionId,
+        { ...data },
       );
 
-      const destinationAsset1Click: OneClickToken | undefined = find1ClickAsset(
-        currentSupportedTokens,
-        targetAsset.asset, // e.g., "USDC" - final asset on target chain
-        targetAsset.chain, // e.g., "NEAR"
-      );
+      console.log("SKIP_REDIRECT", SKIP_REDIRECT);
+      console.log("typeof SKIP_REDIRECT", typeof SKIP_REDIRECT);
 
-      if (!originAsset1Click || !destinationAsset1Click) {
-        navigate({
-          to: "/onramp/error",
-          search: {
-            error:
-              "Could not find required assets for the swap in 1Click service.",
-          },
-        });
-        return;
-      }
-
-      // Convert fiat amount to smallest unit of origin asset
-      const amountInSmallestUnit = BigInt(
-        Math.floor(parseFloat(data.amount) * 10 ** originAsset1Click.decimals),
-      ).toString();
-
-      const quoteDeadline = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 minutes from now
-
-      const quoteParams: QuoteRequestParams = {
-        originAsset: originAsset1Click.assetId,
-        destinationAsset: destinationAsset1Click.assetId,
-        amount: amountInSmallestUnit,
-        recipient: data.recipientAddress, // Final recipient address
-        refundTo: userEvmAddress,
-        refundType: "ORIGIN_CHAIN",
-        depositType: "ORIGIN_CHAIN",
-        recipientType: "DESTINATION_CHAIN", // As we are sending to destination chain address
-        swapType: "EXACT_INPUT",
-        slippageTolerance: 100, // 1%
-        deadline: quoteDeadline,
-        dry: false,
-        referral: ONE_CLICK_REFERRAL_ID,
-      };
-
-      setNearIntentsDisplayInfo({ message: "Requesting swap quote..." });
-      const quoteResponse = await requestSwapQuote(quoteParams);
-
-      const depositAddressForCoinbase = quoteResponse.quote.depositAddress;
-      const depositNetworkForCoinbase = originAsset1Click.blockchain; // Should match COINBASE_DEPOSIT_NETWORK
-
-      const params: OnrampCallbackParams = {
-        type: "intents",
-        action: "withdraw",
-        depositAddress: depositAddressForCoinbase,
-        network: targetAsset.chain,
-        asset: targetAsset.asset,
-        amount: data.amount,
-        recipient: data.recipientAddress,
-      };
-
-      const callbackUrlParams = new URLSearchParams(params);
-
-      if (openerOrigin) {
-        callbackUrlParams.set("ping_sdk_opener_origin", openerOrigin);
-      }
-
-      const redirectUrl = `${
-        window.location.origin
-      }/onramp/callback?${callbackUrlParams.toString()}`;
-
-      const onrampParamsForCoinbase: OnrampURLParams = {
-        asset: data.selectedAsset, // Asset Coinbase user buys (e.g. USDC)
-        amount: data.amount,
-        network: depositNetworkForCoinbase, // Network Coinbase deposits to (e.g. base)
-        address: depositAddressForCoinbase, // 1Click's deposit address
-        partnerUserId: userEvmAddress,
-        redirectUrl: redirectUrl,
-        paymentCurrency: data.selectedCurrency,
-        paymentMethod: data.paymentMethod.toUpperCase(),
-        enableGuestCheckout: true,
-      };
-
-      const coinbaseOnrampURL = generateOnrampURL(onrampParamsForCoinbase);
-
-      // Prepare callback data for router navigation
-      const callbackParams: OnrampCallbackParams = {
-        type: "intents",
-        action: "withdraw",
-        depositAddress: depositAddressForCoinbase,
-        network: targetAsset.chain,
-        asset: targetAsset.asset,
-        amount: data.amount,
-        recipient: data.recipientAddress,
-      };
-      if (openerOrigin) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (callbackParams as any).ping_sdk_opener_origin = openerOrigin;
-      }
-
-      // Report onramp initiation to the parent application
-      await connection?.remoteHandle().call("reportOnrampInitiated", {
+      await call("reportOnrampInitiated", {
         serviceName: "Coinbase Onramp (via 1Click)",
         details: {
-          url: import.meta.env.VITE_PUBLIC_SKIP_REDIRECT
+          url: SKIP_REDIRECT
             ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
-            : coinbaseOnrampURL,
-          manualCallbackUrl: redirectUrl,
-          originalCoinbaseOnrampURL: coinbaseOnrampURL,
-          callbackParams: callbackParams,
-          depositAddress: {
-            address: depositAddressForCoinbase,
-            network: depositNetworkForCoinbase,
-          },
-          quote: quoteResponse,
+            : onrampUrl,
+          onrampUrl,
         },
       });
-
-      if (!import.meta.env.VITE_PUBLIC_SKIP_REDIRECT) {
-        // In production: Redirect to Coinbase Onramp URL
-        console.log("Production mode: Redirecting to Coinbase Onramp URL");
-        window.location.href = coinbaseOnrampURL;
-      } else {
+      if (SKIP_REDIRECT === "true") {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
           "Development mode: Navigating to onramp-callback with params:",
-          callbackParams,
         );
-        navigate({
-          to: "/onramp/callback",
-          search: callbackParams,
-        });
+        const url = new URL(onrampUrl);
+        const targetRedirectUrl = url.searchParams.get("redirectUrl");
+        window.location.href = targetRedirectUrl!;
+      } else {
+        // In production: Redirect to Onramp URL
+        console.log("Production mode: Redirecting to Coinbase Onramp URL");
+        window.location.href = onrampUrl;
       }
     } catch (e: unknown) {
       const errorMsg = e instanceof Error ? e.message : String(e);
 
-      navigate({
+      void navigate({
         to: "/onramp/error",
         search: {
-          error:
-            errorMsg || "Failed to initiate 1Click quote or Coinbase Onramp.",
+          error: errorMsg || "Failed to initiate onramp.",
         },
       });
-      connection?.remoteHandle().call("reportProcessFailed", {
+      call("reportProcessFailed", {
         error: errorMsg,
         step: "initiating-onramp-service",
+      })?.catch((e: unknown) => {
+        console.error("Failed to report process failure:", e);
       });
     }
   };
 
-  const handleDisconnect = () => {
-    navigate({
-      to: "/onramp/connect-wallet",
-      replace: true,
-    });
-  };
-
   return (
-    <FormEntryView
-      onSubmit={handleFormSubmit}
-      onDisconnect={handleDisconnect}
-    />
+    <FormProvider {...methods}>
+      <form
+        onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
+        className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
+      >
+        <Header title="Buy Assets" />
+
+        <DepositAmountInput validationRules={getValidationRules()} />
+
+        <ReceiveAmountDisplay
+          estimatedReceiveAmount={estimatedReceiveAmount}
+          isQuoteLoading={isQuoteLoading}
+          quoteError={error instanceof Error ? error.message : undefined}
+          depositAmount={depositAmountWatcher}
+          quote={quote}
+        />
+
+        <WalletAddressInput />
+
+        <PaymentMethodSelector />
+
+        <Button
+          type="submit"
+          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
+          disabled={!isValid || !quote || isQuoteLoading}
+        >
+          Buy {onrampTarget.asset}
+        </Button>
+      </form>
+    </FormProvider>
   );
 }

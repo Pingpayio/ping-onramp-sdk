@@ -174,10 +174,11 @@ export class PingpayOnramp {
             },
           };
 
-          this.postMeConnection = await ParentHandshake<
-            SdkListenerMethods,
-            PopupActionMethods
-          >(messenger, sdkListenerMethods, 5000);
+          this.postMeConnection = await ParentHandshake(
+            messenger,
+            sdkListenerMethods,
+            5000,
+          );
 
           console.log("SDK: post-me ParentHandshake successful.");
           this.setupHeartbeat();

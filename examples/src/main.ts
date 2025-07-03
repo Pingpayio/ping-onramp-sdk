@@ -37,7 +37,6 @@ if (openOnrampButton) {
   console.error("Could not find the #openOnrampButton element.");
 }
 
-// Simple error display
 const appElement = document.getElementById("app");
 if (appElement) {
   const errorMessageElement = document.createElement("p");

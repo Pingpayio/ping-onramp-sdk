@@ -1,6 +1,6 @@
+import { useNavigate } from "@tanstack/react-router";
 import { forwardRef } from "react";
 import { useAccount, useDisconnect } from "wagmi";
-import { useNavigate } from "@tanstack/react-router";
 import { Button } from "./ui/button";
 
 interface HeaderMenuProps {
@@ -16,8 +16,8 @@ export const HeaderMenu = forwardRef<HTMLDivElement, HeaderMenuProps>(
 
     const handleDisconnect = () => {
       disconnect();
-      navigate({ to: "/onramp/connect-wallet", replace: true });
       onClose();
+      void navigate({ to: "/onramp/connect-wallet", replace: true });
     };
 
     if (!isOpen) return null;
