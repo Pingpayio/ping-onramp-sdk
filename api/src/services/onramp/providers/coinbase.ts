@@ -6,7 +6,7 @@ import type {
   PurchaseCurrency,
 } from "@pingpay/onramp-types";
 import { ProviderError } from "../../../lib/errors";
-import type { OnrampProvider } from "./types";
+import type { OnrampProvider } from "./interface";
 
 interface CoinbaseConfigResponse {
   countries: {
