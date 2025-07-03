@@ -173,7 +173,7 @@ export const PopupConnectionProvider = ({
           payload,
         );
         setOnrampTarget(payload.target);
-        void navigate({ to: "/onramp/connect-wallet" });
+        // void navigate({ to: "/onramp/connect-wallet" });
         await call("reportFlowStarted", payload);
       },
     };
