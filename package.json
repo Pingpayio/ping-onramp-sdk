@@ -19,7 +19,6 @@
     "popup",
     "examples",
     "docs",
-    "api",
-    "types"
+    "api"
   ]
 }

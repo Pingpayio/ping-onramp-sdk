@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
-    "@pingpay/onramp-types": "workspace:*",
+    "@pingpay/onramp-types": "^0.0.1",
     "@tanstack/eslint-plugin-router": "^1.121.21",
     "@tanstack/router-plugin": "^1.121.16",
     "@types/react": "^19.1.2",
