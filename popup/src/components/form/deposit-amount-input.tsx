@@ -1,10 +1,10 @@
 import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import { useState } from "react";
-import { useFormContext } from "react-hook-form";
+import { useFormContext, type RegisterOptions } from "react-hook-form";
 import { Input } from "../ui/input";
 
 interface DepositAmountInputProps {
-  validationRules: any;
+  validationRules: RegisterOptions<FormValues, "amount">;
 }
 
 export function DepositAmountInput({
@@ -27,7 +27,8 @@ export function DepositAmountInput({
       <p>Your Deposit</p>
       <div className="flex flex-row items-center justify-between">
         <Input
-          type="number"
+          type="text"
+          inputMode="decimal"
           id="amount"
           {...register("amount", validationRules)}
           onFocus={() => {
