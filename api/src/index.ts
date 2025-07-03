@@ -14,7 +14,7 @@ export type Bindings = {
 const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 
 app.use(
-  "/*",
+  "*",
   cors({
     origin: (origin, c) => {
       const allowedOrigins = (c.env.CORS_ORIGIN || "").split(",");
