@@ -1,6 +1,6 @@
 import type {
   OnrampConfigResponse,
-  OnrampInitResponse
+  OnrampInitResponse,
 } from "@pingpay/onramp-types";
 import { OnrampInitRequest } from "@pingpay/onramp-types";
 import { OnrampSessionContext } from "../../middleware/onramp-session";

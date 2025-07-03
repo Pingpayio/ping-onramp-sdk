@@ -2,7 +2,7 @@ import { zValidator } from "@hono/zod-validator";
 import {
   onrampConfigRequestSchema,
   onrampInitRequestSchema,
-  onrampQuoteRequestSchema
+  onrampQuoteRequestSchema,
 } from "@pingpay/onramp-types";
 import { Hono } from "hono";
 import { Session } from "hono-sessions";
@@ -79,11 +79,19 @@ onramp.post(
   zValidator("json", onrampInitRequestSchema),
   async (c) => {
     const onrampContext = c.var.onrampContext;
-    if (!onrampContext.location || !onrampContext.targetAsset || !onrampContext.origin) {
+    if (
+      !onrampContext.location ||
+      !onrampContext.targetAsset ||
+      !onrampContext.origin
+    ) {
       return c.json({ error: "Incomplete session data" }, 400);
     }
     const formData = c.req.valid("json");
-    const result = await generateOnrampUrl(c.env, onrampContext as OnrampSessionContext, formData);
+    const result = await generateOnrampUrl(
+      c.env,
+      onrampContext as OnrampSessionContext,
+      formData,
+    );
     return c.json(result);
   },
 );

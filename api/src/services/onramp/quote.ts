@@ -56,7 +56,7 @@ export async function getCombinedQuote(
   const amountInSmallestUnit = BigInt(
     Math.floor(
       parseFloat(onrampQuote.purchase_amount.value) *
-      10 ** originAsset1Click.decimals,
+        10 ** originAsset1Click.decimals,
     ),
   ).toString();
 
