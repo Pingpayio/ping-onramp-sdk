@@ -1,3 +1,4 @@
+import { PINGPAY_API_URL } from "@/config";
 import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import type {
   OnrampConfigResponse,
@@ -7,9 +8,7 @@ import type {
   TargetAsset,
 } from "@pingpay/onramp-types";
 
-const API_BASE_URL = import.meta.env.PROD
-  ? "https://api.onramp.pingpay.io"
-  : "";
+const API_BASE_URL = PINGPAY_API_URL;
 
 export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
   queryKey: ["onramp", "config", targetAsset],
