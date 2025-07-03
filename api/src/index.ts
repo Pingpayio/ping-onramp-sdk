@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { Session } from "hono-sessions";
 import { cors } from "hono/cors";
-import { env } from 'hono/adapter'
+import { env } from "hono/adapter";
 import { ApiError } from "./lib/errors";
 import { cookieSessionMiddleware, SessionData } from "./middleware/sessions";
 import onramp from "./routes/onramp";
