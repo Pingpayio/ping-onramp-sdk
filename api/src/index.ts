@@ -27,6 +27,7 @@ app.use(
         return null;
       },
       allowMethods: ["GET", "OPTIONS", "POST"],
+      allowHeaders: ["Content-Type", "Authorization"],
       credentials: true,
     });
     return corsMiddleware(c, next);
