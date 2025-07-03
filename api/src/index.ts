@@ -18,10 +18,13 @@ app.use(
   cors({
     origin: (origin, c) => {
       const allowedOrigins = (c.env.CORS_ORIGIN || "").split(",");
+      if (allowedOrigins.includes("*")) {
+        return "*";
+      }
       if (allowedOrigins.includes(origin)) {
         return origin;
       }
-      return allowedOrigins.includes(origin) ? origin : undefined;
+      return "";
     },
     allowMethods: ["POST", "GET", "OPTIONS"],
     allowHeaders: ["Content-Type", "Authorization"],
