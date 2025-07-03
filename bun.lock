@@ -15,7 +15,7 @@
       "dependencies": {
         "@coinbase/cdp-sdk": "^1.21.0",
         "@hono/zod-validator": "^0.7.0",
-        "@pingpay/onramp-types": "workspace:*",
+        "@pingpay/onramp-types": "^0.0.1",
         "hono": "^4.8.3",
       },
       "devDependencies": {
@@ -136,6 +136,7 @@
     },
     "types": {
       "name": "@pingpay/onramp-types",
+      "version": "0.0.1",
       "dependencies": {
         "zod": "^3.25.67",
       },
