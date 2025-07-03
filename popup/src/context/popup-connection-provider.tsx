@@ -127,32 +127,20 @@ export const PopupConnectionProvider = ({
       return;
     }
 
-    const opener = window.opener as WindowProxy & { location: Location };
+    const opener = window.opener as WindowProxy;
     const openerOrigin = getOpenerOrigin();
-    let sdkOrigin: string;
+    const sdkOrigin =
+      openerOrigin ?? (process.env.NODE_ENV === "development" ? "*" : null);
 
-    if (process.env.NODE_ENV === "development") {
-      try {
-        sdkOrigin =
-          opener.location.origin && opener.location.origin !== "null"
-            ? new URL(opener.location.href).origin
-            : "*";
-      } catch (e) {
-        console.warn("Error determining opener's origin", e);
-        sdkOrigin = "*";
-      }
-    } else {
-      if (!openerOrigin) {
-        console.error(
-          "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' is missing.",
-        );
-        setFlowError(
-          "Configuration error: SDK identification parameter missing.",
-        );
-        setStatus("error");
-        return;
-      }
-      sdkOrigin = openerOrigin;
+    if (!sdkOrigin) {
+      console.error(
+        "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' is missing.",
+      );
+      setFlowError(
+        "Configuration error: SDK identification parameter missing.",
+      );
+      setStatus("error");
+      return;
     }
 
     if (sdkOrigin === "*" && process.env.NODE_ENV === "production") {
