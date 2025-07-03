@@ -16,14 +16,27 @@ const app = new Hono<{ Bindings: Bindings }>().basePath("/api");
 app.use(
   "*", async (c, next) => {
     const corsMiddleware = cors({
-      origin: (origin) => {
-        const allowedOrigins = (c.env.CORS_ORIGIN || "").split(",");
-        if (allowedOrigins.includes("*")) {
+      origin: (origin, c) => {
+        const allowedOriginsEnv = (c.env.CORS_ORIGIN || "")
+          .split(",")
+          .map((o: string) => o.trim())
+          .filter(Boolean);
+
+        const hardcodedAllowedOrigins = ["https://onramp.pingpay.io"];
+
+        const allAllowedOrigins = [
+          ...allowedOriginsEnv,
+          ...hardcodedAllowedOrigins,
+        ];
+
+        if (allAllowedOrigins.includes("*")) {
           return "*";
         }
-        if (allowedOrigins.includes(origin)) {
+
+        if (origin && allAllowedOrigins.includes(origin)) {
           return origin;
         }
+
         return null;
       },
       allowMethods: ["GET", "OPTIONS", "POST"],
