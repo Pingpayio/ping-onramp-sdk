@@ -21,8 +21,6 @@ const app = new Hono<{
   };
 }>().basePath("/api");
 
-app.use("*").use(cookieSessionMiddleware);
-
 app.use("*", async (c, next) => {
   const corsMiddleware = cors({
     origin: (origin, c) => {
@@ -54,6 +52,8 @@ app.use("*", async (c, next) => {
   });
   return corsMiddleware(c, next);
 });
+
+app.use("*").use(cookieSessionMiddleware);
 
 app.route("/onramp", onramp);
 
