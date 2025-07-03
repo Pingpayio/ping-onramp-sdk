@@ -9,4 +9,5 @@ export const SKIP_POSTME_HANDSHAKE = import.meta.env
 export const SKIP_REDIRECT = import.meta.env
   .VITE_PUBLIC_SKIP_REDIRECT as string;
 
-export const PINGPAY_API_URL = import.meta.env.VITE_PINGPAY_API_URL as string;
+export const PINGPAY_API_URL = import.meta.env
+  .VITE_PUBLIC_PINGPAY_API_URL as string;
