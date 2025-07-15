@@ -26,8 +26,9 @@
       }
 
       body {
-        background-color: #121212;
-        color: #fafafa;
+        background: linear-gradient(to left, #c0e6ff, transparent),
+          url(https://grainy-gradients.vercel.app/noise.svg);
+        color: #030f1c;
         font-family: "Inter", sans-serif;
         margin: 0;
         min-height: 100vh;
@@ -45,10 +46,30 @@
         text-align: center;
       }
 
+      .logo-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 30px;
+        position: relative;
+      }
+
       .logo {
         width: 200px;
         height: auto;
-        margin-bottom: 30px;
+      }
+
+      .sui-logo {
+        width: 100px;
+        height: auto;
+      }
+
+      .logo-separator {
+        font-size: 24px;
+        font-weight: bold;
+        color: #030f1c;
+        opacity: 0.6;
       }
 
       #openOnrampButton {
@@ -69,14 +90,14 @@
       }
 
       .code-blurb-container {
-        background-color: #282c34;
+        background: linear-gradient(135deg, #f5e6d3, #e8d5b7);
         border-radius: 8px;
         padding: 1px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid #d4b896;
         max-width: 800px;
         width: 100%;
         margin-bottom: 20px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 4px 15px rgba(212, 184, 150, 0.3);
         text-align: left;
       }
 
@@ -90,6 +111,12 @@
           monospace;
         font-size: 14px;
         line-height: 1.6;
+        color: #5d4e37;
+        background: transparent;
+      }
+
+      .code-blurb-container code {
+        color: #5d4e37;
       }
 
       #errorMessages {
@@ -101,11 +128,19 @@
   </head>
   <body>
     <div id="app">
-      <img
-        src="https://onramp.pingpay.io/ping-pay-logo.png"
-        alt="PingPay Logo"
-        class="logo"
-      />
+      <div class="logo-container">
+        <img
+          src="https://cdn.prod.website-files.com/6425f546844727ce5fb9e5ab/659d95d2971219c839dc65ac_logo-sui.svg"
+          alt="Sui Logo"
+          class="sui-logo"
+        />
+        <span class="logo-separator">×</span>
+        <img
+          src="https://onramp.pingpay.io/ping-pay-logo.png"
+          alt="PingPay Logo"
+          class="logo"
+        />
+      </div>
       <button id="openOnrampButton">Open Onramp</button>
 
       <div class="code-blurb-container">
@@ -116,7 +151,7 @@ import type { TargetAsset, OnrampResult } from "@pingpay/onramp-sdk";
 const onramp = new PingpayOnramp();
 
 const targetAsset: TargetAsset = {
-  chain: "NEAR",
+  chain: "SUI",
   asset: "USDC",
 };
 

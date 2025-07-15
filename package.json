@@ -17,7 +17,7 @@
   "workspaces": [
     "sdk",
     "popup",
-    "examples",
+    "examples/**",
     "docs",
     "api"
   ]
