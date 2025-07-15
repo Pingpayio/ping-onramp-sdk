@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PingPay Onramp SDK Example</title>
+    <!-- Favicon -->
+    <link rel="icon" href="https://onramp.pingpay.io/favicon.png" type="image/png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="https://onramp.pingpay.io/favicon.png" sizes="180x180" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css"
+    />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: #121212;
+        color: #fafafa;
+        font-family: "Inter", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      #app {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 40px 20px;
+        width: 100%;
+        text-align: center;
+      }
+
+      .logo {
+        width: 200px;
+        height: auto;
+        margin-bottom: 30px;
+      }
+
+      #openOnrampButton {
+        background-color: #ab9ff2;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 12px 24px;
+        font-size: 18px;
+        font-weight: 500;
+        cursor: pointer;
+        margin-bottom: 40px;
+        transition: background-color 0.3s ease;
+      }
+
+      #openOnrampButton:hover {
+        background-color: #9382e0;
+      }
+
+      .code-blurb-container {
+        background-color: #282c34;
+        border-radius: 8px;
+        padding: 1px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 800px;
+        width: 100%;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        text-align: left;
+      }
+
+      .code-blurb-container pre {
+        margin: 0;
+        padding: 15px; /* Padding inside pre for code */
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-family:
+          "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier,
+          monospace;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+
+      #errorMessages {
+        color: #ff4d4d;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <img
+        src="https://onramp.pingpay.io/ping-pay-logo.png"
+        alt="PingPay Logo"
+        class="logo"
+      />
+      <button id="openOnrampButton">Open Onramp</button>
+
+      <div class="code-blurb-container">
+        <pre><code class="language-typescript">
+import { PingpayOnramp } from "@pingpay/onramp-sdk";
+import type { TargetAsset, OnrampResult } from "@pingpay/onramp-sdk";
+
+const onramp = new PingpayOnramp();
+
+const targetAsset: TargetAsset = {
+  chain: "NEAR",
+  asset: "USDC",
+};
+
+try {
+  const result: OnrampResult = await onramp.initiateOnramp(targetAsset);
+  console.log("Onramp successful:", result);
+} catch (error) {
+  console.error("Onramp failed:", error);
+}
+        </code></pre>
+      </div>
+
+      <div id="errorMessages"></div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>
+      hljs.highlightAll();
+    </script>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
