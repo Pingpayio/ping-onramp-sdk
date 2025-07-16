@@ -91,6 +91,7 @@ class CoinbaseProvider implements OnrampProvider {
     if (!configResponse.ok) {
       const errorBody = await configResponse.text();
       throw new ProviderError("Coinbase onramp config failed", {
+        status: configResponse.status,
         error: errorBody,
       });
     }
@@ -130,6 +131,7 @@ class CoinbaseProvider implements OnrampProvider {
     if (!optionsResponse.ok) {
       const errorBody = await optionsResponse.text();
       throw new ProviderError("Coinbase onramp options failed", {
+        status: optionsResponse.status,
         error: errorBody,
       });
     }
@@ -188,6 +190,7 @@ class CoinbaseProvider implements OnrampProvider {
     if (!tokenResponse.ok) {
       const errorBody = await tokenResponse.text();
       throw new ProviderError("Coinbase onramp session token failed", {
+        status: tokenResponse.status,
         error: errorBody,
       });
     }
@@ -256,7 +259,10 @@ class CoinbaseProvider implements OnrampProvider {
 
     if (!quoteResponse.ok) {
       const errorBody = await quoteResponse.text();
-      throw new ProviderError("Coinbase quote failed", { error: errorBody });
+      throw new ProviderError("Coinbase quote failed", {
+        status: quoteResponse.status,
+        error: errorBody,
+      });
     }
 
     const quoteData =

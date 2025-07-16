@@ -94,6 +94,8 @@ export interface StatusResponseData {
   swapDetails?: SwapDetails;
 }
 
+import { ProviderError } from "./errors";
+
 const ONE_CLICK_API_BASE_URL = "https://1click.chaindefuser.com/v0";
 
 // Function to fetch supported tokens from 1Click API
@@ -101,9 +103,10 @@ export async function fetch1ClickSupportedTokens(): Promise<OneClickToken[]> {
   const response = await fetch(`${ONE_CLICK_API_BASE_URL}/tokens`);
   if (!response.ok) {
     const errorBody = await response.text();
-    throw new Error(
-      `Failed to fetch 1Click supported tokens: ${response.status} ${errorBody}`,
-    );
+    throw new ProviderError("Failed to fetch 1Click supported tokens", {
+      status: response.status,
+      error: errorBody,
+    });
   }
   return response.json();
 }
@@ -138,11 +141,10 @@ export async function requestSwapQuote(
       message?: string;
     };
     console.error("1Click API Error (requestSwapQuote):", errorBody);
-    throw new Error(
-      `Failed to request swap quote: ${response.status} ${
-        errorBody?.message || JSON.stringify(errorBody)
-      }`,
-    );
+    throw new ProviderError("Failed to request swap quote", {
+      status: response.status,
+      error: errorBody?.message || JSON.stringify(errorBody),
+    });
   }
   return response.json();
 }
@@ -164,11 +166,10 @@ export async function submitDepositTransaction(
       message?: string;
     };
     console.error("1Click API Error (submitDepositTransaction):", errorBody);
-    throw new Error(
-      `Failed to submit deposit transaction: ${response.status} ${
-        errorBody?.message || JSON.stringify(errorBody)
-      }`,
-    );
+    throw new ProviderError("Failed to submit deposit transaction", {
+      status: response.status,
+      error: errorBody?.message || JSON.stringify(errorBody),
+    });
   }
   return response.json();
 }
@@ -197,11 +198,10 @@ export async function getSwapStatus(
       message?: string;
     };
     console.error("1Click API Error (getSwapStatus):", errorBody);
-    throw new Error(
-      `Failed to get swap status: ${response.status} ${
-        errorBody?.message || JSON.stringify(errorBody)
-      }`,
-    );
+    throw new ProviderError("Failed to get swap status", {
+      status: response.status,
+      error: errorBody?.message || JSON.stringify(errorBody),
+    });
   }
   return response.json();
 }

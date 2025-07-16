@@ -1,4 +1,4 @@
-import { ServiceError } from "../../lib/errors";
+import { ProviderError, ServiceError } from "../../lib/errors";
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
