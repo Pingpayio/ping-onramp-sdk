@@ -37,7 +37,7 @@ export interface PingpayOnrampConfig {
 
   /**
    * Optional callback invoked when the onramp flow is confirmed as started by the popup.
-   * @param data The initiation data including target and any initialData.
+   * @param data The initiation data including target.
    */
   onFlowStarted?: (
     data: z.infer<typeof initiateOnrampFlowPayloadSchema>,

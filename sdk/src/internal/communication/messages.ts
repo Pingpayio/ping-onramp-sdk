@@ -6,8 +6,7 @@ const targetAssetSchema = z.object({
 });
 
 const initiateOnrampFlowPayloadSchema = z.object({
-  target: targetAssetSchema,
-  initialData: z.any().optional(),
+  target: targetAssetSchema
 });
 
 const formDataSubmittedPayloadSchema = z.object({
