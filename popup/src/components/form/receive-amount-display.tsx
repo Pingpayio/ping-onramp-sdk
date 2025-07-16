@@ -1,7 +1,6 @@
-import { useState } from "react";
-import { useAtomValue } from "jotai";
-import { onrampTargetAtom } from "@/state/atoms";
+import type { TargetAsset } from "@pingpay/onramp-sdk";
 import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
+import { useState } from "react";
 import LoadingSpinner from "../loading-spinner";
 import { RateModal } from "../rate-modal";
 
@@ -11,6 +10,7 @@ interface ReceiveAmountDisplayProps {
   quoteError?: string;
   depositAmount: string;
   quote?: OnrampQuoteResponse;
+  onrampTarget: TargetAsset;
 }
 
 export function ReceiveAmountDisplay({
@@ -19,9 +19,9 @@ export function ReceiveAmountDisplay({
   quoteError,
   depositAmount,
   quote,
+  onrampTarget,
 }: ReceiveAmountDisplayProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const onrampTarget = useAtomValue(onrampTargetAtom);
 
   // Calculate dynamic exchange rate
   const calculateExchangeRate = () => {
@@ -71,17 +71,15 @@ export function ReceiveAmountDisplay({
                 onrampTarget.asset.toLowerCase() === "wnear"
                   ? "/near-logo-green.png"
                   : onrampTarget.asset.toLowerCase() === "sui"
-                  ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
-                  : "/usd-coin-usdc-logo.svg"
+                    ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
+                    : "/usd-coin-usdc-logo.svg"
               }
               alt={`${onrampTarget.asset} Logo`}
               width="20px"
               height="20px"
               className="rounded-full"
             />
-            <span className="text-white font-normal">
-              {onrampTarget.asset}
-            </span>
+            <span className="text-white font-normal">{onrampTarget.asset}</span>
           </div>
         </div>
       </div>
@@ -116,8 +114,8 @@ export function ReceiveAmountDisplay({
               onrampTarget.chain.toLowerCase() === "near"
                 ? "/near-logo-green.png"
                 : onrampTarget.chain.toLowerCase() === "sui"
-                ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
-                : "/near-logo-green.png" // Fallback to NEAR logo if unknown
+                  ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
+                  : "/near-logo-green.png" // Fallback to NEAR logo if unknown
             }
             alt={`${onrampTarget.chain} Protocol Logo`}
             className="w-4 h-4 rounded-full"

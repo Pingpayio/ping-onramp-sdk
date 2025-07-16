@@ -9,22 +9,18 @@ import {
   type ReactNode,
 } from "react";
 
-import { SKIP_POSTME_HANDSHAKE } from "@/config";
-import { signalConnectionEstablished } from "@/lib/connection-guard";
-import { useOnrampFlow, useSetOnrampTarget } from "@/state/hooks";
+import { getConnection } from "@/lib/popup-connection";
 import type {
-  InitiateOnrampFlowPayload,
   PopupActionMethods,
   SdkListenerMethods,
 } from "@pingpay/onramp-sdk";
-import { ChildHandshake, type Connection, WindowMessenger } from "post-me";
+import type { Connection } from "post-me";
 
 type PopupConnection = Connection<PopupActionMethods, SdkListenerMethods>;
 type ConnectionStatus = "idle" | "connecting" | "connected" | "error";
 
 interface PopupConnectionContextType {
   connection: PopupConnection | null;
-  openerOrigin: string | null;
   status: ConnectionStatus;
   call: <TMethod extends keyof SdkListenerMethods>(
     method: TMethod,
@@ -34,7 +30,6 @@ interface PopupConnectionContextType {
 
 const PopupConnectionContext = createContext<PopupConnectionContextType>({
   connection: null,
-  openerOrigin: null,
   status: "idle",
   call: async () => {
     console.warn("PopupConnectionContext: `call` invoked before connection");
@@ -46,23 +41,6 @@ export const usePopupConnection = () => {
   return use(PopupConnectionContext);
 };
 
-const getOpenerOrigin = () => {
-  try {
-    let origin = sessionStorage.getItem("ping_sdk_opener_origin");
-    if (origin) return origin;
-
-    const queryParams = new URLSearchParams(window.location.search);
-    origin = queryParams.get("ping_sdk_opener_origin");
-    if (origin) {
-      sessionStorage.setItem("ping_sdk_opener_origin", origin);
-      return origin;
-    }
-  } catch (e) {
-    console.warn("Popup: Failed to access sessionStorage for opener origin", e);
-  }
-  return null;
-};
-
 export const PopupConnectionProvider = ({
   children,
 }: {
@@ -70,23 +48,21 @@ export const PopupConnectionProvider = ({
 }) => {
   const connectionRef = useRef<PopupConnection | null>(null);
   const [status, setStatus] = useState<ConnectionStatus>("idle");
-  const { setFlowError } = useOnrampFlow();
-  const setOnrampTarget = useSetOnrampTarget();
 
   const call = useCallback(
     async <TMethod extends keyof SdkListenerMethods>(
       method: TMethod,
       ...args: Parameters<SdkListenerMethods[TMethod]>
     ): Promise<ReturnType<SdkListenerMethods[TMethod]> | undefined> => {
-      if (!connectionRef.current) {
+      const conn = connectionRef.current;
+      if (!conn) {
         console.warn(
           `[PopupConnectionProvider] Attempted to call ${method} before connection was established.`,
         );
         return undefined;
       }
       try {
-        // eslint-disable-next-line @typescript-eslint/return-await
-        return (await connectionRef.current
+        return (await conn
           .remoteHandle()
           .call(method, ...args)) as ReturnType<SdkListenerMethods[TMethod]>;
       } catch (e) {
@@ -97,102 +73,23 @@ export const PopupConnectionProvider = ({
     [],
   );
 
-  const establishConnection = useCallback(async () => {
+  useEffect(() => {
+    let isMounted = true;
     setStatus("connecting");
 
-    if (SKIP_POSTME_HANDSHAKE === "true") {
-      console.warn(
-        "[PopupConnectionProvider] Skipping post-me handshake due to VITE_SKIP_POSTME_HANDSHAKE flag.",
-      );
-      const mockConnection = {
-        remoteHandle: () => ({
-          call: (methodName: string, params?: unknown) => {
-            console.log(
-              `[MockConnection] Called ${methodName} with params:`,
-              params,
-            );
-            return Promise.resolve({});
-          },
-        }),
-        close: () => {
-          console.log("[MockConnection] close() called");
-        },
-        localHandle: () => ({}),
-        closed: false,
-        connected: true,
-      } as unknown as PopupConnection;
-      connectionRef.current = mockConnection;
-      setStatus("connected");
-      // HACK: This is a mock for development, so we can invent a target.
-      const mockTarget = { chain: "SUI", asset: "SUI" };
-      void setOnrampTarget(mockTarget);
-      signalConnectionEstablished(mockTarget);
-      return;
-    }
-
-    const opener = window.opener as WindowProxy;
-    const openerOrigin = getOpenerOrigin();
-    const sdkOrigin =
-      openerOrigin ?? (process.env.NODE_ENV === "development" ? "*" : null);
-
-    if (!sdkOrigin) {
-      console.error(
-        "Popup (Prod): CRITICAL - 'ping_sdk_opener_origin' is missing.",
-      );
-      setFlowError(
-        "Configuration error: SDK identification parameter missing.",
-      );
-      setStatus("error");
-      return;
-    }
-
-    if (sdkOrigin === "*" && process.env.NODE_ENV === "production") {
-      console.error(
-        "Popup (Prod): CRITICAL - sdkOrigin resolved to '*'. Aborting.",
-      );
-      setFlowError(
-        "Security misconfiguration: Wildcard origin detected in production.",
-      );
-      setStatus("error");
-      return;
-    }
-
-    const popupActionMethods: PopupActionMethods = {
-      initiateOnrampInPopup: async (payload: InitiateOnrampFlowPayload) => {
-        console.log(
-          "[Popup] Received initiateOnrampInPopup from SDK:",
-          payload,
-        );
-        void setOnrampTarget(payload.target);
-        signalConnectionEstablished(payload.target);
-        await call("reportFlowStarted", payload);
-      },
-    };
-
-    const messenger = new WindowMessenger({
-      localWindow: window,
-      remoteWindow: opener,
-      remoteOrigin: sdkOrigin,
-    });
-
-    try {
-      const conn = await ChildHandshake(messenger, popupActionMethods);
-      console.log("Popup: post-me ChildHandshake successful.");
-      connectionRef.current = conn;
-      setStatus("connected");
-      await call("reportPopupReady");
-    } catch (e) {
-      console.error("Popup: post-me ChildHandshake failed.", e);
-      const errorMsg = `Connection to SDK failed: ${
-        e instanceof Error ? e.message : String(e)
-      }`;
-      setFlowError(errorMsg);
-      setStatus("error");
-    }
-  }, [setFlowError, setOnrampTarget, call]);
-
-  useEffect(() => {
-    void establishConnection();
+    getConnection()
+      .then((conn) => {
+        if (isMounted) {
+          connectionRef.current = conn;
+          setStatus("connected");
+        }
+      })
+      .catch((e) => {
+        console.error("Failed to establish connection:", e);
+        if (isMounted) {
+          setStatus("error");
+        }
+      });
 
     const handleBeforeUnload = () => {
       if (connectionRef.current) {
@@ -209,15 +106,15 @@ export const PopupConnectionProvider = ({
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
+      isMounted = false;
       window.removeEventListener("beforeunload", handleBeforeUnload);
       connectionRef.current?.close();
     };
-  }, [establishConnection, call]);
+  }, [call]);
 
   const contextValue = useMemo(
     () => ({
       connection: connectionRef.current,
-      openerOrigin: getOpenerOrigin(),
       status,
       call,
     }),
@@ -225,8 +122,8 @@ export const PopupConnectionProvider = ({
   );
 
   return (
-    <PopupConnectionContext value={contextValue}>
+    <PopupConnectionContext.Provider value={contextValue}>
       {children}
-    </PopupConnectionContext>
+    </PopupConnectionContext.Provider>
   );
 };

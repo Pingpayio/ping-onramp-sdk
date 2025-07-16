@@ -1,9 +1,5 @@
-import { onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import type { FormValues } from "@/routes/_layout/onramp/form-entry";
-import { onrampTargetAtom } from "@/state/atoms";
 import type { OnrampConfigResponse } from "@pingpay/onramp-types";
-import { useQuery } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 import { CreditCard, Landmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
@@ -36,7 +32,11 @@ const getMethodSubtext = (method: string) => {
   }
 };
 
-export function PaymentMethodSelector() {
+export function PaymentMethodSelector({
+  onrampConfig,
+}: {
+  onrampConfig: OnrampConfigResponse;
+}) {
   const {
     control,
     formState: { errors },
@@ -44,13 +44,8 @@ export function PaymentMethodSelector() {
     getValues,
   } = useFormContext<FormValues>();
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    getValues("paymentMethod"),
+    getValues("paymentMethod")
   );
-
-  const onrampTarget = useAtomValue(onrampTargetAtom);
-  const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget),
-  ) as { data: OnrampConfigResponse | undefined };
 
   const paymentMethodWatcher = watch("paymentMethod");
 
@@ -89,7 +84,7 @@ export function PaymentMethodSelector() {
                 .filter((method) => {
                   if (onrampConfig?.isIosDevice) {
                     return ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(
-                      method.id,
+                      method.id
                     );
                   } else {
                     return ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id);

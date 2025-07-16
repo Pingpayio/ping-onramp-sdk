@@ -1,15 +1,10 @@
-import {
-  onrampConfigQueryOptions,
-  onrampQuoteQueryOptions,
-} from "@/lib/pingpay-api";
-import type { FormValues } from "@/routes/_layout/onramp/form-entry";
-import { onrampTargetAtom } from "@/state/atoms";
+import { onrampQuoteQueryOptions } from "@/lib/pingpay-api";
 import type {
   OnrampConfigResponse,
   PaymentMethodLimit,
+  TargetAsset,
 } from "@pingpay/onramp-types";
 import { useQuery } from "@tanstack/react-query";
-import { useAtomValue } from "jotai";
 
 export const isAmountValid = (
   amount: string,
@@ -36,16 +31,21 @@ export const isAmountValid = (
   return false;
 };
 
+interface UseQuotePreviewProps {
+  amount: string;
+  selectedCurrency: string;
+  paymentMethod: string;
+  onrampTarget: TargetAsset | null;
+  onrampConfig: OnrampConfigResponse | undefined;
+}
+
 export function useQuotePreview({
   amount,
   selectedCurrency,
   paymentMethod,
-}: Omit<FormValues, "selectedAsset" | "recipientAddress">) {
-  const onrampTarget = useAtomValue(onrampTargetAtom);
-  const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget),
-  );
-
+  onrampTarget,
+  onrampConfig,
+}: UseQuotePreviewProps) {
   const {
     data: quote,
     error,
@@ -54,10 +54,11 @@ export function useQuotePreview({
     ...onrampQuoteQueryOptions({
       amount,
       sourceCurrency: selectedCurrency,
-      destinationAsset: onrampTarget,
+      destinationAsset: onrampTarget!,
       paymentMethod,
     }),
-    enabled: isAmountValid(amount, paymentMethod, onrampConfig),
+    enabled:
+      !!onrampTarget && isAmountValid(amount, paymentMethod, onrampConfig),
     retry: false,
     staleTime: Infinity,
     refetchOnWindowFocus: false,

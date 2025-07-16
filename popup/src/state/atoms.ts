@@ -1,6 +1,5 @@
 import type { OnrampResult, TargetAsset } from "@pingpay/onramp-sdk";
 import { atom } from "jotai";
-import { atomWithStorage } from "jotai/utils";
 import type { StatusResponseData } from "../lib/one-click-api";
 import type { NearIntentsDisplayInfo } from "../types";
 
@@ -8,8 +7,7 @@ import type { NearIntentsDisplayInfo } from "../types";
 export const onrampErrorAtom = atom<string | null>(null);
 
 // Atoms for data collected during the flow
-export const onrampTargetAtom = atomWithStorage<TargetAsset>(
-  "onrampTarget", // sessionStorage key
+export const onrampTargetAtom = atom<TargetAsset | null>(
   null
 );
 
