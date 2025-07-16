@@ -4,6 +4,7 @@ import { createStore } from "jotai";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
+import { PopupConnectionProvider } from "./context/popup-connection-provider";
 
 export interface RouterContext {
   queryClient: QueryClient;
@@ -32,9 +33,11 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-      </QueryClientProvider>
-    </StrictMode>,
+      <PopupConnectionProvider>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+        </QueryClientProvider>
+      </PopupConnectionProvider>
+    </StrictMode>
   );
 }

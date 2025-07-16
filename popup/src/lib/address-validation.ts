@@ -4,6 +4,12 @@ const NEAR_ACCOUNT_CHARS_REGEX = /^[a-z0-9._-]+$/;
 const SEPARATOR_START_END_REGEX = /^[._-]|[._-]$/;
 const CONSECUTIVE_SEPARATORS_REGEX = /[._-]{2,}/;
 const BASIC_ADDRESS_CHARS_REGEX = /^[a-zA-Z0-9._-]+$/;
+const SUI_ADDRESS_REGEX = /^(0x)?[0-9a-fA-F]{64}$/;
+
+// Basic SUI address validation
+function isValidSuiAddress(address: string): boolean {
+  return SUI_ADDRESS_REGEX.test(address);
+}
 
 // Basic NEAR account validation with performance optimizations
 function isValidNearAccount(address: string): boolean {
@@ -88,6 +94,14 @@ export function validateRecipientAddress(
   if (chainLower === "near") {
     if (!isValidNearAccount(trimmedAddress)) {
       return "Please enter a valid NEAR account ID (e.g., alice.near or 64-character hex)";
+    }
+    return undefined;
+  }
+
+  // SUI chain validation
+  if (chainLower === "sui") {
+    if (!isValidSuiAddress(trimmedAddress)) {
+      return "Please enter a valid SUI address (64-character hex, optionally prefixed with 0x)";
     }
     return undefined;
   }

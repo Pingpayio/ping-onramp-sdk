@@ -54,7 +54,7 @@ const getDisplayInfoForStatus = (
           title: "Pending Onramp Deposit",
           desc:
             nearIntentsDisplayInfo?.message ||
-            "Waiting for funds to be deposited by Coinbase to the 1Click address.",
+            "Waiting for funds to be deposited by Onramp to the 1Click address.",
           color: "border-indigo-400",
         };
         break;
@@ -155,7 +155,7 @@ export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
       title: "Initiating Onramp",
       desc:
         nearIntentsDisplayInfo.message ||
-        "Preparing your onramp with Coinbase...",
+        "Preparing your onramp...",
       color: "border-blue-400",
     };
     transactionDetails.statusMessage = nearIntentsDisplayInfo.message;

@@ -157,7 +157,7 @@ export class PingpayOnramp {
               if (this.postMeConnection) {
                 try {
                   const payload: InitiateOnrampFlowPayload = {
-                    target
+                    target,
                   };
                   console.log(
                     "SDK: Calling initiateOnrampInPopup on popup.",
@@ -266,11 +266,6 @@ export class PingpayOnramp {
     });
   }
 
-  /**
-   * Sets up a heartbeat interval to detect if the popup window is closed by the user.
-   * 
-   * @private
-   */
   private setupHeartbeat() {
     this.heartbeatInterval = setInterval(() => {
       if (this.popup?.closed) {

@@ -1,4 +1,3 @@
-import { useNavigate } from "@tanstack/react-router";
 import {
   createContext,
   use,
@@ -11,6 +10,7 @@ import {
 } from "react";
 
 import { SKIP_POSTME_HANDSHAKE } from "@/config";
+import { signalConnectionEstablished } from "@/lib/connection-guard";
 import { useOnrampFlow, useSetOnrampTarget } from "@/state/hooks";
 import type {
   InitiateOnrampFlowPayload,
@@ -72,7 +72,6 @@ export const PopupConnectionProvider = ({
   const [status, setStatus] = useState<ConnectionStatus>("idle");
   const { setFlowError } = useOnrampFlow();
   const setOnrampTarget = useSetOnrampTarget();
-  const navigate = useNavigate();
 
   const call = useCallback(
     async <TMethod extends keyof SdkListenerMethods>(
@@ -101,7 +100,7 @@ export const PopupConnectionProvider = ({
   const establishConnection = useCallback(async () => {
     setStatus("connecting");
 
-    if (SKIP_POSTME_HANDSHAKE) {
+    if (SKIP_POSTME_HANDSHAKE === "true") {
       console.warn(
         "[PopupConnectionProvider] Skipping post-me handshake due to VITE_SKIP_POSTME_HANDSHAKE flag.",
       );
@@ -124,6 +123,10 @@ export const PopupConnectionProvider = ({
       } as unknown as PopupConnection;
       connectionRef.current = mockConnection;
       setStatus("connected");
+      // HACK: This is a mock for development, so we can invent a target.
+      const mockTarget = { chain: "SUI", asset: "SUI" };
+      void setOnrampTarget(mockTarget);
+      signalConnectionEstablished(mockTarget);
       return;
     }
 
@@ -160,8 +163,8 @@ export const PopupConnectionProvider = ({
           "[Popup] Received initiateOnrampInPopup from SDK:",
           payload,
         );
-        setOnrampTarget(payload.target);
-        // void navigate({ to: "/onramp/connect-wallet" });
+        void setOnrampTarget(payload.target);
+        signalConnectionEstablished(payload.target);
         await call("reportFlowStarted", payload);
       },
     };
@@ -186,7 +189,7 @@ export const PopupConnectionProvider = ({
       setFlowError(errorMsg);
       setStatus("error");
     }
-  }, [setFlowError, navigate, setOnrampTarget, call]);
+  }, [setFlowError, setOnrampTarget, call]);
 
   useEffect(() => {
     void establishConnection();
@@ -194,7 +197,7 @@ export const PopupConnectionProvider = ({
     const handleBeforeUnload = () => {
       if (connectionRef.current) {
         console.log("Popup: Window is closing, reporting to SDK");
-        call("reportPopupClosedByUser").catch((e: unknown) => {
+        void call("reportPopupClosedByUser").catch((e: unknown) => {
           console.warn(
             "Popup: Failed to emit reportPopupClosedByUser on unload",
             e,

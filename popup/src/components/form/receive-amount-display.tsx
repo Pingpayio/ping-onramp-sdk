@@ -68,8 +68,10 @@ export function ReceiveAmountDisplay({
           <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5">
             <img
               src={
-                onrampTarget.asset === "wNEAR"
+                onrampTarget.asset.toLowerCase() === "wnear"
                   ? "/near-logo-green.png"
+                  : onrampTarget.asset.toLowerCase() === "sui"
+                  ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
                   : "/usd-coin-usdc-logo.svg"
               }
               alt={`${onrampTarget.asset} Logo`}
@@ -78,8 +80,7 @@ export function ReceiveAmountDisplay({
               className="rounded-full"
             />
             <span className="text-white font-normal">
-              {/* {onrampTarget.asset} */}
-              NEAR
+              {onrampTarget.asset}
             </span>
           </div>
         </div>
@@ -111,7 +112,13 @@ export function ReceiveAmountDisplay({
         <div className="py-2 gap-1 px-4 flex shrink-0 items-center justify-end text-[#FFFFFF99] text-xs">
           <p>Network:</p>
           <img
-            src="/near-logo-green.png"
+            src={
+              onrampTarget.chain.toLowerCase() === "near"
+                ? "/near-logo-green.png"
+                : onrampTarget.chain.toLowerCase() === "sui"
+                ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
+                : "/near-logo-green.png" // Fallback to NEAR logo if unknown
+            }
             alt={`${onrampTarget.chain} Protocol Logo`}
             className="w-4 h-4 rounded-full"
           />

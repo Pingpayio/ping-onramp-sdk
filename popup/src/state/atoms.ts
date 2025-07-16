@@ -10,19 +10,8 @@ export const onrampErrorAtom = atom<string | null>(null);
 // Atoms for data collected during the flow
 export const onrampTargetAtom = atomWithStorage<TargetAsset>(
   "onrampTarget", // sessionStorage key
-  {
-    chain: "NEAR",
-    asset: "wNEAR",
-  },
+  null
 );
-export const walletStateAtom = atomWithStorage<{
-  address: string;
-  chainId?: string;
-  walletName?: string;
-} | null>(
-  "walletState", // sessionStorage key
-  null,
-); // Connected wallet info
 
 // Atom for the final result to send back to the SDK
 export const onrampResultAtom = atom<OnrampResult | null>(null);

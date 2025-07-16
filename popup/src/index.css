@@ -474,10 +474,6 @@ button:focus-visible {
     margin-top: 5vh;
   }
 
-  /* Style for the connect wallet button on mobile */
-  .wallet-button-mobile {
-    @apply py-2.5 px-5 text-sm min-h-[40px];
-  }
 
   /* Improve onramp page layout for mobile */
   .onramp-container {

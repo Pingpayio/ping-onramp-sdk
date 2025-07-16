@@ -45,7 +45,6 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
 
 function FormEntryRoute() {
   const { call } = useParentMessenger();
-  // const [walletState] = useWalletState();
   const [onrampTarget] = useOnrampTarget();
   const { data: onrampConfig } = useQuery(
     onrampConfigQueryOptions(onrampTarget),
@@ -128,18 +127,7 @@ function FormEntryRoute() {
     call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
       console.error("Failed to report form data submitted:", e);
     });
-
-    // if (!walletState?.address) {
-    //   void navigate({
-    //     to: "/onramp/error",
-    //     search: {
-    //       error:
-    //         "EVM wallet address not available. Please connect your wallet.",
-    //     },
-    //   });
-    //   return;
-    // }
-
+    
     void navigate({
       to: "/onramp/initiating",
     });
@@ -151,7 +139,7 @@ function FormEntryRoute() {
       console.log("typeof SKIP_REDIRECT", typeof SKIP_REDIRECT);
 
       await call("reportOnrampInitiated", {
-        serviceName: "Coinbase Onramp (via 1Click)",
+        serviceName: "Onramp (via 1Click)",
         details: {
           url: SKIP_REDIRECT
             ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
@@ -169,7 +157,7 @@ function FormEntryRoute() {
         window.location.href = targetRedirectUrl!;
       } else {
         // In production: Redirect to Onramp URL
-        console.log("Production mode: Redirecting to Coinbase Onramp URL");
+        console.log("Production mode: Redirecting to Onramp URL");
         window.location.href = onrampUrl;
       }
     } catch (e: unknown) {
@@ -217,8 +205,7 @@ function FormEntryRoute() {
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
           disabled={!isValid || !quote || isQuoteLoading}
         >
-          {/* Buy {onrampTarget.asset} */}
-          Buy NEAR
+          Buy {onrampTarget.asset}
         </Button>
       </form>
     </FormProvider>
