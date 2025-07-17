@@ -94,18 +94,12 @@ export interface StatusResponseData {
   swapDetails?: SwapDetails;
 }
 
-const ONE_CLICK_API_BASE_URL = "https://1click.chaindefuser.com/v0";
-
+import { OneClickClient } from "./one-click-client";
 // Function to fetch supported tokens from 1Click API
-export async function fetch1ClickSupportedTokens(): Promise<OneClickToken[]> {
-  const response = await fetch(`${ONE_CLICK_API_BASE_URL}/tokens`);
-  if (!response.ok) {
-    const errorBody = await response.text();
-    throw new Error(
-      `Failed to fetch 1Click supported tokens: ${response.status} ${errorBody}`,
-    );
-  }
-  return response.json();
+export async function fetch1ClickSupportedTokens(
+  client: OneClickClient,
+): Promise<OneClickToken[]> {
+  return client.get<OneClickToken[]>("/tokens");
 }
 
 // Helper to find a specific token from the list
@@ -123,85 +117,26 @@ export function find1ClickAsset(
 
 // Function to request a swap quote
 export async function requestSwapQuote(
+  client: OneClickClient,
   params: QuoteRequestParams,
 ): Promise<QuoteResponseData> {
-  const response = await fetch(`${ONE_CLICK_API_BASE_URL}/quote`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(params),
-  });
-  if (!response.ok) {
-    const errorBody = (await response.json().catch(() => response.text())) as {
-      message?: string;
-    };
-    console.error("1Click API Error (requestSwapQuote):", errorBody);
-    throw new Error(
-      `Failed to request swap quote: ${response.status} ${
-        errorBody?.message || JSON.stringify(errorBody)
-      }`,
-    );
-  }
-  return response.json();
+  return client.post<QuoteResponseData>("/quote", params);
 }
 
 // Function to submit deposit transaction hash
 export async function submitDepositTransaction(
+  client: OneClickClient,
   params: SubmitDepositParams,
 ): Promise<StatusResponseData> {
-  const response = await fetch(`${ONE_CLICK_API_BASE_URL}/deposit/submit`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(params),
-  });
-  if (!response.ok) {
-    const errorBody = (await response.json().catch(() => response.text())) as {
-      message?: string;
-    };
-    console.error("1Click API Error (submitDepositTransaction):", errorBody);
-    throw new Error(
-      `Failed to submit deposit transaction: ${response.status} ${
-        errorBody?.message || JSON.stringify(errorBody)
-      }`,
-    );
-  }
-  return response.json();
+  return client.post<StatusResponseData>("/deposit/submit", params);
 }
 
 // Function to get swap execution status
 export async function getSwapStatus(
+  client: OneClickClient,
   depositAddress: string,
 ): Promise<StatusResponseData> {
-  const response = await fetch(
-    `${ONE_CLICK_API_BASE_URL}/status?depositAddress=${encodeURIComponent(
-      depositAddress,
-    )}`,
-    {
-      headers: {
-        Accept: "application/json",
-      },
-    },
+  return client.get<StatusResponseData>(
+    `/status?depositAddress=${encodeURIComponent(depositAddress)}`,
   );
-  if (!response.ok) {
-    if (response.status === 404) {
-      console.warn(
-        `1Click API: Deposit address ${depositAddress} not found (404).`,
-      );
-    }
-    const errorBody = (await response.json().catch(() => response.text())) as {
-      message?: string;
-    };
-    console.error("1Click API Error (getSwapStatus):", errorBody);
-    throw new Error(
-      `Failed to get swap status: ${response.status} ${
-        errorBody?.message || JSON.stringify(errorBody)
-      }`,
-    );
-  }
-  return response.json();
 }

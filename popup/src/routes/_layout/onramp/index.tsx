@@ -1,35 +1,30 @@
 import { ErrorView } from "@/components/steps/error-view";
 import { LoadingView } from "@/components/steps/loading-view";
-import { onrampConfigQueryOptions } from "@/lib/pingpay-api";
+import { getTargetAsset } from "@/lib/popup-connection";
 import { onrampTargetAtom } from "@/state/atoms";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout/onramp/")({
   errorComponent: ({ error, reset }) => (
-    <ErrorView error={error.message} onRetry={reset} />
+    <ErrorView
+      error={error.message || "Failed to initialize onramp."}
+      onRetry={reset}
+    />
   ),
-  beforeLoad: () => {
-    // const walletState = context.store.get(walletStateAtom);
+  loader: async ({ context }) => {
+    const targetAsset = await getTargetAsset();
 
-    // if (walletState?.address) {
+    if (!targetAsset) {
+      throw new Error("Target asset not provided by SDK.");
+    }
+
+    context.store.set(onrampTargetAtom, targetAsset);
+
     redirect({
       to: "/onramp/form-entry",
       replace: true,
       throw: true,
     });
-    // } else {
-    //   redirect({
-    //     to: "/onramp/connect-wallet",
-    //     replace: true,
-    //     throw: true,
-    //   });
-    // }
-  },
-  loader: ({ context }) => {
-    const targetAsset = context.store.get(onrampTargetAtom);
-    return context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset),
-    );
   },
   component: OnrampIndexRoute,
 });

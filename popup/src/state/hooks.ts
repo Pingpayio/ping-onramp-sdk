@@ -6,7 +6,6 @@ import {
   onrampErrorAtom,
   onrampResultAtom,
   onrampTargetAtom,
-  walletStateAtom,
 } from "./atoms";
 
 /**
@@ -26,8 +25,6 @@ export const useOnrampFlow = () => {
 
 export const useOnrampTarget = () => useAtom(onrampTargetAtom);
 export const useSetOnrampTarget = () => useSetAtom(onrampTargetAtom);
-export const useWalletState = () => useAtom(walletStateAtom);
-export const useSetWalletState = () => useSetAtom(walletStateAtom);
 export const useOnrampResult = () => useAtom(onrampResultAtom);
 export const useSetOnrampResult = () => useSetAtom(onrampResultAtom);
 

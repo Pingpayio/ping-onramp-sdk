@@ -100,7 +100,7 @@ export function RateModal({ isOpen, onClose, quote, asset }: RateModalProps) {
                 <span className="text-white">${networkFee}</span>
               </div>
 
-              {/* Coinbase Fee */}
+              {/* Provider Fee */}
               <div className="flex text-sm justify-between items-center">
                 <span className="text-white/60">Provider Fee</span>
                 <span className="text-white">${providerFee}</span>

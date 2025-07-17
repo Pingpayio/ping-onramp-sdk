@@ -45,5 +45,5 @@ export type SdkListenerMethods = {
 
 // Methods the Popup (Child) will expose, for the SDK (Parent) to call
 export type PopupActionMethods = {
-  initiateOnrampInPopup: (payload: InitiateOnrampFlowPayload) => Promise<void>;
+  initiateOnrampInPopup: (payload: InitiateOnrampFlowPayload) => void;
 };

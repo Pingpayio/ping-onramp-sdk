@@ -1,0 +1,18 @@
+{
+  "name": "@pingpay/onramp-example-demo",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@pingpay/onramp-sdk": "workspace:*"
+  }
+}

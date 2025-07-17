@@ -1,10 +1,11 @@
-import { ServiceError } from "../../lib/errors";
+import { ProviderError, ServiceError } from "../../lib/errors";
 import {
   fetch1ClickSupportedTokens,
   find1ClickAsset,
   requestSwapQuote,
   type QuoteRequestParams,
 } from "../../lib/one-click-api";
+import { OneClickClient } from "../../lib/one-click-client";
 import { coinbaseProvider } from "./providers/coinbase";
 
 const ONE_CLICK_REFERRAL_ID = "pingpayio.near";
@@ -17,6 +18,8 @@ export async function getCombinedQuote(
 ) {
   const { amount, destinationAsset, recipientAddress, address, paymentMethod } =
     formData;
+
+  const oneClickClient = new OneClickClient(env.INTENTS_API_KEY);
 
   // 1. Get Onramp Quote
   const onrampQuoteParams = {
@@ -37,7 +40,7 @@ export async function getCombinedQuote(
   if (!destinationAsset.asset || !destinationAsset.chain) {
     throw new ServiceError("Onramp target asset or chain is not defined.");
   }
-  const supportedTokens = await fetch1ClickSupportedTokens();
+  const supportedTokens = await fetch1ClickSupportedTokens(oneClickClient);
   const originAsset1Click = find1ClickAsset(
     supportedTokens,
     onrampQuoteParams.purchase_currency,
@@ -89,7 +92,7 @@ export async function getCombinedQuote(
     referral: ONE_CLICK_REFERRAL_ID,
   };
 
-  const swapQuote = await requestSwapQuote(swapQuoteParams);
+  const swapQuote = await requestSwapQuote(oneClickClient, swapQuoteParams);
 
   // 3. Combine Quotes
   let swapFee = 0;

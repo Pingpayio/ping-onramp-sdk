@@ -7,9 +7,7 @@ import {
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
-import { useOnrampTarget } from "@/state/hooks";
 import type { PaymentMethodLimit } from "@pingpay/onramp-types";
-import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -34,22 +32,23 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
   errorComponent: ({ error, reset }) => (
     <ErrorView error={error.message} onRetry={reset} />
   ),
-  loader: ({ context }) => {
+  loader: async ({ context }) => {
     const targetAsset = context.store.get(onrampTargetAtom);
-    return context.queryClient.ensureQueryData(
+    console.log("targetAsset", targetAsset);
+    if (!targetAsset) {
+      throw new Error("Onramp target asset is missing. Cannot proceed.");
+    }
+    const onrampConfig = await context.queryClient.ensureQueryData(
       onrampConfigQueryOptions(targetAsset),
     );
+    return { onrampConfig, targetAsset };
   },
   component: FormEntryRoute,
 });
 
 function FormEntryRoute() {
   const { call } = useParentMessenger();
-  // const [walletState] = useWalletState();
-  const [onrampTarget] = useOnrampTarget();
-  const { data: onrampConfig } = useQuery(
-    onrampConfigQueryOptions(onrampTarget),
-  );
+  const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
   const navigate = Route.useNavigate();
 
   useReportStep("form-entry");
@@ -87,21 +86,20 @@ function FormEntryRoute() {
   const getValidationRules = () => {
     const rules = {
       valueAsNumber: true,
-      validate: (value: number) => {
+      validate: (value: string) => {
         if (onrampConfig && paymentMethodWatcher) {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
               l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
           );
-          if (
-            !isAmountValid(value.toString(), paymentMethodWatcher, onrampConfig)
-          ) {
+          if (!isAmountValid(value, paymentMethodWatcher, onrampConfig)) {
             if (limit) {
-              if (value < parseFloat(limit.min)) {
+              const numericValue = parseFloat(value);
+              if (numericValue < parseFloat(limit.min)) {
                 return `Minimum amount is ${limit.min}`;
               }
-              if (value > parseFloat(limit.max)) {
+              if (numericValue > parseFloat(limit.max)) {
                 return `Maximum amount is ${limit.max}`;
               }
             }
@@ -119,6 +117,8 @@ function FormEntryRoute() {
       amount: debouncedAmount,
       paymentMethod: paymentMethodWatcher,
       selectedCurrency: selectedCurrencyWatcher,
+      onrampConfig,
+      onrampTarget,
     });
 
   const handleFormSubmit = async (data: FormValues) => {
@@ -128,17 +128,6 @@ function FormEntryRoute() {
     call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
       console.error("Failed to report form data submitted:", e);
     });
-
-    // if (!walletState?.address) {
-    //   void navigate({
-    //     to: "/onramp/error",
-    //     search: {
-    //       error:
-    //         "EVM wallet address not available. Please connect your wallet.",
-    //     },
-    //   });
-    //   return;
-    // }
 
     void navigate({
       to: "/onramp/initiating",
@@ -151,7 +140,7 @@ function FormEntryRoute() {
       console.log("typeof SKIP_REDIRECT", typeof SKIP_REDIRECT);
 
       await call("reportOnrampInitiated", {
-        serviceName: "Coinbase Onramp (via 1Click)",
+        serviceName: "Onramp (via 1Click)",
         details: {
           url: SKIP_REDIRECT
             ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
@@ -169,7 +158,7 @@ function FormEntryRoute() {
         window.location.href = targetRedirectUrl!;
       } else {
         // In production: Redirect to Onramp URL
-        console.log("Production mode: Redirecting to Coinbase Onramp URL");
+        console.log("Production mode: Redirecting to Onramp URL");
         window.location.href = onrampUrl;
       }
     } catch (e: unknown) {
@@ -206,19 +195,19 @@ function FormEntryRoute() {
           quoteError={error instanceof Error ? error.message : undefined}
           depositAmount={depositAmountWatcher}
           quote={quote}
+          onrampTarget={onrampTarget}
         />
 
-        <WalletAddressInput />
+        <WalletAddressInput onrampTarget={onrampTarget} />
 
-        <PaymentMethodSelector />
+        <PaymentMethodSelector onrampConfig={onrampConfig} />
 
         <Button
           type="submit"
           className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
           disabled={!isValid || !quote || isQuoteLoading}
         >
-          {/* Buy {onrampTarget.asset} */}
-          Buy NEAR
+          Buy {onrampTarget?.asset}
         </Button>
       </form>
     </FormProvider>

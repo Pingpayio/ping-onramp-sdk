@@ -10,7 +10,7 @@ import type {
 
 const API_BASE_URL = import.meta.env.DEV ? "" : PINGPAY_API_URL;
 
-export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
+export const onrampConfigQueryOptions = (targetAsset: TargetAsset | null) => ({
   queryKey: ["onramp", "config", targetAsset],
   queryFn: async (): Promise<OnrampConfigResponse> => {
     const response = await fetch(`${API_BASE_URL}/api/onramp/config`, {
@@ -27,6 +27,7 @@ export const onrampConfigQueryOptions = (targetAsset: TargetAsset) => ({
     return response.json() as Promise<OnrampConfigResponse>;
   },
   staleTime: 1000 * 60 * 5, // 5 minutes
+  enabled: !!targetAsset,
 });
 
 export const onrampQuoteQueryOptions = (formData: OnrampQuoteRequest) => ({
