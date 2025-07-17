@@ -20,7 +20,7 @@ export function WalletAddressInput({
   const validateAddress = useCallback(
     (value: string) =>
       memoizedValidateRecipientAddress(value, onrampTarget.chain),
-    [onrampTarget.chain]
+    [onrampTarget.chain],
   );
 
   return (

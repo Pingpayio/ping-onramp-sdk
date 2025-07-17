@@ -65,7 +65,9 @@ const establishConnection = async (): Promise<PopupConnection> => {
     openerOrigin ?? (process.env.NODE_ENV === "development" ? "*" : null);
 
   if (!sdkOrigin) {
-    throw new Error("Configuration error: SDK identification parameter missing.");
+    throw new Error(
+      "Configuration error: SDK identification parameter missing.",
+    );
   }
 
   if (sdkOrigin === "*" && process.env.NODE_ENV === "production") {
@@ -95,9 +97,12 @@ const establishConnection = async (): Promise<PopupConnection> => {
 
   const conn = await ChildHandshake(messenger, popupActionMethods);
   console.log("Popup: post-me ChildHandshake successful.");
-  
+
   // After connection, immediately report that the popup is ready.
-  conn.remoteHandle().call("reportPopupReady").catch(e => console.error("Failed to report popup ready", e));
+  conn
+    .remoteHandle()
+    .call("reportPopupReady")
+    .catch((e) => console.error("Failed to report popup ready", e));
 
   return conn;
 };
@@ -111,7 +116,7 @@ export const getConnection = (): Promise<PopupConnection> => {
 
 export const getTargetAsset = (): Promise<TargetAsset> => {
   // Ensure connection is initiated, which will eventually resolve the target asset
-  getConnection().catch(e => {
+  getConnection().catch((e) => {
     console.error("Connection failed during getTargetAsset", e);
     // Propagate error to targetAssetPromise if connection fails
     // This requires changing how resolveTargetAsset is handled, maybe a reject function

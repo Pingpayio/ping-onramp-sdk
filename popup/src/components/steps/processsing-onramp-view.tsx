@@ -153,9 +153,7 @@ export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
     displayBox = {
       icon: <FaSpinner className="animate-spin text-blue-400 text-[32px]" />,
       title: "Initiating Onramp",
-      desc:
-        nearIntentsDisplayInfo.message ||
-        "Preparing your onramp...",
+      desc: nearIntentsDisplayInfo.message || "Preparing your onramp...",
       color: "border-blue-400",
     };
     transactionDetails.statusMessage = nearIntentsDisplayInfo.message;

@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_layout/onramp/")({
     redirect({
       to: "/onramp/form-entry",
       replace: true,
-      throw: true
+      throw: true,
     });
   },
   component: OnrampIndexRoute,

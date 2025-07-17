@@ -25,10 +25,10 @@ type OnrampStatus = "idle" | "active" | "closed";
 
 /**
  * PingPay Onramp SDK for integrating cryptocurrency onramp functionality.
- * 
+ *
  * This class provides a simple interface to initiate onramp flows through a popup window,
  * allowing users to purchase cryptocurrency using fiat payment methods.
- * 
+ *
  * @example
  * ```typescript
  * // Create a new instance with configuration
@@ -37,9 +37,9 @@ type OnrampStatus = "idle" | "active" | "closed";
  *   onProcessComplete: (result) => console.log('Complete:', result),
  *   onProcessFailed: (error) => console.error('Failed:', error)
  * };
- * 
+ *
  * const onramp = new PingpayOnramp(config);
- * 
+ *
  * // Initiate the onramp process
  * try {
  *   const result = await onramp.initiateOnramp({ chain: 'NEAR', asset: 'wNEAR' });
@@ -51,28 +51,28 @@ type OnrampStatus = "idle" | "active" | "closed";
  */
 export class PingpayOnramp {
   private config: PingpayOnrampConfig;
-  
+
   private popup: Window | null = null;
-  
+
   private postMeConnection: Connection<
     SdkListenerMethods,
     PopupActionMethods
   > | null = null;
-  
+
   private onrampPromise: {
     resolve: (result: OnrampResult) => void;
     reject: (error: PingpayOnrampError) => void;
   } | null = null;
-  
+
   private heartbeatInterval?: NodeJS.Timeout;
-  
+
   private status: OnrampStatus = "idle";
 
   private popupUrl: string;
 
   /**
    * Creates a new PingpayOnramp instance.
-   * 
+   *
    * @param config - Configuration object containing callback functions and optional settings
    */
   constructor(config: PingpayOnrampConfig) {
@@ -82,25 +82,25 @@ export class PingpayOnramp {
 
   /**
    * Initiates the onramp process for the specified target asset.
-   * 
+   *
    * Opens a popup window that guides the user through the onramp flow including
    * wallet connection, form submission, and transaction processing.
-   * 
+   *
    * @param target - The target asset specification containing chain and asset identifiers
    * @returns Promise that resolves with the onramp result when the process completes successfully
-   * 
+   *
    * @throws {PingpayOnrampError} When onramp is already active
    * @throws {PingpayOnrampError} When SDK instance has been closed
    * @throws {PingpayOnrampError} When popup fails to open (browser settings)
    * @throws {PingpayOnrampError} When user closes popup before completion
    * @throws {PingpayOnrampError} When onramp process fails at any step
-   * 
+   *
    * @example
    * ```typescript
    * try {
-   *   const result = await onramp.initiateOnramp({ 
-   *     chain: 'NEAR', 
-   *     asset: 'wNEAR' 
+   *   const result = await onramp.initiateOnramp({
+   *     chain: 'NEAR',
+   *     asset: 'wNEAR'
    *   });
    *   console.log('Onramp successful:', result);
    * } catch (error) {
@@ -110,9 +110,7 @@ export class PingpayOnramp {
    * }
    * ```
    */
-  public initiateOnramp(
-    target: TargetAsset
-  ): Promise<OnrampResult> {
+  public initiateOnramp(target: TargetAsset): Promise<OnrampResult> {
     if (this.status === "active") {
       this.popup?.focus();
       throw new PingpayOnrampError("Onramp process is already active.");
@@ -303,10 +301,10 @@ export class PingpayOnramp {
 
   /**
    * Closes the onramp instance and cleans up all resources.
-   * 
+   *
    * This method closes any open popup windows, clears intervals, and terminates
    * communication channels. After calling this method, the instance cannot be reused.
-   * 
+   *
    * @example
    * ```typescript
    * // Clean shutdown when done with the onramp instance

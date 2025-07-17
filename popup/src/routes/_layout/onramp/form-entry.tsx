@@ -128,7 +128,7 @@ function FormEntryRoute() {
     call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
       console.error("Failed to report form data submitted:", e);
     });
-    
+
     void navigate({
       to: "/onramp/initiating",
     });

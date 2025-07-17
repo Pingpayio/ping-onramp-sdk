@@ -6,7 +6,6 @@ import { MenuIcon } from "./menu-icon";
 export default function Header({ title }: { title: string }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-
   // Handle click outside to close menu
   // const menuRef = useClickOutside<HTMLDivElement>(
   //   () => setIsMenuOpen(false),

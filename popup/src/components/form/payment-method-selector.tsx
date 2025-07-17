@@ -44,7 +44,7 @@ export function PaymentMethodSelector({
     getValues,
   } = useFormContext<FormValues>();
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    getValues("paymentMethod")
+    getValues("paymentMethod"),
   );
 
   const paymentMethodWatcher = watch("paymentMethod");
@@ -84,7 +84,7 @@ export function PaymentMethodSelector({
                 .filter((method) => {
                   if (onrampConfig?.isIosDevice) {
                     return ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(
-                      method.id
+                      method.id,
                     );
                   } else {
                     return ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id);

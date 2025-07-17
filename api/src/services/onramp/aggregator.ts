@@ -83,8 +83,9 @@ export async function generateOnrampUrl(
 
     const redirectUrl = `${origin}/onramp/callback?${callbackParams.toString()}`;
 
-    const { redirectUrl: onrampUrl } =
-      await coinbaseProvider.generateOnrampUrl(env, {
+    const { redirectUrl: onrampUrl } = await coinbaseProvider.generateOnrampUrl(
+      env,
+      {
         amount,
         asset: selectedAsset,
         network: "ethereum",
@@ -92,7 +93,8 @@ export async function generateOnrampUrl(
         redirectUrl,
         paymentCurrency: selectedCurrency,
         paymentMethod,
-      });
+      },
+    );
 
     return { redirectUrl: onrampUrl };
   } catch (err) {

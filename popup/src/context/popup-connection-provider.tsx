@@ -62,9 +62,9 @@ export const PopupConnectionProvider = ({
         return undefined;
       }
       try {
-        return (await conn
-          .remoteHandle()
-          .call(method, ...args)) as ReturnType<SdkListenerMethods[TMethod]>;
+        return (await conn.remoteHandle().call(method, ...args)) as ReturnType<
+          SdkListenerMethods[TMethod]
+        >;
       } catch (e) {
         console.error(`[PopupConnectionProvider] Error calling ${method}:`, e);
         throw e;

@@ -38,6 +38,6 @@ if (!rootElement.innerHTML) {
           <RouterProvider router={router} />
         </QueryClientProvider>
       </PopupConnectionProvider>
-    </StrictMode>
+    </StrictMode>,
   );
 }
