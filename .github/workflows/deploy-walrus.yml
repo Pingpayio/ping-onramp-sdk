@@ -36,6 +36,6 @@ jobs:
           SUI_NETWORK: ${{ inputs.SUI_NETWORK }}
           SUI_ADDRESS: ${{ vars.SUI_ADDRESS }}
           SUI_KEYSTORE: ${{ secrets.SUI_KEYSTORE }}
-          DIST: /examples/sui/dist
+          DIST: examples/sui/dist
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           EPOCHS: ${{ inputs.EPOCHS }}
