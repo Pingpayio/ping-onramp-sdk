@@ -12,6 +12,7 @@ export type Bindings = {
   CORS_ORIGIN: string;
   ENVIRONMENT: string;
   SESSION_ENCRYPTION_KEY: string;
+  INTENTS_API_KEY: string;
 };
 
 const app = new Hono<{
