@@ -5,7 +5,7 @@ const openOnrampButton = document.getElementById("openOnrampButton");
 if (openOnrampButton) {
   openOnrampButton.addEventListener("click", () => {
     try {
-      const targetAssetDetails = { chain: "SUI", asset: "sui" };
+      const targetAssetDetails = { chain: "sui", asset: "SUI" };
       const onrampOptions: PingpayOnrampConfig = {
         onPopupReady: () => console.log("Example: Popup is ready"),
         onProcessComplete: (result) =>
