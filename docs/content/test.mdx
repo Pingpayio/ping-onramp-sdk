@@ -1,7 +1,17 @@
 ---
-title: Test
+title: Overview
 ---
 
-Hehe
+The Ping Onramp is a chain-abstracted onramp SDK designed to easily integrate a seamless fiat-to-crypto onramp experience directly within any application. It enables users/agents to purchase any near intents supported currencies directly with their Fiat.
 
-Haha
+By leveraging NEAR Intents and the Coinbase Onramp API, users deposit fiat to receive native USDC on Base (for zero fees), which then gets routed to the NEAR Intents network - allowing users to receive their asset on their preferred blockchain and wallet in less than 30 seconds for just the Intents network fee.
+
+Ping seeks to aggregate fiat payment options to become a seamless global entry point into DeFi ecosystems, while streamlining the onboarding process.
+
+### Key Features Include:
+
+- Out-of-the-box support for Coinbase Onramp, allowing users to initiate fiat-to-crypto purchases directly inside their applications (Coinbase Onramp used since the USDC on Base zero fee structure allows near-zero fees within applications, even after a swap into a NEAR Intents destination asset.
+- Powered by NEAR Intents, allowing for fast, gas-efficient cross-chain delivery to the user's preferred wallet. Buy with Fiat, land anywhere via intents
+- Developers can pass in pre-defined parameters such as wallet address, target token (e.g. NEAR, USDC), and support any blockchain NEAR, Ethereum, BTC, and more - enabling a simplistic user journey. It is easily extendable to support multiple tokens and networks as new providers are added.
+- Onramp component that can be embedded directly into any frontend. Supports full styling control, dynamic parameters, and both inline modal and full-page redirect flows.
+- Developers can attach optional event handlers to each step of the Onramp flow, enabling tight UX feedback.
