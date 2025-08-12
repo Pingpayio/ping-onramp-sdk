@@ -1,4 +1,5 @@
 import { ErrorView } from "@/components/steps/error-view";
+import { RegionNotSupportedPopup } from "@/components/region-not-supported-popup";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
   useParentMessenger,
@@ -9,7 +10,7 @@ import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
 import type { PaymentMethodLimit } from "@pingpay/onramp-types";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
@@ -51,7 +52,20 @@ function FormEntryRoute() {
   const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
   const navigate = Route.useNavigate();
 
+  const [showRegionPopup, setShowRegionPopup] = useState(false);
+
   useReportStep("form-entry");
+
+  // Check if region is supported based on available payment methods
+  useEffect(() => {
+    if (onrampConfig && onrampConfig.paymentMethods.length === 0) {
+      setShowRegionPopup(true);
+    }
+  }, [onrampConfig]);
+
+  const handleCloseRegionPopup = () => {
+    setShowRegionPopup(false);
+  };
 
   const methods = useForm<FormValues>({
     mode: "onSubmit",
@@ -180,36 +194,44 @@ function FormEntryRoute() {
   };
 
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
-        className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
-      >
-        <Header title="Buy Assets" />
-
-        <DepositAmountInput validationRules={getValidationRules()} />
-
-        <ReceiveAmountDisplay
-          estimatedReceiveAmount={estimatedReceiveAmount}
-          isQuoteLoading={isQuoteLoading}
-          quoteError={error instanceof Error ? error.message : undefined}
-          depositAmount={depositAmountWatcher}
-          quote={quote}
-          onrampTarget={onrampTarget}
-        />
-
-        <WalletAddressInput onrampTarget={onrampTarget} />
-
-        <PaymentMethodSelector onrampConfig={onrampConfig} />
-
-        <Button
-          type="submit"
-          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
-          disabled={!isValid || !quote || isQuoteLoading}
+    <>
+      <FormProvider {...methods}>
+        <form
+          onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
+          className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
         >
-          Buy {onrampTarget?.asset}
-        </Button>
-      </form>
-    </FormProvider>
+          <Header title="Buy Assets" />
+
+          <DepositAmountInput validationRules={getValidationRules()} />
+
+          <ReceiveAmountDisplay
+            estimatedReceiveAmount={estimatedReceiveAmount}
+            isQuoteLoading={isQuoteLoading}
+            quoteError={error instanceof Error ? error.message : undefined}
+            depositAmount={depositAmountWatcher}
+            quote={quote}
+            onrampTarget={onrampTarget}
+          />
+
+          <WalletAddressInput onrampTarget={onrampTarget} />
+
+          <PaymentMethodSelector onrampConfig={onrampConfig} />
+
+          <Button
+            type="submit"
+            className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
+            disabled={!isValid || !quote || isQuoteLoading}
+          >
+            Buy {onrampTarget?.asset}
+          </Button>
+        </form>
+      </FormProvider>
+
+      {/* Region restriction popup - ready for API integration */}
+      <RegionNotSupportedPopup
+        isOpen={showRegionPopup}
+        onClose={handleCloseRegionPopup}
+      />
+    </>
   );
 }
