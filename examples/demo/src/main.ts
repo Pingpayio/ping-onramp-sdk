@@ -20,6 +20,8 @@ if (openOnrampButton) {
         onrampOptions.popupUrl = import.meta.env.POPUP_URL;
       }
 
+      // Region popup is now hardcoded to show - will be replaced with API integration
+
       const onramp = new PingpayOnramp(onrampOptions);
       onramp.initiateOnramp(targetAssetDetails);
     } catch (error) {
