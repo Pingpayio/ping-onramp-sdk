@@ -40,7 +40,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
       throw new Error("Onramp target asset is missing. Cannot proceed.");
     }
     const onrampConfig = await context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset),
+      onrampConfigQueryOptions(targetAsset)
     );
     return { onrampConfig, targetAsset };
   },
@@ -52,7 +52,7 @@ function FormEntryRoute() {
   const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
   const navigate = Route.useNavigate();
 
-  const [showRegionPopup, setShowRegionPopup] = useState(false);
+  const [showRegionPopup, setShowRegionPopup] = useState(true);
 
   useReportStep("form-entry");
 
@@ -105,7 +105,7 @@ function FormEntryRoute() {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
           );
           if (!isAmountValid(value, paymentMethodWatcher, onrampConfig)) {
             if (limit) {
@@ -165,7 +165,7 @@ function FormEntryRoute() {
       if (SKIP_REDIRECT === "true") {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
-          "Development mode: Navigating to onramp-callback with params:",
+          "Development mode: Navigating to onramp-callback with params:"
         );
         const url = new URL(onrampUrl);
         const targetRedirectUrl = url.searchParams.get("redirectUrl");

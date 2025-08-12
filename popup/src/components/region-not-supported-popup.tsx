@@ -38,7 +38,7 @@ export function RegionNotSupportedPopup({
 
       // Show success and close popup
       alert(
-        "Region request submitted successfully! We'll notify you when we support your region.",
+        "Region request submitted successfully! We'll notify you when we support your region."
       );
       onClose();
     } catch (error) {
@@ -53,11 +53,11 @@ export function RegionNotSupportedPopup({
 
   return (
     <div
-      className="fixed dark inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed dark inset-0 bg-[#1e1e1e] flex items-center justify-center z-50"
       onClick={(e) => e.preventDefault()}
     >
       <div
-        className=" rounded-lg p-1 max-w-md w-full shadow-xl"
+        className="rounded-xl shadow-sm border-white/[0.16] p-4 max-w-md w-full"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-center flex flex-col gap-[9px]">
@@ -79,7 +79,7 @@ export function RegionNotSupportedPopup({
           <div className="pt-4">
             <Button
               onClick={() => setShowForm(true)}
-              className="w-full flex bg-[#AF9EF9] h-auto py-4! hover:bg-[#AF9eF9]/80 hover:border-none! rounded-full! text-black text-[16px] items-center justify-center gap-1!"
+              className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150 flex items-center justify-center gap-1"
             >
               Request Region
               <ChevronRight className="w-4 h-4" />
@@ -87,7 +87,7 @@ export function RegionNotSupportedPopup({
           </div>
         ) : (
           <form
-            className="space-y-4 overflow-hidden"
+            className="space-y-3 overflow-hidden"
             onSubmit={(e) => {
               e.preventDefault();
               // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -116,7 +116,7 @@ export function RegionNotSupportedPopup({
                     onChange={(e) => setCountry(e.target.value)}
                     placeholder="e.g., Canada"
                     required
-                    className="text-white rounded-full py-5!"
+                    className="block w-full p-4 rounded-lg h-[54px] bg-[#303030]! border border-[rgba(255,255,255,0.18)] focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 placeholder:text-base placeholder:font-base"
                   />
                 </div>
 
@@ -133,7 +133,7 @@ export function RegionNotSupportedPopup({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="text-white rounded-full py-5"
+                    className="block w-full p-4 rounded-lg h-[54px] bg-[#303030]! border border-[rgba(255,255,255,0.18)] focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 placeholder:text-base placeholder:font-base"
                   />
                   <p className="text-xs text-gwhite/60 mt-1">
                     We'll notify you when we support your region
@@ -152,7 +152,7 @@ export function RegionNotSupportedPopup({
               <Button
                 type="submit"
                 disabled={!country.trim() || isSubmitting}
-                className="w-full flex bg-[#AF9EF9] h-auto py-4! hover:bg-[#AF9eF9]/80 hover:border-none! rounded-full! text-black text-[16px] items-center justify-center gap-1!"
+                className="w-full rounded-full! border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] transition ease-in-out duration-150"
               >
                 {isSubmitting ? "Submitting..." : "Submit"}
               </Button>
