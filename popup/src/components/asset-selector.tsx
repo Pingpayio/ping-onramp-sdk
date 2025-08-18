@@ -128,7 +128,7 @@ export function AssetSelector({
             </svg>
             <Input
               type="text"
-              placeholder="Search name or asset code"
+              placeholder="Search name or paste address"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border-none mx-3 p-0 placeholder:text-base! placeholder:text-[#FFFFFF99]!"
