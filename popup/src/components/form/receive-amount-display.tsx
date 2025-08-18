@@ -11,6 +11,7 @@ interface ReceiveAmountDisplayProps {
   depositAmount: string;
   quote?: OnrampQuoteResponse;
   onrampTarget: TargetAsset;
+  onAssetClick?: () => void;
 }
 
 export function ReceiveAmountDisplay({
@@ -20,6 +21,7 @@ export function ReceiveAmountDisplay({
   depositAmount,
   quote,
   onrampTarget,
+  onAssetClick,
 }: ReceiveAmountDisplayProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -65,7 +67,11 @@ export function ReceiveAmountDisplay({
               </p>
             )}
           </div>
-          <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5">
+          <button
+            type="button"
+            onClick={onAssetClick}
+            className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
+          >
             <img
               src={
                 onrampTarget.asset.toLowerCase() === "wnear"
@@ -80,7 +86,22 @@ export function ReceiveAmountDisplay({
               className="rounded-full"
             />
             <span className="text-white font-normal">{onrampTarget.asset}</span>
-          </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="11"
+              height="6"
+              viewBox="0 0 11 6"
+              fill="none"
+            >
+              <path
+                d="M1.36963 1L5.36963 5L9.36963 1"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
       <div className="h-[2px] -mt-1 -mb-2 w-full bg-white/5" />

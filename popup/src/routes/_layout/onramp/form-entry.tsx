@@ -17,6 +17,7 @@ import { PaymentMethodSelector } from "@/components/form/payment-method-selector
 import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
 import { WalletAddressInput } from "@/components/form/wallet-address-input";
 import { CurrencySelector } from "@/components/currency-selector";
+import { AssetSelector } from "@/components/asset-selector";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { SKIP_REDIRECT } from "@/config";
@@ -52,6 +53,7 @@ function FormEntryRoute() {
   const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
+  const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
 
   useReportStep("form-entry");
 
@@ -74,8 +76,8 @@ function FormEntryRoute() {
     trigger,
   } = methods;
 
-  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher] =
-    watch(["amount", "paymentMethod", "selectedCurrency"]);
+  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher, selectedAssetWatcher] =
+    watch(["amount", "paymentMethod", "selectedCurrency", "selectedAsset"]);
   const debouncedAmount = useDebounce(depositAmountWatcher, 300);
 
   useEffect(() => {
@@ -191,6 +193,15 @@ function FormEntryRoute() {
     setIsCurrencySelectorOpen(false);
   };
 
+  const handleAssetSelect = (assetId: string) => {
+    setValue("selectedAsset", assetId);
+    setIsAssetSelectorOpen(false);
+  };
+
+  const handleCloseAssetSelector = () => {
+    setIsAssetSelectorOpen(false);
+  };
+
   return (
     <>
       <CurrencySelector
@@ -199,6 +210,12 @@ function FormEntryRoute() {
         currencies={onrampConfig.paymentCurrencies}
         selectedCurrency={selectedCurrencyWatcher}
         onSelectCurrency={handleCurrencySelect}
+      />
+      <AssetSelector
+        isOpen={isAssetSelectorOpen}
+        onClose={handleCloseAssetSelector}
+        selectedAsset={selectedAssetWatcher}
+        onSelectAsset={handleAssetSelect}
       />
       <FormProvider {...methods}>
         <form
@@ -223,6 +240,7 @@ function FormEntryRoute() {
             depositAmount={depositAmountWatcher}
             quote={quote}
             onrampTarget={onrampTarget}
+            onAssetClick={() => setIsAssetSelectorOpen(true)}
           />
 
           <WalletAddressInput onrampTarget={onrampTarget} />
