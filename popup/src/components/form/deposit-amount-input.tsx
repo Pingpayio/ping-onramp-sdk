@@ -8,6 +8,49 @@ interface DepositAmountInputProps {
   onCurrencyClick?: () => void;
 }
 
+const currenciesList = [
+  {
+    id: "USD",
+    name: "United States Dollar",
+    flag: "/usd.svg",
+  },
+  {
+    id: "GBP",
+    name: "Great British Pound",
+    flag: "/gbp 1.svg",
+  },
+  {
+    id: "EUR",
+    name: "EURO",
+    flag: "/eur.svg.svg",
+  },
+  {
+    id: "CAD",
+    name: "Canadian Dollar",
+    flag: "/cad.svg.svg",
+  },
+  {
+    id: "AUD",
+    name: "Australian Dollar",
+    flag: "/aud 1.svg",
+  },
+  {
+    id: "INR",
+    name: "Indian Rupee",
+    flag: "/inr 1.svg",
+  },
+  {
+    id: "HKD",
+    name: "Hong Kong Dollar",
+    flag: "/hkd 1.svg",
+  },
+  {
+    id: "THB",
+    name: "Thai Bhat",
+    flag: "/thb 1.svg",
+  },
+];
+
 export function DepositAmountInput({
   validationRules,
   onCurrencyClick,
@@ -48,18 +91,43 @@ export function DepositAmountInput({
         <button
           type="button"
           onClick={onCurrencyClick}
-          className="border gap-2 border-white/[0.18]! px-3 py-2 flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
+          className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
         >
-          <img
-            src="/usd.svg"
-            alt="USD Currency Logo"
-            width="20px"
-            height="20px"
-            className="rounded-full"
-          />
-          <span className="text-white font-normal">
-            {getValues("selectedCurrency")}
-          </span>
+          {(() => {
+            const selectedCurrency = getValues("selectedCurrency");
+            const currencyInfo = currenciesList.find(
+              (c) => c.id === selectedCurrency
+            );
+            return (
+              <>
+                <img
+                  src={currencyInfo?.flag || "/usd.svg"}
+                  alt={`${selectedCurrency} Currency Logo`}
+                  width="20px"
+                  height="20px"
+                  className="rounded-full"
+                />
+                <span className="text-white font-normal">
+                  {selectedCurrency}
+                </span>
+              </>
+            );
+          })()}
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="11"
+            height="6"
+            viewBox="0 0 11 6"
+            fill="none"
+          >
+            <path
+              d="M1.36963 1L5.36963 5L9.36963 1"
+              stroke="white"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
         </button>
       </div>
       {errors.amount && (
