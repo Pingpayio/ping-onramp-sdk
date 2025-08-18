@@ -156,7 +156,7 @@ export function CurrencySelector({
                   key={currency.id}
                   onClick={() => handleSelectCurrency(currency.id)}
                   variant="ghost"
-                  className={`w-full justify-start p-4 h-auto rounded-[8px] hover:bg-white/10 ${
+                  className={`w-full justify-start p-4 h-auto rounded-[8px] hover:bg-white/10 hover:border-[#AF9EF9]! ${
                     selectedCurrency === currency.id
                       ? "bg-[#AB9FF2]/20 border border-[#AB9FF2]"
                       : "bg-white/5 border border-white/[0.18]"
@@ -179,19 +179,6 @@ export function CurrencySelector({
                       </span>
                     </div>
                   </div>
-                  {selectedCurrency === currency.id && (
-                    <svg
-                      className="w-5 h-5 text-[#AB9FF2] ml-auto"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  )}
                 </Button>
               ))
             )}
