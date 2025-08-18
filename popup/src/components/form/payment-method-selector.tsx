@@ -2,15 +2,9 @@ import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import type { OnrampConfigResponse } from "@pingpay/onramp-types";
 import { CreditCard, Landmark } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Controller, useFormContext } from "react-hook-form";
+import { useFormContext } from "react-hook-form";
 import { Label } from "../ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+import { Button } from "../ui/button";
 
 // Apple logo SVG component
 const AppleLogo = () => (
@@ -19,32 +13,46 @@ const AppleLogo = () => (
   </svg>
 );
 
-const getMethodSubtext = (method: string) => {
-  switch (method) {
-    case "card":
-      return "Debit or Credit Card (Available in most countries)";
-    case "ach":
-      return "Bank Transfer (ACH) - US only";
-    case "apple":
-      return "Apple Pay - Available on iOS devices";
+const getMethodName = (methodId: string) => {
+  switch (methodId) {
+    case "CARD":
+      return "Debit or Credit Card";
+    case "ACH_BANK_ACCOUNT":
+      return "Bank Transfer (ACH)";
+    case "APPLE_PAY":
+      return "Apple Pay";
     default:
-      return "";
+      return "Select payment method";
+  }
+};
+
+const getMethodIcon = (methodId: string) => {
+  switch (methodId) {
+    case "CARD":
+      return <CreditCard size={20} />;
+    case "ACH_BANK_ACCOUNT":
+      return <Landmark size={20} />;
+    case "APPLE_PAY":
+      return <AppleLogo />;
+    default:
+      return null;
   }
 };
 
 export function PaymentMethodSelector({
-  onrampConfig,
+  // onrampConfig,
+  onPaymentMethodChange,
 }: {
   onrampConfig: OnrampConfigResponse;
+  onPaymentMethodChange?: () => void;
 }) {
   const {
-    control,
     formState: { errors },
     watch,
     getValues,
   } = useFormContext<FormValues>();
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    getValues("paymentMethod"),
+    getValues("paymentMethod")
   );
 
   const paymentMethodWatcher = watch("paymentMethod");
@@ -53,87 +61,47 @@ export function PaymentMethodSelector({
     setCurrentPaymentMethod(paymentMethodWatcher);
   }, [paymentMethodWatcher]);
 
+  const handleClick = () => {
+    if (onPaymentMethodChange) {
+      onPaymentMethodChange();
+    }
+  };
+
   return (
     <div className="flex flex-col gap-1 z-50">
       <Label htmlFor="paymentMethod" className="block text-sm text-white mb-2">
         Pay Using
       </Label>
-      <Controller
-        name="paymentMethod"
-        control={control}
-        rules={{ required: "Payment method is required" }}
-        render={({ field }) => (
-          <Select
-            onValueChange={(value) => {
-              field.onChange(value);
-              setCurrentPaymentMethod(value);
-            }}
-            defaultValue={field.value}
-          >
-            <SelectTrigger className="!flex !w-full !items-center !justify-between !p-4 !rounded-lg !h-[54px] !bg-white/[0.08] !border !border-[rgba(255,255,255,0.18)] focus:!ring-0 focus:!border-[#AF9EF9] focus-visible:!ring-0 focus-visible:!border-[#AF9EF9] hover:!border-[#AF9EF9]/70 !text-white !font-medium !text-base [&>svg]:!shrink-0 !outline-none">
-              <SelectValue
-                placeholder="Select payment method"
-                className="font-medium text-white placeholder:text-base placeholder:font-base"
-              />
-            </SelectTrigger>
-            <SelectContent
-              className="!bg-[#1a1a1a] !border !border-[rgba(255,255,255,0.18)] !text-white !rounded-lg !shadow-lg !min-w-[var(--radix-select-trigger-width)] !mt-1 !p-0 [&>div]:!p-1"
-              side="top"
-            >
-              {(onrampConfig?.paymentMethods as { id: string; name: string }[])
-                .filter((method) => {
-                  if (onrampConfig?.isIosDevice) {
-                    return ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(
-                      method.id,
-                    );
-                  } else {
-                    return ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id);
-                  }
-                })
-                .map((method) => {
-                  return (
-                    <SelectItem
-                      key={method.id}
-                      value={method.id}
-                      className="!text-white !text-base !font-medium hover:!text-white hover:!bg-white/10 focus:!bg-white/10 !p-4 !pr-8 !cursor-pointer"
-                    >
-                      <div className="flex items-center gap-3">
-                        {method.id === "CARD" && (
-                          <>
-                            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
-                              <CreditCard size={20} />
-                            </div>
-                            <span>Debit or Credit Card</span>
-                          </>
-                        )}
-                        {method.id === "ACH_BANK_ACCOUNT" && (
-                          <>
-                            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
-                              <Landmark size={20} />
-                            </div>
-                            <span>Bank Transfer (ACH)</span>
-                          </>
-                        )}
-                        {method.id === "APPLE_PAY" && (
-                          <>
-                            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
-                              {" "}
-                              <AppleLogo />
-                            </div>
-                            <span>Apply Pay</span>
-                          </>
-                        )}
-                      </div>
-                    </SelectItem>
-                  );
-                })}
-            </SelectContent>
-          </Select>
-        )}
-      />
-      <p className="text-xs text-white/40 mt-1">
-        {getMethodSubtext(currentPaymentMethod)}
-      </p>
+      <Button
+        type="button"
+        onClick={handleClick}
+        className="!flex !w-full focus:outline-none! !items-center !justify-between !p-4 !rounded-lg !h-[54px] !bg-white/[0.08] !border !border-[rgba(255,255,255,0.18)] hover:!border-[#AF9EF9]/70 !text-white !font-medium !text-base [&>svg]:!shrink-0"
+      >
+        <div className="flex items-center gap-3">
+          {currentPaymentMethod && (
+            <div className="bg-white/10 rounded-full p-2 flex items-center justify-center">
+              {getMethodIcon(currentPaymentMethod)}
+            </div>
+          )}
+          <span>{getMethodName(currentPaymentMethod)}</span>
+        </div>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M7 7L10 10L13 7"
+            stroke="#AF9EF9"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </Button>
+
       {errors.paymentMethod && (
         <p className="text-red-400 text-xs mt-1">
           {errors.paymentMethod.message}

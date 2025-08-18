@@ -18,6 +18,7 @@
     "sdk",
     "popup",
     "docs",
-    "api"
+    "api",
+    "examples/*"
   ]
 }
