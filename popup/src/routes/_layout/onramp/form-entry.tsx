@@ -241,6 +241,7 @@ function FormEntryRoute() {
             quote={quote}
             onrampTarget={onrampTarget}
             onAssetClick={() => setIsAssetSelectorOpen(true)}
+            selectedAsset={selectedAssetWatcher}
           />
 
           <WalletAddressInput onrampTarget={onrampTarget} />

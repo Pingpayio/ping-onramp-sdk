@@ -12,7 +12,51 @@ interface ReceiveAmountDisplayProps {
   quote?: OnrampQuoteResponse;
   onrampTarget: TargetAsset;
   onAssetClick?: () => void;
+  selectedAsset: string;
 }
+
+const assetsList = [
+  {
+    id: "USD",
+    name: "ZEC",
+    flag: "/Zcash.png",
+  },
+  {
+    id: "Near",
+    name: "NEAR",
+    flag: "/Near.png",
+  },
+  {
+    id: "Tether USD",
+    name: "USDT",
+    flag: "/Tether USD.png",
+  },
+  {
+    id: "USD Coin",
+    name: "USDC",
+    flag: "/USD Coin.png",
+  },
+  {
+    id: "Solana",
+    name: "SOL",
+    flag: "/Solana.png",
+  },
+  {
+    id: "Bitcoin",
+    name: "BTC",
+    flag: "/Bitcoin.png",
+  },
+  {
+    id: "Loud",
+    name: "LOUD",
+    flag: "/Loud.png",
+  },
+  {
+    id: "Ethereum",
+    name: "ETH",
+    flag: "/ETH.png",
+  },
+];
 
 export function ReceiveAmountDisplay({
   estimatedReceiveAmount,
@@ -22,6 +66,7 @@ export function ReceiveAmountDisplay({
   quote,
   onrampTarget,
   onAssetClick,
+  selectedAsset,
 }: ReceiveAmountDisplayProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -72,20 +117,21 @@ export function ReceiveAmountDisplay({
             onClick={onAssetClick}
             className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
           >
-            <img
-              src={
-                onrampTarget.asset.toLowerCase() === "wnear"
-                  ? "/near-logo-green.png"
-                  : onrampTarget.asset.toLowerCase() === "sui"
-                    ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
-                    : "/usd-coin-usdc-logo.svg"
-              }
-              alt={`${onrampTarget.asset} Logo`}
-              width="20px"
-              height="20px"
-              className="rounded-full"
-            />
-            <span className="text-white font-normal">{onrampTarget.asset}</span>
+            {(() => {
+              const assetInfo = assetsList.find(asset => asset.id === selectedAsset);
+              return (
+                <>
+                  <img
+                    src={assetInfo?.flag || "/usd-coin-usdc-logo.svg"}
+                    alt={`${selectedAsset} Logo`}
+                    width="20px"
+                    height="20px"
+                    className="rounded-full"
+                  />
+                  <span className="text-white font-normal">{assetInfo?.name || selectedAsset}</span>
+                </>
+              );
+            })()}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="11"
@@ -118,7 +164,7 @@ export function ReceiveAmountDisplay({
                   }}
                   type="button"
                 >
-                  1 USD ≈ {exchangeRate} {onrampTarget.asset}
+                  1 USD ≈ {exchangeRate} {assetsList.find(asset => asset.id === selectedAsset)?.name || selectedAsset}
                 </button>
               </>
             ) : (
@@ -152,7 +198,7 @@ export function ReceiveAmountDisplay({
             setIsModalOpen(false);
           }}
           quote={quote}
-          asset={onrampTarget.asset}
+          asset={assetsList.find(asset => asset.id === selectedAsset)?.name || selectedAsset}
         />
       )}
     </div>
