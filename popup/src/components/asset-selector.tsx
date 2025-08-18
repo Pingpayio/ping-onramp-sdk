@@ -12,19 +12,44 @@ interface AssetSelectorProps {
 
 const assetsList = [
   {
-    id: "USDC",
-    name: "USD Coin",
-    flag: "/usd-coin-usdc-logo.svg",
+    id: "USD",
+    name: "ZEC",
+    flag: "/Zcash.png",
   },
   {
-    id: "WNEAR",
-    name: "Wrapped NEAR",
-    flag: "/near-logo-green.png",
+    id: "Near",
+    name: "NEAR",
+    flag: "/Near.png",
   },
   {
-    id: "SUI",
-    name: "Sui Token",
-    flag: "/sui-logo.svg",
+    id: "Tether USD",
+    name: "USDT",
+    flag: "/Tether USD.png",
+  },
+  {
+    id: "USD Coin",
+    name: "USDC",
+    flag: "/USD Coin.png",
+  },
+  {
+    id: "Solana",
+    name: "SOL",
+    flag: "/Solana.png",
+  },
+  {
+    id: "Bitcoin",
+    name: "BTC",
+    flag: "/Bitcoin.png",
+  },
+  {
+    id: "Loud",
+    name: "LOUD",
+    flag: "/Loud.png",
+  },
+  {
+    id: "Ethereum",
+    name: "ETH",
+    flag: "/ETH.png",
   },
 ];
 
@@ -53,10 +78,10 @@ export function AssetSelector({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50! bg-[#121212]! backdrop-blur-sm">
+    <div className="fixed inset-0 z-[9999] bg-[#121212] backdrop-blur-sm">
       <div className="flex flex-col h-full gap-[12px]">
         {/* Header */}
-        <div className="flex items-center justify-between py-[12px] px-[16px] bg-[#121212]">
+        <div className="flex items-center justify-between py-[12px] px-[16px] bg-[#121212] relative z-[10000]">
           <Logo />
           <h2 className="text-[24px] font-bold text-white">Select Asset</h2>
           <Button
