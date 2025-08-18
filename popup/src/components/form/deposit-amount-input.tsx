@@ -48,7 +48,7 @@ export function DepositAmountInput({
         <button
           type="button"
           onClick={onCurrencyClick}
-          className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5 cursor-pointer transition-colors"
+          className="border gap-2 border-white/[0.18]! px-3 py-2 flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
         >
           <img
             src="/usd.svg"
@@ -60,19 +60,6 @@ export function DepositAmountInput({
           <span className="text-white font-normal">
             {getValues("selectedCurrency")}
           </span>
-          <svg
-            className="w-4 h-4 text-white/60"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
         </button>
       </div>
       {errors.amount && (

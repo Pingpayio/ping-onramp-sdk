@@ -15,7 +15,7 @@ interface CurrencySelectorProps {
 const currenciesList = [
   {
     id: "USD",
-    name: "United States Dollar", 
+    name: "United States Dollar",
     flag: "/usd.svg",
   },
   {
@@ -24,14 +24,14 @@ const currenciesList = [
     flag: "/gbp 1.svg",
   },
   {
-    id: "EUR", 
+    id: "EUR",
     name: "EURO",
     flag: "/eur.svg.svg",
   },
   {
     id: "CAD",
     name: "Canadian Dollar",
-    flag: "/cad.svg.svg", 
+    flag: "/cad.svg.svg",
   },
   {
     id: "AUD",
@@ -40,7 +40,7 @@ const currenciesList = [
   },
   {
     id: "INR",
-    name: "Indian Rupee", 
+    name: "Indian Rupee",
     flag: "/inr 1.svg",
   },
   {
@@ -58,18 +58,20 @@ const currenciesList = [
 export function CurrencySelector({
   isOpen,
   onClose,
-  currencies,
+  // currencies,
   selectedCurrency,
   onSelectCurrency,
 }: CurrencySelectorProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
   const filteredCurrencies = useMemo(() => {
-    if (!searchQuery) return currencies;
-    return currencies.filter((currency) =>
-      currency.id.toLowerCase().includes(searchQuery.toLowerCase())
+    if (!searchQuery) return currenciesList;
+    return currenciesList.filter(
+      (currency) =>
+        currency.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        currency.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [currencies, searchQuery]);
+  }, [searchQuery]);
 
   const handleSelectCurrency = (currencyId: string) => {
     onSelectCurrency(currencyId);
@@ -160,49 +162,22 @@ export function CurrencySelector({
                       : "bg-white/5 border border-white/[0.18]"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
-                    {(() => {
-                      const currencyInfo = currenciesList.find(
-                        (c) => c.id === currency.id
-                      );
-                      return currencyInfo ? (
-                        <>
-                          <img
-                            src={currencyInfo.flag}
-                            alt={currencyInfo.name}
-                            width="24"
-                            height="24"
-                            className="rounded-full"
-                          />
-                          <div className="flex flex-col text-left">
-                            <span className="text-white font-medium">
-                              {currency.id}
-                            </span>
-                            <span className="text-white/60 text-sm">
-                              {currencyInfo.name}
-                            </span>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <img
-                            src="/usd.svg"
-                            alt={currency.id}
-                            width="24"
-                            height="24"
-                            className="rounded-full"
-                          />
-                          <div className="flex flex-col text-left">
-                            <span className="text-white font-medium">
-                              {currency.id}
-                            </span>
-                            <span className="text-white/60 text-sm">
-                              {currency.id}
-                            </span>
-                          </div>
-                        </>
-                      );
-                    })()}
+                  <div className="flex items-center justify-between gap-[23px]">
+                    <img
+                      src={currency.flag}
+                      alt={currency.name}
+                      width="28"
+                      height="28"
+                      className="rounded-full"
+                    />
+                    <div className="flex flex-col text-left">
+                      <span className="text-white text-sm font-medium">
+                        {currency.id}
+                      </span>
+                      <span className="text-white/60 text-sm">
+                        {currency.name}
+                      </span>
+                    </div>
                   </div>
                   {selectedCurrency === currency.id && (
                     <svg
