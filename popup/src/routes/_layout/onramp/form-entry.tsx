@@ -18,6 +18,7 @@ import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
 import { WalletAddressInput } from "@/components/form/wallet-address-input";
 import { CurrencySelector } from "@/components/currency-selector";
 import { AssetSelector } from "@/components/asset-selector";
+import { PaymentMethodModal } from "@/components/payment-method-modal";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { SKIP_REDIRECT } from "@/config";
@@ -54,6 +55,7 @@ function FormEntryRoute() {
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
+  const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] = useState(false);
 
   useReportStep("form-entry");
 
@@ -202,6 +204,20 @@ function FormEntryRoute() {
     setIsAssetSelectorOpen(false);
   };
 
+  const handlePaymentMethodSelect = (methodId: string) => {
+    setValue("paymentMethod", methodId);
+    setIsPaymentMethodModalOpen(false);
+  };
+
+  const handleClosePaymentMethodModal = () => {
+    setIsPaymentMethodModalOpen(false);
+  };
+
+  const handlePaymentMethodChange = () => {
+    // Open the modal after a dropdown selection is made
+    setIsPaymentMethodModalOpen(true);
+  };
+
   return (
     <>
       <CurrencySelector
@@ -216,6 +232,13 @@ function FormEntryRoute() {
         onClose={handleCloseAssetSelector}
         selectedAsset={selectedAssetWatcher}
         onSelectAsset={handleAssetSelect}
+      />
+      <PaymentMethodModal
+        isOpen={isPaymentMethodModalOpen}
+        onClose={handleClosePaymentMethodModal}
+        selectedPaymentMethod={paymentMethodWatcher}
+        onSelectPaymentMethod={handlePaymentMethodSelect}
+        isIosDevice={onrampConfig.isIosDevice}
       />
       <FormProvider {...methods}>
         <form
@@ -246,7 +269,10 @@ function FormEntryRoute() {
 
           <WalletAddressInput onrampTarget={onrampTarget} />
 
-          <PaymentMethodSelector onrampConfig={onrampConfig} />
+          <PaymentMethodSelector 
+            onrampConfig={onrampConfig} 
+            onPaymentMethodChange={handlePaymentMethodChange}
+          />
 
           <Button
             type="submit"

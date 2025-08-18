@@ -88,7 +88,7 @@ export function AssetSelector({
             onClick={onClose}
             variant="ghost"
             size="icon"
-            className="w-6 h-6 hover:border-none"
+            className="w-6 h-6 border-none! hover:border-none!"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
