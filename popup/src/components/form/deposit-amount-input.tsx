@@ -5,10 +5,12 @@ import { Input } from "../ui/input";
 
 interface DepositAmountInputProps {
   validationRules: RegisterOptions<FormValues, "amount">;
+  onCurrencyClick?: () => void;
 }
 
 export function DepositAmountInput({
   validationRules,
+  onCurrencyClick,
 }: DepositAmountInputProps) {
   const {
     register,
@@ -43,7 +45,11 @@ export function DepositAmountInput({
           className="font-bold border-none text-[24px] shadow-none bg-transparent focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 p-0 max-w-[200px] text-left text-white [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
           placeholder="0"
         />
-        <div className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5">
+        <button
+          type="button"
+          onClick={onCurrencyClick}
+          className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5 cursor-pointer transition-colors"
+        >
           <img
             src="/usd.svg"
             alt="USD Currency Logo"
@@ -54,7 +60,20 @@ export function DepositAmountInput({
           <span className="text-white font-normal">
             {getValues("selectedCurrency")}
           </span>
-        </div>
+          <svg
+            className="w-4 h-4 text-white/60"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M19 9l-7 7-7-7"
+            />
+          </svg>
+        </button>
       </div>
       {errors.amount && (
         <p className="text-red-400 text-xs mt-1">{errors.amount.message}</p>

@@ -2,8 +2,15 @@ import { useState } from "react";
 // import { useClickOutside } from "../hooks/use-click-outside";
 import { Logo } from "./logo";
 import { MenuIcon } from "./menu-icon";
+import { Button } from "./ui/button";
 
-export default function Header({ title }: { title: string }) {
+interface HeaderProps {
+  title: string;
+  showCloseIcon?: boolean;
+  onClose?: () => void;
+}
+
+export default function Header({ title, showCloseIcon, onClose }: HeaderProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Handle click outside to close menu
@@ -19,7 +26,33 @@ export default function Header({ title }: { title: string }) {
           <Logo />
         </a>
         <h3 className=" font-semibold text-[24px]">{title}</h3>
-        <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} />
+        {showCloseIcon ? (
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            size="icon"
+            className="w-6 h-6 p-0 hover:bg-white/10"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6"
+            >
+              <path
+                d="M18 6L6 18M6 6l12 12"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Button>
+        ) : (
+          <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} />
+        )}
       </header>
       {/* 
       <HeaderMenu

@@ -9,13 +9,14 @@ import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
 import type { PaymentMethodLimit } from "@pingpay/onramp-types";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
 import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
 import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
 import { WalletAddressInput } from "@/components/form/wallet-address-input";
+import { CurrencySelector } from "@/components/currency-selector";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { SKIP_REDIRECT } from "@/config";
@@ -39,7 +40,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
       throw new Error("Onramp target asset is missing. Cannot proceed.");
     }
     const onrampConfig = await context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset),
+      onrampConfigQueryOptions(targetAsset)
     );
     return { onrampConfig, targetAsset };
   },
@@ -50,6 +51,7 @@ function FormEntryRoute() {
   const { call } = useParentMessenger();
   const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
   const navigate = Route.useNavigate();
+  const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
 
   useReportStep("form-entry");
 
@@ -67,6 +69,7 @@ function FormEntryRoute() {
   const {
     handleSubmit,
     watch,
+    setValue,
     formState: { isValid },
     trigger,
   } = methods;
@@ -91,7 +94,7 @@ function FormEntryRoute() {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
           );
           if (!isAmountValid(value, paymentMethodWatcher, onrampConfig)) {
             if (limit) {
@@ -151,7 +154,7 @@ function FormEntryRoute() {
       if (SKIP_REDIRECT === "true") {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
-          "Development mode: Navigating to onramp-callback with params:",
+          "Development mode: Navigating to onramp-callback with params:"
         );
         const url = new URL(onrampUrl);
         const targetRedirectUrl = url.searchParams.get("redirectUrl");
@@ -179,37 +182,62 @@ function FormEntryRoute() {
     }
   };
 
+  const handleCurrencySelect = (currencyId: string) => {
+    setValue("selectedCurrency", currencyId);
+    setIsCurrencySelectorOpen(false);
+  };
+
+  const handleCloseCurrencySelector = () => {
+    setIsCurrencySelectorOpen(false);
+  };
+
   return (
-    <FormProvider {...methods}>
-      <form
-        onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
-        className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
-      >
-        <Header title="Buy Assets" />
-
-        <DepositAmountInput validationRules={getValidationRules()} />
-
-        <ReceiveAmountDisplay
-          estimatedReceiveAmount={estimatedReceiveAmount}
-          isQuoteLoading={isQuoteLoading}
-          quoteError={error instanceof Error ? error.message : undefined}
-          depositAmount={depositAmountWatcher}
-          quote={quote}
-          onrampTarget={onrampTarget}
-        />
-
-        <WalletAddressInput onrampTarget={onrampTarget} />
-
-        <PaymentMethodSelector onrampConfig={onrampConfig} />
-
-        <Button
-          type="submit"
-          className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
-          disabled={!isValid || !quote || isQuoteLoading}
+    <>
+      <CurrencySelector
+        isOpen={isCurrencySelectorOpen}
+        onClose={handleCloseCurrencySelector}
+        currencies={onrampConfig.paymentCurrencies}
+        selectedCurrency={selectedCurrencyWatcher}
+        onSelectCurrency={handleCurrencySelect}
+      />
+      <FormProvider {...methods}>
+        <form
+          onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
+          className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
         >
-          Buy {onrampTarget?.asset}
-        </Button>
-      </form>
-    </FormProvider>
+          <Header
+            title="Buy Assets"
+            showCloseIcon={isCurrencySelectorOpen}
+            onClose={handleCloseCurrencySelector}
+          />
+
+          <DepositAmountInput 
+            validationRules={getValidationRules()} 
+            onCurrencyClick={() => setIsCurrencySelectorOpen(true)}
+          />
+
+          <ReceiveAmountDisplay
+            estimatedReceiveAmount={estimatedReceiveAmount}
+            isQuoteLoading={isQuoteLoading}
+            quoteError={error instanceof Error ? error.message : undefined}
+            depositAmount={depositAmountWatcher}
+            quote={quote}
+            onrampTarget={onrampTarget}
+          />
+
+          <WalletAddressInput onrampTarget={onrampTarget} />
+
+          <PaymentMethodSelector onrampConfig={onrampConfig} />
+
+          <Button
+            type="submit"
+            className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
+            disabled={!isValid || !quote || isQuoteLoading}
+          >
+            Buy {onrampTarget?.asset}
+          </Button>
+        </form>
+      </FormProvider>
+    </>
   );
 }
