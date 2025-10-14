@@ -1,8 +1,10 @@
 {
   "files": [],
   "references": [
-    { "path": "./sdk" },
-    { "path": "./popup" },
-    { "path": "./examples" }
+    { "path": "./packages/types" },
+    { "path": "./packages/sdk" },
+    { "path": "./apps/api" },
+    { "path": "./apps/popup" },
+    { "path": "./apps/docs" }
   ]
 }

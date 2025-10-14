@@ -1,6 +1,7 @@
 {
   "name": "@pingpay/onramp-api",
   "scripts": {
+    "build": "echo 'Cloudflare Workers: No build needed, Wrangler handles bundling'",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy --minify",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
@@ -8,7 +9,7 @@
   "dependencies": {
     "@coinbase/cdp-sdk": "^1.21.0",
     "@hono/zod-validator": "^0.7.0",
-    "@pingpay/onramp-types": "^0.0.2",
+    "@pingpay/onramp-types": "workspace:*",
     "hono": "^4.8.3",
     "hono-sessions": "^0.7.3"
   },

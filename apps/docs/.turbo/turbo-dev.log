@@ -1,0 +1,8 @@
+[0m[2m[35m$[0m [2m[1mvite dev[0m
+Route file "/Users/ebraem/workspace/pingpay/ping-onramp-sdk/apps/docs/src/routes/api/search.ts" does not contain any route piece. This is likely a mistake.
+
+  [32m[1mVITE[22m v7.1.10[39m  [2mready in [0m[1m1502[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m3000[22m/[39m
+[2m  [32m➜[39m  [1mNetwork[22m[2m: use [22m[1m--host[22m[2m to expose[22m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m

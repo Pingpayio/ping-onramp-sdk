@@ -9,10 +9,10 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "typescript": "^5.8.3",
-    "vite": "^6.3.5"
+    "typescript": "^5.9.3",
+    "vite": "^6.3.7"
   },
   "dependencies": {
-    "@pingpay/onramp-sdk": "^0.1.2"
+    "@pingpay/onramp-sdk": "workspace:*"
   }
 }

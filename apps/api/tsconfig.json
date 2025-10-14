@@ -8,6 +8,5 @@
     "lib": ["ESNext", "DOM"],
     "jsx": "react-jsx",
     "jsxImportSource": "hono/jsx"
-  },
-  "references": [{ "path": "../types" }]
+  }
 }

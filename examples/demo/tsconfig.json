@@ -24,6 +24,5 @@
     /* Path Aliases for TS - to match Vite config */
     "baseUrl": "."
   },
-  "include": ["src"],
-  "references": [{ "path": "../../sdk" }, { "path": "../../types" }]
+  "include": ["src"]
 }
