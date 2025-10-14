@@ -1,4 +1,5 @@
 import { ErrorView } from "@/components/steps/error-view";
+import { RegionNotSupportedPopup } from "@/components/region-not-supported-popup";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
   useParentMessenger,
@@ -57,7 +58,20 @@ function FormEntryRoute() {
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
   const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] = useState(false);
 
+  const [showRegionPopup, setShowRegionPopup] = useState(true);
+
   useReportStep("form-entry");
+
+  // Check if region is supported based on available payment methods
+  useEffect(() => {
+    if (onrampConfig && onrampConfig.paymentMethods.length === 0) {
+      setShowRegionPopup(true);
+    }
+  }, [onrampConfig]);
+
+  const handleCloseRegionPopup = () => {
+    setShowRegionPopup(false);
+  };
 
   const methods = useForm<FormValues>({
     mode: "onSubmit",
@@ -283,6 +297,12 @@ function FormEntryRoute() {
           </Button>
         </form>
       </FormProvider>
+
+      {/* Region restriction popup - ready for API integration */}
+      <RegionNotSupportedPopup
+        isOpen={showRegionPopup}
+        onClose={handleCloseRegionPopup}
+      />
     </>
   );
 }
