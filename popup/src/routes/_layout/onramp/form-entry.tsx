@@ -17,6 +17,9 @@ import { DepositAmountInput } from "@/components/form/deposit-amount-input";
 import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
 import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
 import { WalletAddressInput } from "@/components/form/wallet-address-input";
+import { CurrencySelector } from "@/components/currency-selector";
+import { AssetSelector } from "@/components/asset-selector";
+import { PaymentMethodModal } from "@/components/payment-method-modal";
 import Header from "@/components/header";
 import { Button } from "@/components/ui/button";
 import { SKIP_REDIRECT } from "@/config";
@@ -51,6 +54,9 @@ function FormEntryRoute() {
   const { call } = useParentMessenger();
   const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
   const navigate = Route.useNavigate();
+  const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
+  const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
+  const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] = useState(false);
 
   const [showRegionPopup, setShowRegionPopup] = useState(true);
 
@@ -81,12 +87,13 @@ function FormEntryRoute() {
   const {
     handleSubmit,
     watch,
+    setValue,
     formState: { isValid },
     trigger,
   } = methods;
 
-  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher] =
-    watch(["amount", "paymentMethod", "selectedCurrency"]);
+  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher, selectedAssetWatcher] =
+    watch(["amount", "paymentMethod", "selectedCurrency", "selectedAsset"]);
   const debouncedAmount = useDebounce(depositAmountWatcher, 300);
 
   useEffect(() => {
@@ -193,16 +200,75 @@ function FormEntryRoute() {
     }
   };
 
+  const handleCurrencySelect = (currencyId: string) => {
+    setValue("selectedCurrency", currencyId);
+    setIsCurrencySelectorOpen(false);
+  };
+
+  const handleCloseCurrencySelector = () => {
+    setIsCurrencySelectorOpen(false);
+  };
+
+  const handleAssetSelect = (assetId: string) => {
+    setValue("selectedAsset", assetId);
+    setIsAssetSelectorOpen(false);
+  };
+
+  const handleCloseAssetSelector = () => {
+    setIsAssetSelectorOpen(false);
+  };
+
+  const handlePaymentMethodSelect = (methodId: string) => {
+    setValue("paymentMethod", methodId);
+    setIsPaymentMethodModalOpen(false);
+  };
+
+  const handleClosePaymentMethodModal = () => {
+    setIsPaymentMethodModalOpen(false);
+  };
+
+  const handlePaymentMethodChange = () => {
+    // Open the modal after a dropdown selection is made
+    setIsPaymentMethodModalOpen(true);
+  };
+
   return (
     <>
+      <CurrencySelector
+        isOpen={isCurrencySelectorOpen}
+        onClose={handleCloseCurrencySelector}
+        currencies={onrampConfig.paymentCurrencies}
+        selectedCurrency={selectedCurrencyWatcher}
+        onSelectCurrency={handleCurrencySelect}
+      />
+      <AssetSelector
+        isOpen={isAssetSelectorOpen}
+        onClose={handleCloseAssetSelector}
+        selectedAsset={selectedAssetWatcher}
+        onSelectAsset={handleAssetSelect}
+      />
+      <PaymentMethodModal
+        isOpen={isPaymentMethodModalOpen}
+        onClose={handleClosePaymentMethodModal}
+        selectedPaymentMethod={paymentMethodWatcher}
+        onSelectPaymentMethod={handlePaymentMethodSelect}
+        isIosDevice={onrampConfig.isIosDevice}
+      />
       <FormProvider {...methods}>
         <form
           onSubmit={(e) => void handleSubmit(handleFormSubmit)(e)}
           className=" rounded-xl shadow-sm border-white/[0.16] space-y-3"
         >
-          <Header title="Buy Assets" />
+          <Header
+            title="Buy Assets"
+            showCloseIcon={isCurrencySelectorOpen}
+            onClose={handleCloseCurrencySelector}
+          />
 
-          <DepositAmountInput validationRules={getValidationRules()} />
+          <DepositAmountInput 
+            validationRules={getValidationRules()} 
+            onCurrencyClick={() => setIsCurrencySelectorOpen(true)}
+          />
 
           <ReceiveAmountDisplay
             estimatedReceiveAmount={estimatedReceiveAmount}
@@ -211,11 +277,16 @@ function FormEntryRoute() {
             depositAmount={depositAmountWatcher}
             quote={quote}
             onrampTarget={onrampTarget}
+            onAssetClick={() => setIsAssetSelectorOpen(true)}
+            selectedAsset={selectedAssetWatcher}
           />
 
           <WalletAddressInput onrampTarget={onrampTarget} />
 
-          <PaymentMethodSelector onrampConfig={onrampConfig} />
+          <PaymentMethodSelector 
+            onrampConfig={onrampConfig} 
+            onPaymentMethodChange={handlePaymentMethodChange}
+          />
 
           <Button
             type="submit"
