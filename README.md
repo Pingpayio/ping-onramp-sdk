@@ -156,17 +156,30 @@ To install dependencies:
 bun install
 ```
 
-To run the dev server:
+To run all dev servers:
 
 ```bash
 bun run dev
-
-// "dev": "concurrently \"bun run watch:sdk\" \"bun run dev:popup\" \"bun run dev:examples\"",
 ```
 
-This will watch for changes to the onramp SDK ([./src](./src)), start the Vite dev server for the popup app ([./popup](./popup)), and run the example app ([./examples](./examples/)) with a button that uses the SDK to open the popup.
+This uses Turborepo to orchestrate development servers across the monorepo:
 
-- `localhost:5173`: dev server for the popup
-- `localhost:3000`: example app to open popup
+- Watches for changes to the SDK ([packages/sdk](./packages/sdk))
+- Starts the popup dev server ([apps/popup](./apps/popup))
+- Runs the API dev server ([apps/api](./apps/api))
+- Runs example apps ([examples/](./examples/))
 
-NOTE: always access the popup through clicking via the example app (localhost:3000)
+**Dev Server Ports:**
+
+- `localhost:3000` - Example app (demo)
+- `localhost:3001` - Example app (sui)
+- `localhost:5173` - Popup app
+- `localhost:8787` - API server
+
+**Note:** Always access the popup through the example apps, not directly.
+
+To build all packages:
+
+```bash
+bun run build
+```
