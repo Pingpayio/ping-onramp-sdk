@@ -96,7 +96,7 @@ export function DepositAmountInput({
           {(() => {
             const selectedCurrency = getValues("selectedCurrency");
             const currencyInfo = currenciesList.find(
-              (c) => c.id === selectedCurrency
+              (c) => c.id === selectedCurrency,
             );
             return (
               <>

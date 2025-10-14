@@ -118,7 +118,9 @@ export function ReceiveAmountDisplay({
             className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
           >
             {(() => {
-              const assetInfo = assetsList.find(asset => asset.id === selectedAsset);
+              const assetInfo = assetsList.find(
+                (asset) => asset.id === selectedAsset,
+              );
               return (
                 <>
                   <img
@@ -128,7 +130,9 @@ export function ReceiveAmountDisplay({
                     height="20px"
                     className="rounded-full"
                   />
-                  <span className="text-white font-normal">{assetInfo?.name || selectedAsset}</span>
+                  <span className="text-white font-normal">
+                    {assetInfo?.name || selectedAsset}
+                  </span>
                 </>
               );
             })()}
@@ -164,7 +168,9 @@ export function ReceiveAmountDisplay({
                   }}
                   type="button"
                 >
-                  1 USD ≈ {exchangeRate} {assetsList.find(asset => asset.id === selectedAsset)?.name || selectedAsset}
+                  1 USD ≈ {exchangeRate}{" "}
+                  {assetsList.find((asset) => asset.id === selectedAsset)
+                    ?.name || selectedAsset}
                 </button>
               </>
             ) : (
@@ -198,7 +204,10 @@ export function ReceiveAmountDisplay({
             setIsModalOpen(false);
           }}
           quote={quote}
-          asset={assetsList.find(asset => asset.id === selectedAsset)?.name || selectedAsset}
+          asset={
+            assetsList.find((asset) => asset.id === selectedAsset)?.name ||
+            selectedAsset
+          }
         />
       )}
     </div>

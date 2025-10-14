@@ -66,7 +66,7 @@ export function AssetSelector({
     return assetsList.filter(
       (asset) =>
         asset.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.name.toLowerCase().includes(searchQuery.toLowerCase())
+        asset.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery]);
 

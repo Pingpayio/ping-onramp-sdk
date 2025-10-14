@@ -52,7 +52,7 @@ export function PaymentMethodSelector({
     getValues,
   } = useFormContext<FormValues>();
   const [currentPaymentMethod, setCurrentPaymentMethod] = useState(
-    getValues("paymentMethod")
+    getValues("paymentMethod"),
   );
 
   const paymentMethodWatcher = watch("paymentMethod");

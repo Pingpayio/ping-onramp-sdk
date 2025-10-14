@@ -5,3 +5,4 @@ docs
 .tanstack
 test-results
 routeTree.gen.ts
+.turbo

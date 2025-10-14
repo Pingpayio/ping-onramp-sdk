@@ -38,7 +38,7 @@ export function RegionNotSupportedPopup({
 
       // Show success and close popup
       alert(
-        "Region request submitted successfully! We'll notify you when we support your region."
+        "Region request submitted successfully! We'll notify you when we support your region.",
       );
       onClose();
     } catch (error) {

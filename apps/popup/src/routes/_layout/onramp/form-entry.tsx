@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
       throw new Error("Onramp target asset is missing. Cannot proceed.");
     }
     const onrampConfig = await context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset)
+      onrampConfigQueryOptions(targetAsset),
     );
     return { onrampConfig, targetAsset };
   },
@@ -56,7 +56,8 @@ function FormEntryRoute() {
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
-  const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] = useState(false);
+  const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] =
+    useState(false);
 
   const [showRegionPopup, setShowRegionPopup] = useState(true);
 
@@ -92,8 +93,12 @@ function FormEntryRoute() {
     trigger,
   } = methods;
 
-  const [depositAmountWatcher, paymentMethodWatcher, selectedCurrencyWatcher, selectedAssetWatcher] =
-    watch(["amount", "paymentMethod", "selectedCurrency", "selectedAsset"]);
+  const [
+    depositAmountWatcher,
+    paymentMethodWatcher,
+    selectedCurrencyWatcher,
+    selectedAssetWatcher,
+  ] = watch(["amount", "paymentMethod", "selectedCurrency", "selectedAsset"]);
   const debouncedAmount = useDebounce(depositAmountWatcher, 300);
 
   useEffect(() => {
@@ -112,7 +117,7 @@ function FormEntryRoute() {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
           );
           if (!isAmountValid(value, paymentMethodWatcher, onrampConfig)) {
             if (limit) {
@@ -172,7 +177,7 @@ function FormEntryRoute() {
       if (SKIP_REDIRECT === "true") {
         // In development: Use router to navigate to the onramp-callback route
         console.log(
-          "Development mode: Navigating to onramp-callback with params:"
+          "Development mode: Navigating to onramp-callback with params:",
         );
         const url = new URL(onrampUrl);
         const targetRedirectUrl = url.searchParams.get("redirectUrl");
@@ -265,8 +270,8 @@ function FormEntryRoute() {
             onClose={handleCloseCurrencySelector}
           />
 
-          <DepositAmountInput 
-            validationRules={getValidationRules()} 
+          <DepositAmountInput
+            validationRules={getValidationRules()}
             onCurrencyClick={() => setIsCurrencySelectorOpen(true)}
           />
 
@@ -283,8 +288,8 @@ function FormEntryRoute() {
 
           <WalletAddressInput onrampTarget={onrampTarget} />
 
-          <PaymentMethodSelector 
-            onrampConfig={onrampConfig} 
+          <PaymentMethodSelector
+            onrampConfig={onrampConfig}
             onPaymentMethodChange={handlePaymentMethodChange}
           />
 

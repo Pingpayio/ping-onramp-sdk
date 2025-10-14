@@ -69,7 +69,7 @@ export function CurrencySelector({
     return currenciesList.filter(
       (currency) =>
         currency.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        currency.name.toLowerCase().includes(searchQuery.toLowerCase())
+        currency.name.toLowerCase().includes(searchQuery.toLowerCase()),
     );
   }, [searchQuery]);
 

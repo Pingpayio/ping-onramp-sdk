@@ -52,11 +52,11 @@ export function PaymentMethodModal({
     // Filter based on device
     if (isIosDevice) {
       methods = methods.filter((method) =>
-        ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(method.id)
+        ["CARD", "ACH_BANK_ACCOUNT", "APPLE_PAY"].includes(method.id),
       );
     } else {
       methods = methods.filter((method) =>
-        ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id)
+        ["CARD", "ACH_BANK_ACCOUNT"].includes(method.id),
       );
     }
 
