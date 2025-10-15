@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@radix-ui/react-collapsible": "^1.1.12",
+    "@radix-ui/react-slot": "^1.2.3",
     "@tanstack/react-router": "^1.132.31",
     "@tanstack/react-router-devtools": "^1.132.31",
     "@tanstack/react-start": "^1.132.32",
