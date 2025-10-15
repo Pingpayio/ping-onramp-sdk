@@ -71,6 +71,7 @@ export const onrampConfigResponseSchema = z.object({
   paymentCurrencies: z.array(paymentCurrencySchema),
   purchaseCurrencies: z.array(purchaseCurrencySchema),
   isIosDevice: z.boolean(),
+  isRegionSupported: z.boolean(),
 });
 
 export const onrampInitResponseSchema = z.object({
@@ -161,6 +162,55 @@ export const onrampQuoteResponseSchema = z.object({
 });
 
 // -------------------
+// Onramp Result Schema
+// -------------------
+
+export const onrampResultSchema = z.object({
+  type: z.literal("intents"),
+  action: z.literal("withdraw"),
+  depositAddress: z.string(),
+  network: z.string(),
+  asset: z.string(),
+  amount: z.string(),
+  recipient: z.string(),
+});
+
+export type OnrampResult = z.infer<typeof onrampResultSchema>;
+
+// -------------------
+// Broadcast Channel Message Schemas
+// -------------------
+
+export const broadcastCompleteMessageSchema = z.object({
+  sessionId: z.string(),
+  type: z.literal("complete"),
+  data: z.object({
+    result: onrampResultSchema,
+  }),
+});
+
+export const broadcastErrorMessageSchema = z.object({
+  sessionId: z.string(),
+  type: z.literal("error"),
+  data: z.object({
+    error: z.string(),
+    details: z.unknown().optional(),
+    step: z.string(),
+  }),
+});
+
+export const broadcastMessageSchema = z.discriminatedUnion("type", [
+  broadcastCompleteMessageSchema,
+  broadcastErrorMessageSchema,
+]);
+
+export type BroadcastCompleteMessage = z.infer<
+  typeof broadcastCompleteMessageSchema
+>;
+export type BroadcastErrorMessage = z.infer<typeof broadcastErrorMessageSchema>;
+export type BroadcastMessage = z.infer<typeof broadcastMessageSchema>;
+
+// -------------------
 // Inferred Types
 // -------------------
 
@@ -179,4 +229,5 @@ export type OnrampInitRequest = z.infer<typeof onrampInitRequestSchema>;
 // Response Types
 export type OnrampConfigResponse = z.infer<typeof onrampConfigResponseSchema>;
 export type OnrampInitResponse = z.infer<typeof onrampInitResponseSchema>;
+
 export type OnrampQuoteResponse = z.infer<typeof onrampQuoteResponseSchema>;

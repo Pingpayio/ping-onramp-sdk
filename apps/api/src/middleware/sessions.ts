@@ -2,6 +2,10 @@ import { TargetAsset } from "@pingpay/onramp-types";
 import { CookieStore, sessionMiddleware } from "hono-sessions";
 import { createMiddleware } from "hono/factory";
 
+export interface Device {
+  userAgent: string | null;
+}
+
 export interface Location {
   country: string;
   subdivision?: string;
@@ -9,9 +13,10 @@ export interface Location {
 
 export interface SessionData {
   location: Location;
-  device: { userAgent: string | null };
   targetAsset: TargetAsset;
   origin: string;
+  device: Device;
+  clientIp?: string;
 }
 
 export const cookieSessionMiddleware = createMiddleware(async (c, next) => {

@@ -90,7 +90,6 @@ export function RegionNotSupportedPopup({
             className="space-y-3 overflow-hidden"
             onSubmit={(e) => {
               e.preventDefault();
-              // eslint-disable-next-line @typescript-eslint/no-floating-promises
               handleSubmit(e);
             }}
           >

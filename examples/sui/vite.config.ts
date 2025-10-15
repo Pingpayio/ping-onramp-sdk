@@ -10,7 +10,7 @@ export default defineConfig(({ command }) => ({
   },
   plugins: [],
   server: {
-    port: 3000,
+    port: 3001,
   },
   optimizeDeps: {
     exclude: ["@pingpay/onramp-sdk"],

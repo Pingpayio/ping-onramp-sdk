@@ -94,13 +94,13 @@ function MermaidContent({ chart }: { chart: string }) {
     themeVariables,
     themeCSS: `
       .node rect, .node circle, .node ellipse, .node polygon {
-        stroke-width: 2px;
+        strokeWidth: 2px;
       }
       .edgePath .path {
-        stroke-width: 2px;
+        strokeWidth: 2px;
       }
       .flowchart-link {
-        stroke-width: 2px;
+        strokeWidth: 2px;
       }
       .marker {
         fill: ${themeVariables.lineColor};

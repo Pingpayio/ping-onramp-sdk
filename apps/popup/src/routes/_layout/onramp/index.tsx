@@ -1,8 +1,13 @@
 import { ErrorView } from "@/components/steps/error-view";
 import { LoadingView } from "@/components/steps/loading-view";
-import { getTargetAsset } from "@/lib/popup-connection";
 import { onrampTargetAtom } from "@/state/atoms";
 import { createFileRoute, redirect } from "@tanstack/react-router";
+import { z } from "zod";
+
+const onrampSearchSchema = z.object({
+  chain: z.string(),
+  asset: z.string(),
+});
 
 export const Route = createFileRoute("/_layout/onramp/")({
   errorComponent: ({ error, reset }) => (
@@ -11,19 +16,15 @@ export const Route = createFileRoute("/_layout/onramp/")({
       onRetry={reset}
     />
   ),
-  loader: async ({ context }) => {
-    const targetAsset = await getTargetAsset();
-
-    if (!targetAsset) {
-      throw new Error("Target asset not provided by SDK.");
-    }
-
+  validateSearch: onrampSearchSchema,
+  beforeLoad: ({ context, search }) => {
+    const targetAsset = { chain: search.chain, asset: search.asset };
     context.store.set(onrampTargetAtom, targetAsset);
+    context.target = targetAsset;
 
-    redirect({
+    throw redirect({
       to: "/onramp/form-entry",
       replace: true,
-      throw: true,
     });
   },
   component: OnrampIndexRoute,

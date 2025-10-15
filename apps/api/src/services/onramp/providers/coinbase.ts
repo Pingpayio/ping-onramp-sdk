@@ -8,6 +8,16 @@ import type {
 import { ProviderError } from "../../../lib/errors";
 import type { OnrampProvider } from "./interface";
 
+const COINBASE_API_BASE = {
+  production: "https://api.developer.coinbase.com",
+  development: "https://api.developer.coinbase.com",
+};
+
+const COINBASE_PAY_BASE = {
+  production: "https://pay.coinbase.com",
+  development: "https://pay-sandbox.coinbase.com",
+};
+
 interface CoinbaseConfigResponse {
   countries: {
     id: string;
@@ -163,11 +173,25 @@ class CoinbaseProvider implements OnrampProvider {
       // paymentMethod,
     } = formData;
 
+    const isDev = env.ENVIRONMENT === "development";
+    const apiBase = isDev
+      ? COINBASE_API_BASE.development
+      : COINBASE_API_BASE.production;
+    const payBase = isDev
+      ? COINBASE_PAY_BASE.development
+      : COINBASE_PAY_BASE.production;
+
     const tokenPath = "/onramp/v1/token";
     const tokenBody = {
       addresses: [{ address, blockchains: [network] }],
       assets: [asset],
+      ...(!isDev && formData.clientIp && { clientIp: formData.clientIp }),
     };
+
+    console.log(
+      `Creating session token (${isDev ? "development" : "production"}):`,
+      JSON.stringify(tokenBody, null, 2),
+    );
 
     const token = await getCoinbaseAuthToken(
       COINBASE_API_KEY,
@@ -175,20 +199,22 @@ class CoinbaseProvider implements OnrampProvider {
       "POST",
       tokenPath,
     );
-    const tokenResponse = await fetch(
-      `https://api.developer.coinbase.com${tokenPath}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(tokenBody),
+    const tokenResponse = await fetch(`${apiBase}${tokenPath}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
-    );
+      body: JSON.stringify(tokenBody),
+    });
 
     if (!tokenResponse.ok) {
       const errorBody = await tokenResponse.text();
+      console.error("Coinbase session token creation failed:", {
+        status: tokenResponse.status,
+        errorBody,
+        tokenBody,
+      });
       throw new ProviderError("Coinbase onramp session token failed", {
         status: tokenResponse.status,
         error: errorBody,
@@ -198,7 +224,7 @@ class CoinbaseProvider implements OnrampProvider {
     const { token: sessionToken } =
       (await tokenResponse.json()) as CoinbaseTokenResponse;
 
-    const onrampUrl = new URL("https://pay.coinbase.com/buy/select-asset");
+    const onrampUrl = new URL(`${payBase}/buy/select-asset`);
     // onrampUrl.searchParams.set("appId", "b72ad924-2530-464b-b12f-00d1efc7dee6");
     // onrampUrl.searchParams.set("addresses", tokenBody.addresses);
     // onrampUrl.searchParams.set("defaultAsset", asset);

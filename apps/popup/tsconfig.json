@@ -1,11 +1,15 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
     "jsx": "react-jsx",
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "types": ["vite/client"],
+    "rootDirs": ["."],
     "paths": {
       "@/*": ["./src/*"]
     }

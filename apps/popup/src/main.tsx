@@ -4,11 +4,14 @@ import { createStore } from "jotai";
 import { StrictMode } from "react";
 import ReactDOM from "react-dom/client";
 import { routeTree } from "./routeTree.gen";
-import { PopupConnectionProvider } from "./context/popup-connection-provider";
+
+import type { TargetAsset } from "@pingpay/onramp-types";
 
 export interface RouterContext {
   queryClient: QueryClient;
   store: ReturnType<typeof createStore>;
+  sessionId: string;
+  target?: TargetAsset;
 }
 
 const queryClient = new QueryClient();
@@ -19,6 +22,9 @@ const router = createRouter({
   context: {
     store,
     queryClient,
+    // These will be injected by root route's validateSearch and beforeLoad
+    sessionId: "",
+    target: undefined,
   },
 });
 
@@ -33,11 +39,9 @@ if (!rootElement.innerHTML) {
   const root = ReactDOM.createRoot(rootElement);
   root.render(
     <StrictMode>
-      <PopupConnectionProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-        </QueryClientProvider>
-      </PopupConnectionProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
     </StrictMode>,
   );
 }

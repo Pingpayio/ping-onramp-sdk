@@ -1,10 +1,6 @@
-import { ErrorView } from "@/components/steps/error-view";
 import { RegionNotSupportedPopup } from "@/components/region-not-supported-popup";
+import { ErrorView } from "@/components/steps/error-view";
 import { useDebounce } from "@/hooks/use-debounce";
-import {
-  useParentMessenger,
-  useReportStep,
-} from "@/hooks/use-parent-messenger";
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
@@ -13,16 +9,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
+import { AssetSelector } from "@/components/asset-selector";
+import { CurrencySelector } from "@/components/currency-selector";
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
 import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
 import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
 import { WalletAddressInput } from "@/components/form/wallet-address-input";
-import { CurrencySelector } from "@/components/currency-selector";
-import { AssetSelector } from "@/components/asset-selector";
-import { PaymentMethodModal } from "@/components/payment-method-modal";
 import Header from "@/components/header";
+import { PaymentMethodModal } from "@/components/payment-method-modal";
 import { Button } from "@/components/ui/button";
-import { SKIP_REDIRECT } from "@/config";
 
 export interface FormValues {
   amount: string;
@@ -45,34 +40,26 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
     const onrampConfig = await context.queryClient.ensureQueryData(
       onrampConfigQueryOptions(targetAsset),
     );
-    return { onrampConfig, targetAsset };
+    return {
+      onrampConfig,
+      targetAsset,
+      showRegionError: !onrampConfig.isRegionSupported,
+    };
   },
   component: FormEntryRoute,
 });
 
 function FormEntryRoute() {
-  const { call } = useParentMessenger();
-  const { onrampConfig, targetAsset: onrampTarget } = Route.useLoaderData();
+  const {
+    onrampConfig,
+    targetAsset: onrampTarget,
+    showRegionError,
+  } = Route.useLoaderData();
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
   const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] =
     useState(false);
-
-  const [showRegionPopup, setShowRegionPopup] = useState(true);
-
-  useReportStep("form-entry");
-
-  // Check if region is supported based on available payment methods
-  useEffect(() => {
-    if (onrampConfig && onrampConfig.paymentMethods.length === 0) {
-      setShowRegionPopup(true);
-    }
-  }, [onrampConfig]);
-
-  const handleCloseRegionPopup = () => {
-    setShowRegionPopup(false);
-  };
 
   const methods = useForm<FormValues>({
     mode: "onSubmit",
@@ -151,9 +138,6 @@ function FormEntryRoute() {
     if (!quote) {
       return;
     }
-    call("reportFormDataSubmitted", { formData: data })?.catch((e: unknown) => {
-      console.error("Failed to report form data submitted:", e);
-    });
 
     void navigate({
       to: "/onramp/initiating",
@@ -162,45 +146,15 @@ function FormEntryRoute() {
     try {
       const { redirectUrl: onrampUrl } = await initOnramp(data);
 
-      console.log("SKIP_REDIRECT", SKIP_REDIRECT);
-      console.log("typeof SKIP_REDIRECT", typeof SKIP_REDIRECT);
-
-      await call("reportOnrampInitiated", {
-        serviceName: "Onramp (via 1Click)",
-        details: {
-          url: SKIP_REDIRECT
-            ? "ROUTER_NAVIGATION:USING_TANSTACK_ROUTER"
-            : onrampUrl,
-          onrampUrl,
-        },
-      });
-      if (SKIP_REDIRECT === "true") {
-        // In development: Use router to navigate to the onramp-callback route
-        console.log(
-          "Development mode: Navigating to onramp-callback with params:",
-        );
-        const url = new URL(onrampUrl);
-        const targetRedirectUrl = url.searchParams.get("redirectUrl");
-        window.location.href = targetRedirectUrl!;
-      } else {
-        // In production: Redirect to Onramp URL
-        console.log("Production mode: Redirecting to Onramp URL");
-        window.location.href = onrampUrl;
-      }
-    } catch (e: unknown) {
-      const errorMsg = e instanceof Error ? e.message : String(e);
+      window.location.assign(onrampUrl);
+    } catch (error) {
+      const errorMsg = error instanceof Error ? error.message : String(error);
 
       void navigate({
         to: "/onramp/error",
         search: {
           error: errorMsg || "Failed to initiate onramp.",
         },
-      });
-      call("reportProcessFailed", {
-        error: errorMsg,
-        step: "initiating-onramp-service",
-      })?.catch((e: unknown) => {
-        console.error("Failed to report process failure:", e);
       });
     }
   };
@@ -305,8 +259,9 @@ function FormEntryRoute() {
 
       {/* Region restriction popup - ready for API integration */}
       <RegionNotSupportedPopup
-        isOpen={showRegionPopup}
-        onClose={handleCloseRegionPopup}
+        isOpen={showRegionError}
+        // TODO: Close popup
+        onClose={() => console.log("Region popup closed")}
       />
     </>
   );

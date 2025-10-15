@@ -1,7 +1,15 @@
-import type { OnrampResult, TargetAsset } from "@pingpay/onramp-sdk";
+import type { OnrampResult, TargetAsset } from "@pingpay/onramp-types";
 import { atom } from "jotai";
 import type { StatusResponseData } from "../lib/one-click-api";
-import type { NearIntentsDisplayInfo } from "../types";
+
+export interface NearIntentsDisplayInfo {
+  logoUrl?: string;
+  contractName?: string;
+  message?: string;
+  amountIn?: number; // e.g., fiat amount or initial crypto amount
+  amountOut?: number; // e.g., final crypto amount received by user
+  explorerUrl?: string;
+}
 
 // Atom for global error state
 export const onrampErrorAtom = atom<string | null>(null);

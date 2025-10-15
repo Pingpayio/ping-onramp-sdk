@@ -1,6 +1,11 @@
 import type { StatusResponseData } from "@/lib/one-click-api";
-import { useNearIntentsDisplayInfo, useOneClickStatus } from "@/state/hooks";
-import type { OnrampResult } from "@pingpay/onramp-sdk";
+import { useAtom } from "jotai";
+import {
+  nearIntentsDisplayInfoAtom,
+  oneClickStatusAtom,
+  type NearIntentsDisplayInfo,
+} from "@/state/atoms";
+import type { OnrampResult } from "@pingpay/onramp-types";
 import { FaCheckCircle, FaClock, FaRegClock, FaSpinner } from "react-icons/fa";
 import Header from "../header";
 import { StepInfoBox, type StepBox } from "../step-info-box";
@@ -14,7 +19,7 @@ export interface ProcessingOnrampProps {
 
 const getDisplayInfoForStatus = (
   oneClickStatus?: StatusResponseData | null,
-  nearIntentsDisplayInfo?: { message?: string; explorerUrl?: string },
+  nearIntentsDisplayInfo?: NearIntentsDisplayInfo,
 ): {
   progress: number;
   box: StepBox;
@@ -125,28 +130,29 @@ const getDisplayInfoForStatus = (
 };
 
 export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
-  const [oneClickStatus] = useOneClickStatus();
-  const [nearIntentsDisplayInfo] = useNearIntentsDisplayInfo();
+  const [oneClickStatus] = useAtom(oneClickStatusAtom);
+  const [nearIntentsDisplayInfo] = useAtom(nearIntentsDisplayInfoAtom);
 
   // Determine overall progress and current display based on App.tsx step and 1Click status
   let displayProgress = 10;
   let displayBox: StepBox;
   let transactionDetails: Record<string, string | undefined> = {};
 
-  if (step === 3 && result?.success) {
+  if (step === 3 && result) {
     displayProgress = 100;
     displayBox = {
       icon: <FaCheckCircle className="text-green-400 text-[32px]" />,
       title: "Transaction Complete",
-      desc: result.message || "Onramp and swap successful!",
+      desc: "Onramp and swap successful!",
       color: "border-green-400",
     };
-    // TODO: Transaction details typings
-    transactionDetails.transactionId = result.data?.transactionId;
-    transactionDetails.service = result.data?.service;
+    // Transaction details from NearIntentsDisplayInfo and result
     transactionDetails.explorerLink = nearIntentsDisplayInfo.explorerUrl;
     transactionDetails.amountIn = nearIntentsDisplayInfo.amountIn?.toString();
     transactionDetails.amountOut = nearIntentsDisplayInfo.amountOut?.toString();
+    transactionDetails.asset = result.asset;
+    transactionDetails.network = result.network;
+    transactionDetails.recipient = result.recipient;
   } else if (step === 0) {
     // "initiating-onramp-service"
     displayProgress = 15;
@@ -280,7 +286,7 @@ export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
       </div>
 
       <p className="text-xs text-white/60 py-2">
-        {step === 3 && result?.success
+        {step === 3 && result
           ? "Transaction complete, you can now close this window."
           : "Do not close this window, transaction is being processed."}
       </p>

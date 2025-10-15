@@ -1,4 +1,5 @@
 {
+  "extends": "../../tsconfig.json",
   "compilerOptions": {
     "composite": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
@@ -29,6 +30,5 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src/**/*"],
-  "references": [{ "path": "../types" }]
+  "include": ["src/**/*"]
 }

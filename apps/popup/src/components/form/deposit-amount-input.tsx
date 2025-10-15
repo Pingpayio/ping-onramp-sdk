@@ -123,9 +123,9 @@ export function DepositAmountInput({
             <path
               d="M1.36963 1L5.36963 5L9.36963 1"
               stroke="white"
-              stroke-width="1.5"
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             />
           </svg>
         </button>

@@ -54,12 +54,6 @@ export default function Header({ title, showCloseIcon, onClose }: HeaderProps) {
           <MenuIcon onClick={() => setIsMenuOpen(!isMenuOpen)} />
         )}
       </header>
-      {/* 
-      <HeaderMenu
-        ref={menuRef}
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-      /> */}
     </div>
   );
 }

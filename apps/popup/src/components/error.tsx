@@ -1,12 +1,15 @@
-import { usePopupConnection } from "@/context/popup-connection-provider";
+import { useBroadcastChannel } from "../hooks/use-broadcast-channel";
 import type { ErrorComponentProps } from "@tanstack/react-router";
+import { useRouter } from "@tanstack/react-router";
 import { useSetAtom } from "jotai";
 import { useEffect } from "react";
 import { onrampErrorAtom } from "../state/atoms";
 import { Button } from "./ui/button";
 
 export function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  const { call } = usePopupConnection();
+  const router = useRouter();
+  const sessionId = router.options.context.sessionId;
+  const { sendMessage } = useBroadcastChannel(sessionId);
   const setError = useSetAtom(onrampErrorAtom);
 
   // Extract error message
@@ -20,13 +23,13 @@ export function ErrorComponent({ error, reset }: ErrorComponentProps) {
     // Update global error state
     setError(errorMessage);
 
-    call("reportProcessFailed", {
-      error: errorMessage,
-      step: "error",
-    }).catch((e: unknown) => {
-      console.error("Failed to report error to parent:", e);
-    });
-  }, [call, errorMessage, setError]);
+    if (sessionId) {
+      sendMessage("error", {
+        error: errorMessage,
+        step: "global-error-boundary",
+      });
+    }
+  }, [errorMessage, setError, sendMessage, sessionId]);
 
   return (
     <div className="p-6 flex flex-col items-center justify-center min-h-screen bg-[#1A1A1A] text-white">

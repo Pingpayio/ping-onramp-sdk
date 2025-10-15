@@ -7,6 +7,7 @@ export interface OnrampSessionContext {
   location: Location;
   targetAsset: TargetAsset;
   origin: string;
+  clientIp?: string;
 }
 
 export const onrampSessionDataMiddleware = createMiddleware<{
@@ -32,6 +33,7 @@ export const onrampSessionDataMiddleware = createMiddleware<{
     const location = session.get("location");
     const targetAsset = session.get("targetAsset");
     const origin = session.get("origin");
+    const clientIp = session.get("clientIp");
 
     if (!location || !targetAsset || !origin) {
       return c.json({ error: "Incomplete session data" }, 400);
@@ -39,6 +41,7 @@ export const onrampSessionDataMiddleware = createMiddleware<{
     onrampContext.location = location;
     onrampContext.targetAsset = targetAsset;
     onrampContext.origin = origin;
+    onrampContext.clientIp = clientIp;
   }
 
   c.set("onrampContext", onrampContext);

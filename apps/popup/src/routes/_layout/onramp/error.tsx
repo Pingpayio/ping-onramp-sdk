@@ -1,7 +1,4 @@
-import {
-  useParentMessenger,
-  useReportStep,
-} from "@/hooks/use-parent-messenger";
+import { useBroadcastChannel } from "@/hooks/use-broadcast-channel";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { z } from "zod";
@@ -19,18 +16,15 @@ export const Route = createFileRoute("/_layout/onramp/error")({
 function ErrorRoute() {
   const navigate = Route.useNavigate();
   const searchParams = Route.useSearch();
-  const { call } = useParentMessenger();
-
-  useReportStep("error");
+  const { sessionId } = Route.useRouteContext();
+  const { sendMessage } = useBroadcastChannel(sessionId);
 
   useEffect(() => {
-    call("reportProcessFailed", {
+    sendMessage("error", {
       error: searchParams.error ?? "An unknown error occurred",
       step: "error",
-    })?.catch((e: unknown) => {
-      console.error("Failed to report process failure:", e);
     });
-  }, [call, searchParams.error]);
+  }, [sendMessage, searchParams.error]);
 
   const handleRetry = () => {
     void navigate({

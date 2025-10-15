@@ -1,15 +1,5 @@
-// @ts-expect-error post-me typings are weird
-import { Connection, ParentHandshake, WindowMessenger } from "post-me";
+import type { OnrampResult, TargetAsset } from "@pingpay/onramp-types";
 import { PingpayOnrampError } from "./errors";
-import type {
-  OnrampResult,
-  TargetAsset,
-} from "./internal/communication/messages";
-import type {
-  InitiateOnrampFlowPayload,
-  PopupActionMethods,
-  SdkListenerMethods,
-} from "./internal/communication/post-me-types";
 import { closePopup, openPopup } from "./internal/utils/popup-manager";
 import type { PingpayOnrampConfig } from "./types";
 
@@ -21,8 +11,6 @@ const POPUP_WIDTH = 500;
 
 const POPUP_HEIGHT = 700;
 
-type OnrampStatus = "idle" | "active" | "closed";
-
 /**
  * PingPay Onramp SDK for integrating cryptocurrency onramp functionality.
  *
@@ -33,7 +21,6 @@ type OnrampStatus = "idle" | "active" | "closed";
  * ```typescript
  * // Create a new instance with configuration
  * const config: PingpayOnrampConfig = {
- *   onPopupReady: () => console.log('Popup ready'),
  *   onProcessComplete: (result) => console.log('Complete:', result),
  *   onProcessFailed: (error) => console.error('Failed:', error)
  * };
@@ -51,23 +38,15 @@ type OnrampStatus = "idle" | "active" | "closed";
  */
 export class PingpayOnramp {
   private config: PingpayOnrampConfig;
-
+  private channel: BroadcastChannel | null = null;
   private popup: Window | null = null;
-
-  private postMeConnection: Connection<
-    SdkListenerMethods,
-    PopupActionMethods
-  > | null = null;
-
+  private sessionId: string = "";
+  private checkClosedInterval?: NodeJS.Timeout;
   private onrampPromise: {
     resolve: (result: OnrampResult) => void;
     reject: (error: PingpayOnrampError) => void;
   } | null = null;
-
-  private heartbeatInterval?: NodeJS.Timeout;
-
-  private status: OnrampStatus = "idle";
-
+  private status: "idle" | "active" | "closed" = "idle";
   private popupUrl: string;
 
   /**
@@ -88,27 +67,6 @@ export class PingpayOnramp {
    *
    * @param target - The target asset specification containing chain and asset identifiers
    * @returns Promise that resolves with the onramp result when the process completes successfully
-   *
-   * @throws {PingpayOnrampError} When onramp is already active
-   * @throws {PingpayOnrampError} When SDK instance has been closed
-   * @throws {PingpayOnrampError} When popup fails to open (browser settings)
-   * @throws {PingpayOnrampError} When user closes popup before completion
-   * @throws {PingpayOnrampError} When onramp process fails at any step
-   *
-   * @example
-   * ```typescript
-   * try {
-   *   const result = await onramp.initiateOnramp({
-   *     chain: 'NEAR',
-   *     asset: 'wNEAR'
-   *   });
-   *   console.log('Onramp successful:', result);
-   * } catch (error) {
-   *   if (error instanceof PingpayOnrampError) {
-   *     console.error('Onramp failed:', error.message, error.step);
-   *   }
-   * }
-   * ```
    */
   public initiateOnramp(target: TargetAsset): Promise<OnrampResult> {
     if (this.status === "active") {
@@ -126,173 +84,84 @@ export class PingpayOnramp {
 
     return new Promise((resolve, reject) => {
       this.onrampPromise = { resolve, reject };
+      this.sessionId = crypto.randomUUID();
+      this.channel = new BroadcastChannel("pingpay-onramp");
 
-      (async () => {
-        try {
-          console.log(`SDK: Opening popup at URL: ${this.popupUrl}`);
-          this.popup = openPopup(
-            this.popupUrl,
-            POPUP_WINDOW_NAME,
-            POPUP_WIDTH,
-            POPUP_HEIGHT,
-          );
-          if (!this.popup) {
-            throw new PingpayOnrampError(
-              "Failed to open popup window. Please check your browser settings.",
+      // Listen for messages from popup
+      this.channel.onmessage = (event) => {
+        if (event.data.sessionId === this.sessionId) {
+          if (event.data.type === "complete") {
+            this.onrampPromise?.resolve(event.data.result);
+            this.cleanup();
+          } else if (event.data.type === "error") {
+            const error = new PingpayOnrampError(
+              event.data.error,
+              event.data.details,
+              event.data.step,
             );
+            this.onrampPromise?.reject(error);
+            this.cleanup();
           }
-
-          const messenger = new WindowMessenger({
-            localWindow: window,
-            remoteWindow: this.popup,
-            remoteOrigin: new URL(this.popupUrl).origin,
-          });
-
-          const sdkListenerMethods: SdkListenerMethods = {
-            reportPopupReady: async () => {
-              console.log("SDK: Received reportPopupReady from popup.");
-              this.config.onPopupReady?.();
-              if (this.postMeConnection) {
-                try {
-                  const payload: InitiateOnrampFlowPayload = {
-                    target,
-                  };
-                  console.log(
-                    "SDK: Calling initiateOnrampInPopup on popup.",
-                    payload,
-                  );
-                  await this.postMeConnection
-                    .remoteHandle()
-                    .call("initiateOnrampInPopup", payload);
-                  console.log("SDK: initiateOnrampInPopup call completed.");
-                } catch (e) {
-                  const errorMsg =
-                    "SDK: Error calling initiateOnrampInPopup on popup";
-                  console.error(errorMsg, e);
-                  this.onrampPromise?.reject(
-                    new PingpayOnrampError(
-                      errorMsg,
-                      e instanceof Error ? e : undefined,
-                    ),
-                  );
-                  this.cleanup();
-                }
-              }
-            },
-            reportFlowStarted: async (payload) => {
-              console.log("SDK: Flow started by popup.", payload);
-              this.config.onFlowStarted?.(payload);
-            },
-            reportStepChanged: async (payload) => {
-              console.log(
-                "SDK: Onramp step changed:",
-                payload.step,
-                payload.details,
-              );
-              this.config.onStepChange?.(payload.step, payload.details);
-            },
-            reportFormDataSubmitted: async (payload) => {
-              console.log("SDK: Form data submitted.", payload);
-              this.config.onFormDataSubmitted?.(payload);
-            },
-            reportWalletConnected: async (payload) => {
-              console.log("SDK: Wallet connected.", payload);
-              this.config.onWalletConnected?.(payload);
-            },
-            reportTransactionSigned: async (payload) => {
-              console.log("SDK: Transaction signed.", payload);
-              this.config.onTransactionSigned?.(payload);
-            },
-            reportOnrampInitiated: async (payload) => {
-              console.log("SDK: Onramp initiated with service.", payload);
-              this.config.onOnrampInitiated?.(payload);
-            },
-            reportProcessComplete: async (payload) => {
-              console.log("SDK: Process complete.", payload);
-              if (this.onrampPromise) {
-                this.onrampPromise.resolve(payload.result);
-              }
-              this.config.onProcessComplete?.(payload.result);
-              this.cleanup();
-            },
-            reportProcessFailed: async (payload) => {
-              console.log("SDK: Process failed.", payload);
-              if (this.onrampPromise) {
-                this.onrampPromise.reject(
-                  new PingpayOnrampError(
-                    payload.error,
-                    payload.details,
-                    payload.step,
-                  ),
-                );
-              }
-              this.config.onProcessFailed?.(payload);
-            },
-            reportPopupClosedByUser: async () => {
-              console.log("SDK: Popup closed by user.");
-              if (this.onrampPromise) {
-                this.onrampPromise.reject(
-                  new PingpayOnrampError("Popup closed by user."),
-                );
-              }
-              this.cleanup();
-            },
-          };
-
-          this.postMeConnection = await ParentHandshake(
-            messenger,
-            sdkListenerMethods,
-            5000,
-          );
-
-          console.log("SDK: post-me ParentHandshake successful.");
-          this.setupHeartbeat();
-        } catch (error) {
-          const onrampError =
-            error instanceof PingpayOnrampError
-              ? error
-              : new PingpayOnrampError(
-                  error instanceof Error
-                    ? error.message
-                    : "Failed to initiate onramp flow.",
-                  error,
-                );
-          this.onrampPromise?.reject(onrampError);
-          this.cleanup();
         }
-      })();
-    });
-  }
+      };
 
-  private setupHeartbeat() {
-    this.heartbeatInterval = setInterval(() => {
-      if (this.popup?.closed) {
-        console.log("SDK: Heartbeat detected popup closed.");
-        if (this.onrampPromise) {
-          this.onrampPromise.reject(
+      // Open popup with sessionId and target asset in URL
+      console.log(`SDK: Opening popup with sessionId: ${this.sessionId}`);
+      const url = new URL(`${this.popupUrl}/onramp`);
+      url.searchParams.set("sessionId", this.sessionId);
+      url.searchParams.set("chain", target.chain);
+      url.searchParams.set("asset", target.asset);
+
+      this.popup = openPopup(
+        url.toString(),
+        POPUP_WINDOW_NAME,
+        POPUP_WIDTH,
+        POPUP_HEIGHT,
+      );
+
+      if (!this.popup) {
+        const error = new PingpayOnrampError(
+          "Failed to open popup window. Please check your browser settings.",
+        );
+        this.onrampPromise?.reject(error);
+        this.cleanup();
+        return;
+      }
+
+      this.checkClosedInterval = setInterval(() => {
+        if (this.popup?.closed) {
+          if (this.checkClosedInterval) {
+            clearInterval(this.checkClosedInterval);
+            this.checkClosedInterval = undefined;
+          }
+          this.onrampPromise?.reject(
             new PingpayOnrampError("Popup closed before completion."),
           );
+          this.cleanup();
         }
-        this.cleanup();
-      }
-    }, 1000);
+      }, 1000);
+    });
   }
 
   private cleanup(): void {
     if (this.status === "closed") {
       return;
     }
-    if (this.heartbeatInterval) {
-      clearInterval(this.heartbeatInterval);
-      this.heartbeatInterval = undefined;
+
+    if (this.checkClosedInterval) {
+      clearInterval(this.checkClosedInterval);
+      this.checkClosedInterval = undefined;
     }
-    if (this.postMeConnection) {
-      this.postMeConnection.close();
-      this.postMeConnection = null;
+
+    if (this.channel) {
+      this.channel.close();
+      this.channel = null;
     }
+
     if (this.popup && !this.popup.closed) {
       closePopup(this.popup);
     }
+
     this.config.onPopupClose?.();
     this.popup = null;
     this.onrampPromise = null;

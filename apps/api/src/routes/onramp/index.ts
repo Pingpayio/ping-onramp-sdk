@@ -35,6 +35,8 @@ onramp.post(
     let subdivision = c.req.header("cf-region-code");
     const userAgent = c.req.header("user-agent");
     const origin = c.req.header("origin");
+    const clientIp =
+      c.req.header("cf-connecting-ip") || c.req.header("x-forwarded-for");
     const { targetAsset, currency } = c.req.valid("json");
     const session = c.get("session");
 
@@ -57,6 +59,7 @@ onramp.post(
       targetAsset,
       origin,
       device: { userAgent: userAgent ?? null },
+      clientIp,
     };
 
     for (const [key, value] of Object.entries(sessionData)) {
@@ -68,6 +71,13 @@ onramp.post(
       { country, subdivision: subdivision ?? undefined, currency },
       { userAgent: userAgent ?? null },
     );
+
+    console.log("Onramp config response:", {
+      region: { country, subdivision, currency },
+      isRegionSupported: config.isRegionSupported,
+      paymentMethodsCount: config.paymentMethods.length,
+      paymentCurrenciesCount: config.paymentCurrencies.length,
+    });
 
     return c.json(config);
   },
