@@ -33,7 +33,10 @@ app.use("*", async (c, next) => {
         .map((o: string) => o.trim())
         .filter(Boolean);
 
-      const hardcodedAllowedOrigins = ["https://onramp.pingpay.io"];
+      const hardcodedAllowedOrigins = [
+        "https://onramp.pingpay.io",
+        "https://pingpay.local.gd:5173", // Local dev popup (HTTPS required for Coinbase redirects)
+      ];
 
       const allAllowedOrigins = [
         ...allowedOriginsEnv,

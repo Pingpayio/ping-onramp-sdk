@@ -156,6 +156,23 @@ To install dependencies:
 bun install
 ```
 
+### Local HTTPS Setup (One-time per developer)
+
+This project uses `pingpay.local.gd` for local development to enable Coinbase redirects. The certificates are already in the repo, but you need to trust the local CA once:
+
+1. Install mkcert (if not already installed):
+   ```bash
+   brew install mkcert  # macOS
+   # See https://github.com/FiloSottile/mkcert for other platforms
+   ```
+
+2. Install the local CA (one-time):
+   ```bash
+   mkcert -install
+   ```
+
+That's it! The certificates are already in the project directory in .certs
+
 To run all dev servers:
 
 ```bash
@@ -169,14 +186,14 @@ This uses Turborepo to orchestrate development servers across the monorepo:
 - Runs the API dev server ([apps/api](./apps/api))
 - Runs example apps ([examples/](./examples/))
 
-**Dev Server Ports:**
+**Dev Server URLs:**
 
-- `localhost:3000` - Example app (demo)
-- `localhost:3001` - Example app (sui)
-- `localhost:5173` - Popup app
-- `localhost:8787` - API server
+- `http://localhost:3000` - Example app (demo)
+- `http://localhost:3001` - Example app (sui)
+- `https://pingpay.local.gd:5173` - Popup app (HTTPS required for Coinbase redirects)
+- `http://localhost:8787` - API server
 
-**Note:** Always access the popup through the example apps, not directly.
+**Note:** The demo apps can be accessed via `localhost`, but the popup must run on `https://pingpay.local.gd:5173` for Coinbase redirects to work. Always access the popup through the example apps, not directly.
 
 To build all packages:
 
