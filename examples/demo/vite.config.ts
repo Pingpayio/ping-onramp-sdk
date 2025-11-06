@@ -5,7 +5,7 @@ export default defineConfig(({ command }) => ({
   define: {
     "import.meta.env.POPUP_URL":
       command === "serve"
-        ? JSON.stringify("http://localhost:5173")
+        ? JSON.stringify("https://pingpay.local.gd:5173")
         : "undefined",
   },
   plugins: [],
