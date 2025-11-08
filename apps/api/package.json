@@ -3,7 +3,7 @@
   "scripts": {
     "build": "echo 'Cloudflare Workers: No build needed, Wrangler handles bundling'",
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy --minify",
+    "deploy": "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN wrangler deploy --minify",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
