@@ -4,6 +4,7 @@ import { cors } from "hono/cors";
 import { env } from "hono/adapter";
 import { ApiError } from "./lib/errors";
 import { cookieSessionMiddleware, SessionData } from "./middleware/sessions";
+import health from "./routes/health";
 import onramp from "./routes/onramp";
 
 export type Bindings = {
@@ -62,6 +63,7 @@ app.use("*", async (c, next) => {
 
 app.use("*", cookieSessionMiddleware);
 
+app.route("/health", health);
 app.route("/onramp", onramp);
 
 app.onError((err, c) => {
