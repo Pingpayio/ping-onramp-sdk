@@ -21,19 +21,19 @@ export async function getAggregatedOnrampConfig(
       device,
     );
 
-    const paymentCurrencies = coinbaseOptions.paymentCurrencies!.filter(
+    const paymentCurrencies = (coinbaseOptions.paymentCurrencies || []).filter(
       (currency) => currency.id === location.currency,
     );
-    const purchaseCurrencies = coinbaseOptions.purchaseCurrencies!.filter(
+    const purchaseCurrencies = (coinbaseOptions.purchaseCurrencies || []).filter(
       (currency) => currency.symbol === "USDC",
     );
 
     const isRegionSupported =
-      coinbaseOptions.paymentMethods!.length > 0 &&
+      (coinbaseOptions.paymentMethods || []).length > 0 &&
       paymentCurrencies.length > 0;
 
     const aggregatedOptions = {
-      paymentMethods: coinbaseOptions.paymentMethods,
+      paymentMethods: coinbaseOptions.paymentMethods || [],
       paymentCurrencies,
       purchaseCurrencies,
       isIosDevice: coinbaseOptions.isIosDevice,

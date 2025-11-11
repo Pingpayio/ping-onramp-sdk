@@ -31,55 +31,61 @@ onramp.post(
   "/config",
   zValidator("json", onrampConfigRequestSchema),
   async (c) => {
-    let country = c.req.header("cf-ipcountry");
-    let subdivision = c.req.header("cf-region-code");
-    const userAgent = c.req.header("user-agent");
-    const origin = c.req.header("origin");
-    const clientIp =
-      c.req.header("cf-connecting-ip") || c.req.header("x-forwarded-for");
-    const { targetAsset, currency } = c.req.valid("json");
-    const session = c.get("session");
+    try {
+      let country = c.req.header("cf-ipcountry");
+      let subdivision = c.req.header("cf-region-code");
+      const userAgent = c.req.header("user-agent");
+      const origin = c.req.header("origin");
+      const clientIp =
+        c.req.header("cf-connecting-ip") || c.req.header("x-forwarded-for");
+      const { targetAsset, currency } = c.req.valid("json");
+      const session = c.get("session");
 
-    if (!origin) {
-      return c.json({ error: "Origin header not found" }, 400);
+      if (!origin) {
+        return c.json({ error: "Origin header not found" }, 400);
+      }
+
+      // Fallback for local development (when Cloudflare headers are not present)
+      // This works regardless of ENVIRONMENT setting to allow testing production config locally
+      if (!country) {
+        country = "US";
+        subdivision = "IL";
+      }
+
+      if (!country) {
+        return c.json({ error: "Could not determine location" }, 400);
+      }
+
+      const sessionData: Partial<SessionData> = {
+        location: { country, subdivision: subdivision ?? undefined },
+        targetAsset,
+        origin,
+        device: { userAgent: userAgent ?? null },
+        clientIp,
+      };
+
+      for (const [key, value] of Object.entries(sessionData)) {
+        session.set(key as keyof SessionData, value);
+      }
+
+      const config = await getAggregatedOnrampConfig(
+        c.env,
+        { country, subdivision: subdivision ?? undefined, currency },
+        { userAgent: userAgent ?? null },
+      );
+
+      console.log("Onramp config response:", {
+        region: { country, subdivision, currency },
+        isRegionSupported: config.isRegionSupported,
+        paymentMethodsCount: config.paymentMethods?.length ?? 0,
+        paymentCurrenciesCount: config.paymentCurrencies?.length ?? 0,
+      });
+
+      return c.json(config);
+    } catch (error) {
+      console.error("Config endpoint error:", error);
+      throw error; // Re-throw to let the global error handler catch it
     }
-
-    // Fallback for local development
-    if (c.env.ENVIRONMENT === "development" && !country) {
-      country = "US";
-      subdivision = "IL";
-    }
-
-    if (!country) {
-      return c.json({ error: "Could not determine location" }, 400);
-    }
-
-    const sessionData: Partial<SessionData> = {
-      location: { country, subdivision: subdivision ?? undefined },
-      targetAsset,
-      origin,
-      device: { userAgent: userAgent ?? null },
-      clientIp,
-    };
-
-    for (const [key, value] of Object.entries(sessionData)) {
-      session.set(key as keyof SessionData, value);
-    }
-
-    const config = await getAggregatedOnrampConfig(
-      c.env,
-      { country, subdivision: subdivision ?? undefined, currency },
-      { userAgent: userAgent ?? null },
-    );
-
-    console.log("Onramp config response:", {
-      region: { country, subdivision, currency },
-      isRegionSupported: config.isRegionSupported,
-      paymentMethodsCount: config.paymentMethods.length,
-      paymentCurrenciesCount: config.paymentCurrencies.length,
-    });
-
-    return c.json(config);
   },
 );
 
