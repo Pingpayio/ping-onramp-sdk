@@ -25,7 +25,7 @@ export async function getCombinedQuote(
   const onrampQuoteParams = {
     purchase_amount: amount,
     purchase_currency: "usdc",
-    purchase_network: "ethereum",
+    purchase_network: "base",
     payment_currency: "USD",
     payment_method: paymentMethod,
     country: country,
@@ -44,8 +44,7 @@ export async function getCombinedQuote(
   const originAsset1Click = find1ClickAsset(
     supportedTokens,
     onrampQuoteParams.purchase_currency,
-    // onrampQuoteParams.purchase_network,
-    "eth",
+    onrampQuoteParams.purchase_network,
   );
   const destinationAsset1Click = find1ClickAsset(
     supportedTokens,
