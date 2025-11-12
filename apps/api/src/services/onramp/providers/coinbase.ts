@@ -81,80 +81,106 @@ class CoinbaseProvider implements OnrampProvider {
     location: { country: string; subdivision?: string },
     device: { userAgent: string | null },
   ): Promise<Partial<OnrampConfigResponse>> {
-    const { country, subdivision } = location;
-    const { COINBASE_API_KEY, COINBASE_API_SECRET } = env;
+    try {
+      const { country, subdivision } = location;
+      const { COINBASE_API_KEY, COINBASE_API_SECRET } = env;
 
-    const configPath = "/onramp/v1/buy/config";
-    const configToken = await getCoinbaseAuthToken(
-      COINBASE_API_KEY,
-      COINBASE_API_SECRET,
-      "GET",
-      configPath,
-    );
-    const configResponse = await fetch(
-      `https://api.developer.coinbase.com${configPath}`,
-      {
-        headers: { Authorization: `Bearer ${configToken}` },
-      },
-    );
+      const configPath = "/onramp/v1/buy/config";
+      const configToken = await getCoinbaseAuthToken(
+        COINBASE_API_KEY,
+        COINBASE_API_SECRET,
+        "GET",
+        configPath,
+      );
+      const configResponse = await fetch(
+        `https://api.developer.coinbase.com${configPath}`,
+        {
+          headers: { Authorization: `Bearer ${configToken}` },
+        },
+      );
 
-    if (!configResponse.ok) {
-      const errorBody = await configResponse.text();
-      throw new ProviderError("Coinbase onramp config failed", {
-        status: configResponse.status,
-        error: errorBody,
-      });
-    }
+      if (!configResponse.ok) {
+        const errorBody = await configResponse.text();
+        console.error("Coinbase config API error:", {
+          status: configResponse.status,
+          error: errorBody,
+          country,
+        });
+        throw new ProviderError("Coinbase onramp config failed", {
+          status: configResponse.status,
+          error: errorBody,
+        });
+      }
 
-    const configData = (await configResponse.json()) as CoinbaseConfigResponse;
-    const countryInfo = configData.countries.find((c) => c.id === country);
+      const configData = (await configResponse.json()) as CoinbaseConfigResponse;
+      const countryInfo = configData.countries.find((c) => c.id === country);
 
-    const isIosDevice = /iPad|iPhone|iPod/.test(device.userAgent ?? "");
+      const isIosDevice = /iPad|iPhone|iPod/.test(device.userAgent ?? "");
 
-    if (!countryInfo) {
+      if (!countryInfo) {
+        console.log("Country not found in Coinbase config:", { country });
+        return {
+          paymentMethods: [],
+          paymentCurrencies: [],
+          purchaseCurrencies: [],
+          isIosDevice,
+        };
+      }
+
+      const optionsParams = new URLSearchParams({ country });
+      if (subdivision) {
+        optionsParams.append("subdivision", subdivision);
+      }
+      const optionsPath = `/onramp/v1/buy/options`;
+      const optionsToken = await getCoinbaseAuthToken(
+        COINBASE_API_KEY,
+        COINBASE_API_SECRET,
+        "GET",
+        optionsPath,
+      );
+      const optionsResponse = await fetch(
+        `https://api.developer.coinbase.com${optionsPath}?${optionsParams.toString()}`,
+        {
+          headers: { Authorization: `Bearer ${optionsToken}` },
+        },
+      );
+
+      if (!optionsResponse.ok) {
+        const errorBody = await optionsResponse.text();
+        console.error("Coinbase options API error:", {
+          status: optionsResponse.status,
+          error: errorBody,
+          country,
+          subdivision,
+        });
+        throw new ProviderError("Coinbase onramp options failed", {
+          status: optionsResponse.status,
+          error: errorBody,
+        });
+      }
+
+      const optionsData =
+        (await optionsResponse.json()) as CoinbaseOptionsResponse;
+
       return {
-        paymentMethods: [],
-        paymentCurrencies: [],
-        purchaseCurrencies: [],
+        paymentMethods: countryInfo.payment_methods,
+        paymentCurrencies: optionsData.payment_currencies,
+        purchaseCurrencies: optionsData.purchase_currencies,
         isIosDevice,
       };
-    }
-
-    const optionsParams = new URLSearchParams({ country });
-    if (subdivision) {
-      optionsParams.append("subdivision", subdivision);
-    }
-    const optionsPath = `/onramp/v1/buy/options`;
-    const optionsToken = await getCoinbaseAuthToken(
-      COINBASE_API_KEY,
-      COINBASE_API_SECRET,
-      "GET",
-      optionsPath,
-    );
-    const optionsResponse = await fetch(
-      `https://api.developer.coinbase.com${optionsPath}?${optionsParams.toString()}`,
-      {
-        headers: { Authorization: `Bearer ${optionsToken}` },
-      },
-    );
-
-    if (!optionsResponse.ok) {
-      const errorBody = await optionsResponse.text();
-      throw new ProviderError("Coinbase onramp options failed", {
-        status: optionsResponse.status,
-        error: errorBody,
+    } catch (err) {
+      if (err instanceof ProviderError) {
+        throw err;
+      }
+      console.error("Coinbase getOnrampOptions unexpected error:", {
+        error: err,
+        message: err instanceof Error ? err.message : String(err),
+        location,
+      });
+      throw new ProviderError("Coinbase getOnrampOptions failed", {
+        originalError: err instanceof Error ? err.message : String(err),
       });
     }
-
-    const optionsData =
-      (await optionsResponse.json()) as CoinbaseOptionsResponse;
-
-    return {
-      paymentMethods: countryInfo.payment_methods,
-      paymentCurrencies: optionsData.payment_currencies,
-      purchaseCurrencies: optionsData.purchase_currencies,
-      isIosDevice,
-    };
   }
 
   async generateOnrampUrl(

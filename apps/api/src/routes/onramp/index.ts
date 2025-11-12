@@ -83,7 +83,13 @@ onramp.post(
 
       return c.json(config);
     } catch (error) {
-      console.error("Config endpoint error:", error);
+      console.error("Config endpoint error:", {
+        error,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+        details: error instanceof Error && 'details' in error ? (error as any).details : undefined,
+        status: error instanceof Error && 'status' in error ? (error as any).status : undefined,
+      });
       throw error; // Re-throw to let the global error handler catch it
     }
   },

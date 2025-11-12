@@ -42,6 +42,13 @@ export async function getAggregatedOnrampConfig(
 
     return aggregatedOptions as OnrampConfigResponse;
   } catch (err) {
+    console.error("getAggregatedOnrampConfig error:", {
+      error: err,
+      message: err instanceof Error ? err.message : String(err),
+      stack: err instanceof Error ? err.stack : undefined,
+      details: err instanceof Error && 'details' in err ? (err as any).details : undefined,
+      location,
+    });
     throw new ProviderError("Failed to get aggregated onramp config", err);
   }
 }
