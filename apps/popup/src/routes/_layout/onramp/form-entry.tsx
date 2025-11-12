@@ -4,7 +4,10 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
 import { onrampTargetAtom } from "@/state/atoms";
-import type { PaymentMethodLimit } from "@pingpay/onramp-types";
+import type {
+  PaymentMethodLimit,
+  TargetAsset,
+} from "@pingpay/onramp-types";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
@@ -61,11 +64,29 @@ function FormEntryRoute() {
   const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] =
     useState(false);
 
+  // Map API asset name back to dropdown ID (reverse of getTargetAssetFromSelectedAsset)
+  const getDefaultAssetFromTarget = (target: TargetAsset): string => {
+    const reverseMap: Record<string, string> = {
+      "wNEAR": "Near",
+      "wnear": "Near",
+      "NEAR": "Near",
+      "USDC": "USD Coin",
+      "USDT": "Tether USD",
+      "SOL": "Solana",
+      "BTC": "Bitcoin",
+      "ETH": "Ethereum",
+      "LOUD": "Loud",
+      "ZEC": "Zcash",
+    };
+
+    return reverseMap[target.asset] || "USD Coin"; // fallback to USDC
+  };
+
   const methods = useForm<FormValues>({
     mode: "onSubmit",
     defaultValues: {
       amount: "",
-      selectedAsset: "USDC",
+      selectedAsset: getDefaultAssetFromTarget(onrampTarget),
       selectedCurrency: "USD",
       paymentMethod: "CARD",
       recipientAddress: "",
@@ -125,13 +146,56 @@ function FormEntryRoute() {
     return rules;
   };
 
+  // Map selectedAsset string to TargetAsset object
+  const getTargetAssetFromSelectedAsset = (
+    selectedAsset: string,
+    baseTarget: TargetAsset,
+  ): TargetAsset => {
+    // Asset mapping: selectedAsset id (from assetsList) -> asset name (for API)
+    const assetMap: Record<string, string> = {
+      "Zcash": "ZEC",
+      "Near": "wnear", // wNEAR is the wrapped version on NEAR
+      "Tether USD": "USDT",
+      "USD Coin": "USDC",
+      "Solana": "SOL",
+      "Bitcoin": "BTC",
+      "Loud": "LOUD",
+      "Ethereum": "ETH",
+      // Handle default case if selectedAsset is already an asset name
+      "USDC": "USDC",
+      "USDT": "USDT",
+      "SOL": "SOL",
+      "BTC": "BTC",
+      "LOUD": "LOUD",
+      "ETH": "ETH",
+      "ZEC": "ZEC",
+      "NEAR": "wnear",
+      "wnear": "wnear",
+      "wNEAR": "wnear",
+    };
+
+    const assetName = assetMap[selectedAsset] || selectedAsset;
+
+    // Use the chain from the base target, but update the asset
+    return {
+      chain: baseTarget.chain,
+      asset: assetName,
+    };
+  };
+
+  // Get the target asset based on selected asset
+  const currentTargetAsset = getTargetAssetFromSelectedAsset(
+    selectedAssetWatcher,
+    onrampTarget,
+  );
+
   const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
     useQuotePreview({
       amount: debouncedAmount,
       paymentMethod: paymentMethodWatcher,
       selectedCurrency: selectedCurrencyWatcher,
       onrampConfig,
-      onrampTarget,
+      onrampTarget: currentTargetAsset,
     });
 
   const handleFormSubmit = async (data: FormValues) => {

@@ -17,7 +17,7 @@ interface ReceiveAmountDisplayProps {
 
 const assetsList = [
   {
-    id: "USD",
+    id: "Zcash",
     name: "ZEC",
     flag: "/Zcash.png",
   },
@@ -36,11 +36,11 @@ const assetsList = [
     name: "USDC",
     flag: "/USD Coin.png",
   },
-  {
-    id: "Solana",
-    name: "SOL",
-    flag: "/Solana.png",
-  },
+  // {
+  //   id: "Solana",
+  //   name: "SOL",
+  //   flag: "/Solana.png",
+  // },
   {
     id: "Bitcoin",
     name: "BTC",

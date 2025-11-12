@@ -12,7 +12,7 @@ interface AssetSelectorProps {
 
 const assetsList = [
   {
-    id: "USD",
+    id: "Zcash",
     name: "ZEC",
     flag: "/Zcash.png",
   },
@@ -31,21 +31,21 @@ const assetsList = [
     name: "USDC",
     flag: "/USD Coin.png",
   },
-  {
-    id: "Solana",
-    name: "SOL",
-    flag: "/Solana.png",
-  },
+  // {
+  //   id: "Solana",
+  //   name: "SOL",
+  //   flag: "/Solana.png",
+  // },
   {
     id: "Bitcoin",
     name: "BTC",
     flag: "/Bitcoin.png",
   },
-  {
-    id: "Loud",
-    name: "LOUD",
-    flag: "/Loud.png",
-  },
+  // {
+  //   id: "Loud",
+  //   name: "LOUD",
+  //   flag: "/Loud.png",
+  // },
   {
     id: "Ethereum",
     name: "ETH",
