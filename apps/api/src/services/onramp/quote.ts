@@ -16,7 +16,7 @@ export async function getCombinedQuote(
   country: string,
   dryRun = true,
 ) {
-  const { amount, destinationAsset, recipientAddress, address, paymentMethod } =
+  const { amount, destinationAsset, recipientAddress, paymentMethod } =
     formData;
 
   const oneClickClient = new OneClickClient(env.INTENTS_API_KEY);
@@ -71,7 +71,6 @@ export async function getCombinedQuote(
   } else {
     recipientForPreview =
       recipientAddress ||
-      address ||
       "0x0000000000000000000000000000000000000000";
   }
 
@@ -80,7 +79,7 @@ export async function getCombinedQuote(
     destinationAsset: destinationAsset1Click.assetId,
     amount: amountInSmallestUnit,
     recipient: recipientForPreview,
-    refundTo: address || "0x0000000000000000000000000000000000000000",
+    refundTo: env.REFUND_ADDRESS,
     refundType: "ORIGIN_CHAIN",
     depositType: "ORIGIN_CHAIN",
     recipientType: "DESTINATION_CHAIN",

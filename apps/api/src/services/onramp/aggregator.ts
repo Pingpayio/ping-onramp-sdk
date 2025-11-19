@@ -2,12 +2,53 @@ import type {
   OnrampConfigResponse,
   OnrampInitResponse,
   OnrampInitRequest,
+  TargetAsset,
 } from "@pingpay/onramp-types";
 import { ProviderError } from "../../lib/errors";
 import { OnrampSessionContext } from "../../middleware/onramp-session";
 import { DEFAULT_PROVIDER } from "./providers/provider-config";
 import { coinbaseProvider } from "./providers/coinbase";
 import { getCombinedQuote } from "./quote";
+
+/**
+ * Convert selectedAsset string (from form) to TargetAsset object (for API)
+ * This mirrors the frontend's getTargetAssetFromSelectedAsset logic
+ */
+function getTargetAssetFromSelectedAsset(
+  selectedAsset: string,
+  baseTarget: TargetAsset,
+): TargetAsset {
+  // Asset mapping: selectedAsset id (from assetsList) -> asset name (for API)
+  const assetMap: Record<string, string> = {
+    "Zcash": "ZEC",
+    "Near": "wnear", // wNEAR is the wrapped version on NEAR
+    "Tether USD": "USDT",
+    "USD Coin": "USDC",
+    "Solana": "SOL",
+    "Bitcoin": "BTC",
+    "Loud": "LOUD",
+    "Ethereum": "ETH",
+    // Handle default case if selectedAsset is already an asset name
+    "USDC": "USDC",
+    "USDT": "USDT",
+    "SOL": "SOL",
+    "BTC": "BTC",
+    "LOUD": "LOUD",
+    "ETH": "ETH",
+    "ZEC": "ZEC",
+    "NEAR": "wnear",
+    "wnear": "wnear",
+    "wNEAR": "wnear",
+  };
+
+  const assetName = assetMap[selectedAsset] || selectedAsset;
+
+  // Use the chain from the base target, but update the asset
+  return {
+    chain: baseTarget.chain,
+    asset: assetName,
+  };
+}
 
 export async function getAggregatedOnrampConfig(
   env: any,
@@ -67,10 +108,19 @@ export async function generateOnrampUrl(
       selectedAsset,
       selectedCurrency,
     } = formData;
+    
+    // Convert selectedAsset from form to TargetAsset object
+    // This ensures we use the user's selected asset, not the session's default
+    const destinationAsset = getTargetAssetFromSelectedAsset(
+      selectedAsset,
+      targetAsset,
+    );
+
+    console.log("[INIT] Converted destinationAsset:", destinationAsset);
 
     const quoteFormData = {
       amount,
-      destinationAsset: targetAsset,
+      destinationAsset,
       recipientAddress,
       paymentMethod,
     };
@@ -87,8 +137,8 @@ export async function generateOnrampUrl(
     const callbackParams = new URLSearchParams({
       type: "intents",
       action: "withdraw",
-      network: targetAsset.chain,
-      asset: targetAsset.asset,
+      network: destinationAsset.chain,
+      asset: destinationAsset.asset,
       amount: amount,
       recipient: recipientAddress,
       depositAddress,
