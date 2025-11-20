@@ -189,6 +189,21 @@ function FormEntryRoute() {
     onrampTarget,
   );
 
+  // Get display name for the selected asset (for button text)
+  const getAssetDisplayName = (selectedAsset: string): string => {
+    const assetMap: Record<string, string> = {
+      "Zcash": "ZEC",
+      "Near": "NEAR",
+      "Tether USD": "USDT",
+      "USD Coin": "USDC",
+      "Solana": "SOL",
+      "Bitcoin": "BTC",
+      "Loud": "LOUD",
+      "Ethereum": "ETH",
+    };
+    return assetMap[selectedAsset] || selectedAsset;
+  };
+
   const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
     useQuotePreview({
       amount: debouncedAmount,
@@ -316,7 +331,7 @@ function FormEntryRoute() {
             className="w-full border-none bg-[#AB9FF2] text-black hover:bg-[#AB9FF2]/90 disabled:opacity-70 px-4 h-[58px] rounded-full! transition ease-in-out duration-150"
             disabled={!isValid || !quote || isQuoteLoading}
           >
-            Buy {onrampTarget?.asset}
+            Buy {getAssetDisplayName(selectedAssetWatcher)}
           </Button>
         </form>
       </FormProvider>

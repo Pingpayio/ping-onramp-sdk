@@ -11,6 +11,7 @@
       "enabled": true
     }
   },
+  "keep_vars": true
   // "r2_buckets": [
   //   {
   //     "binding": "MY_BUCKET",
