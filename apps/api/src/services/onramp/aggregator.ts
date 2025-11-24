@@ -114,11 +114,9 @@ export async function generateOnrampUrl(
       paymentMethod,
       recipientAddress,
       selectedAsset,
+      selectedNetwork,
       selectedCurrency,
     } = formData;
-    
-    // Get selectedNetwork from formData, fallback to session targetAsset chain for backward compatibility
-    const selectedNetwork = (formData as any).selectedNetwork || session.targetAsset?.chain || "near";
     
     // Convert selectedAsset from form to TargetAsset object
     // This ensures we use the user's selected asset and network, not the session's default

@@ -12,7 +12,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { AssetSelector } from "@/components/asset-selector";
+import { AssetSelector, assetsByNetwork } from "@/components/asset-selector";
 import { CurrencySelector } from "@/components/currency-selector";
 import { NetworkSelector } from "@/components/network-selector";
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
@@ -105,13 +105,13 @@ function FormEntryRoute() {
     trigger,
   } = methods;
 
-  const [
-    depositAmountWatcher,
-    paymentMethodWatcher,
-    selectedCurrencyWatcher,
-    selectedAssetWatcher,
-    selectedNetworkWatcher,
-  ] = watch(["amount", "paymentMethod", "selectedCurrency", "selectedAsset", "selectedNetwork"]);
+  const {
+    amount: depositAmountWatcher,
+    paymentMethod: paymentMethodWatcher,
+    selectedCurrency: selectedCurrencyWatcher,
+    selectedAsset: selectedAssetWatcher,
+    selectedNetwork: selectedNetworkWatcher,
+  } = watch();
   const debouncedAmount = useDebounce(depositAmountWatcher, 300);
 
   useEffect(() => {
@@ -271,17 +271,10 @@ function FormEntryRoute() {
 
   const handleNetworkSelect = (networkId: string) => {
     setValue("selectedNetwork", networkId);
-    // Reset asset when network changes to ensure compatibility
-    const assetsForNetwork = {
-      near: "Near",
-      zec: "Zcash",
-      btc: "Bitcoin",
-      xrp: "XRP",
-      eth: "Ethereum",
-      sol: "Solana",
-      tron: "TRON",
-    };
-    setValue("selectedAsset", assetsForNetwork[networkId as keyof typeof assetsForNetwork] || "Near");
+    // Reset asset when network changes to ensure compatibility - use first asset from the network's asset list
+    const networkAssets = assetsByNetwork[networkId] || [];
+    const defaultAsset = networkAssets[0]?.id || "Near";
+    setValue("selectedAsset", defaultAsset);
     setIsNetworkSelectorOpen(false);
   };
 

@@ -24,15 +24,19 @@ export class OneClickClient {
     const response = await fetch(url, { ...options, headers });
 
     if (!response.ok) {
-      const errorBody = (await response
-        .json()
-        .catch(() => response.text())) as {
-        message?: string;
-      };
+      // Clone the response before reading to avoid "Body has already been used" error
+      const clonedResponse = response.clone();
+      let errorBody: { message?: string } | string;
+      try {
+        errorBody = await response.json();
+      } catch {
+        // If JSON parsing fails, read as text from the cloned response
+        errorBody = await clonedResponse.text();
+      }
       console.error(`1Click API Error (${endpoint}):`, errorBody);
       throw new ProviderError(`Failed request to ${endpoint}`, {
         status: response.status,
-        error: errorBody?.message || JSON.stringify(errorBody),
+        error: typeof errorBody === 'string' ? errorBody : errorBody?.message || JSON.stringify(errorBody),
       });
     }
 

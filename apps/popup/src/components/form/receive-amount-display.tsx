@@ -1,5 +1,7 @@
 import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import { useState } from "react";
+import { assetsByNetwork } from "../asset-selector";
+import { networkIconMap } from "../network-selector";
 import LoadingSpinner from "../loading-spinner";
 import { RateModal } from "../rate-modal";
 
@@ -15,42 +17,6 @@ interface ReceiveAmountDisplayProps {
   selectedAsset: string;
 }
 
-// Assets organized by network (matching asset-selector.tsx)
-const assetsByNetwork: Record<string, Array<{ id: string; name: string; flag: string }>> = {
-  near: [
-    { id: "Near", name: "NEAR", flag: "/Near.png" },
-    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-    { id: "RHEA", name: "RHEA", flag: "/usd.svg" },
-    { id: "JAMBO", name: "JAMBO", flag: "/usd.svg" },
-    { id: "BLACKDRAGON", name: "BLACKDRAGON", flag: "/usd.svg" },
-    { id: "SHITZU", name: "SHITZU", flag: "/usd.svg" },
-    { id: "PUBLICAI", name: "PUBLICAI", flag: "/usd.svg" },
-  ],
-  zec: [
-    { id: "Zcash", name: "ZEC", flag: "/Zcash.png" },
-  ],
-  btc: [
-    { id: "Bitcoin", name: "BTC", flag: "/Bitcoin.png" },
-  ],
-  xrp: [
-    { id: "XRP", name: "XRP", flag: "/xrp.png" },
-  ],
-  eth: [
-    { id: "Ethereum", name: "ETH", flag: "/ETH.png" },
-    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-  ],
-  sol: [
-    { id: "Solana", name: "SOL", flag: "/Solana.png" },
-    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-  ],
-  tron: [
-    { id: "TRON", name: "TRX", flag: "/tron.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-  ],
-};
 
 export function ReceiveAmountDisplay({
   estimatedReceiveAmount,
@@ -185,23 +151,8 @@ export function ReceiveAmountDisplay({
           >
             <img
               src={
-                selectedNetwork.toLowerCase() === "near"
-                  ? "/near-logo-green.png"
-                  : selectedNetwork.toLowerCase() === "btc"
-                    ? "/Bitcoin.png"
-                    : selectedNetwork.toLowerCase() === "zec"
-                      ? "/Zcash.png"
-                      : selectedNetwork.toLowerCase() === "xrp"
-                        ? "/xrp.png"
-                        : selectedNetwork.toLowerCase() === "eth"
-                          ? "/ETH.png"
-                          : selectedNetwork.toLowerCase() === "sol"
-                            ? "/Solana.png"
-                            : selectedNetwork.toLowerCase() === "tron"
-                              ? "/tron.png"
-                              : selectedNetwork.toLowerCase() === "sui"
-                                ? "/sui-logo.svg"
-                                : "/near-logo-green.png" // Fallback to NEAR logo if unknown
+                networkIconMap[selectedNetwork.toLowerCase()] ||
+                "/near-logo-green.png"
               }
               alt={`${selectedNetwork} Protocol Logo`}
               width="20px"

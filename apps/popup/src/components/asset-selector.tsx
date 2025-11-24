@@ -12,7 +12,7 @@ interface AssetSelectorProps {
 }
 
 // Assets organized by network
-const assetsByNetwork: Record<string, Array<{ id: string; name: string; flag: string }>> = {
+export const assetsByNetwork: Record<string, Array<{ id: string; name: string; flag: string }>> = {
   near: [
     { id: "Near", name: "NEAR", flag: "/Near.png" },
     { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },

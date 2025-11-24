@@ -55,6 +55,18 @@ const networksList = [
   },
 ];
 
+// Network icon mapping for easy lookup
+export const networkIconMap: Record<string, string> = {
+  near: "/near-logo-green.png",
+  zec: "/Zcash.png",
+  btc: "/Bitcoin.png",
+  xrp: "/xrp.png",
+  eth: "/ETH.png",
+  sol: "/Solana.png",
+  tron: "/tron.png",
+  sui: "/sui-logo.svg",
+};
+
 export function NetworkSelector({
   isOpen,
   onClose,
