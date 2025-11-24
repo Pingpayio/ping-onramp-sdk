@@ -1,4 +1,3 @@
-import type { TargetAsset } from "@pingpay/onramp-sdk";
 import type { OnrampQuoteResponse } from "@pingpay/onramp-types";
 import { useState } from "react";
 import LoadingSpinner from "../loading-spinner";
@@ -10,53 +9,48 @@ interface ReceiveAmountDisplayProps {
   quoteError?: string;
   depositAmount: string;
   quote?: OnrampQuoteResponse;
-  onrampTarget: TargetAsset;
+  selectedNetwork: string;
+  onNetworkClick?: () => void;
   onAssetClick?: () => void;
   selectedAsset: string;
 }
 
-const assetsList = [
-  {
-    id: "Zcash",
-    name: "ZEC",
-    flag: "/Zcash.png",
-  },
-  {
-    id: "Near",
-    name: "NEAR",
-    flag: "/Near.png",
-  },
-  {
-    id: "Tether USD",
-    name: "USDT",
-    flag: "/Tether USD.png",
-  },
-  {
-    id: "USD Coin",
-    name: "USDC",
-    flag: "/USD Coin.png",
-  },
-  // {
-  //   id: "Solana",
-  //   name: "SOL",
-  //   flag: "/Solana.png",
-  // },
-  {
-    id: "Bitcoin",
-    name: "BTC",
-    flag: "/Bitcoin.png",
-  },
-  {
-    id: "Loud",
-    name: "LOUD",
-    flag: "/Loud.png",
-  },
-  {
-    id: "Ethereum",
-    name: "ETH",
-    flag: "/ETH.png",
-  },
-];
+// Assets organized by network (matching asset-selector.tsx)
+const assetsByNetwork: Record<string, Array<{ id: string; name: string; flag: string }>> = {
+  near: [
+    { id: "Near", name: "NEAR", flag: "/Near.png" },
+    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
+    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
+    { id: "RHEA", name: "RHEA", flag: "/usd.svg" },
+    { id: "JAMBO", name: "JAMBO", flag: "/usd.svg" },
+    { id: "BLACKDRAGON", name: "BLACKDRAGON", flag: "/usd.svg" },
+    { id: "SHITZU", name: "SHITZU", flag: "/usd.svg" },
+    { id: "PUBLICAI", name: "PUBLICAI", flag: "/usd.svg" },
+  ],
+  zec: [
+    { id: "Zcash", name: "ZEC", flag: "/Zcash.png" },
+  ],
+  btc: [
+    { id: "Bitcoin", name: "BTC", flag: "/Bitcoin.png" },
+  ],
+  xrp: [
+    { id: "XRP", name: "XRP", flag: "/xrp.png" },
+  ],
+  eth: [
+    { id: "Ethereum", name: "ETH", flag: "/ETH.png" },
+    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
+    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
+  ],
+  sol: [
+    { id: "Solana", name: "SOL", flag: "/Solana.png" },
+    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
+    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
+  ],
+  tron: [
+    { id: "TRON", name: "TRX", flag: "/tron.png" },
+    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
+  ],
+};
 
 export function ReceiveAmountDisplay({
   estimatedReceiveAmount,
@@ -64,7 +58,8 @@ export function ReceiveAmountDisplay({
   quoteError,
   depositAmount,
   quote,
-  onrampTarget,
+  selectedNetwork,
+  onNetworkClick,
   onAssetClick,
   selectedAsset,
 }: ReceiveAmountDisplayProps) {
@@ -118,6 +113,7 @@ export function ReceiveAmountDisplay({
             className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
           >
             {(() => {
+              const assetsList = assetsByNetwork[selectedNetwork] || [];
               const assetInfo = assetsList.find(
                 (asset) => asset.id === selectedAsset,
               );
@@ -161,17 +157,17 @@ export function ReceiveAmountDisplay({
             {exchangeRate ? (
               <>
                 Rate:{" "}
-                <button
-                  className="px-0! hover:border-0! border-0! hover:underline hover:underline-offset-2 text-[#AB9FF2] inline-block cursor-pointer hover:text-[#AF9EF9] transition-colors"
-                  onClick={() => {
-                    setIsModalOpen(true);
-                  }}
-                  type="button"
-                >
-                  1 USD ≈ {exchangeRate}{" "}
-                  {assetsList.find((asset) => asset.id === selectedAsset)
-                    ?.name || selectedAsset}
-                </button>
+                  <button
+                    className="px-0! hover:border-0! border-0! hover:underline hover:underline-offset-2 text-[#AB9FF2] inline-block cursor-pointer hover:text-[#AF9EF9] transition-colors"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                    type="button"
+                  >
+                    1 USD ≈ {exchangeRate}{" "}
+                    {(assetsByNetwork[selectedNetwork] || []).find((asset) => asset.id === selectedAsset)
+                      ?.name || selectedAsset}
+                  </button>
               </>
             ) : (
               <>
@@ -182,18 +178,55 @@ export function ReceiveAmountDisplay({
         </div>
         <div className="py-2 gap-1 px-4 flex shrink-0 items-center justify-end text-[#FFFFFF99] text-xs">
           <p>Network:</p>
-          <img
-            src={
-              onrampTarget.chain.toLowerCase() === "near"
-                ? "/near-logo-green.png"
-                : onrampTarget.chain.toLowerCase() === "sui"
-                  ? "/sui-logo.svg" // Note: This file needs to be added to the public directory
-                  : "/near-logo-green.png" // Fallback to NEAR logo if unknown
-            }
-            alt={`${onrampTarget.chain} Protocol Logo`}
-            className="w-4 h-4 rounded-full"
-          />
-          <span>{onrampTarget.chain}</span>
+          <button
+            type="button"
+            onClick={onNetworkClick}
+            className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
+          >
+            <img
+              src={
+                selectedNetwork.toLowerCase() === "near"
+                  ? "/near-logo-green.png"
+                  : selectedNetwork.toLowerCase() === "btc"
+                    ? "/Bitcoin.png"
+                    : selectedNetwork.toLowerCase() === "zec"
+                      ? "/Zcash.png"
+                      : selectedNetwork.toLowerCase() === "xrp"
+                        ? "/xrp.png"
+                        : selectedNetwork.toLowerCase() === "eth"
+                          ? "/ETH.png"
+                          : selectedNetwork.toLowerCase() === "sol"
+                            ? "/Solana.png"
+                            : selectedNetwork.toLowerCase() === "tron"
+                              ? "/tron.png"
+                              : selectedNetwork.toLowerCase() === "sui"
+                                ? "/sui-logo.svg"
+                                : "/near-logo-green.png" // Fallback to NEAR logo if unknown
+              }
+              alt={`${selectedNetwork} Protocol Logo`}
+              width="20px"
+              height="20px"
+              className="rounded-full"
+            />
+            <span className="text-white font-normal uppercase">
+              {selectedNetwork}
+            </span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="11"
+              height="6"
+              viewBox="0 0 11 6"
+              fill="none"
+            >
+              <path
+                d="M1.36963 1L5.36963 5L9.36963 1"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -205,7 +238,7 @@ export function ReceiveAmountDisplay({
           }}
           quote={quote}
           asset={
-            assetsList.find((asset) => asset.id === selectedAsset)?.name ||
+            (assetsByNetwork[selectedNetwork] || []).find((asset) => asset.id === selectedAsset)?.name ||
             selectedAsset
           }
         />

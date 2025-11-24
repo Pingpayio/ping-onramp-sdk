@@ -16,7 +16,7 @@ import { getCombinedQuote } from "./quote";
  */
 function getTargetAssetFromSelectedAsset(
   selectedAsset: string,
-  baseTarget: TargetAsset,
+  selectedNetwork: string,
 ): TargetAsset {
   // Asset mapping: selectedAsset id (from assetsList) -> asset name (for API)
   const assetMap: Record<string, string> = {
@@ -28,6 +28,13 @@ function getTargetAssetFromSelectedAsset(
     "Bitcoin": "BTC",
     "Loud": "LOUD",
     "Ethereum": "ETH",
+    "TRON": "TRX",
+    "XRP": "XRP",
+    "RHEA": "RHEA",
+    "JAMBO": "JAMBO",
+    "BLACKDRAGON": "BLACKDRAGON",
+    "SHITZU": "SHITZU",
+    "PUBLICAI": "PUBLICAI",
     // Handle default case if selectedAsset is already an asset name
     "USDC": "USDC",
     "USDT": "USDT",
@@ -39,13 +46,14 @@ function getTargetAssetFromSelectedAsset(
     "NEAR": "wnear",
     "wnear": "wnear",
     "wNEAR": "wnear",
+    "TRX": "TRX",
   };
 
   const assetName = assetMap[selectedAsset] || selectedAsset;
 
-  // Use the chain from the base target, but update the asset
+  // Use the selected network instead of base target chain
   return {
-    chain: baseTarget.chain,
+    chain: selectedNetwork,
     asset: assetName,
   };
 }
@@ -100,7 +108,7 @@ export async function generateOnrampUrl(
   formData: OnrampInitRequest,
 ): Promise<OnrampInitResponse> {
   try {
-    const { location, targetAsset, origin } = session;
+    const { location, origin } = session;
     const {
       amount,
       paymentMethod,
@@ -109,11 +117,14 @@ export async function generateOnrampUrl(
       selectedCurrency,
     } = formData;
     
+    // Get selectedNetwork from formData, fallback to session targetAsset chain for backward compatibility
+    const selectedNetwork = (formData as any).selectedNetwork || session.targetAsset?.chain || "near";
+    
     // Convert selectedAsset from form to TargetAsset object
-    // This ensures we use the user's selected asset, not the session's default
+    // This ensures we use the user's selected asset and network, not the session's default
     const destinationAsset = getTargetAssetFromSelectedAsset(
       selectedAsset,
-      targetAsset,
+      selectedNetwork,
     );
 
     console.log("[INIT] Converted destinationAsset:", destinationAsset);

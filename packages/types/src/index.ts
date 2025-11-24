@@ -59,6 +59,7 @@ export const onrampInitRequestSchema = z.object({
   paymentMethod: z.string(),
   recipientAddress: z.string(),
   selectedAsset: z.string(),
+  selectedNetwork: z.string(),
   selectedCurrency: z.string(),
 });
 

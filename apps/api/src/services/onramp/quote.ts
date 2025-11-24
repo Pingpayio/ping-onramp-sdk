@@ -66,9 +66,27 @@ export async function getCombinedQuote(
   const quoteDeadline = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
   let recipientForPreview: string;
-  if (destinationAsset1Click.blockchain.toLowerCase() === "near") {
+  // Determine default preview address based on blockchain type
+  const blockchainLower = destinationAsset1Click.blockchain.toLowerCase();
+  if (blockchainLower === "near") {
     recipientForPreview = recipientAddress || "preview.near";
+  } else if (blockchainLower === "btc") {
+    // Bitcoin address format (P2PKH - starts with 1)
+    recipientForPreview = recipientAddress || "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa";
+  } else if (blockchainLower === "xrp") {
+    // XRP address format (starts with r)
+    recipientForPreview = recipientAddress || "rN7n7otQDd6FczFgLdSqtcsAUxDkw6fzRH";
+  } else if (blockchainLower === "zec") {
+    // Zcash transparent address format (starts with t)
+    recipientForPreview = recipientAddress || "t1ZQ5NzfZxWp4m3q8c4fGFtfiHkvk1s9dJt";
+  } else if (blockchainLower === "tron") {
+    // TRON address format (starts with T)
+    recipientForPreview = recipientAddress || "TRjE1H8dxypKM1NZRdysbs9wo7huR4bdNz";
+  } else if (blockchainLower === "sol") {
+    // Solana address format (base58, typically 32-44 characters)
+    recipientForPreview = recipientAddress || "So11111111111111111111111111111111111111112";
   } else {
+    // For EVM and other address-based chains, use zero address
     recipientForPreview =
       recipientAddress ||
       "0x0000000000000000000000000000000000000000";
