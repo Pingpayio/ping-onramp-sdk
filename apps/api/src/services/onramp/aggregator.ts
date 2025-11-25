@@ -4,6 +4,7 @@ import type {
   OnrampInitRequest,
   TargetAsset,
 } from "@pingpay/onramp-types";
+import { getAssetSymbol } from "@pingpay/onramp-types";
 import { ProviderError } from "../../lib/errors";
 import { OnrampSessionContext } from "../../middleware/onramp-session";
 import { DEFAULT_PROVIDER } from "./providers/provider-config";
@@ -18,38 +19,7 @@ function getTargetAssetFromSelectedAsset(
   selectedAsset: string,
   selectedNetwork: string,
 ): TargetAsset {
-  // Asset mapping: selectedAsset id (from assetsList) -> asset name (for API)
-  const assetMap: Record<string, string> = {
-    "Zcash": "ZEC",
-    "Near": "wnear", // wNEAR is the wrapped version on NEAR
-    "Tether USD": "USDT",
-    "USD Coin": "USDC",
-    "Solana": "SOL",
-    "Bitcoin": "BTC",
-    "Loud": "LOUD",
-    "Ethereum": "ETH",
-    "TRON": "TRX",
-    "XRP": "XRP",
-    "RHEA": "RHEA",
-    "JAMBO": "JAMBO",
-    "BLACKDRAGON": "BLACKDRAGON",
-    "SHITZU": "SHITZU",
-    "PUBLICAI": "PUBLICAI",
-    // Handle default case if selectedAsset is already an asset name
-    "USDC": "USDC",
-    "USDT": "USDT",
-    "SOL": "SOL",
-    "BTC": "BTC",
-    "LOUD": "LOUD",
-    "ETH": "ETH",
-    "ZEC": "ZEC",
-    "NEAR": "wnear",
-    "wnear": "wnear",
-    "wNEAR": "wnear",
-    "TRX": "TRX",
-  };
-
-  const assetName = assetMap[selectedAsset] || selectedAsset;
+  const assetName = getAssetSymbol(selectedAsset);
 
   // Use the selected network instead of base target chain
   return {

@@ -232,3 +232,76 @@ export type OnrampConfigResponse = z.infer<typeof onrampConfigResponseSchema>;
 export type OnrampInitResponse = z.infer<typeof onrampInitResponseSchema>;
 
 export type OnrampQuoteResponse = z.infer<typeof onrampQuoteResponseSchema>;
+
+// -------------------
+// Asset Mapping Utilities
+// -------------------
+
+/**
+ * Maps asset display names (from UI) to API symbol names
+ * Used to convert user-selected assets to the format expected by the API
+ */
+export const assetDisplayToSymbolMap: Record<string, string> = {
+  "Zcash": "ZEC",
+  "Near": "wnear", // wNEAR is the wrapped version on NEAR
+  "Tether USD": "USDT",
+  "USD Coin": "USDC",
+  "Solana": "SOL",
+  "Bitcoin": "BTC",
+  "Loud": "LOUD",
+  "Ethereum": "ETH",
+  "TRON": "TRX",
+  "XRP": "XRP",
+  "RHEA": "RHEA",
+  "JAMBO": "JAMBO",
+  "BLACKDRAGON": "BLACKDRAGON",
+  "SHITZU": "SHITZU",
+  "PUBLICAI": "PUBLICAI",
+  // Handle default case if selectedAsset is already an asset name
+  "USDC": "USDC",
+  "USDT": "USDT",
+  "SOL": "SOL",
+  "BTC": "BTC",
+  "LOUD": "LOUD",
+  "ETH": "ETH",
+  "ZEC": "ZEC",
+  "NEAR": "wnear",
+  "wnear": "wnear",
+  "wNEAR": "wnear",
+  "TRX": "TRX",
+};
+
+/**
+ * Maps asset display names to their display symbols (for UI display)
+ */
+export const assetDisplayToDisplaySymbolMap: Record<string, string> = {
+  "Zcash": "ZEC",
+  "Near": "NEAR",
+  "Tether USD": "USDT",
+  "USD Coin": "USDC",
+  "Solana": "SOL",
+  "Bitcoin": "BTC",
+  "Loud": "LOUD",
+  "Ethereum": "ETH",
+  "TRON": "TRX",
+  "XRP": "XRP",
+  "RHEA": "RHEA",
+  "JAMBO": "JAMBO",
+  "BLACKDRAGON": "BLACKDRAGON",
+  "SHITZU": "SHITZU",
+  "PUBLICAI": "PUBLICAI",
+};
+
+/**
+ * Converts a display asset name to its API symbol
+ */
+export function getAssetSymbol(displayName: string): string {
+  return assetDisplayToSymbolMap[displayName] || displayName;
+}
+
+/**
+ * Converts a display asset name to its display symbol
+ */
+export function getAssetDisplaySymbol(displayName: string): string {
+  return assetDisplayToDisplaySymbolMap[displayName] || displayName;
+}

@@ -147,7 +147,7 @@ export function ReceiveAmountDisplay({
           <button
             type="button"
             onClick={onNetworkClick}
-            className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-full! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
+            className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-lg! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
           >
             <img
               src={
