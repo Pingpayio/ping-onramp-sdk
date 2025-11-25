@@ -35,13 +35,8 @@ export function useSwapPolling(depositAddress: string) {
     try {
       const statusResponse = await getSwapStatus(depositAddress);
       setOneClickStatus(statusResponse);
-      const destTxHash =
-        statusResponse.swapDetails?.destinationChainTxHashes?.[0]?.hash;
-      // Construct the explorer URL if a destination transaction hash is available
-      const explorerLink = destTxHash
-        ? `https://nearblocks.io/txns/${destTxHash}`
-        : statusResponse.swapDetails?.destinationChainTxHashes?.[0]
-            ?.explorerUrl; // Fallback to existing explorerUrl
+      // Construct the explorer URL using the deposit address for Near Intents explorer
+      const explorerLink = `https://explorer.near-intents.org/transactions/${depositAddress}`;
 
       setNearIntentsDisplayInfo({
         message: `Swap status: ${statusResponse.status}`,

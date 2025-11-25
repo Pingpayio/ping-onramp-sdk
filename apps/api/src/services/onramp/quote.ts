@@ -89,7 +89,7 @@ export async function getCombinedQuote(
     amount: amountInSmallestUnit,
     recipient: recipientForPreview,
     refundTo: env.REFUND_ADDRESS,
-    refundType: "ORIGIN_CHAIN",
+    refundType: "INTENTS",
     depositType: "ORIGIN_CHAIN",
     recipientType: "DESTINATION_CHAIN",
     swapType: "EXACT_INPUT",

@@ -99,9 +99,12 @@ const getDisplayInfoForStatus = (
             "Swap successful! Your funds have been delivered.",
           color: "border-green-400",
         };
+        // Use Near Intents explorer URL (set by polling hook) or construct from depositAddress
         detailsForDisplay.explorerLink =
-          oneClickStatus.swapDetails?.destinationChainTxHashes?.[0]
-            ?.explorerUrl || nearIntentsDisplayInfo?.explorerUrl;
+          nearIntentsDisplayInfo?.explorerUrl ||
+          (oneClickStatus.quoteResponse.quote.depositAddress
+            ? `https://explorer.near-intents.org/transactions/${oneClickStatus.quoteResponse.quote.depositAddress}`
+            : undefined);
         break;
       case "REFUNDED":
       case "FAILED":
