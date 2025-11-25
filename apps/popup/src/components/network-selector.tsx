@@ -3,73 +3,90 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Logo } from "./logo";
 
-interface AssetSelectorProps {
+interface NetworkSelectorProps {
   isOpen: boolean;
   onClose: () => void;
-  selectedAsset: string;
   selectedNetwork: string;
-  onSelectAsset: (assetId: string) => void;
+  onSelectNetwork: (networkId: string) => void;
 }
 
-// Assets organized by network
-export const assetsByNetwork: Record<string, Array<{ id: string; name: string; flag: string }>> = {
-  near: [
-    { id: "Near", name: "NEAR", flag: "/Near.png" },
-    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-    { id: "RHEA", name: "RHEA", flag: "/usd.svg" },
-    { id: "JAMBO", name: "JAMBO", flag: "/usd.svg" },
-    { id: "BLACKDRAGON", name: "BLACKDRAGON", flag: "/usd.svg" },
-    { id: "SHITZU", name: "SHITZU", flag: "/usd.svg" },
-    { id: "PUBLICAI", name: "PUBLICAI", flag: "/usd.svg" },
-  ],
-  zec: [
-    { id: "Zcash", name: "ZEC", flag: "/Zcash.png" },
-  ],
-  btc: [
-    { id: "Bitcoin", name: "BTC", flag: "/Bitcoin.png" },
-  ],
-  xrp: [
-    { id: "XRP", name: "XRP", flag: "/xrp.png" },
-  ],
-  eth: [
-    { id: "Ethereum", name: "ETH", flag: "/ETH.png" },
-    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-  ],
-  sol: [
-    { id: "Solana", name: "SOL", flag: "/Solana.png" },
-    { id: "USD Coin", name: "USDC", flag: "/USD Coin.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-  ],
-  tron: [
-    { id: "TRON", name: "TRX", flag: "/tron.png" },
-    { id: "Tether USD", name: "USDT", flag: "/Tether USD.png" },
-  ],
+const networksList = [
+  {
+    id: "near",
+    name: "NEAR",
+    displayName: "NEAR Protocol",
+    icon: "/near-logo-green.png",
+  },
+  {
+    id: "zec",
+    name: "ZCash",
+    displayName: "ZCash",
+    icon: "/Zcash.png",
+  },
+  {
+    id: "btc",
+    name: "Bitcoin",
+    displayName: "Bitcoin",
+    icon: "/Bitcoin.png",
+  },
+  {
+    id: "xrp",
+    name: "XRP",
+    displayName: "XRP Ledger",
+    icon: "/xrp.png",
+  },
+  {
+    id: "eth",
+    name: "Ethereum",
+    displayName: "Ethereum",
+    icon: "/ETH.png",
+  },
+  {
+    id: "sol",
+    name: "Solana",
+    displayName: "Solana",
+    icon: "/Solana.png",
+  },
+  {
+    id: "tron",
+    name: "TRON",
+    displayName: "TRON",
+    icon: "/tron.png",
+  },
+];
+
+// Network icon mapping for easy lookup
+export const networkIconMap: Record<string, string> = {
+  near: "/near-logo-green.png",
+  zec: "/Zcash.png",
+  btc: "/Bitcoin.png",
+  xrp: "/xrp.png",
+  eth: "/ETH.png",
+  sol: "/Solana.png",
+  tron: "/tron.png",
+  sui: "/sui-logo.svg",
 };
 
-export function AssetSelector({
+export function NetworkSelector({
   isOpen,
   onClose,
-  selectedAsset,
   selectedNetwork,
-  onSelectAsset,
-}: AssetSelectorProps) {
+  onSelectNetwork,
+}: NetworkSelectorProps) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const assetsList = assetsByNetwork[selectedNetwork] || [];
-
-  const filteredAssets = useMemo(() => {
-    if (!searchQuery) return assetsList;
-    return assetsList.filter(
-      (asset) =>
-        asset.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        asset.name.toLowerCase().includes(searchQuery.toLowerCase()),
+  const filteredNetworks = useMemo(() => {
+    if (!searchQuery) return networksList;
+    return networksList.filter(
+      (network) =>
+        network.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        network.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        network.displayName.toLowerCase().includes(searchQuery.toLowerCase()),
     );
-  }, [searchQuery, assetsList]);
+  }, [searchQuery]);
 
-  const handleSelectAsset = (assetId: string) => {
-    onSelectAsset(assetId);
+  const handleSelectNetwork = (networkId: string) => {
+    onSelectNetwork(networkId);
     onClose();
   };
 
@@ -81,7 +98,7 @@ export function AssetSelector({
         {/* Header */}
         <div className="flex items-center justify-between py-[12px] px-[16px] bg-[#121212] relative z-[10000]">
           <Logo />
-          <h2 className="text-[24px] font-bold text-white">Select Asset</h2>
+          <h2 className="text-[24px] font-bold text-white">Select Network</h2>
           <Button
             onClick={onClose}
             variant="ghost"
@@ -126,7 +143,7 @@ export function AssetSelector({
             </svg>
             <Input
               type="text"
-              placeholder="Search name or paste address"
+              placeholder="Search network"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="border-none mx-3 p-0 placeholder:text-base! placeholder:text-[#FFFFFF99]!"
@@ -134,43 +151,43 @@ export function AssetSelector({
           </div>
         </div>
 
-        {/* Asset List */}
+        {/* Network List */}
         <div className="flex-1 overflow-y-auto px-4 pb-4">
           <div className="space-y-2">
-            {filteredAssets.length === 0 ? (
+            {filteredNetworks.length === 0 ? (
               <div className="text-center text-white/60 py-8">
-                No assets found
+                No networks found
               </div>
             ) : (
-              filteredAssets.map((asset) => (
+              filteredNetworks.map((network) => (
                 <Button
-                  key={asset.id}
-                  onClick={() => handleSelectAsset(asset.id)}
+                  key={network.id}
+                  onClick={() => handleSelectNetwork(network.id)}
                   variant="ghost"
                   className={`w-full justify-start p-4 h-auto rounded-[8px] hover:bg-white/10 hover:border-[#AF9EF9]! ${
-                    selectedAsset === asset.id
+                    selectedNetwork === network.id
                       ? "bg-[#AB9FF2]/20 border border-[#AB9FF2]"
                       : "bg-white/5 border border-white/[0.18]"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-[23px]">
                     <img
-                      src={asset.flag}
-                      alt={asset.name}
+                      src={network.icon}
+                      alt={network.displayName}
                       width="28"
                       height="28"
                       className="rounded-full"
                     />
                     <div className="flex flex-col text-left">
                       <span className="text-white text-sm font-medium">
-                        {asset.id}
+                        {network.displayName}
                       </span>
                       <span className="text-white/60 text-sm">
-                        {asset.name}
+                        {network.name}
                       </span>
                     </div>
                   </div>
-                  {selectedAsset === asset.id && (
+                  {selectedNetwork === network.id && (
                     <svg
                       className="w-5 h-5 text-[#AB9FF2] ml-auto"
                       fill="currentColor"

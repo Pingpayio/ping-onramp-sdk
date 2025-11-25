@@ -4,6 +4,7 @@ import type {
   OnrampInitRequest,
   TargetAsset,
 } from "@pingpay/onramp-types";
+import { getAssetSymbol } from "@pingpay/onramp-types";
 import { ProviderError } from "../../lib/errors";
 import { OnrampSessionContext } from "../../middleware/onramp-session";
 import { DEFAULT_PROVIDER } from "./providers/provider-config";
@@ -16,36 +17,13 @@ import { getCombinedQuote } from "./quote";
  */
 function getTargetAssetFromSelectedAsset(
   selectedAsset: string,
-  baseTarget: TargetAsset,
+  selectedNetwork: string,
 ): TargetAsset {
-  // Asset mapping: selectedAsset id (from assetsList) -> asset name (for API)
-  const assetMap: Record<string, string> = {
-    "Zcash": "ZEC",
-    "Near": "wnear", // wNEAR is the wrapped version on NEAR
-    "Tether USD": "USDT",
-    "USD Coin": "USDC",
-    "Solana": "SOL",
-    "Bitcoin": "BTC",
-    "Loud": "LOUD",
-    "Ethereum": "ETH",
-    // Handle default case if selectedAsset is already an asset name
-    "USDC": "USDC",
-    "USDT": "USDT",
-    "SOL": "SOL",
-    "BTC": "BTC",
-    "LOUD": "LOUD",
-    "ETH": "ETH",
-    "ZEC": "ZEC",
-    "NEAR": "wnear",
-    "wnear": "wnear",
-    "wNEAR": "wnear",
-  };
+  const assetName = getAssetSymbol(selectedAsset);
 
-  const assetName = assetMap[selectedAsset] || selectedAsset;
-
-  // Use the chain from the base target, but update the asset
+  // Use the selected network instead of base target chain
   return {
-    chain: baseTarget.chain,
+    chain: selectedNetwork,
     asset: assetName,
   };
 }
@@ -100,20 +78,21 @@ export async function generateOnrampUrl(
   formData: OnrampInitRequest,
 ): Promise<OnrampInitResponse> {
   try {
-    const { location, targetAsset, origin } = session;
+    const { location, origin } = session;
     const {
       amount,
       paymentMethod,
       recipientAddress,
       selectedAsset,
+      selectedNetwork,
       selectedCurrency,
     } = formData;
     
     // Convert selectedAsset from form to TargetAsset object
-    // This ensures we use the user's selected asset, not the session's default
+    // This ensures we use the user's selected asset and network, not the session's default
     const destinationAsset = getTargetAssetFromSelectedAsset(
       selectedAsset,
-      targetAsset,
+      selectedNetwork,
     );
 
     console.log("[INIT] Converted destinationAsset:", destinationAsset);

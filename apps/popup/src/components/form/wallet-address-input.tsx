@@ -1,15 +1,14 @@
 import { memoizedValidateRecipientAddress } from "@/lib/address-validation";
 import type { FormValues } from "@/routes/_layout/onramp/form-entry";
-import type { TargetAsset } from "@pingpay/onramp-sdk";
 import { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
 export function WalletAddressInput({
-  onrampTarget,
+  selectedNetwork,
 }: {
-  onrampTarget: TargetAsset;
+  selectedNetwork: string;
 }) {
   const {
     register,
@@ -19,8 +18,8 @@ export function WalletAddressInput({
   // Memoize validation function to prevent recreating on every render
   const validateAddress = useCallback(
     (value: string) =>
-      memoizedValidateRecipientAddress(value, onrampTarget.chain),
-    [onrampTarget.chain],
+      memoizedValidateRecipientAddress(value, selectedNetwork),
+    [selectedNetwork],
   );
 
   return (

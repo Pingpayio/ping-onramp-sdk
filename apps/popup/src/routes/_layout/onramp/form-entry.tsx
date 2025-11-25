@@ -8,12 +8,14 @@ import type {
   PaymentMethodLimit,
   TargetAsset,
 } from "@pingpay/onramp-types";
+import { getAssetDisplaySymbol, getAssetSymbol } from "@pingpay/onramp-types";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { AssetSelector } from "@/components/asset-selector";
+import { AssetSelector, assetsByNetwork } from "@/components/asset-selector";
 import { CurrencySelector } from "@/components/currency-selector";
+import { NetworkSelector } from "@/components/network-selector";
 import { DepositAmountInput } from "@/components/form/deposit-amount-input";
 import { PaymentMethodSelector } from "@/components/form/payment-method-selector";
 import { ReceiveAmountDisplay } from "@/components/form/receive-amount-display";
@@ -25,6 +27,7 @@ import { Button } from "@/components/ui/button";
 export interface FormValues {
   amount: string;
   selectedAsset: string;
+  selectedNetwork: string;
   selectedCurrency: string;
   paymentMethod: string;
   recipientAddress: string;
@@ -61,6 +64,7 @@ function FormEntryRoute() {
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
+  const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
   const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] =
     useState(false);
 
@@ -87,6 +91,7 @@ function FormEntryRoute() {
     defaultValues: {
       amount: "",
       selectedAsset: getDefaultAssetFromTarget(onrampTarget),
+      selectedNetwork: onrampTarget.chain.toLowerCase() || "near",
       selectedCurrency: "USD",
       paymentMethod: "CARD",
       recipientAddress: "",
@@ -101,12 +106,13 @@ function FormEntryRoute() {
     trigger,
   } = methods;
 
-  const [
-    depositAmountWatcher,
-    paymentMethodWatcher,
-    selectedCurrencyWatcher,
-    selectedAssetWatcher,
-  ] = watch(["amount", "paymentMethod", "selectedCurrency", "selectedAsset"]);
+  const {
+    amount: depositAmountWatcher,
+    paymentMethod: paymentMethodWatcher,
+    selectedCurrency: selectedCurrencyWatcher,
+    selectedAsset: selectedAssetWatcher,
+    selectedNetwork: selectedNetworkWatcher,
+  } = watch();
   const debouncedAmount = useDebounce(depositAmountWatcher, 300);
 
   useEffect(() => {
@@ -149,59 +155,26 @@ function FormEntryRoute() {
   // Map selectedAsset string to TargetAsset object
   const getTargetAssetFromSelectedAsset = (
     selectedAsset: string,
-    baseTarget: TargetAsset,
+    selectedNetwork: string,
   ): TargetAsset => {
-    // Asset mapping: selectedAsset id (from assetsList) -> asset name (for API)
-    const assetMap: Record<string, string> = {
-      "Zcash": "ZEC",
-      "Near": "wnear", // wNEAR is the wrapped version on NEAR
-      "Tether USD": "USDT",
-      "USD Coin": "USDC",
-      "Solana": "SOL",
-      "Bitcoin": "BTC",
-      "Loud": "LOUD",
-      "Ethereum": "ETH",
-      // Handle default case if selectedAsset is already an asset name
-      "USDC": "USDC",
-      "USDT": "USDT",
-      "SOL": "SOL",
-      "BTC": "BTC",
-      "LOUD": "LOUD",
-      "ETH": "ETH",
-      "ZEC": "ZEC",
-      "NEAR": "wnear",
-      "wnear": "wnear",
-      "wNEAR": "wnear",
-    };
+    const assetName = getAssetSymbol(selectedAsset);
 
-    const assetName = assetMap[selectedAsset] || selectedAsset;
-
-    // Use the chain from the base target, but update the asset
+    // Use the selected network instead of base target chain
     return {
-      chain: baseTarget.chain,
+      chain: selectedNetwork,
       asset: assetName,
     };
   };
 
-  // Get the target asset based on selected asset
+  // Get the target asset based on selected asset and network
   const currentTargetAsset = getTargetAssetFromSelectedAsset(
     selectedAssetWatcher,
-    onrampTarget,
+    selectedNetworkWatcher,
   );
 
   // Get display name for the selected asset (for button text)
   const getAssetDisplayName = (selectedAsset: string): string => {
-    const assetMap: Record<string, string> = {
-      "Zcash": "ZEC",
-      "Near": "NEAR",
-      "Tether USD": "USDT",
-      "USD Coin": "USDC",
-      "Solana": "SOL",
-      "Bitcoin": "BTC",
-      "Loud": "LOUD",
-      "Ethereum": "ETH",
-    };
-    return assetMap[selectedAsset] || selectedAsset;
+    return getAssetDisplaySymbol(selectedAsset);
   };
 
   const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
@@ -256,6 +229,19 @@ function FormEntryRoute() {
     setIsAssetSelectorOpen(false);
   };
 
+  const handleNetworkSelect = (networkId: string) => {
+    setValue("selectedNetwork", networkId);
+    // Reset asset when network changes to ensure compatibility - use first asset from the network's asset list
+    const networkAssets = assetsByNetwork[networkId] || [];
+    const defaultAsset = networkAssets[0]?.id || "Near";
+    setValue("selectedAsset", defaultAsset);
+    setIsNetworkSelectorOpen(false);
+  };
+
+  const handleCloseNetworkSelector = () => {
+    setIsNetworkSelectorOpen(false);
+  };
+
   const handlePaymentMethodSelect = (methodId: string) => {
     setValue("paymentMethod", methodId);
     setIsPaymentMethodModalOpen(false);
@@ -279,10 +265,17 @@ function FormEntryRoute() {
         selectedCurrency={selectedCurrencyWatcher}
         onSelectCurrency={handleCurrencySelect}
       />
+      <NetworkSelector
+        isOpen={isNetworkSelectorOpen}
+        onClose={handleCloseNetworkSelector}
+        selectedNetwork={selectedNetworkWatcher}
+        onSelectNetwork={handleNetworkSelect}
+      />
       <AssetSelector
         isOpen={isAssetSelectorOpen}
         onClose={handleCloseAssetSelector}
         selectedAsset={selectedAssetWatcher}
+        selectedNetwork={selectedNetworkWatcher}
         onSelectAsset={handleAssetSelect}
       />
       <PaymentMethodModal
@@ -314,12 +307,13 @@ function FormEntryRoute() {
             quoteError={error instanceof Error ? error.message : undefined}
             depositAmount={depositAmountWatcher}
             quote={quote}
-            onrampTarget={onrampTarget}
+            selectedNetwork={selectedNetworkWatcher}
+            onNetworkClick={() => setIsNetworkSelectorOpen(true)}
             onAssetClick={() => setIsAssetSelectorOpen(true)}
             selectedAsset={selectedAssetWatcher}
           />
 
-          <WalletAddressInput onrampTarget={onrampTarget} />
+          <WalletAddressInput selectedNetwork={selectedNetworkWatcher} />
 
           <PaymentMethodSelector
             onrampConfig={onrampConfig}

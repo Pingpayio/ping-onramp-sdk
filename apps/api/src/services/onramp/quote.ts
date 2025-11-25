@@ -65,14 +65,23 @@ export async function getCombinedQuote(
 
   const quoteDeadline = new Date(Date.now() + 5 * 60 * 1000).toISOString();
 
-  let recipientForPreview: string;
-  if (destinationAsset1Click.blockchain.toLowerCase() === "near") {
-    recipientForPreview = recipientAddress || "preview.near";
-  } else {
-    recipientForPreview =
-      recipientAddress ||
-      "0x0000000000000000000000000000000000000000";
-  }
+  // Default preview addresses by blockchain type
+  const defaultRecipientAddresses: Record<string, string> = {
+    near: "preview.near",
+    btc: "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", // Bitcoin P2PKH format
+    xrp: "rN7n7otQDd6FczFgLdSqtcsAUxDkw6fzRH", // XRP address format
+    zec: "t1ZQ5NzfZxWp4m3q8c4fGFtfiHkvk1s9dJt", // Zcash transparent address format
+    tron: "TRjE1H8dxypKM1NZRdysbs9wo7huR4bdNz", // TRON address format
+    sol: "So11111111111111111111111111111111111111112", // Solana address format
+  };
+  
+  // Default for EVM and other address-based chains
+  const defaultEVMAddress = "0x0000000000000000000000000000000000000000";
+  
+  // Determine default preview address based on blockchain type
+  const blockchainLower = destinationAsset1Click.blockchain.toLowerCase();
+  const defaultAddress = defaultRecipientAddresses[blockchainLower] || defaultEVMAddress;
+  const recipientForPreview = recipientAddress || defaultAddress;
 
   const swapQuoteParams: QuoteRequestParams = {
     originAsset: originAsset1Click.assetId,
