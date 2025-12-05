@@ -1,4 +1,5 @@
 import { memoizedValidateRecipientAddress } from "@/lib/address-validation";
+import { cn } from "@/lib/utils";
 import type { FormValues } from "@/routes/_layout/onramp/form-entry";
 import { useCallback } from "react";
 import { useFormContext } from "react-hook-form";
@@ -37,7 +38,13 @@ export function WalletAddressInput({
           required: "Recipient wallet address is required",
           validate: validateAddress,
         })}
-        className="block w-full p-4 rounded-lg h-[54px] bg-white/[0.08] border border-[rgba(255,255,255,0.18)] focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70 placeholder:text-base placeholder:font-base"
+        aria-invalid={errors.recipientAddress ? "true" : "false"}
+        className={cn(
+          "block w-full p-4 rounded-lg h-[54px] bg-white/[0.08] placeholder:text-base placeholder:font-base border",
+          errors.recipientAddress
+            ? "!border-red-500 focus:!border-red-500 focus-visible:!border-red-500 hover:!border-red-500"
+            : "border-[rgba(255,255,255,0.18)] focus:ring-blue-500 focus:border-blue-500 focus-visible:border-[#AF9EF9] hover:border-[#AF9EF9]/70",
+        )}
         placeholder="Enter Recipient Address"
       />
       {errors.recipientAddress && (

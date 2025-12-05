@@ -87,7 +87,8 @@ function FormEntryRoute() {
   };
 
   const methods = useForm<FormValues>({
-    mode: "onSubmit",
+    mode: "onBlur",
+    reValidateMode: "onChange",
     defaultValues: {
       amount: "",
       selectedAsset: getDefaultAssetFromTarget(onrampTarget),
