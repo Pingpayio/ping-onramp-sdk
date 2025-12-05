@@ -1,86 +1,197 @@
-// Cached regex patterns for better performance
+// ============================================================================
+// Address Validation Configuration
+// ============================================================================
+
+/**
+ * Chain identifiers (normalized to lowercase)
+ */
+export type ChainId = "btc" | "eth" | "sol" | "tron" | "xrp" | "zec" | "near" | "sui";
+
+// ============================================================================
+// Regex Patterns (cached for performance)
+// ============================================================================
+
 const IMPLICIT_ACCOUNT_REGEX = /^[0-9a-f]{64}$/;
 const NEAR_ACCOUNT_CHARS_REGEX = /^[a-z0-9._-]+$/;
 const SEPARATOR_START_END_REGEX = /^[._-]|[._-]$/;
 const CONSECUTIVE_SEPARATORS_REGEX = /[._-]{2,}/;
 const BASIC_ADDRESS_CHARS_REGEX = /^[a-zA-Z0-9._-]+$/;
 const SUI_ADDRESS_REGEX = /^(0x)?[0-9a-fA-F]{64}$/;
+const ETHEREUM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
+const BITCOIN_ADDRESS_REGEX = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/;
+const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
+const TRON_ADDRESS_REGEX = /^T[A-Za-z1-9]{33}$/;
+const XRP_ADDRESS_REGEX = /^r[0-9a-zA-Z]{25,34}$/;
+const ZCASH_ADDRESS_REGEX = /^(t|z)[a-zA-Z0-9]{34}$/;
 
-// Basic SUI address validation
-function isValidSuiAddress(address: string): boolean {
-  return SUI_ADDRESS_REGEX.test(address);
-}
+// ============================================================================
+// Chain-Specific Validators
+// ============================================================================
 
-// Basic NEAR account validation with performance optimizations
-function isValidNearAccount(address: string): boolean {
-  // NEAR account ID rules:
-  // - 2-64 characters
-  // - Can contain lowercase letters, digits, and separators (- _ .)
-  // - Cannot start or end with separator
-  // - Cannot have consecutive separators
-  // - Must end with .near for named accounts or be implicit account (64 hex chars)
-
+/**
+ * Validates a NEAR account address
+ * Supports:
+ * - Named accounts: alice.near, bob.testnet
+ * - Implicit accounts: 64-character hex string
+ */
+export function isValidNearAddress(address: string): boolean {
   const length = address.length;
   if (length < 2 || length > 64) {
     return false;
   }
 
-  // Check for implicit account (64 character hex string) - fastest check first
+  // Check for implicit account (64 character hex string)
   if (length === 64 && IMPLICIT_ACCOUNT_REGEX.test(address)) {
     return true;
   }
 
   // Check for named account (.near)
   if (address.endsWith(".near")) {
-    const accountName = address.slice(0, -5); // Remove .near suffix
+    const accountName = address.slice(0, -5);
     const nameLength = accountName.length;
-
     if (nameLength < 2 || nameLength > 59) {
       return false;
     }
-
-    return validateAccountName(accountName);
+    return validateNearAccountName(accountName);
   }
 
   // Check for testnet account (.testnet)
   if (address.endsWith(".testnet")) {
-    const accountName = address.slice(0, -8); // Remove .testnet suffix
+    const accountName = address.slice(0, -8);
     const nameLength = accountName.length;
-
     if (nameLength < 2 || nameLength > 56) {
       return false;
     }
-
-    return validateAccountName(accountName);
+    return validateNearAccountName(accountName);
   }
 
   return false;
 }
 
-// Extracted account name validation for reuse
-function validateAccountName(accountName: string): boolean {
-  // Check valid characters first (fastest rejection)
+/**
+ * Validates a NEAR account name (without suffix)
+ */
+function validateNearAccountName(accountName: string): boolean {
   if (!NEAR_ACCOUNT_CHARS_REGEX.test(accountName)) {
     return false;
   }
-
-  // Check for separators at start/end
   if (SEPARATOR_START_END_REGEX.test(accountName)) {
     return false;
   }
-
-  // Check for consecutive separators
   if (CONSECUTIVE_SEPARATORS_REGEX.test(accountName)) {
     return false;
   }
-
   return true;
 }
 
-// Basic address validation for different chains with performance optimizations
+/**
+ * Validates a SUI address
+ * Format: 64-character hex string, optionally prefixed with 0x
+ */
+export function isValidSuiAddress(address: string): boolean {
+  return SUI_ADDRESS_REGEX.test(address);
+}
+
+/**
+ * Validates an Ethereum address
+ * Format: 0x followed by 40 hex characters
+ */
+export function isValidEthereumAddress(address: string): boolean {
+  return ETHEREUM_ADDRESS_REGEX.test(address);
+}
+
+/**
+ * Validates a Bitcoin address
+ * Supports: Legacy (1...), SegWit (3...), and Bech32 (bc1...)
+ */
+export function isValidBitcoinAddress(address: string): boolean {
+  return BITCOIN_ADDRESS_REGEX.test(address);
+}
+
+/**
+ * Validates a Solana address
+ * Format: Base58 encoded, 32-44 characters
+ */
+export function isValidSolanaAddress(address: string): boolean {
+  return SOLANA_ADDRESS_REGEX.test(address);
+}
+
+/**
+ * Validates a TRON address
+ * Format: T followed by 33 alphanumeric characters
+ */
+export function isValidTronAddress(address: string): boolean {
+  return TRON_ADDRESS_REGEX.test(address);
+}
+
+/**
+ * Validates an XRP address
+ * Format: r followed by 25-34 alphanumeric characters
+ */
+export function isValidXrpAddress(address: string): boolean {
+  return XRP_ADDRESS_REGEX.test(address);
+}
+
+/**
+ * Validates a Zcash address
+ * Format: t or z prefix followed by 34 alphanumeric characters
+ */
+export function isValidZcashAddress(address: string): boolean {
+  return ZCASH_ADDRESS_REGEX.test(address);
+}
+
+// ============================================================================
+// Chain Validator Map
+// ============================================================================
+
+/**
+ * Map of chain IDs to their validation functions
+ */
+const CHAIN_VALIDATORS: Record<ChainId, (address: string) => boolean> = {
+  near: isValidNearAddress,
+  sui: isValidSuiAddress,
+  eth: isValidEthereumAddress,
+  btc: isValidBitcoinAddress,
+  sol: isValidSolanaAddress,
+  tron: isValidTronAddress,
+  xrp: isValidXrpAddress,
+  zec: isValidZcashAddress,
+};
+
+/**
+ * Map of chain IDs to their error messages
+ */
+const CHAIN_ERROR_MESSAGES: Record<ChainId, string> = {
+  near: "Please enter a valid NEAR account ID (e.g., alice.near or 64-character hex)",
+  sui: "Please enter a valid SUI address (64-character hex, optionally prefixed with 0x)",
+  eth: "Please enter a valid Ethereum address (0x followed by 40 hex characters)",
+  btc: "Please enter a valid Bitcoin address",
+  sol: "Please enter a valid Solana address",
+  tron: "Please enter a valid TRON address (starts with T)",
+  xrp: "Please enter a valid XRP address (starts with r)",
+  zec: "Please enter a valid Zcash address (starts with t or z)",
+};
+
+// ============================================================================
+// Main Validation Logic
+// ============================================================================
+
+/**
+ * Validates a recipient address based on the selected network/chain
+ * 
+ * The address format is determined solely by the chain/network, not the asset.
+ * For example:
+ * - Ethereum network → Ethereum address format (regardless of ETH, USDC, USDT)
+ * - NEAR network → NEAR address format (regardless of NEAR, USDC, USDT)
+ * - Bitcoin network → Bitcoin address format
+ * 
+ * @param address - The address to validate
+ * @param network - The blockchain network (e.g., "near", "btc", "eth")
+ * @returns Error message string if invalid, undefined if valid
+ */
 export function validateRecipientAddress(
   address: string,
-  targetChain: string,
+  network: string,
 ): string | undefined {
   // Early return for empty/whitespace
   const trimmedAddress = address.trim();
@@ -88,26 +199,35 @@ export function validateRecipientAddress(
     return "Recipient wallet address is required";
   }
 
-  const chainLower = targetChain.toLowerCase();
-
-  // NEAR chain validation
-  if (chainLower === "near") {
-    if (!isValidNearAccount(trimmedAddress)) {
-      return "Please enter a valid NEAR account ID (e.g., alice.near or 64-character hex)";
+  try {
+    // Normalize network to lowercase chain ID
+    const networkLower = network.toLowerCase() as ChainId;
+    
+    // Get the appropriate validator for this chain
+    const validator = CHAIN_VALIDATORS[networkLower];
+    
+    if (!validator) {
+      // Fallback for unknown chains - basic validation
+      return validateBasicAddress(trimmedAddress);
     }
-    return undefined;
-  }
-
-  // SUI chain validation
-  if (chainLower === "sui") {
-    if (!isValidSuiAddress(trimmedAddress)) {
-      return "Please enter a valid SUI address (64-character hex, optionally prefixed with 0x)";
+    
+    // Validate using chain-specific validator
+    if (!validator(trimmedAddress)) {
+      return CHAIN_ERROR_MESSAGES[networkLower];
     }
+    
     return undefined;
+  } catch (error) {
+    // Fallback to basic validation on error
+    return validateBasicAddress(trimmedAddress);
   }
+}
 
-  // For other chains, basic length and format checks
-  const addressLength = trimmedAddress.length;
+/**
+ * Basic address validation fallback for unknown chains
+ */
+function validateBasicAddress(address: string): string | undefined {
+  const addressLength = address.length;
 
   if (addressLength < 10) {
     return "Address appears to be too short";
@@ -117,31 +237,38 @@ export function validateRecipientAddress(
     return "Address appears to be too long";
   }
 
-  // Check for obviously invalid characters (basic sanity check)
-  if (!BASIC_ADDRESS_CHARS_REGEX.test(trimmedAddress)) {
+  if (!BASIC_ADDRESS_CHARS_REGEX.test(address)) {
     return "Address contains invalid characters";
   }
 
   return undefined;
 }
 
-// Memoized validation function for React Hook Form
+// ============================================================================
+// Memoized Validation (for React Hook Form)
+// ============================================================================
+
 let lastAddress = "";
-let lastChain = "";
+let lastNetwork = "";
+let lastAsset = "";
 let lastResult: string | undefined;
 
+/**
+ * Memoized version of validateRecipientAddress for React Hook Form
+ * Avoids re-validating the same input on every render
+ */
 export function memoizedValidateRecipientAddress(
   address: string,
-  targetChain: string,
+  network: string,
 ): string | undefined {
   // Simple memoization to avoid re-validating the same input
-  if (address === lastAddress && targetChain === lastChain) {
+  if (address === lastAddress && network === lastNetwork) {
     return lastResult;
   }
 
   lastAddress = address;
-  lastChain = targetChain;
-  lastResult = validateRecipientAddress(address, targetChain);
+  lastNetwork = network;
+  lastResult = validateRecipientAddress(address, network);
 
   return lastResult;
 }
