@@ -18,11 +18,14 @@ const CONSECUTIVE_SEPARATORS_REGEX = /[._-]{2,}/;
 const BASIC_ADDRESS_CHARS_REGEX = /^[a-zA-Z0-9._-]+$/;
 const SUI_ADDRESS_REGEX = /^(0x)?[0-9a-fA-F]{64}$/;
 const ETHEREUM_ADDRESS_REGEX = /^0x[a-fA-F0-9]{40}$/;
-const BITCOIN_ADDRESS_REGEX = /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,62}$/;
+const BITCOIN_LEGACY_ADDRESS_REGEX = /^[13][a-zA-HJ-NP-Z0-9]{25,34}$/;
+const BITCOIN_BECH32_ADDRESS_REGEX = /^bc1[a-z0-9]{39,59}$/;
+const BITCOIN_ADDRESS_REGEX = new RegExp(`(${BITCOIN_LEGACY_ADDRESS_REGEX.source})|(${BITCOIN_BECH32_ADDRESS_REGEX.source})`);
 const SOLANA_ADDRESS_REGEX = /^[1-9A-HJ-NP-Za-km-z]{32,44}$/;
 const TRON_ADDRESS_REGEX = /^T[A-Za-z1-9]{33}$/;
 const XRP_ADDRESS_REGEX = /^r[0-9a-zA-Z]{25,34}$/;
-const ZCASH_ADDRESS_REGEX = /^(t|z)[a-zA-Z0-9]{34}$/;
+// Zcash: t-addresses (transparent) are 35 chars, z-addresses (shielded) are 78 chars, both use Base58 (no 0, O, I, l)
+const ZCASH_ADDRESS_REGEX = /^(t[a-km-zA-HJ-NP-Z1-9]{34}|z[a-km-zA-HJ-NP-Z1-9]{77})$/;
 
 // ============================================================================
 // Chain-Specific Validators
@@ -250,7 +253,6 @@ function validateBasicAddress(address: string): string | undefined {
 
 let lastAddress = "";
 let lastNetwork = "";
-let lastAsset = "";
 let lastResult: string | undefined;
 
 /**
