@@ -147,7 +147,7 @@ export function ReceiveAmountDisplay({
           <button
             type="button"
             onClick={onNetworkClick}
-            className="border gap-2 border-white/[0.18]! px-3! py-2! flex items-center rounded-lg! bg-white/[0.08]! hover:bg-white/5! cursor-pointer transition-colors"
+            className="border gap-2 border-white/[0.18] px-3 py-2 flex items-center rounded-full bg-white/[0.08] hover:bg-white/5 cursor-pointer transition-colors transform scale-90"
           >
             <img
               src={
@@ -155,8 +155,8 @@ export function ReceiveAmountDisplay({
                 "/near-logo-green.png"
               }
               alt={`${selectedNetwork} Protocol Logo`}
-              width="20px"
-              height="20px"
+              width="18px"
+              height="18px"
               className="rounded-full"
             />
             <span className="text-white font-normal uppercase">
@@ -164,8 +164,8 @@ export function ReceiveAmountDisplay({
             </span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="11"
-              height="6"
+              width="10"
+              height="5.4"
               viewBox="0 0 11 6"
               fill="none"
             >
