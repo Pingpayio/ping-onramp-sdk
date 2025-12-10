@@ -53,14 +53,10 @@ function RouteComponent() {
         void navigate({
           to: "/onramp/complete",
         });
-      } else if (pollingStatus === "failed") {
-        void navigate({
-          to: "/onramp/error",
-          search: {
-            error: pollingError || "Swap failed.",
-          },
-        });
       }
+      // Note: Failed states (FAILED, REFUNDED, EXPIRED) should stay on /onramp/processing
+      // The processing component will display the failed state UI
+      // Do not redirect to /onramp/error for swap failures
     } else {
       void navigate({
         to: "/onramp/error",

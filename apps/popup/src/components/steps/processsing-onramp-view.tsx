@@ -6,7 +6,7 @@ import {
   type NearIntentsDisplayInfo,
 } from "@/state/atoms";
 import type { OnrampResult } from "@pingpay/onramp-types";
-import { FaCheckCircle, FaClock, FaRegClock, FaSpinner } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle, FaRegClock, FaSpinner } from "react-icons/fa";
 import Header from "../header";
 import { StepInfoBox, type StepBox } from "../step-info-box";
 import { Button } from "../ui/button";
@@ -109,14 +109,15 @@ const getDisplayInfoForStatus = (
       case "REFUNDED":
       case "FAILED":
       case "EXPIRED":
-        progress = 100; // Or a specific error progress
+        progress = 0; // Failed state shows 0% progress per Figma design
         box = {
-          icon: <FaClock className="text-red-400 text-[32px]" />, // Consider a specific error icon
-          title: `Swap ${oneClickStatus.status}`,
+          //need cross icon not clock
+          icon: <FaTimesCircle className="text-[#FF6467] text-[32px]" />,
+          title: "Transaction Failed",
           desc:
             nearIntentsDisplayInfo?.message ||
-            `The swap ${oneClickStatus.status.toLowerCase()}. Please check details or contact support.`,
-          color: "border-red-400",
+            "Swap Unsuccessful - Your funds are safe.",
+          color: "border-[rgba(255,100,103,0.6)]",
         };
         break;
       default:
@@ -202,7 +203,17 @@ export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
               {Math.round(displayProgress)}%
             </span>
           </div>
-          <Progress value={displayProgress} className="h-2" />
+          <Progress
+            value={displayProgress}
+            className="h-2"
+            variant={
+              oneClickStatus?.status === "FAILED" ||
+              oneClickStatus?.status === "REFUNDED" ||
+              oneClickStatus?.status === "EXPIRED"
+                ? "failed"
+                : "default"
+            }
+          />
         </div>
       </div>
 
@@ -288,25 +299,53 @@ export function ProcessingOnramp({ step, result }: ProcessingOnrampProps) {
         </div>
       </div>
 
-      <p className="text-xs text-white/60 py-2">
-        {step === 3 && result
-          ? "Transaction complete, you can now close this window."
-          : "Do not close this window, transaction is being processed."}
-      </p>
+      {/* Footer message - different for failed states */}
+      {oneClickStatus?.status === "FAILED" ||
+      oneClickStatus?.status === "REFUNDED" ||
+      oneClickStatus?.status === "EXPIRED" ? (
+        <p className="text-xs text-white/60 py-2 text-center">
+          The swap to your destination asset failed. Your funds are safe and have
+          been routed to a refund address. Contact support to finish your
+          onramp.
+        </p>
+      ) : (
+        <p className="text-xs text-white/60 py-2">
+          {step === 3 && result
+            ? "Transaction complete, you can now close this window."
+            : "Do not close this window, transaction is being processed."}
+        </p>
+      )}
 
-      {transactionDetails.explorerLink && (
+      {/* Show Contact Support button for failed states, Explorer button for success */}
+      {oneClickStatus?.status === "FAILED" ||
+      oneClickStatus?.status === "REFUNDED" ||
+      oneClickStatus?.status === "EXPIRED" ? (
         <div className="flex w-full gap-4 mt-6">
           <Button
-            className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base disabled:opacity-50 disabled:cursor-not-allowed"
-            onClick={() =>
-              transactionDetails.explorerLink &&
-              window.open(transactionDetails.explorerLink, "_blank")
-            }
-            disabled={!transactionDetails.explorerLink}
+            className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AF9EF9] text-black font-semibold hover:bg-[#9B8AE8] transition-all duration-300 ease-in-out text-base"
+            onClick={() => {
+              // Open support link - you may want to configure this
+              window.open("https://pingpay.io/support", "_blank");
+            }}
           >
-            View on Explorer
+            Contact Support
           </Button>
         </div>
+      ) : (
+        transactionDetails.explorerLink && (
+          <div className="flex w-full gap-4 mt-6">
+            <Button
+              className="flex-1 w-full px-8 h-[58px] rounded-full bg-[#AB9FF2] text-[#3D315E] font-semibold hover:bg-[#8B6DF6] transition-all duration-300 ease-in-out text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() =>
+                transactionDetails.explorerLink &&
+                window.open(transactionDetails.explorerLink, "_blank")
+              }
+              disabled={!transactionDetails.explorerLink}
+            >
+              View on Explorer
+            </Button>
+          </div>
+        )
       )}
     </div>
   );
