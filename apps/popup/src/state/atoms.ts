@@ -1,6 +1,6 @@
 import type { OnrampResult, TargetAsset } from "@pingpay/onramp-types";
 import { atom } from "jotai";
-import type { StatusResponseData } from "../lib/one-click-api";
+import type { OneClickFee, StatusResponseData } from "../lib/one-click-api";
 
 export interface NearIntentsDisplayInfo {
   logoUrl?: string;
@@ -16,6 +16,7 @@ export const onrampErrorAtom = atom<string | null>(null);
 
 // Atoms for data collected during the flow
 export const onrampTargetAtom = atom<TargetAsset | null>(null);
+export const appFeesAtom = atom<OneClickFee[] | null>(null);
 
 // Atom for the final result to send back to the SDK
 export const onrampResultAtom = atom<OnrampResult | null>(null);

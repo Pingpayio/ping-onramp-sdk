@@ -5,6 +5,7 @@ import type {
   TargetAsset,
 } from "@pingpay/onramp-types";
 import { useQuery } from "@tanstack/react-query";
+import type { OneClickFee } from "@/lib/one-click-api";
 
 export const isAmountValid = (
   amount: string,
@@ -37,6 +38,7 @@ interface UseQuotePreviewProps {
   paymentMethod: string;
   onrampTarget: TargetAsset | null;
   onrampConfig: OnrampConfigResponse | undefined;
+  appFees?: OneClickFee[] | null;
 }
 
 export function useQuotePreview({
@@ -45,6 +47,7 @@ export function useQuotePreview({
   paymentMethod,
   onrampTarget,
   onrampConfig,
+  appFees,
 }: UseQuotePreviewProps) {
   const {
     data: quote,
@@ -56,6 +59,7 @@ export function useQuotePreview({
       sourceCurrency: selectedCurrency,
       destinationAsset: onrampTarget!,
       paymentMethod,
+      appFees: appFees || undefined,
     }),
     enabled:
       !!onrampTarget && isAmountValid(amount, paymentMethod, onrampConfig),

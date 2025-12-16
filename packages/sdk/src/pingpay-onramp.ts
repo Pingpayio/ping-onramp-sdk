@@ -111,6 +111,14 @@ export class PingpayOnramp {
       url.searchParams.set("sessionId", this.sessionId);
       url.searchParams.set("chain", target.chain);
       url.searchParams.set("asset", target.asset);
+      // Pass appFees from config if provided
+      if (this.config.appFees && this.config.appFees.length > 0) {
+        const appFeesJson = JSON.stringify(this.config.appFees);
+        // URLSearchParams.set() automatically handles URL encoding
+        url.searchParams.set("appFees", appFeesJson);
+      } else {
+        console.log("SDK: No appFees configured");
+      }
 
       this.popup = openPopup(
         url.toString(),

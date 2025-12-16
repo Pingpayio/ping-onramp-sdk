@@ -2,7 +2,7 @@
   "name": "@pingpay/onramp-api",
   "scripts": {
     "build": "echo 'Cloudflare Workers: No build needed, Wrangler handles bundling'",
-    "dev": "wrangler dev",
+    "dev": "wrangler dev --port 8787",
     "deploy": "CLOUDFLARE_API_TOKEN=$CLOUDFLARE_API_TOKEN wrangler deploy --minify",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },

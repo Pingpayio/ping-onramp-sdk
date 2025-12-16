@@ -52,6 +52,14 @@ export const onrampQuoteRequestSchema = z.object({
   sourceCurrency: z.string(),
   destinationAsset: targetAssetSchema,
   paymentMethod: z.string(),
+  appFees: z
+    .array(
+      z.object({
+        recipient: z.string(),
+        fee: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 export const onrampInitRequestSchema = z.object({
@@ -61,6 +69,14 @@ export const onrampInitRequestSchema = z.object({
   selectedAsset: z.string(),
   selectedNetwork: z.string(),
   selectedCurrency: z.string(),
+  appFees: z
+    .array(
+      z.object({
+        recipient: z.string(),
+        fee: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 // -------------------

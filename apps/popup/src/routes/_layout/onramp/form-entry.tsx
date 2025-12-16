@@ -3,7 +3,7 @@ import { ErrorView } from "@/components/steps/error-view";
 import { useDebounce } from "@/hooks/use-debounce";
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
-import { onrampTargetAtom } from "@/state/atoms";
+import { appFeesAtom, onrampTargetAtom } from "@/state/atoms";
 import type {
   PaymentMethodLimit,
   TargetAsset,
@@ -61,6 +61,7 @@ function FormEntryRoute() {
     targetAsset: onrampTarget,
     showRegionError,
   } = Route.useLoaderData();
+  const { store } = Route.useRouteContext();
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
@@ -178,6 +179,8 @@ function FormEntryRoute() {
     return getAssetDisplaySymbol(selectedAsset);
   };
 
+  const appFees = store.get(appFeesAtom);
+
   const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
     useQuotePreview({
       amount: debouncedAmount,
@@ -185,8 +188,8 @@ function FormEntryRoute() {
       selectedCurrency: selectedCurrencyWatcher,
       onrampConfig,
       onrampTarget: currentTargetAsset,
+      appFees,
     });
-
   const handleFormSubmit = async (data: FormValues) => {
     if (!quote) {
       return;
@@ -197,7 +200,12 @@ function FormEntryRoute() {
     });
 
     try {
-      const { redirectUrl: onrampUrl } = await initOnramp(data);
+      const initData = {
+        ...data,
+        appFees: appFees || undefined,
+      };
+      
+      const { redirectUrl: onrampUrl } = await initOnramp(initData);
 
       window.location.assign(onrampUrl);
     } catch (error) {

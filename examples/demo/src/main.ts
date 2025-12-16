@@ -7,11 +7,15 @@ if (openOnrampButton) {
     try {
       const targetAssetDetails = { chain: "NEAR", asset: "wNEAR" };
       const onrampOptions: PingpayOnrampConfig = {
+        // Example appFees: 100 basis points = 1%
+        appFees: [
+          {
+            //replace with your actual fee recipient address
+            recipient: "fees.pingpayio.near",
+            fee: 100, // 100 basis points = 1%
+          },
+        ],
         onPopupReady: () => console.log("Example: Popup is ready"),
-        onProcessComplete: (result) =>
-          console.log("Example: Process complete", result),
-        onProcessFailed: (errorInfo) =>
-          console.error("Example: Process failed", errorInfo),
         onPopupClose: () => console.log("Example: Popup was closed"),
       };
 
