@@ -137,7 +137,12 @@ export function ReceiveAmountDisplay({
               </>
             ) : (
               <>
-                Rate: <span className="text-[#FFFFFF99]">-</span>
+                Rate:{" "}
+                {quoteError ? (
+                  <span className="text-[#AB9FF2]">No quote found for asset</span>
+                ) : (
+                  <span className="text-[#FFFFFF99]">-</span>
+                )}
               </>
             )}
           </p>
