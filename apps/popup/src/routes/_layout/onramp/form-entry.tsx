@@ -1,13 +1,15 @@
 import { RegionNotSupportedPopup } from "@/components/region-not-supported-popup";
 import { ErrorView } from "@/components/steps/error-view";
+import { useBroadcastChannel } from "@/hooks/use-broadcast-channel";
 import { useDebounce } from "@/hooks/use-debounce";
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
-import { appFeesAtom, onrampTargetAtom } from "@/state/atoms";
+import { appFeesAtom, onrampTargetAtom, sessionIdAtom } from "@/state/atoms";
 import type { PaymentMethodLimit, TargetAsset } from "@pingpay/onramp-types";
 import { getAssetDisplaySymbol, getAssetSymbol } from "@pingpay/onramp-types";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useAtomValue } from "jotai";
+import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { AssetSelector, assetsByNetwork } from "@/components/asset-selector";
@@ -61,6 +63,17 @@ function FormEntryRoute() {
   const { store } = Route.useRouteContext();
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
+
+  const sessionId = useAtomValue(sessionIdAtom);
+  const { sendMessage } = useBroadcastChannel(sessionId);
+  const hasNotifiedReady = useRef(false);
+
+  useEffect(() => {
+    if (sessionId && !hasNotifiedReady.current) {
+      hasNotifiedReady.current = true;
+      sendMessage("ready", {});
+    }
+  }, [sessionId, sendMessage]);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
   const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
   const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] =

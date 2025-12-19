@@ -15,6 +15,7 @@ export interface NearIntentsDisplayInfo {
 export const onrampErrorAtom = atom<string | null>(null);
 
 // Atoms for data collected during the flow
+export const sessionIdAtom = atom<string>("");
 export const onrampTargetAtom = atom<TargetAsset | null>(null);
 export const appFeesAtom = atom<OneClickFee[] | null>(null);
 

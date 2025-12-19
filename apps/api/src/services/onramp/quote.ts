@@ -16,8 +16,9 @@ export async function getCombinedQuote(
   country: string,
   dryRun = true,
 ) {
-  const { amount, destinationAsset, recipientAddress, paymentMethod, appFees } =
+  const { amount, destinationAsset, recipientAddress, paymentMethod, appFees: inputAppFees } =
     formData;
+  let appFees = inputAppFees ?? [];
 
   const oneClickClient = new OneClickClient(env.INTENTS_API_KEY);
 
@@ -85,7 +86,7 @@ export async function getCombinedQuote(
 
   // Adding pingpay fee to the appFees array
   if (process.env.PINGPAY_FEE_RECIPIENT && process.env.PINGPAY_FEE_AMOUNT) {
-    if (!appFees || !Array.isArray(appFees)) {
+    if (!Array.isArray(appFees)) {
       appFees = [];
     }
     appFees.push({ recipient: process.env.PINGPAY_FEE_RECIPIENT, fee: parseInt(process.env.PINGPAY_FEE_AMOUNT, 10)});

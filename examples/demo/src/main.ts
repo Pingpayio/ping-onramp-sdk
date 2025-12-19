@@ -10,9 +10,8 @@ if (openOnrampButton) {
         // Example appFees: 100 basis points = 1%
         appFees: [
           {
-            // Replace with your actual fee recipient address
-            recipient: "YOUR_FEE_RECIPIENT.near",
-            fee: 100, // 100 basis points = 1%
+            recipient: "test.near",
+            fee: 100,
           },
         ],
         onPopupReady: () => console.log("Example: Popup is ready"),

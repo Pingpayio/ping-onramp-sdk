@@ -1,11 +1,12 @@
 import { ErrorView } from "@/components/steps/error-view";
 import { LoadingView } from "@/components/steps/loading-view";
-import { onrampTargetAtom, appFeesAtom } from "@/state/atoms";
+import { sessionIdAtom, onrampTargetAtom, appFeesAtom } from "@/state/atoms";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 import type { OneClickFee } from "@/lib/one-click-api";
 
 const onrampSearchSchema = z.object({
+  sessionId: z.string().optional(),
   chain: z.string(),
   asset: z.string(),
   appFees: z.union([z.string(), z.array(z.object({ recipient: z.string(), fee: z.number() }))]).optional(),
@@ -20,6 +21,10 @@ export const Route = createFileRoute("/_layout/onramp/")({
   ),
   validateSearch: onrampSearchSchema,
   beforeLoad: ({ context, search }) => {
+    if (search.sessionId) {
+      context.store.set(sessionIdAtom, search.sessionId);
+    }
+    
     const targetAsset = { chain: search.chain, asset: search.asset };
     context.store.set(onrampTargetAtom, targetAsset);
     context.target = targetAsset;

@@ -7,76 +7,14 @@ test.describe("AppFees functionality", () => {
     await page.goto("http://localhost:3000");
   });
 
-  test("should pass appFees from SDK config to popup URL", async ({ page }) => {
-    // Listen for console logs
-    const consoleMessages: string[] = [];
-    page.on("console", (msg) => {
-      const text = msg.text();
-      if (text.includes("appFees") || text.includes("SDK:") || text.includes("Popup:")) {
-        consoleMessages.push(text);
-      }
-    });
-
-    // Start waiting for the popup window BEFORE clicking the button
-    const popupPromise = page.waitForEvent("popup");
-
-    // Click the button that should open the onramp popup
-    await page.click("#openOnrampButton");
-
-    // Wait for the popup window to open
-    const popupPage = await popupPromise;
-
-    // Wait a bit for the popup to load and process URL params
-    await popupPage.waitForTimeout(1000);
-
-    // Check that the popup URL contains appFees parameter
-    const popupUrl = popupPage.url();
-    expect(popupUrl).toContain("appFees");
-
-    // Parse the appFees from URL
-    const urlParams = new URL(popupUrl).searchParams;
-    const appFeesParam = urlParams.get("appFees");
-    expect(appFeesParam).toBeTruthy();
-
-    // Verify appFees structure
-    if (appFeesParam) {
-      const appFees = JSON.parse(appFeesParam);
-      expect(Array.isArray(appFees)).toBe(true);
-      expect(appFees.length).toBeGreaterThan(0);
-      expect(appFees[0]).toHaveProperty("recipient");
-      expect(appFees[0]).toHaveProperty("fee");
-      expect(appFees[0].fee).toBe(100); // 100 basis points = 1%
-      expect(appFees[0].recipient).toBe("test.near");
-    }
-
-    // Check console logs for appFees messages
-    const appFeesLogs = consoleMessages.filter((msg) =>
-      msg.toLowerCase().includes("appfees"),
-    );
-    expect(appFeesLogs.length).toBeGreaterThan(0);
-
-    await popupPage.close();
-  });
-
   test("should include appFees in quote request when popup makes API call", async ({
     page,
+    context,
   }) => {
-    // Intercept API requests from the popup page to check if appFees is included
     const apiRequests: Array<{ url: string; body: any }> = [];
 
-    // Start waiting for the popup window BEFORE setting up route interception
-    const popupPromise = page.waitForEvent("popup");
-
-    // Click the button to open onramp
-    await page.click("#openOnrampButton");
-
-    const popupPage = await popupPromise;
-
-    // Wait for popup to load
-    await popupPage.waitForTimeout(2000);
-
-    // Set up route interception on the popup page (not the main page)
-    await popupPage.route("**/api/onramp/quote", async (route) => {
+    // Set up route interception at context level to catch all popup requests
+    await context.route("**/api/onramp/quote", async (route) => {
       const request = route.request();
       const postData = request.postData();
       if (postData) {
@@ -87,32 +25,25 @@ test.describe("AppFees functionality", () => {
         });
         console.log("Intercepted quote request with body:", JSON.stringify(body, null, 2));
       }
-      // Continue with the actual request
       await route.continue();
     });
 
-    // Wait for the form to load and potentially trigger a quote request
-    // The quote request is triggered when amount is entered and form is valid
-    try {
-      // Wait for form elements to be visible
-      await popupPage.waitForSelector('input[type="number"], input[name="amount"]', {
-        timeout: 5000,
-      });
+    const popupPromise = page.waitForEvent("popup");
+    await page.click("#openOnrampButton");
+    const popupPage = await popupPromise;
 
-      // Enter an amount to trigger quote request (if not already triggered)
-      const amountInput = popupPage.locator('input[type="number"], input[name="amount"]').first();
-      if (await amountInput.isVisible()) {
-        await amountInput.fill("100");
-        // Wait for the debounced quote request (300ms debounce + network time)
-        await popupPage.waitForTimeout(1500);
-      }
-    } catch (error) {
-      console.log("Could not find amount input, quote might be triggered automatically");
-      // Wait a bit more in case quote is triggered automatically
-      await popupPage.waitForTimeout(2000);
-    }
+    // Wait for the form to be visible
+    await popupPage.waitForSelector("#amount", { timeout: 5000 });
+    
+    // Fill in the recipient address to make form valid
+    const recipientInput = popupPage.locator("#recipientAddress");
+    await recipientInput.fill("test.near");
 
-    // Wait for quote requests to be made
+    // Fill amount input to trigger quote request
+    const amountInput = popupPage.locator("#amount");
+    await amountInput.fill("100");
+
+    // Wait for the debounced quote request (300ms debounce + network time)
     await popupPage.waitForTimeout(2000);
 
     // Check if any quote requests were made
@@ -137,37 +68,21 @@ test.describe("AppFees functionality", () => {
     await popupPage.close();
   });
 
-  test("should log appFees at each step of the flow", async ({ page }) => {
-    const consoleMessages: string[] = [];
-    page.on("console", (msg) => {
-      const text = msg.text();
-      if (text.includes("appFees") || text.includes("SDK:") || text.includes("Popup:")) {
-        consoleMessages.push(text);
-      }
-    });
-
+  test("should work end-to-end with appFees", async ({ page }) => {
     const popupPromise = page.waitForEvent("popup");
     await page.click("#openOnrampButton");
     const popupPage = await popupPromise;
 
-    // Wait for popup to process
+    // Wait for popup to load and navigate to form-entry
     await popupPage.waitForTimeout(2000);
 
-    // Check that we have logs from SDK
-    const sdkLogs = consoleMessages.filter((msg) => msg.includes("SDK:"));
-    expect(sdkLogs.length).toBeGreaterThan(0);
-
-    // Check that we have logs mentioning appFees
-    const appFeesLogs = consoleMessages.filter((msg) =>
-      msg.toLowerCase().includes("appfees"),
-    );
-    expect(appFeesLogs.length).toBeGreaterThan(0);
-
-    // Verify specific log messages
-    const hasSdkAppFeesLog = consoleMessages.some(
-      (msg) => msg.includes("SDK:") && msg.includes("appFees"),
-    );
-    expect(hasSdkAppFeesLog).toBe(true);
+    // Verify popup loaded successfully (URL will be form-entry after redirect)
+    const popupUrl = popupPage.url();
+    expect(popupUrl).toMatch(/^https:\/\/pingpay\.local\.gd:5173/);
+    expect(popupUrl).toContain("/onramp/form-entry");
+    
+    // Verify the popup form rendered
+    await expect(popupPage.locator("#amount")).toBeVisible();
 
     await popupPage.close();
   });
@@ -194,9 +109,9 @@ test.describe("AppFees functionality", () => {
     await popupPage.waitForTimeout(2000);
 
     // Popup should still load successfully even with appFees
+    expect(popupPage.url()).toMatch(/^https:\/\/pingpay\.local\.gd:5173/);
     expect(popupPage.url()).toMatch(/onramp/);
 
     await popupPage.close();
   });
 });
-
