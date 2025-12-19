@@ -6,6 +6,7 @@
     "dev": "turbo dev",
     "deploy": "turbo deploy",
     "test": "bunx playwright test",
+    "typecheck": "turbo typecheck",
     "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'",
     "fmt:check": "prettier --check '**/*.{js,jsx,ts,tsx,json}'"
   },
