@@ -73,15 +73,12 @@ test.describe("AppFees functionality", () => {
     await page.click("#openOnrampButton");
     const popupPage = await popupPromise;
 
-    // Wait for popup to load and navigate to form-entry
-    await popupPage.waitForTimeout(2000);
+    await popupPage.waitForURL(/\/onramp\/form-entry/, { timeout: 10000 });
 
-    // Verify popup loaded successfully (URL will be form-entry after redirect)
     const popupUrl = popupPage.url();
     expect(popupUrl).toMatch(/^https:\/\/pingpay\.local\.gd:5173/);
     expect(popupUrl).toContain("/onramp/form-entry");
     
-    // Verify the popup form rendered
     await expect(popupPage.locator("#amount")).toBeVisible();
 
     await popupPage.close();
@@ -106,11 +103,10 @@ test.describe("AppFees functionality", () => {
     await page.click("#openOnrampButton");
     const popupPage = await popupPromise;
 
-    await popupPage.waitForTimeout(2000);
+    await popupPage.waitForURL(/\/onramp\/form-entry/, { timeout: 10000 });
 
-    // Popup should still load successfully even with appFees
     expect(popupPage.url()).toMatch(/^https:\/\/pingpay\.local\.gd:5173/);
-    expect(popupPage.url()).toMatch(/onramp/);
+    expect(popupPage.url()).toContain("/onramp/form-entry");
 
     await popupPage.close();
   });
