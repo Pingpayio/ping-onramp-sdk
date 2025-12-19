@@ -9,7 +9,7 @@
   "devDependencies": {
     "@playwright/test": "^1.52.0",
     "@types/bun": "latest",
-    "@pingpay/onramp-types": "^0.0.2",
+    "@pingpay/onramp-types": "workspace:*",
     "tsup": "^8.0.2"
   },
   "peerDependencies": {

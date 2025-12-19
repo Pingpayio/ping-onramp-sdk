@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@pingpay/onramp-sdk": "workspace:*",
+    "@pingpay/onramp-types": "workspace:*",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-progress": "^1.1.7",
     "@radix-ui/react-select": "^2.2.5",
@@ -34,7 +35,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@pingpay/onramp-types": "workspace:*",
     "@tailwindcss/vite": "^4.1.12",
     "@tanstack/router-plugin": "^1.131.27",
     "@types/react": "^19.1.2",
