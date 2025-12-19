@@ -1,6 +1,18 @@
-<img width="565" alt="Screenshot 2025-05-29 at 1 52 36 PM" src="https://github.com/user-attachments/assets/c8a9caf3-2e20-4057-a2a1-b22c8e84473e" />
+<div align="center">
 
-Enable users to purchase NEAR Intents supported currencies with fiat, directly within your application.
+![Banner](https://pingpay.gitbook.io/docs/~gitbook/image?url=https%3A%2F%2F2412975227-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252F4y2jIy2xuLBz44dN9ue8%252Fuploads%252FSQyN4aaPibfbicyP1LXZ%252FThe%2520Payment%2520Layer%2520for%2520the%2520Future%2520of%2520Commerce%2520%283%29.png%3Falt%3Dmedia%26token%3D4252f999-18ef-4435-8fca-517d0f4657ad&width=768&dpr=2&quality=100&sign=6277647b&sv=2)
+
+[website](https://pingpay.io) | [docs](https://docs.pingpay.io) | [@pingpay_io](https://x.com/pingpay_io)
+
+</div>
+
+## Partner Onboarding & Requests
+
+Use the following forms to get started or request support:
+
+* [**Pingpay Partner Interest Form**](https://pingpay.notion.site/2c67fbe37dcb816091aec9fdc3af6919?pvs=105)
+* [**Request New Chain / Asset Support Form**](https://pingpay.notion.site/2b67fbe37dcb8111895dd72e8ade634d)
+* [**Additional Onramp Provider Onboarding Form**](https://pingpay.notion.site/2b67fbe37dcb81ed93c5f1474b141768)
 
 ## Usage
 
@@ -12,93 +24,15 @@ npm install @pingpay/onramp-sdk
 
 ### Basic Usage
 
-```tsx
+```typescript
+import type { TargetAsset, OnrampResult, PingpayOnrampError } from "@pingpay/onramp-sdk";
 import { PingpayOnramp } from "@pingpay/onramp-sdk";
-import type { TargetAsset, OnrampResult } from "@pingpay/onramp-sdk";
 
 const onramp = new PingpayOnramp();
 
 const targetAsset: TargetAsset = {
   chain: "NEAR",
-  asset: "USDC",
-};
-
-async function handleOnramp() {
-  try {
-    const result: OnrampResult = await onramp.initiateOnramp(targetAsset);
-    console.log("Onramp successful:", result);
-  } catch (error) {
-    console.error("Onramp failed:", error);
-  }
-}
-
-return <button onClick={handleOnramp}>Pingpay Onramp</button>;
-```
-
-### Advanced Usage
-
-The SDK provides helper methods to hook into the onramp lifecycle.
-
-```tsx
-import { PingpayOnramp } from "@pingpay/onramp-sdk";
-import type {
-  TargetAsset,
-  OnrampResult,
-  PingpayOnrampConfig,
-  OnrampFlowPayload,
-  OnrampStep,
-  OnrampStepDetails,
-  FormDataSubmittedPayload,
-  WalletConnectedPayload,
-  TransactionSignedPayload,
-  OnrampInitiatedPayload,
-  ProcessFailedPayload,
-  PingpayOnrampError,
-} from "@pingpay/onramp-sdk";
-
-const config: PingpayOnrampConfig = {
-  onPopupReady: () => {
-    console.log("SDK: Popup is ready.");
-  },
-  onFlowStarted: (payload: OnrampFlowPayload) => {
-    console.log("SDK: Onramp flow started:", payload);
-  },
-  onStepChange: (step: OnrampStep, details?: OnrampStepDetails) => {
-    console.log("SDK: Onramp step changed:", step, details);
-  },
-  onFormDataSubmitted: (payload: FormDataSubmittedPayload) => {
-    console.log("SDK: Form data submitted:", payload);
-  },
-  onWalletConnected: (payload: WalletConnectedPayload) => {
-    console.log("SDK: Wallet connected:", payload);
-  },
-  onTransactionSigned: (payload: TransactionSignedPayload) => {
-    console.log("SDK: Transaction signed:", payload);
-  },
-  onOnrampInitiated: (payload: OnrampInitiatedPayload) => {
-    console.log("SDK: Onramp initiated with service:", payload);
-  },
-  onProcessComplete: (result: OnrampResult) => {
-    console.log("SDK: Onramp process complete:", result);
-  },
-  onProcessFailed: (payload: ProcessFailedPayload) => {
-    console.error(
-      "SDK: Onramp process failed:",
-      payload.error,
-      payload.details,
-      payload.step,
-    );
-  },
-  onPopupClose: () => {
-    console.log("SDK: Popup was closed.");
-  },
-};
-
-const onramp = new PingpayOnramp(config);
-
-const targetAsset: TargetAsset = {
-  chain: "NEAR",
-  asset: "USDC",
+  asset: "wNEAR",
 };
 
 async function handleOnramp() {
@@ -107,35 +41,106 @@ async function handleOnramp() {
     console.log("Onramp successful:", result);
   } catch (error) {
     if (error instanceof PingpayOnrampError) {
-      // Use PingpayOnrampError for specific error handling
-      console.error(
-        "Onramp failed specifically:",
-        error.message,
-        error.details,
-        error.step,
-      );
+      console.error("Onramp failed:", error.message);
     } else {
-      console.error("Onramp failed generally:", error);
+      console.error("Onramp failed:", error);
     }
   }
 }
 
-return <button onClick={handleOnramp}>Pingpay Onramp</button>;
+const button = document.getElementById("onrampButton");
+if (button) {
+  button.addEventListener("click", handleOnramp);
+}
+```
+
+```html
+<button id="onrampButton">Buy Crypto</button>
+```
+
+### Advanced Usage
+
+The SDK provides configuration options and callbacks to customize the onramp experience.
+
+```typescript
+import type { PingpayOnrampConfig, OneClickFee } from "@pingpay/onramp-sdk";
+import { PingpayOnramp } from "@pingpay/onramp-sdk";
+
+// Configure app fees (example: 1% fee)
+const appFees: OneClickFee[] = [
+  {
+    recipient: "YOUR_FEE_RECIPIENT.near",
+    fee: 100, // 100 basis points = 1%
+  },
+];
+
+const config: PingpayOnrampConfig = {
+  targetAsset: { chain: "NEAR", asset: "wNEAR" },
+  appFees,
+  onPopupReady: () => {
+    console.log("SDK: Popup is ready.");
+  },
+  onPopupClose: () => {
+    console.log("SDK: Popup was closed.");
+  },
+};
+
+const onramp = new PingpayOnramp(config);
+
+async function handleOnramp() {
+  try {
+    const result = await onramp.initiateOnramp();
+    console.log("Onramp successful:", result);
+  } catch (error) {
+    if (error instanceof PingpayOnrampError) {
+      console.error("Onramp failed:", error.message);
+    } else {
+      console.error("Onramp failed:", error);
+    }
+  }
+}
 ```
 
 ### Configuration
 
-- Event Handlers (all optional):
-  - `onPopupReady()`: Called when the popup window signals it's ready. (SDK logs this internally too)
-  - `onFlowStarted(payload: OnrampFlowPayload)`: Called when the onramp flow begins in the popup.
-  - `onStepChange(step: OnrampStep, details?: OnrampStepDetails)`: Called when the current step in the onramp process changes.
-  - `onFormDataSubmitted(payload: FormDataSubmittedPayload)`: Called when user submits form data.
-  - `onWalletConnected(payload: WalletConnectedPayload)`: Called when a wallet is successfully connected.
-  - `onTransactionSigned(payload: TransactionSignedPayload)`: Called when a transaction is signed by the user.
-  - `onOnrampInitiated(payload: OnrampInitiatedPayload)`: Called when the onramp process is initiated with the backend service.
-  - `onProcessComplete(result: OnrampResult)`: Called when the entire onramp process is successfully completed.
-  - `onProcessFailed(payload: ProcessFailedPayload)`: Called if the onramp process fails at any point.
-  - `onPopupClose()`: Called when the popup is closed, either by the user, an error, or programmatically.
+The `PingpayOnrampConfig` interface supports the following options:
+
+- `targetAsset?: TargetAsset` - The target asset and chain for the onramp process. If not provided, users can select from available options in the popup.
+- `appFees?: OneClickFee[]` - Application fees to be applied to the onramp process.
+- `popupUrl?: string` - URL to render in popup (useful for development and testing).
+- `onPopupReady?: () => void` - Optional callback invoked when the popup window signals it's ready.
+- `onPopupClose?: () => void` - Optional callback invoked when the popup window is closed, either by the user or programmatically.
+
+### App Fees
+
+Configure application fees using the `OneClickFee[]` array:
+
+```typescript
+type OneClickFee = {
+  recipient: string;  // Fee recipient address
+  fee: number;        // Fee in basis points (100 = 1%)
+};
+```
+
+### Error Handling
+
+The SDK provides a dedicated `PingpayOnrampError` class for error handling:
+
+```typescript
+try {
+  const result = await onramp.initiateOnramp(targetAsset);
+  // Handle success
+} catch (error) {
+  if (error instanceof PingpayOnrampError) {
+    console.error("Onramp failed:", error.message);
+    // Access additional error details if needed
+    // error.details
+    // error.step
+  } else {
+    console.error("Unexpected error:", error);
+  }
+}
+```
 
 ### Closing the Onramp
 
@@ -148,6 +153,38 @@ onramp.close();
 This is useful if your application needs to interrupt the onramp flow.
 The `onPopupClose` callback will also be triggered.
 
+### Type Definitions
+
+#### `TargetAsset`
+```typescript
+type TargetAsset = {
+  chain: string;   // Target blockchain (e.g., "NEAR")
+  asset: string;   // Asset symbol (e.g., "wNEAR", "USDC")
+};
+```
+
+#### `OnrampResult`
+```typescript
+type OnrampResult = {
+  type: "intents";
+  action: "withdraw";
+  depositAddress: string;
+  network: string;
+  asset: string;
+  amount: string;
+  recipient: string;
+};
+```
+
+#### `PingpayOnrampError`
+```typescript
+class PingpayOnrampError extends Error {
+  message: string;
+  details?: unknown;
+  step?: string;
+}
+```
+
 ## Development
 
 To install dependencies:
@@ -155,23 +192,6 @@ To install dependencies:
 ```bash
 bun install
 ```
-
-### Local HTTPS Setup (One-time per developer)
-
-This project uses `pingpay.local.gd` for local development to enable Coinbase redirects. The certificates are already in the repo, but you need to trust the local CA once:
-
-1. Install mkcert (if not already installed):
-   ```bash
-   brew install mkcert  # macOS
-   # See https://github.com/FiloSottile/mkcert for other platforms
-   ```
-
-2. Install the local CA (one-time):
-   ```bash
-   mkcert -install
-   ```
-
-That's it! The certificates are already in the project directory in .certs
 
 To run all dev servers:
 
@@ -190,7 +210,7 @@ This uses Turborepo to orchestrate development servers across the monorepo:
 
 - `http://localhost:3000` - Example app (demo)
 - `http://localhost:3001` - Example app (sui)
-- `https://pingpay.local.gd:5173` - Popup app (HTTPS required for Coinbase redirects)
+- `https://pingpay.local.gd:5173` - Popup app
 - `http://localhost:8787` - API server
 
 **Note:** The demo apps can be accessed via `localhost`, but the popup must run on `https://pingpay.local.gd:5173` for Coinbase redirects to work. Always access the popup through the example apps, not directly.
@@ -199,4 +219,10 @@ To build all packages:
 
 ```bash
 bun run build
+```
+
+To run all tests:
+
+```bash
+bun run test
 ```

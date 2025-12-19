@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@wagmi/connectors": "^7.0.2",
     "prettier": "^3.6.2",
     "turbo": "^2.5.0",
     "typescript": "^5"
