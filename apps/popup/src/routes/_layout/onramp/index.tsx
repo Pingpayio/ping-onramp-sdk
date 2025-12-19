@@ -8,8 +8,7 @@ import type { OneClickFee } from "@/lib/one-click-api";
 const onrampSearchSchema = z.object({
   chain: z.string(),
   asset: z.string(),
-  // Accept either string (JSON) or array (already parsed)
-  appFees: z.union([z.string(), z.array(z.any())]).optional(),
+  appFees: z.union([z.string(), z.array(z.object({ recipient: z.string(), fee: z.number() }))]).optional(),
 });
 
 export const Route = createFileRoute("/_layout/onramp/")({

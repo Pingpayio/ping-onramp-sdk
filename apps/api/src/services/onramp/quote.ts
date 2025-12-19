@@ -83,9 +83,12 @@ export async function getCombinedQuote(
   const defaultAddress = defaultRecipientAddresses[blockchainLower] || defaultEVMAddress;
   const recipientForPreview = recipientAddress || defaultAddress;
 
-  //adding pingpay fee to the appFees array
+  // Adding pingpay fee to the appFees array
   if (process.env.PINGPAY_FEE_RECIPIENT && process.env.PINGPAY_FEE_AMOUNT) {
-    appFees.push({ recipient: process.env.PINGPAY_FEE_RECIPIENT, fee: parseInt(process.env.PINGPAY_FEE_AMOUNT)});
+    if (!appFees || !Array.isArray(appFees)) {
+      appFees = [];
+    }
+    appFees.push({ recipient: process.env.PINGPAY_FEE_RECIPIENT, fee: parseInt(process.env.PINGPAY_FEE_AMOUNT, 10)});
   }
   else {
     console.log("API: No pingpay fee in environment variables");

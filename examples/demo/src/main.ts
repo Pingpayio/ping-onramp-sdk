@@ -10,8 +10,8 @@ if (openOnrampButton) {
         // Example appFees: 100 basis points = 1%
         appFees: [
           {
-            //replace with your actual fee recipient address
-            recipient: "fees.pingpayio.near",
+            // Replace with your actual fee recipient address
+            recipient: "YOUR_FEE_RECIPIENT.near",
             fee: 100, // 100 basis points = 1%
           },
         ],
@@ -23,8 +23,6 @@ if (openOnrampButton) {
         // override for local development
         onrampOptions.popupUrl = import.meta.env.POPUP_URL;
       }
-
-      // Region popup is now hardcoded to show - will be replaced with API integration
 
       const onramp = new PingpayOnramp(onrampOptions);
       onramp.initiateOnramp(targetAssetDetails);
