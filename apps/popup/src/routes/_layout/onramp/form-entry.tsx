@@ -1,16 +1,15 @@
 import { RegionNotSupportedPopup } from "@/components/region-not-supported-popup";
 import { ErrorView } from "@/components/steps/error-view";
+import { useBroadcastChannel } from "@/hooks/use-broadcast-channel";
 import { useDebounce } from "@/hooks/use-debounce";
 import { isAmountValid, useQuotePreview } from "@/hooks/use-quote-preview";
 import { initOnramp, onrampConfigQueryOptions } from "@/lib/pingpay-api";
-import { onrampTargetAtom } from "@/state/atoms";
-import type {
-  PaymentMethodLimit,
-  TargetAsset,
-} from "@pingpay/onramp-types";
+import { appFeesAtom, onrampTargetAtom, sessionIdAtom } from "@/state/atoms";
+import type { PaymentMethodLimit, TargetAsset } from "@pingpay/onramp-types";
 import { getAssetDisplaySymbol, getAssetSymbol } from "@pingpay/onramp-types";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useAtomValue } from "jotai";
+import { useEffect, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { AssetSelector, assetsByNetwork } from "@/components/asset-selector";
@@ -44,7 +43,7 @@ export const Route = createFileRoute("/_layout/onramp/form-entry")({
       throw new Error("Onramp target asset is missing. Cannot proceed.");
     }
     const onrampConfig = await context.queryClient.ensureQueryData(
-      onrampConfigQueryOptions(targetAsset),
+      onrampConfigQueryOptions(targetAsset)
     );
     return {
       onrampConfig,
@@ -61,8 +60,20 @@ function FormEntryRoute() {
     targetAsset: onrampTarget,
     showRegionError,
   } = Route.useLoaderData();
+  const { store } = Route.useRouteContext();
   const navigate = Route.useNavigate();
   const [isCurrencySelectorOpen, setIsCurrencySelectorOpen] = useState(false);
+
+  const sessionId = useAtomValue(sessionIdAtom);
+  const { sendMessage } = useBroadcastChannel(sessionId);
+  const hasNotifiedReady = useRef(false);
+
+  useEffect(() => {
+    if (sessionId && !hasNotifiedReady.current) {
+      hasNotifiedReady.current = true;
+      sendMessage("ready", {});
+    }
+  }, [sessionId, sendMessage]);
   const [isAssetSelectorOpen, setIsAssetSelectorOpen] = useState(false);
   const [isNetworkSelectorOpen, setIsNetworkSelectorOpen] = useState(false);
   const [isPaymentMethodModalOpen, setIsPaymentMethodModalOpen] =
@@ -71,16 +82,16 @@ function FormEntryRoute() {
   // Map API asset name back to dropdown ID (reverse of getTargetAssetFromSelectedAsset)
   const getDefaultAssetFromTarget = (target: TargetAsset): string => {
     const reverseMap: Record<string, string> = {
-      "wNEAR": "Near",
-      "wnear": "Near",
-      "NEAR": "Near",
-      "USDC": "USD Coin",
-      "USDT": "Tether USD",
-      "SOL": "Solana",
-      "BTC": "Bitcoin",
-      "ETH": "Ethereum",
-      "LOUD": "Loud",
-      "ZEC": "Zcash",
+      wNEAR: "Near",
+      wnear: "Near",
+      NEAR: "Near",
+      USDC: "USD Coin",
+      USDT: "Tether USD",
+      SOL: "Solana",
+      BTC: "Bitcoin",
+      ETH: "Ethereum",
+      LOUD: "Loud",
+      ZEC: "Zcash",
     };
 
     return reverseMap[target.asset] || "USD Coin"; // fallback to USDC
@@ -132,7 +143,7 @@ function FormEntryRoute() {
           const paymentCurrency = onrampConfig.paymentCurrencies[0];
           const limit = paymentCurrency.limits.find(
             (l: PaymentMethodLimit) =>
-              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase(),
+              l.id.toLowerCase() === paymentMethodWatcher.toLowerCase()
           );
           if (!isAmountValid(value, paymentMethodWatcher, onrampConfig)) {
             if (limit) {
@@ -156,7 +167,7 @@ function FormEntryRoute() {
   // Map selectedAsset string to TargetAsset object
   const getTargetAssetFromSelectedAsset = (
     selectedAsset: string,
-    selectedNetwork: string,
+    selectedNetwork: string
   ): TargetAsset => {
     const assetName = getAssetSymbol(selectedAsset);
 
@@ -170,13 +181,15 @@ function FormEntryRoute() {
   // Get the target asset based on selected asset and network
   const currentTargetAsset = getTargetAssetFromSelectedAsset(
     selectedAssetWatcher,
-    selectedNetworkWatcher,
+    selectedNetworkWatcher
   );
 
   // Get display name for the selected asset (for button text)
   const getAssetDisplayName = (selectedAsset: string): string => {
     return getAssetDisplaySymbol(selectedAsset);
   };
+
+  const appFees = store.get(appFeesAtom);
 
   const { estimatedReceiveAmount, quote, isQuoteLoading, error } =
     useQuotePreview({
@@ -185,8 +198,8 @@ function FormEntryRoute() {
       selectedCurrency: selectedCurrencyWatcher,
       onrampConfig,
       onrampTarget: currentTargetAsset,
+      appFees,
     });
-
   const handleFormSubmit = async (data: FormValues) => {
     if (!quote) {
       return;
@@ -197,7 +210,12 @@ function FormEntryRoute() {
     });
 
     try {
-      const { redirectUrl: onrampUrl } = await initOnramp(data);
+      const initData = {
+        ...data,
+        appFees: appFees,
+      };
+
+      const { redirectUrl: onrampUrl } = await initOnramp(initData);
 
       window.location.assign(onrampUrl);
     } catch (error) {

@@ -21,7 +21,7 @@ export default defineConfig(({ command }) => {
             cert: fs.readFileSync(certPath),
           }
         : undefined,
-      host: isDev ? "pingpay.local.gd" : undefined,
+      host: isDev ? true : undefined,
       proxy: {
         "/api": {
           target: "http://localhost:8787",

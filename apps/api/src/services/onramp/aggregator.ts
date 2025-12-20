@@ -86,6 +86,7 @@ export async function generateOnrampUrl(
       selectedAsset,
       selectedNetwork,
       selectedCurrency,
+      appFees,
     } = formData;
     
     // Convert selectedAsset from form to TargetAsset object
@@ -102,6 +103,7 @@ export async function generateOnrampUrl(
       destinationAsset,
       recipientAddress,
       paymentMethod,
+      appFees,
     };
 
     const { swapQuote } = await getCombinedQuote(

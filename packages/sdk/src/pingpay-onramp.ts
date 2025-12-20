@@ -38,10 +38,10 @@ const POPUP_HEIGHT = 700;
  */
 export class PingpayOnramp {
   private config: PingpayOnrampConfig;
-  private channel: BroadcastChannel | null = null;
   private popup: Window | null = null;
   private sessionId: string = "";
   private checkClosedInterval?: NodeJS.Timeout;
+  private messageListener: ((event: MessageEvent) => void) | null = null;
   private onrampPromise: {
     resolve: (result: OnrampResult) => void;
     reject: (error: PingpayOnrampError) => void;
@@ -85,12 +85,15 @@ export class PingpayOnramp {
     return new Promise((resolve, reject) => {
       this.onrampPromise = { resolve, reject };
       this.sessionId = crypto.randomUUID();
-      this.channel = new BroadcastChannel("pingpay-onramp");
 
-      // Listen for messages from popup
-      this.channel.onmessage = (event) => {
+      this.messageListener = (event: MessageEvent) => {
+        console.log(`SDK: Received message event, origin=${event.origin}, data=`, event.data);
         if (event.data.sessionId === this.sessionId) {
-          if (event.data.type === "complete") {
+          console.log(`SDK: Message matches sessionId, type=${event.data.type}`);
+          if (event.data.type === "ready") {
+            console.log("SDK: Popup ready, calling onPopupReady callback");
+            this.config.onPopupReady?.();
+          } else if (event.data.type === "complete") {
             this.onrampPromise?.resolve(event.data.result);
             this.cleanup();
           } else if (event.data.type === "error") {
@@ -105,12 +108,20 @@ export class PingpayOnramp {
         }
       };
 
-      // Open popup with sessionId and target asset in URL
+      window.addEventListener("message", this.messageListener);
+
       console.log(`SDK: Opening popup with sessionId: ${this.sessionId}`);
       const url = new URL(`${this.popupUrl}/onramp`);
       url.searchParams.set("sessionId", this.sessionId);
       url.searchParams.set("chain", target.chain);
       url.searchParams.set("asset", target.asset);
+      if (this.config.appFees && this.config.appFees.length > 0) {
+        const appFeesJson = JSON.stringify(this.config.appFees);
+        url.searchParams.set("appFees", appFeesJson);
+        console.log("SDK: appFees configured:", this.config.appFees);
+      } else {
+        console.log("SDK: No appFees configured");
+      }
 
       this.popup = openPopup(
         url.toString(),
@@ -153,9 +164,9 @@ export class PingpayOnramp {
       this.checkClosedInterval = undefined;
     }
 
-    if (this.channel) {
-      this.channel.close();
-      this.channel = null;
+    if (this.messageListener) {
+      window.removeEventListener("message", this.messageListener);
+      this.messageListener = null;
     }
 
     if (this.popup && !this.popup.closed) {

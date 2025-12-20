@@ -1,5 +1,10 @@
 import type { TargetAsset } from "@pingpay/onramp-types";
 
+export interface OneClickFee {
+  recipient: string;
+  fee: number;
+}
+
 /**
  * Configuration for the PingpayOnramp SDK.
  */
@@ -9,6 +14,11 @@ export interface PingpayOnrampConfig {
    * This specifies what the user is trying to acquire.
    */
   targetAsset?: TargetAsset;
+
+  /**
+   * appFees to be applied to the onramp process.
+   */
+  appFees?: OneClickFee[];
 
   /**
    * URL to render in popup, helpful for local dev + testing

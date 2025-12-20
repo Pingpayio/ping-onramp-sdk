@@ -52,6 +52,14 @@ export const onrampQuoteRequestSchema = z.object({
   sourceCurrency: z.string(),
   destinationAsset: targetAssetSchema,
   paymentMethod: z.string(),
+  appFees: z
+    .array(
+      z.object({
+        recipient: z.string(),
+        fee: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 export const onrampInitRequestSchema = z.object({
@@ -61,6 +69,14 @@ export const onrampInitRequestSchema = z.object({
   selectedAsset: z.string(),
   selectedNetwork: z.string(),
   selectedCurrency: z.string(),
+  appFees: z
+    .array(
+      z.object({
+        recipient: z.string(),
+        fee: z.number(),
+      }),
+    )
+    .optional(),
 });
 
 // -------------------
@@ -200,9 +216,16 @@ export const broadcastErrorMessageSchema = z.object({
   }),
 });
 
+export const broadcastReadyMessageSchema = z.object({
+  sessionId: z.string(),
+  type: z.literal("ready"),
+  data: z.object({}),
+});
+
 export const broadcastMessageSchema = z.discriminatedUnion("type", [
   broadcastCompleteMessageSchema,
   broadcastErrorMessageSchema,
+  broadcastReadyMessageSchema,
 ]);
 
 export type BroadcastCompleteMessage = z.infer<
@@ -304,4 +327,27 @@ export function getAssetSymbol(displayName: string): string {
  */
 export function getAssetDisplaySymbol(displayName: string): string {
   return assetDisplayToDisplaySymbolMap[displayName] || displayName;
+}
+
+// -------------------
+// NEAR Intents Types
+// -------------------
+
+export interface CallbackParams {
+  type?: string;
+  action?: string;
+  depositAddress?: string;
+  network?: string;
+  asset?: string;
+  amount?: string;
+  recipient?: string;
+}
+
+export type IntentProgress = "depositing" | "querying" | "signing" | "withdrawing" | "done";
+
+export interface NearIntentsDisplayInfo {
+  message: string;
+  amountIn?: number;
+  amountOut?: number;
+  explorerUrl?: string;
 }

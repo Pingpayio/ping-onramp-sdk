@@ -6,11 +6,13 @@
     "dev": "turbo dev",
     "deploy": "turbo deploy",
     "test": "bunx playwright test",
+    "typecheck": "turbo typecheck",
     "fmt": "prettier --write '**/*.{js,jsx,ts,tsx,json}'",
     "fmt:check": "prettier --check '**/*.{js,jsx,ts,tsx,json}'"
   },
   "devDependencies": {
     "@types/bun": "latest",
+    "@wagmi/connectors": "^7.0.2",
     "prettier": "^3.6.2",
     "turbo": "^2.5.0",
     "typescript": "^5"

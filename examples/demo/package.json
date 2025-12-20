@@ -6,13 +6,14 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@pingpay/onramp-sdk": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.9.3",
     "vite": "^6.3.7"
-  },
-  "dependencies": {
-    "@pingpay/onramp-sdk": "workspace:*"
   }
 }

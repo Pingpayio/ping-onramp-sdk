@@ -7,11 +7,14 @@ if (openOnrampButton) {
     try {
       const targetAssetDetails = { chain: "NEAR", asset: "wNEAR" };
       const onrampOptions: PingpayOnrampConfig = {
+        // Example appFees: 100 basis points = 1%
+        appFees: [
+          {
+            recipient: "test.near",
+            fee: 100,
+          },
+        ],
         onPopupReady: () => console.log("Example: Popup is ready"),
-        onProcessComplete: (result) =>
-          console.log("Example: Process complete", result),
-        onProcessFailed: (errorInfo) =>
-          console.error("Example: Process failed", errorInfo),
         onPopupClose: () => console.log("Example: Popup was closed"),
       };
 
@@ -19,8 +22,6 @@ if (openOnrampButton) {
         // override for local development
         onrampOptions.popupUrl = import.meta.env.POPUP_URL;
       }
-
-      // Region popup is now hardcoded to show - will be replaced with API integration
 
       const onramp = new PingpayOnramp(onrampOptions);
       onramp.initiateOnramp(targetAssetDetails);

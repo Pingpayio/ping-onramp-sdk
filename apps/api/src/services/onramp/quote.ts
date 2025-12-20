@@ -16,8 +16,9 @@ export async function getCombinedQuote(
   country: string,
   dryRun = true,
 ) {
-  const { amount, destinationAsset, recipientAddress, paymentMethod } =
+  const { amount, destinationAsset, recipientAddress, paymentMethod, appFees: inputAppFees } =
     formData;
+  let appFees = inputAppFees ?? [];
 
   const oneClickClient = new OneClickClient(env.INTENTS_API_KEY);
 
@@ -83,6 +84,17 @@ export async function getCombinedQuote(
   const defaultAddress = defaultRecipientAddresses[blockchainLower] || defaultEVMAddress;
   const recipientForPreview = recipientAddress || defaultAddress;
 
+  // Adding pingpay fee to the appFees array
+  if (process.env.PINGPAY_FEE_RECIPIENT && process.env.PINGPAY_FEE_AMOUNT) {
+    if (!Array.isArray(appFees)) {
+      appFees = [];
+    }
+    appFees.push({ recipient: process.env.PINGPAY_FEE_RECIPIENT, fee: parseInt(process.env.PINGPAY_FEE_AMOUNT, 10)});
+  }
+  else {
+    console.log("API: No pingpay fee in environment variables");
+  }
+
   const swapQuoteParams: QuoteRequestParams = {
     originAsset: originAsset1Click.assetId,
     destinationAsset: destinationAsset1Click.assetId,
@@ -97,6 +109,7 @@ export async function getCombinedQuote(
     deadline: quoteDeadline,
     dry: dryRun,
     referral: ONE_CLICK_REFERRAL_ID,
+    appFees,
   };
 
   const swapQuote = await requestSwapQuote(oneClickClient, swapQuoteParams);
